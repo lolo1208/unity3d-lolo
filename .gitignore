@@ -1,9 +1,13 @@
 .DS_Store
 .idea
+.vs
 
 obj
 Library
 ProjectSettings
+Temp
+UnityPackageManager
+
 Assets/StreamingAssets
 
 *.meta

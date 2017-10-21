@@ -15,7 +15,6 @@ public class UnityEngine_ApplicationWrap
 		L.RegFunction("GetBuildTags", GetBuildTags);
 		L.RegFunction("SetBuildTags", SetBuildTags);
 		L.RegFunction("HasProLicense", HasProLicense);
-		L.RegFunction("ExternalCall", ExternalCall);
 		L.RegFunction("RequestAdvertisingIdentifierAsync", RequestAdvertisingIdentifierAsync);
 		L.RegFunction("OpenURL", OpenURL);
 		L.RegFunction("GetStackTraceLogType", GetStackTraceLogType);
@@ -26,7 +25,6 @@ public class UnityEngine_ApplicationWrap
 		L.RegVar("isPlaying", get_isPlaying, null);
 		L.RegVar("isFocused", get_isFocused, null);
 		L.RegVar("isEditor", get_isEditor, null);
-		L.RegVar("isWebPlayer", get_isWebPlayer, null);
 		L.RegVar("platform", get_platform, null);
 		L.RegVar("buildGUID", get_buildGUID, null);
 		L.RegVar("isMobilePlatform", get_isMobilePlatform, null);
@@ -36,7 +34,6 @@ public class UnityEngine_ApplicationWrap
 		L.RegVar("streamingAssetsPath", get_streamingAssetsPath, null);
 		L.RegVar("persistentDataPath", get_persistentDataPath, null);
 		L.RegVar("temporaryCachePath", get_temporaryCachePath, null);
-		L.RegVar("srcValue", get_srcValue, null);
 		L.RegVar("absoluteURL", get_absoluteURL, null);
 		L.RegVar("unityVersion", get_unityVersion, null);
 		L.RegVar("version", get_version, null);
@@ -221,23 +218,6 @@ public class UnityEngine_ApplicationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ExternalCall(IntPtr L)
-	{
-		try
-		{
-			int count = LuaDLL.lua_gettop(L);
-			string arg0 = ToLua.CheckString(L, 1);
-			object[] arg1 = ToLua.ToParamsObject(L, 2, count - 1);
-			UnityEngine.Application.ExternalCall(arg0, arg1);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int RequestAdvertisingIdentifierAsync(IntPtr L)
 	{
 		try
@@ -395,20 +375,6 @@ public class UnityEngine_ApplicationWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_isWebPlayer(IntPtr L)
-	{
-		try
-		{
-			LuaDLL.lua_pushboolean(L, UnityEngine.Application.isWebPlayer);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_platform(IntPtr L)
 	{
 		try
@@ -526,20 +492,6 @@ public class UnityEngine_ApplicationWrap
 		try
 		{
 			LuaDLL.lua_pushstring(L, UnityEngine.Application.temporaryCachePath);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_srcValue(IntPtr L)
-	{
-		try
-		{
-			LuaDLL.lua_pushstring(L, UnityEngine.Application.srcValue);
 			return 1;
 		}
 		catch (Exception e)

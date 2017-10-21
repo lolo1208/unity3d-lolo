@@ -35,6 +35,7 @@ public class UnityEngine_RendererWrap
 		L.RegVar("probeAnchor", get_probeAnchor, set_probeAnchor);
 		L.RegVar("reflectionProbeUsage", get_reflectionProbeUsage, set_reflectionProbeUsage);
 		L.RegVar("sortingLayerName", get_sortingLayerName, set_sortingLayerName);
+		L.RegVar("allowOcclusionWhenDynamic", get_allowOcclusionWhenDynamic, set_allowOcclusionWhenDynamic);
 		L.RegVar("sortingLayerID", get_sortingLayerID, set_sortingLayerID);
 		L.RegVar("sortingOrder", get_sortingOrder, set_sortingOrder);
 		L.EndClass();
@@ -552,6 +553,25 @@ public class UnityEngine_RendererWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_allowOcclusionWhenDynamic(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Renderer obj = (UnityEngine.Renderer)o;
+			bool ret = obj.allowOcclusionWhenDynamic;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index allowOcclusionWhenDynamic on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_sortingLayerID(IntPtr L)
 	{
 		object o = null;
@@ -909,6 +929,25 @@ public class UnityEngine_RendererWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index sortingLayerName on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_allowOcclusionWhenDynamic(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Renderer obj = (UnityEngine.Renderer)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.allowOcclusionWhenDynamic = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index allowOcclusionWhenDynamic on a nil value");
 		}
 	}
 

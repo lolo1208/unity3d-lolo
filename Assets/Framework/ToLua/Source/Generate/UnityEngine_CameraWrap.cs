@@ -79,13 +79,13 @@ public class UnityEngine_CameraWrap
 		L.RegVar("projectionMatrix", get_projectionMatrix, set_projectionMatrix);
 		L.RegVar("nonJitteredProjectionMatrix", get_nonJitteredProjectionMatrix, set_nonJitteredProjectionMatrix);
 		L.RegVar("useJitteredProjectionMatrixForTransparentRendering", get_useJitteredProjectionMatrixForTransparentRendering, set_useJitteredProjectionMatrixForTransparentRendering);
+		L.RegVar("previousViewProjectionMatrix", get_previousViewProjectionMatrix, null);
 		L.RegVar("velocity", get_velocity, null);
 		L.RegVar("clearFlags", get_clearFlags, set_clearFlags);
 		L.RegVar("stereoEnabled", get_stereoEnabled, null);
 		L.RegVar("stereoSeparation", get_stereoSeparation, set_stereoSeparation);
 		L.RegVar("stereoConvergence", get_stereoConvergence, set_stereoConvergence);
 		L.RegVar("cameraType", get_cameraType, set_cameraType);
-		L.RegVar("stereoMirrorMode", get_stereoMirrorMode, set_stereoMirrorMode);
 		L.RegVar("stereoTargetEye", get_stereoTargetEye, set_stereoTargetEye);
 		L.RegVar("areVRStereoViewMatricesWithinSingleCullTolerance", get_areVRStereoViewMatricesWithinSingleCullTolerance, null);
 		L.RegVar("stereoActiveEye", get_stereoActiveEye, null);
@@ -1433,6 +1433,25 @@ public class UnityEngine_CameraWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_previousViewProjectionMatrix(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Camera obj = (UnityEngine.Camera)o;
+			UnityEngine.Matrix4x4 ret = obj.previousViewProjectionMatrix;
+			ToLua.PushValue(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index previousViewProjectionMatrix on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_velocity(IntPtr L)
 	{
 		object o = null;
@@ -1543,25 +1562,6 @@ public class UnityEngine_CameraWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cameraType on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_stereoMirrorMode(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			UnityEngine.Camera obj = (UnityEngine.Camera)o;
-			bool ret = obj.stereoMirrorMode;
-			LuaDLL.lua_pushboolean(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index stereoMirrorMode on a nil value");
 		}
 	}
 
@@ -2423,25 +2423,6 @@ public class UnityEngine_CameraWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index cameraType on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_stereoMirrorMode(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			UnityEngine.Camera obj = (UnityEngine.Camera)o;
-			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
-			obj.stereoMirrorMode = arg0;
-			return 0;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index stereoMirrorMode on a nil value");
 		}
 	}
 
