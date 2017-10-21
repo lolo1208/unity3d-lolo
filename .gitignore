@@ -1,0 +1,12 @@
+.DS_Store
+.idea
+
+obj
+Library
+ProjectSettings
+Assets/StreamingAssets
+
+*.meta
+*.csproj
+*.sln
+*.userprefs
