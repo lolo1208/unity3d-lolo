@@ -29,20 +29,23 @@ namespace ShibaInu
 		private const string luaPath_project = "Assets/Lua/";
 
 
-		#if UNITY_EDITOR_OSX
-		private const string jitexe = "LuaEncoder/luajit_mac/luajit";
-		#else
-		private const string jitexe = "LuaEncoder/luajit/luajit.exe";
-		#endif
+#if UNITY_EDITOR_OSX
+		private const string jitPath = "LuaEncoder/luajit_mac";
+		private const string jitExe = "luajit";
+#else
+        private const string jitPath = "LuaEncoder/luajit/";
+        private const string jitExe = "luajit.exe";
+#endif
 
 
-		private static LuaEncodeType _luaEncodeType;
+        private static LuaEncodeType _luaEncodeType;
+        private static string _curDirPath;
 
 
 
 		private static void Pack(BuildTarget target, LuaEncodeType encodeType)
 		{
-			Console.Clear ();
+            ClearConsole();
 
 			if (Directory.Exists (outputPath)) {
 				Directory.Delete (outputPath, true);
@@ -62,21 +65,38 @@ namespace ShibaInu
 			Directory.CreateDirectory (luaOutputPath);
 			_luaEncodeType = encodeType;
 
+            if (_curDirPath == null)
+                _curDirPath = Directory.GetCurrentDirectory() + "/";
+
+
 			// encode tolua lua files
 			List<string> files = new List<string> ();
-//			GetFiles (luaPath_tolua, files);
-//			foreach (string f in files)
-//				EncodeLuaFile (f, luaPath_tolua, "ToLua/");
+            GetFiles (luaPath_tolua, files);
+            Directory.SetCurrentDirectory(jitPath);
+            foreach (string f in files)
+            	EncodeLuaFile (f, luaPath_tolua, "ToLua/");
 
-			// encode project lua files
-			files.Clear();
-			GetFiles (luaPath_project, files);
-			foreach (string f in files)
+
+            // encode shibaInu lua files
+            Directory.SetCurrentDirectory(_curDirPath);
+            files.Clear();
+            GetFiles(luaPath_shibaInu, files);
+            Directory.SetCurrentDirectory(jitPath);
+            foreach (string f in files)
+                EncodeLuaFile(f, luaPath_shibaInu, "ShibaInu/");
+
+
+            // encode project lua files
+            Directory.SetCurrentDirectory(_curDirPath);
+            files.Clear();
+            GetFiles (luaPath_project, files);
+            Directory.SetCurrentDirectory(jitPath);
+            foreach (string f in files)
 				EncodeLuaFile (f, luaPath_project, "App/");
 
-			print ("OK!!!");
-
+            Directory.SetCurrentDirectory(_curDirPath);
 			AssetDatabase.Refresh ();
+            print("ok!!!");
 		}
 
 
@@ -90,30 +110,28 @@ namespace ShibaInu
 		{
 			if (!filePath.EndsWith (".lua"))
 				return;
-
-
-			string curDirPath = Directory.GetCurrentDirectory () + "/";
+            
 			string path = filePath.Replace (inRootPath, "");
-			string outPath = curDirPath + luaOutputPath + outRootPath + path;
-			string inPath = curDirPath + filePath;
+			string outPath = _curDirPath + luaOutputPath + outRootPath + path;
+			string inPath = _curDirPath + filePath;
 
-			switch (_luaEncodeType) {
+            string outDirPath = outPath.Substring(0, outPath.LastIndexOf("/"));
+            if (!Directory.Exists(outDirPath))
+                Directory.CreateDirectory(outDirPath);
 
-			case LuaEncodeType.JIT:
-				ProcessStartInfo info = new ProcessStartInfo ();
-				info.FileName = curDirPath + jitexe;
-				info.Arguments = "-b " + inPath + " " + outPath;
-				print (info.FileName);
-				print (info.Arguments);
-//				info.WindowStyle = ProcessWindowStyle.Hidden;
-//				info.ErrorDialog = true;
-//				info.UseShellExecute = false;
+            switch (_luaEncodeType) {
 
-				Process p = Process.Start (info);
-				p.WaitForExit ();
-				p.Close ();
-				print ("??", p.ExitCode.ToString());
-				break;
+                case LuaEncodeType.JIT:
+                    ProcessStartInfo info = new ProcessStartInfo();
+                    info.FileName = _curDirPath + jitPath + jitExe;
+                    info.Arguments = "-b " + inPath + " " + outPath;
+                    info.WindowStyle = ProcessWindowStyle.Hidden;
+                    info.ErrorDialog = true;
+                    //info.UseShellExecute = false;
+
+                    using (Process p = Process.Start(info))
+                        p.WaitForExit();
+                    break;
 			}
 		}
 
@@ -144,7 +162,19 @@ namespace ShibaInu
 
 
 
-		private static void print(params string[] args)
+        private static void ClearConsole()
+        {
+            try
+            {
+                Type logEntries = Type.GetType("UnityEditorInternal.LogEntries,UnityEditor.dll");
+                System.Reflection.MethodInfo clearMethod = logEntries.GetMethod("Clear", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                clearMethod.Invoke(null, null);
+            }
+            catch { }
+        }
+
+
+        private static void print(params string[] args)
 		{
 			string msg = string.Empty;
 			for (int i = 0; i < args.Length; i++) {
@@ -171,7 +201,7 @@ namespace ShibaInu
 			Pack (BuildTarget.Android, LuaEncodeType.JIT);
 		}
 
-		[MenuItem("Packager/Win64", false, 103)]
+		[MenuItem("Packager/Win x64", false, 103)]
 		public static void PackWin64()
 		{
 			Pack (BuildTarget.StandaloneWindows64, LuaEncodeType.JIT);
