@@ -25,11 +25,6 @@ namespace ShibaInu
 			LuaBinder.Bind(lua);
 			DelegateFactory.Init();
 			LuaCoroutine.Register(lua, this);
-
-//			StartCoroutine(DelayToInvokeDo(() =>
-//				{
-//					Application.LoadLevel("Scene1");
-//				}, 3));
 		}
 
 

@@ -74,19 +74,14 @@ end
 
 
 --- 创建并返回一个预设的实例
----@param prefab any @ 预设对象
+---@param prefab UnityEngine.GameObject @ 预设对象
 ---@param parent UnityEngine.GameObject @ 父节点。默认：nil，表示创建在根节点
 ---@return UnityEngine.GameObject
 function Instantiate(prefab, parent)
-    ---@type UnityEngine.GameObject
-    local obj = GameObject.Instantiate(prefab)
     if parent ~= nil then
-        local transform = obj.transform
-        transform.localScale = Vector3.one
-        transform.localPosition = Vector3.zero
-        transform.localEulerAngles = Vector3.zero
-        transform.parent = parent.transform
+        return GameObject.Instantiate(prefab, parent.transform)
     end
+    return GameObject.Instantiate(prefab)
 end
 
 --- 创建并返回一个 GameObject

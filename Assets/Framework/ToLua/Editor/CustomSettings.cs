@@ -172,6 +172,7 @@ public static class CustomSettings
 
 		// for ShibaInu
 		_GT(typeof(LuaHelper)),
+		_GT(typeof(ResManager)),
 
     };
 

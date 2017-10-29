@@ -81,6 +81,7 @@ public static class LuaBinder
 		L.EndModule();
 		L.BeginModule("ShibaInu");
 		ShibaInu_LuaHelperWrap.Register(L);
+		ShibaInu_ResManagerWrap.Register(L);
 		L.EndModule();
 		L.BeginModule("System");
 		L.RegFunction("Action", System_Action);

@@ -600,7 +600,7 @@ namespace LuaInterface
             {
                 fileName = LuaFileUtils.Instance.FindFile(fileName);
             }
-			Debug.Log (fileName + " ::: " + LuaFileUtils.Instance.FindFile (fileName));
+//			Debug.Log (fileName + " ::: " + LuaFileUtils.Instance.FindFile (fileName));
 
             LuaLoadBuffer(buffer, fileName);
         }

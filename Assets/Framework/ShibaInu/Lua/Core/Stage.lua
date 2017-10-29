@@ -5,6 +5,7 @@
 --
 
 ---@class Stage
+---@field uiCanvas UnityEngine.Canvas @ UI最底层容器，UI's Canvas
 local Stage = class("Stage")
 
 local event = Event.New()
@@ -13,6 +14,7 @@ local ed = EventDispatcher.New()
 
 
 function Stage:Ctor()
+    self.uiCanvas = GameObject.Find("UICanvas")
     self._ed = ed
 end
 

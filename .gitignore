@@ -7,6 +7,8 @@ Library
 ProjectSettings
 Temp
 UnityPackageManager
+runtime-src
+publish
 
 Assets/StreamingAssets
 

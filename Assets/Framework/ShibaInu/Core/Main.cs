@@ -2,14 +2,14 @@
 using UnityEngine;
 
 
-namespace ShibaInu 
+namespace ShibaInu
 {
 	public class Main : MonoBehaviour
 	{
 		private static bool _initialized = false;
 
 
-		void Start()
+		void Start ()
 		{
 			if (_initialized) {
 				Destroy (this.gameObject);
