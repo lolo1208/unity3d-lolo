@@ -43,8 +43,10 @@ namespace ShibaInu
 		private const string resOutputPath = outputPath + "Res/";
 		/// 场景输出根目录
 		private const string sceneOutputPath = outputPath + "Scene/";
+        /// 资源信息文件路径
+        private const string resInfoFilePath = outputPath + "ResInfo";
 
-		private const string luaPath_tolua = "Assets/Framework/ToLua/Lua/";
+        private const string luaPath_tolua = "Assets/Framework/ToLua/Lua/";
 		private const string luaPath_shibaInu = "Assets/Framework/ShibaInu/Lua/";
 		private const string luaPath_project = "Assets/Lua/";
 
@@ -338,10 +340,14 @@ namespace ShibaInu
 
 		private static void CreateResInfo ()
 		{
-			foreach (string scene in _sceneList) {
-				string filePath = ABFileNameAppendMD5 (scene);
-				print (filePath);
-			}
+            using (BinaryWriter writer = new BinaryWriter(File.Open(resInfoFilePath, FileMode.Create)))
+            {
+                writer.Write((ushort)_sceneList.Count);
+                foreach (string scene in _sceneList)
+                {
+                    writer.Write(AppendMD5ToFileName(scene, sceneOutputPath));
+                }
+            }
 
 
 			/*
@@ -362,7 +368,7 @@ namespace ShibaInu
 		}
 
 
-		private static string ABFileNameAppendMD5 (string filePath)
+		private static string AppendMD5ToFileName(string filePath, string replacePath)
 		{
 			if (!filePath.StartsWith (outputPath))
 				filePath = outputPath + filePath;
@@ -373,8 +379,7 @@ namespace ShibaInu
 			string outFilePath = Path.GetDirectoryName (filePath) + "/" + outFileName;
 
 			File.Move (filePath, outFilePath + abExtName);
-
-			return outFilePath.Replace (outputPath, "");
+			return outFilePath.Replace(replacePath, "");
 		}
 
 
