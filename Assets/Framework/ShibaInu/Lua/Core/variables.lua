@@ -13,6 +13,8 @@ local require = require
 ---@field GetEventDispatcher fun(go:UnityEngine.GameObject):EventDispatcher @ 获取 gameObject 对应的 EventDispatcher
 LuaHelper = ShibaInu.LuaHelper
 
+RES = ShibaInu.ResManager
+
 --=------------------------------------------------------------------------=--
 
 

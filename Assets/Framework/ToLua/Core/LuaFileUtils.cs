@@ -155,6 +155,9 @@ namespace LuaInterface
 
         public virtual byte[] ReadFile(string fileName)
         {
+			if (!ShibaInu.Common.isDebug)
+				return ShibaInu.ResManager.GetLuaFileBytes (fileName);
+
             if (!beZip)
             {
                 string path = FindFile(fileName);

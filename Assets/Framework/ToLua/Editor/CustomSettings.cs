@@ -148,12 +148,19 @@ public static class CustomSettings
         _GT(typeof(RenderSettings)),                                                   
         _GT(typeof(BlendWeights)),           
         _GT(typeof(RenderTexture)), 
-		_GT(typeof(Resources)),      
-          
-        //for LuaFramework
-        _GT(typeof(RectTransform)),
-        _GT(typeof(Text)),
-		_GT(typeof(PlayerPrefs)),
+		_GT(typeof(Resources)),
+
+
+		//for LuaFramework
+		_GT(typeof(UnityEngine.PlayerPrefs)),
+        _GT(typeof(UnityEngine.RectTransform)),
+		_GT(typeof(UnityEngine.UI.Text)),
+
+
+		// for ShibaInu
+		_GT(typeof(ShibaInu.LuaHelper)),
+		_GT(typeof(ShibaInu.ResManager)),
+
 
 //        _GT(typeof(Util)),
 //        _GT(typeof(AppConst)),
@@ -169,10 +176,6 @@ public static class CustomSettings
 //        _GT(typeof(ThreadManager)),
 //        _GT(typeof(NetworkManager)),
 //        _GT(typeof(ResourceManager)),	
-
-		// for ShibaInu
-		_GT(typeof(LuaHelper)),
-		_GT(typeof(ResManager)),
 
     };
 

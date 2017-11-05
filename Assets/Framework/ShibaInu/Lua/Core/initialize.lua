@@ -20,5 +20,6 @@ trycall = Logger.TryCall
 
 --=--------------------------------------------------------------------------=--
 
-local prefab = ShibaInu.ResManager.test() ---@type UnityEngine.GameObject
+
+local prefab = RES.GetAsset("Prefab/Test/TestUI.prefab")
 Instantiate(prefab, stage.uiCanvas)

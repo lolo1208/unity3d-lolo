@@ -6,6 +6,10 @@ using LuaInterface;
 
 namespace ShibaInu
 {
+	/// <summary>
+	/// 在 Start / Update / LateUpdate 触发时，调用 lua 层的 stage._loopHandler 函数。
+	/// 更新 lua 层的 TimeUtil.time
+	/// </summary>
 	public class StageLooper : MonoBehaviour
 	{
 		private LuaFunction _loopHandler;

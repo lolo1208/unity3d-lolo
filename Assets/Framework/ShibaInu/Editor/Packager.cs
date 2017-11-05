@@ -13,7 +13,7 @@ namespace ShibaInu
 	{
 		NONE = 0,
 		JIT,
-		LUAC,
+		LUAVM,
 	}
 
 
@@ -21,14 +21,11 @@ namespace ShibaInu
 	{
 		public string name;
 		public List<string> assetList = new List<string> ();
-		public string[] depList;
 	}
 
 
 	public class Packager
 	{
-		/// AssetBundle 后缀名
-		private const string abExtName = ".unity3d";
 
 		/// 资源文件输入根目录
 		private const string resInputPath = "Assets/Res/";
@@ -43,10 +40,12 @@ namespace ShibaInu
 		private const string resOutputPath = outputPath + "Res/";
 		/// 场景输出根目录
 		private const string sceneOutputPath = outputPath + "Scene/";
-        /// 资源信息文件路径
-        private const string resInfoFilePath = outputPath + "ResInfo";
+		/// 资源信息文件路径
+		private const string resInfoFilePath = outputPath + "ResInfo";
+		/// 测试模式标识文件路径。文件存在时，表示正处于测试模式
+		private const string testModeFlagFilePath = outputPath + "TestModeFlag";
 
-        private const string luaPath_tolua = "Assets/Framework/ToLua/Lua/";
+		private const string luaPath_tolua = "Assets/Framework/ToLua/Lua/";
 		private const string luaPath_shibaInu = "Assets/Framework/ShibaInu/Lua/";
 		private const string luaPath_project = "Assets/Lua/";
 
@@ -54,27 +53,32 @@ namespace ShibaInu
 		#if UNITY_EDITOR_OSX
 		private const string jitPath = "LuaEncoder/luajit_mac/";
 		private const string jitExe = "luajit";
-		private const string luacPath = "LuaEncoder/luavm/";
-		private const string luacExe = "luac";
+		private const string luavmPath = "LuaEncoder/luavm/";
+		private const string luavmExe = "luac";
 		#else
         private const string jitPath = "LuaEncoder/luajit/";
 		private const string jitExe = "luajit.exe";
-		private const string luacPath = "";
-		private const string luacExe = "";
+		private const string luavmPath = "";
+		private const string luavmExe = "";
 		#endif
 
 
-		private static string[] coreScenes = {
+		private static readonly string[] coreScenes = {
 			coreResPath + "Scene/Launcher.unity",
 			coreResPath + "Scene/Scene1.unity",
 			coreResPath + "Scene/Scene2.unity"
 		};
+		private static readonly Dictionary<string, AssetBundleInfo> _abiDic = new Dictionary<string, AssetBundleInfo> ();
+		private static readonly List<string> _sceneList = new List<string> ();
+		private static readonly List<string> _luaList = new List<string> ();
 
 		private static LuaEncodeType _luaEncodeType;
 		private static string _curDirPath;
+		private static string _encoderPath;
 		private static string _encoderExe;
-		private static Dictionary<string, AssetBundleInfo> _abiMap = new Dictionary<string, AssetBundleInfo> ();
-		private static List<string> _sceneList = new List<string> ();
+
+		private static int _pCurr, _pMax;
+
 
 
 
@@ -83,13 +87,15 @@ namespace ShibaInu
 			ClearAllRes ();
 			Directory.CreateDirectory (outputPath);
 			ClearAssetBundleNames ();
-			_abiMap.Clear ();
+			_abiDic.Clear ();
 			_sceneList.Clear ();
+			_luaList.Clear ();
 
-//			EncodeAllLua (encodeType);
+			EncodeAllLua (encodeType);
 			BuildAllScene (buildTarget);
-//			BuildAllRes (buildTarget);
+			BuildAllRes (buildTarget);
 			CreateResInfo ();
+			UnityEngine.Debug.Log ("[ShibaInu.Packager] All Completed.");
 		}
 
 
@@ -106,47 +112,41 @@ namespace ShibaInu
 			if (_curDirPath == null)
 				_curDirPath = Directory.GetCurrentDirectory () + "/";
 			
-			string encoderPath;
 			switch (encodeType) {
 			case LuaEncodeType.JIT:
-				encoderPath = jitPath;
+				_encoderPath = jitPath;
 				_encoderExe = _curDirPath + jitPath + jitExe;
 				break;
-			case LuaEncodeType.LUAC:
-				encoderPath = luacPath;
-				_encoderExe = _curDirPath + luacPath + luacExe;
+			case LuaEncodeType.LUAVM:
+				_encoderPath = luavmPath;
+				_encoderExe = _curDirPath + luavmPath + luavmExe;
 				break;
 
 			default: // none
-				encoderPath = _curDirPath;
+				_encoderPath = _curDirPath;
 				break;
 			}
 
+			EncodeLuaPackage (luaPath_tolua, "ToLua/");
+			EncodeLuaPackage (luaPath_shibaInu, "ShibaInu/");
+			EncodeLuaPackage (luaPath_project, "App/");
+			EditorUtility.ClearProgressBar ();
+			UnityEngine.Debug.Log ("[ShibaInu.Packager] Encode All Lua Completed.");
+		}
 
-			// encode tolua lua files
+
+		private static void EncodeLuaPackage (string inRootPath, string outRootPath)
+		{
 			List<string> files = new List<string> ();
-			GetFiles (luaPath_tolua, files);
-			Directory.SetCurrentDirectory (encoderPath);
+			GetFiles (inRootPath, files);
+			_pCurr = 0;
+			_pMax = files.Count;
+			Directory.SetCurrentDirectory (_encoderPath);
 			foreach (string f in files)
-				EncodeLuaFile (f, luaPath_tolua, "ToLua/");
-			Directory.SetCurrentDirectory (_curDirPath);
-			
-			// encode shibaInu lua files
-			files.Clear ();
-			GetFiles (luaPath_shibaInu, files);
-			Directory.SetCurrentDirectory (encoderPath);
-			foreach (string f in files)
-				EncodeLuaFile (f, luaPath_shibaInu, "ShibaInu/");
-			Directory.SetCurrentDirectory (_curDirPath);
-			
-			// encode project lua files
-			files.Clear ();
-			GetFiles (luaPath_project, files);
-			Directory.SetCurrentDirectory (encoderPath);
-			foreach (string f in files)
-				EncodeLuaFile (f, luaPath_project, "App/");
+				EncodeLuaFile (f, inRootPath, outRootPath);
 			Directory.SetCurrentDirectory (_curDirPath);
 		}
+
 
 
 		/// <summary>
@@ -159,10 +159,12 @@ namespace ShibaInu
 		{
 			if (!filePath.EndsWith (".lua") || filePath.EndsWith ("Core/define.lua"))
 				return;
+			EditorUtility.DisplayProgressBar ("Encode Lua Files", filePath, (float)++_pCurr / _pMax);
             
 			string path = filePath.Replace (inRootPath, "");
 			string outPath = _curDirPath + luaOutputPath + outRootPath + path;
 			string inPath = _curDirPath + filePath;
+			_luaList.Add (luaOutputPath + outRootPath + path);
 
 			string outDirPath = outPath.Substring (0, outPath.LastIndexOf ("/"));
 			if (!Directory.Exists (outDirPath))
@@ -176,7 +178,7 @@ namespace ShibaInu
 				info.Arguments = "-b " + inPath + " " + outPath;
 				break;
 
-			case LuaEncodeType.LUAC:
+			case LuaEncodeType.LUAVM:
 				info = new ProcessStartInfo (_encoderExe);
 				info.Arguments = "-o " + outPath + " " + inPath;
 				break;
@@ -190,7 +192,7 @@ namespace ShibaInu
 			using (Process p = Process.Start (info)) {
 				p.WaitForExit ();
 				if (p.ExitCode != 0)
-					throw new Exception ("编码 lua 出现错误：" + info.Arguments);
+					throw new Exception (string.Format (Constants.E9001, info.Arguments));
 			}
 		}
 
@@ -216,7 +218,7 @@ namespace ShibaInu
 			// 打包项目内场景到 StreamingAssets/Scene/ 目录
 			foreach (string scene in projScenes) {
 				string[] levels = { scene };
-				string outputPath = sceneOutputPath + Path.GetFileName (scene).Replace (".unity", abExtName);
+				string outputPath = sceneOutputPath + Path.GetFileName (scene).Replace (".unity", Constants.AbExtName);
 				_sceneList.Add (outputPath);
 				BuildPipeline.BuildPlayer (levels, outputPath, buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 			}
@@ -261,7 +263,7 @@ namespace ShibaInu
 
 			// 建立 AssetBundleBuild 列表
 			List<AssetBundleBuild> abbList = new List<AssetBundleBuild> ();
-			foreach (var item in _abiMap) {
+			foreach (var item in _abiDic) {
 				var abi = item.Value;
 				AssetBundleBuild abb = new AssetBundleBuild ();
 				abb.assetBundleName = abi.name;
@@ -315,20 +317,20 @@ namespace ShibaInu
 			string abPath = path.Replace (resInputPath, "");
 			string extName = Path.GetExtension (abPath);
 			if (string.IsNullOrEmpty (extName))
-				abPath += abExtName;
+				abPath += Constants.AbExtName;
 			else
-				abPath = abPath.Replace (extName, abExtName);
+				abPath = abPath.Replace (extName, Constants.AbExtName);
 			abPath = abPath.ToLower ();// ab包的路径和名称只能小写
 
 			AssetBundleInfo abi;
-			if (_abiMap.ContainsKey (abPath)) {
+			if (_abiDic.ContainsKey (abPath)) {
 				// Dictionary 中已存在
-				_abiMap.TryGetValue (abPath, out abi);
+				_abiDic.TryGetValue (abPath, out abi);
 			} else {
 				// 创建 AssetBundleInfo，放入 Dictionary 中
 				abi = new AssetBundleInfo ();
 				abi.name = abPath;
-				_abiMap.Add (abPath, abi);
+				_abiDic.Add (abPath, abi);
 			}
 			abi.assetList.Add (filePath);
 		}
@@ -340,48 +342,72 @@ namespace ShibaInu
 
 		private static void CreateResInfo ()
 		{
-            using (BinaryWriter writer = new BinaryWriter(File.Open(resInfoFilePath, FileMode.Create)))
-            {
-                writer.Write((ushort)_sceneList.Count);
-                foreach (string scene in _sceneList)
-                {
-                    writer.Write(AppendMD5ToFileName(scene, sceneOutputPath));
-                }
-            }
+			using (BinaryWriter writer = new BinaryWriter (File.Open (resInfoFilePath, FileMode.Create))) {
+				
+				// - lua
+				writer.Write ((ushort)_luaList.Count);// 写入lua文件数量
+				foreach (string lua in _luaList) {
+					RenameFileAndWriteMD5 (lua, luaOutputPath, writer);
+				}
 
+				// - scene
+				writer.Write ((byte)_sceneList.Count);// 写入场景文件数量（一字节）
+				foreach (string scene in _sceneList) {
+					RenameFileAndWriteMD5 (scene, sceneOutputPath, writer);
+				}
 
-			/*
-			// 加载 Assets/StreamingAssets/Res/Res 文件，读取包含所有ab包引用关系的 manifest
-			AssetBundle ab = AssetBundle.LoadFromFile (resOutputPath + "Res");
-			AssetBundleManifest manifest = (AssetBundleManifest)ab.LoadAsset ("AssetBundleManifest");
-			string[] abs = manifest.GetAllAssetBundles ();
-			AssetBundleInfo abi;
+				// - res
+				// 加载 Assets/StreamingAssets/Res/Res 文件，读取包含所有ab包引用关系的 manifest
+				AssetBundle ab = AssetBundle.LoadFromFile (resOutputPath + "Res");
+				AssetBundleManifest manifest = (AssetBundleManifest)ab.LoadAsset ("AssetBundleManifest");
+				string[] abList = manifest.GetAllAssetBundles ();
+				writer.Write ((ushort)abList.Length);// 写入ab文件数量
 
-			foreach (string abPath in abs) {
-				_abiMap.TryGetValue (abPath, out abi);
-				abi.depList = manifest.GetAllDependencies (abPath);
-				print (JsonUtility.ToJson (abi));
+				AssetBundleInfo abi;
+				foreach (string abPath in abList) {
+					RenameFileAndWriteMD5 (resOutputPath + abPath, resOutputPath, writer);
+
+					_abiDic.TryGetValue (abPath, out abi);
+					writer.Write ((ushort)abi.assetList.Count);// 写入包含的资源文件数量
+					foreach (string assetPath in abi.assetList) {
+						writer.Write (MD5Util.GetMD5 (assetPath.Replace (resInputPath, "")).ToCharArray ());// 写入资源文件的路径MD5
+					}
+
+					string[] depList = manifest.GetAllDependencies (abPath);
+					writer.Write ((byte)depList.Length);// 写入依赖的ab文件数量（一字节）
+					foreach (string depPath in depList) {
+						writer.Write (MD5Util.GetMD5 (depPath).ToCharArray ());// 写入ab文件的路径MD5
+					}
+				}
+				ab.Unload (true);
 			}
 
-			ab.Unload (true);
-			*/
 		}
 
-
-		private static string AppendMD5ToFileName(string filePath, string replacePath)
+		/// <summary>
+		/// 重命名文件，加入文件MD5字符串。
+		/// 写入路径的长度（一字节），写入路径，以及对应的文件MD5。
+		/// </summary>
+		/// <param name="filePath">File path.</param>
+		/// <param name="replacePath">Replace path.</param>
+		/// <param name="writer">Writer.</param>
+		private static void RenameFileAndWriteMD5 (string filePath, string replacePath, BinaryWriter writer)
 		{
-			if (!filePath.StartsWith (outputPath))
-				filePath = outputPath + filePath;
-
+			string extName = Path.GetExtension (filePath);
 			string fileName = Path.GetFileName (filePath);
 			string fileMD5 = MD5Util.GetFileMD5 (filePath);
-			string outFileName = fileName.Replace (abExtName, "") + "_" + fileMD5;
-			string outFilePath = Path.GetDirectoryName (filePath) + "/" + outFileName;
+			string outFileName = fileName.Replace (extName, "") + "_" + fileMD5;
+			string outFilePath = Path.GetDirectoryName (filePath) + "/" + outFileName + extName;
 
-			File.Move (filePath, outFilePath + abExtName);
-			return outFilePath.Replace(replacePath, "");
+			File.Move (filePath, outFilePath);// 重命名文件
+
+			filePath = filePath.Replace (replacePath, "").Replace (extName, "");// 文件路径掐头去尾
+
+			writer.Write ((byte)filePath.Length);// 写入路径的长度（一字节）
+			writer.Write (filePath.ToCharArray ());// 写入路径
+			writer.Write (fileMD5.ToCharArray ());// 写入文件MD5
+//			print (filePath.Length.ToString(), filePath, fileMD5);
 		}
-
 
 		#endregion
 
@@ -443,16 +469,16 @@ namespace ShibaInu
 			Pack (BuildTarget.Android, LuaEncodeType.JIT);
 		}
 
-		[MenuItem ("Packager/Win x64", false, 103)]
+		[MenuItem ("Packager/Win", false, 103)]
 		private static void PackWin64 ()
 		{
 			Pack (BuildTarget.StandaloneWindows64, LuaEncodeType.JIT);
 		}
 
-		[MenuItem ("Packager/Mac x64", false, 104)]
+		[MenuItem ("Packager/Mac", false, 104)]
 		private static void PackMac64 ()
 		{
-			Pack (BuildTarget.StandaloneOSXIntel64, LuaEncodeType.JIT);
+			Pack (BuildTarget.StandaloneOSXIntel64, LuaEncodeType.LUAVM);
 		}
 
 		// ----------------------------------------------------
@@ -463,14 +489,14 @@ namespace ShibaInu
 			EncodeAllLua (LuaEncodeType.JIT);
 		}
 
-		[MenuItem ("Packager/Encode LuaC", false, 202)]
-		private static void EncodeLuaC ()
+		[MenuItem ("Packager/Encode LuaVM", false, 202)]
+		private static void EncodeLuaVM ()
 		{
-			EncodeAllLua (LuaEncodeType.LUAC);
+			EncodeAllLua (LuaEncodeType.LUAVM);
 		}
 
-		[MenuItem ("Packager/Encode LuaC", true)]
-		private static bool EncodeLuaCValidation ()
+		[MenuItem ("Packager/Encode LuaVM", true)]
+		private static bool EncodeLuaVMValidation ()
 		{
 			return Application.platform == RuntimePlatform.OSXEditor;
 		}
@@ -533,12 +559,32 @@ namespace ShibaInu
 				Directory.Delete (outputPath, true);
 		}
 
+		// ----------------------------------------------------
 
-		[MenuItem ("Packager/test", false, 999)]
-		private static void Test ()
+		[MenuItem ("Packager/测试资源包模式 - 进入", false, 601)]
+		private static void EnterTestMode ()
 		{
-			print (MD5Util.GetMD5 ("sss"));
-			print (MD5Util.GetMD5 ("sss", false));
+			File.Create (testModeFlagFilePath);
+		}
+
+		[MenuItem ("Packager/测试资源包模式 - 进入", true)]
+		private static bool EnterTestModelValidation ()
+		{
+			return !File.Exists (testModeFlagFilePath);
+		}
+
+		[MenuItem ("Packager/测试资源包模式 - 退出", false, 602)]
+		private static void ExitTestMode ()
+		{
+			File.Delete (testModeFlagFilePath);
+			if (File.Exists (testModeFlagFilePath + ".meta"))
+				File.Delete (testModeFlagFilePath + ".meta");
+		}
+
+		[MenuItem ("Packager/测试资源包模式 - 退出", true)]
+		private static bool ExitTestModelValidation ()
+		{
+			return File.Exists (testModeFlagFilePath);
 		}
 
 		#endregion
