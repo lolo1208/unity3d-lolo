@@ -13,9 +13,10 @@ namespace ShibaInu
 	/// </summary>
 	public class ResManager
 	{
-		
-		/// lua的包文件夹列表
-		private static readonly string[] luaPackages = { "ToLua/", "ShibaInu/", "App/" };
+        private const string assetDirPath = "Assets/Res/";
+
+        /// lua的包文件夹列表
+        private static readonly string[] luaPackages = { "ToLua/", "ShibaInu/", "App/" };
 
 		/// 路径 -> 路径MD5 映射列表
 		private static readonly Dictionary<string, string> _pathMD5Dic = new Dictionary<string, string> ();
@@ -126,11 +127,10 @@ namespace ShibaInu
 
 			ABI abi;
 			_resDic.TryGetValue (pathMD5, out abi);
+            ABLoader.Load(abi);
 
-			ABLoader.Load (abi);
-
-			return abi.ab.LoadAsset (path);
-		}
+            return abi.ab.LoadAsset (assetDirPath + path);
+        }
 
 
 

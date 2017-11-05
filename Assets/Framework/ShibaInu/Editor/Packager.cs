@@ -131,6 +131,7 @@ namespace ShibaInu
 			EncodeLuaPackage (luaPath_shibaInu, "ShibaInu/");
 			EncodeLuaPackage (luaPath_project, "App/");
 			EditorUtility.ClearProgressBar ();
+            AssetDatabase.Refresh();
 			UnityEngine.Debug.Log ("[ShibaInu.Packager] Encode All Lua Completed.");
 		}
 
@@ -188,7 +189,7 @@ namespace ShibaInu
 				return;
 			}
 
-//			info.WindowStyle = ProcessWindowStyle.Hidden;
+			info.WindowStyle = ProcessWindowStyle.Hidden;
 			using (Process p = Process.Start (info)) {
 				p.WaitForExit ();
 				if (p.ExitCode != 0)
@@ -313,8 +314,9 @@ namespace ShibaInu
 
 		public static void AddFileToABI (string path, string filePath)
 		{
-			// 根据传入的 文件 或 目录 路径，获取对应的 AssetBundle 名称
-			string abPath = path.Replace (resInputPath, "");
+            path = path.Replace("\\", "/");
+            // 根据传入的 文件 或 目录 路径，获取对应的 AssetBundle 名称
+            string abPath = path.Replace (resInputPath, "");
 			string extName = Path.GetExtension (abPath);
 			if (string.IsNullOrEmpty (extName))
 				abPath += Constants.AbExtName;
@@ -366,9 +368,9 @@ namespace ShibaInu
 				AssetBundleInfo abi;
 				foreach (string abPath in abList) {
 					RenameFileAndWriteMD5 (resOutputPath + abPath, resOutputPath, writer);
-
 					_abiDic.TryGetValue (abPath, out abi);
-					writer.Write ((ushort)abi.assetList.Count);// 写入包含的资源文件数量
+
+                    writer.Write ((ushort)abi.assetList.Count);// 写入包含的资源文件数量
 					foreach (string assetPath in abi.assetList) {
 						writer.Write (MD5Util.GetMD5 (assetPath.Replace (resInputPath, "")).ToCharArray ());// 写入资源文件的路径MD5
 					}
@@ -406,7 +408,6 @@ namespace ShibaInu
 			writer.Write ((byte)filePath.Length);// 写入路径的长度（一字节）
 			writer.Write (filePath.ToCharArray ());// 写入路径
 			writer.Write (fileMD5.ToCharArray ());// 写入文件MD5
-//			print (filePath.Length.ToString(), filePath, fileMD5);
 		}
 
 		#endregion
