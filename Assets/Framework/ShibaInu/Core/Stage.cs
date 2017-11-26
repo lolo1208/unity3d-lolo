@@ -161,7 +161,7 @@ namespace ShibaInu
 			#endif
 
 			// 这两个是随包走的场景
-			if (sceneName != Constants.LauncherSceneName || sceneName != Constants.EmptySceneName) {
+			if (sceneName != Constants.LauncherSceneName && sceneName != Constants.EmptySceneName) {
 				ABI abi = ResManager.GetAbi (ResManager.GetPathMD5 (sceneName));
 				if (abi.ab == null) {
 					ABLoader.ParseFilePath (abi);
