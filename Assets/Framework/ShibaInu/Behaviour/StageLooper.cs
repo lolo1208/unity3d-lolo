@@ -9,6 +9,7 @@ namespace ShibaInu
 	/// <summary>
 	/// 在 Start / Update / LateUpdate 触发时，调用 lua 层的 stage._loopHandler 函数。
 	/// 更新 lua 层的 TimeUtil.time
+	/// 该脚本只挂在 Common.go 上
 	/// </summary>
 	public class StageLooper : MonoBehaviour
 	{
@@ -17,15 +18,15 @@ namespace ShibaInu
 
 
 
-		void Start()
+		void Start ()
 		{
 			_stopwatch = new Stopwatch ();
 			_stopwatch.Start ();
-			_loopHandler = Common.lua.state.GetFunction ("stage._loopHandler");
+			_loopHandler = Common.lua.state.GetFunction ("Stage._loopHandler");// - View/Stage.lua
 		}
 
 
-		void Update()
+		void Update ()
 		{
 			_loopHandler.BeginPCall ();
 			_loopHandler.Push ("Update");
@@ -35,7 +36,7 @@ namespace ShibaInu
 		}
 
 
-		void LateUpdate()
+		void LateUpdate ()
 		{
 			_loopHandler.BeginPCall ();
 			_loopHandler.Push ("LateUpdate");
@@ -45,7 +46,7 @@ namespace ShibaInu
 		}
 
 
-		void FixedUpdate()
+		void FixedUpdate ()
 		{
 			_loopHandler.BeginPCall ();
 			_loopHandler.Push ("FixedUpdate");
@@ -56,12 +57,14 @@ namespace ShibaInu
 
 
 
-		void Destroy() {
+		void OnDestroy ()
+		{
 			_stopwatch.Stop ();
 			_stopwatch = null;
 		}
 
 
+		//
 	}
 }
 

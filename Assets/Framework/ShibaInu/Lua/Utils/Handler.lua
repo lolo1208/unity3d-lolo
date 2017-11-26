@@ -19,6 +19,7 @@ local remove = table.remove
 ---@field inPool boolean @ 是否正在缓存池中
 ---@field delayedStartTime coroutine @ 延迟开始时间。使用 delayedCall() 创建时，才会存在该属性
 ---@field delayedTime coroutine @ 延迟设定时间。使用 delayedCall() 创建时，才会存在该属性
+---@field lambda fun(...) @ self:Execute(...) 的匿名函数
 local Handler = class("Handler")
 
 
@@ -29,6 +30,10 @@ local Handler = class("Handler")
 ---@param ... any[] @ 附带的参数
 function Handler:Ctor(callback, caller, ...)
     self:SetTo(callback, caller, { ... }, false)
+
+    self.lambda = function(...)
+        self:Execute(...)
+    end
 end
 
 

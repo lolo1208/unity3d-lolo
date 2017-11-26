@@ -21,16 +21,18 @@ local insert = table.insert
 ---@class EventDispatcher
 ---@field New fun(go:UnityEngine.GameObject):EventDispatcher
 ---
+---@field protected gameObject UnityEngine.GameObject @ 对应的 GameObject（用于冒泡，没有go时，构造函数可以不用传）
+---
 ---@field protected _eventMap table<string, EventListenerInfo[]>
----@field protected _go UnityEngine.GameObject
 local EventDispatcher = class("EventDispatcher")
 
 
---- Ctor
----@param go UnityEngine.GameObject @ 对应的 GameObject（用于冒泡，没有go时，可以不用传）
+
+--- 构造函数
+---@param optional go UnityEngine.GameObject @ 对应的 GameObject（用于冒泡，没有go时，可以不用传）
 function EventDispatcher:Ctor(go)
     self._eventMap = {}
-    self._go = go
+    self.gameObject = go
 end
 
 
@@ -67,6 +69,20 @@ function EventDispatcher:AddEventListener(type, callback, caller, priority, ...)
         insert(list, index, info)
     else
         list[len + 1] = info
+    end
+
+    local go = self.gameObject
+    if go ~= nil then
+        if type == DestroyEvent.DESTROY then
+            -- Destroy 事件，由 C# DestroyEventDispatcher.cs 派发
+            -- OnDestroy() 时，self.gameObject 已经是 null（C#）了，所以不能使用 gameObject.peer._ed 来派发
+            LuaHelper.AddDestroyEvent(go, self)
+
+        elseif type == PointerEvent.CLICK or type == PointerEvent.UP or type == PointerEvent.DOWN
+        or type == PointerEvent.ENTER or type == PointerEvent.EXIT then
+            -- PointerEvent 相关事件，由 C# PointerEventDispatcher.cs 派发
+            LuaHelper.AddPointerEvent(go, self)
+        end
     end
 end
 
@@ -136,8 +152,8 @@ function EventDispatcher:DispatchEvent(event, bubbles, recycle)
     end
 
     -- 需要继续冒泡、事件还没停止、有 GameObject
-    if bubbles and not event.isPropagationStopped and self._go ~= nil then
-        local parent = self._go.transform.parent
+    if bubbles and not event.isPropagationStopped and self.gameObject ~= nil then
+        local parent = self.gameObject.transform.parent
         if parent ~= nil then
             DispatchEvent(parent.gameObject, event, bubbles, recycle)
             return

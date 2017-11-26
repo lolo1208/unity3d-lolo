@@ -160,7 +160,7 @@ local function UpdateTimer(event)
         for delay, info in pairs(list) do
             return
         end
-        RemoveEventListener(stage, Event.UPDATE, UpdateTimer)
+        RemoveEventListener(Stage, Event.UPDATE, UpdateTimer)
     end
 end
 
@@ -241,7 +241,7 @@ function Timer:Start()
         self.running = true
         ChangeTimerState(self)
         self.lastUpdateTime = TimeUtil.time
-        AddEventListener(stage, Event.UPDATE, UpdateTimer, nil, 9)
+        AddEventListener(Stage, Event.UPDATE, UpdateTimer, nil, 9)
     end
 end
 

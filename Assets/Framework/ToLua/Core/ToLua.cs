@@ -387,7 +387,7 @@ namespace LuaInterface
                 }
                 else
                 {
-                    Debugger.LogError("type not register to lua");
+					// Debugger.LogError("type not register to lua");// lua instanceof() 需要忽略这条错误 
                     LuaDLL.lua_pushnil(L);
                 }
             }

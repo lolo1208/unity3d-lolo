@@ -4,6 +4,7 @@
 -- Author LOLO
 --
 
+
 ---@class RemainTime
 ---@field New fun(time:number, type:string):RemainTime
 ---
@@ -12,6 +13,7 @@
 local RemainTime = class("RemainTime")
 
 
+--- 构造函数
 function RemainTime:Ctor(time, type)
     self:SetTime(time, type)
 end

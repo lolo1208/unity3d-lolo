@@ -4,17 +4,18 @@
 -- Author LOLO
 --
 
+local error = error
+local format = string.format
 local type = type
 local unpack = unpack
 local setmetatable = setmetatable
-local pairs = pairs
 local remove = table.remove
 local sort = table.sort
 local getpeer = tolua.getpeer
 local setpeer = tolua.setpeer
 local _isnull = tolua.isnull
 local _typeof = tolua.typeof
-
+local _typeof_class = typeof
 
 
 --- 实现 lua class
@@ -50,7 +51,9 @@ end
 ---@param class any @ 类
 function instanceof(instance, class)
     if type(instance) == "userdata" then
-        return _typeof(instance) == _typeof(class)
+        local typeInstance = _typeof(instance)
+        local typeClass = _typeof_class(class)
+        return typeInstance == typeClass and typeInstance ~= nil and typeClass ~= nil
     else
         local instanceClass = instance.__class
         while instanceClass ~= nil do
@@ -74,30 +77,116 @@ end
 
 
 --- 创建并返回一个预设的实例
----@param prefab UnityEngine.GameObject @ 预设对象
----@param parent UnityEngine.GameObject @ 父节点。默认：nil，表示创建在根节点
+--- 使用范例：
+---  > go = Instantiate(prefabObj)
+---  > go = Instantiate("Prefab/Test/Item2.prefab", nil, "MyModuleName")
+---  > go = Instantiate(prefabObj, Constants.LAYER_UI)
+---  > go = Instantiate(prefabObj, parentGO.transform, "MyModuleName")
+---@param prefab UnityEngine.GameObject | string @ 预设对象 或 预设路径
+---@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点(Transform)
+---@param optional groupName string @ 资源组名称。参数 prefab 为预设路径时，才需要传入该值
 ---@return UnityEngine.GameObject
-function Instantiate(prefab, parent)
-    if parent ~= nil then
-        return GameObject.Instantiate(prefab, parent.transform)
+function Instantiate(prefab, parent, groupName)
+    -- 传入的 prefab 是 预设路径
+    if type(prefab) == "string" then
+        if groupName == nil then
+            error(format(Constants.E1003, prefab))
+        end
+        prefab = Res.LoadAsset(prefab, groupName)
     end
-    return GameObject.Instantiate(prefab)
-end
 
---- 创建并返回一个 GameObject
----@param name string @ 名称
----@param parent UnityEngine.GameObject @ 父节点。默认：nil，表示创建在根节点
----@return UnityEngine.GameObject
-function CreateGameObject(name, parent)
-    local go = GameObject.New(name)
+    local go = GameObject.Instantiate(prefab) ---@type UnityEngine.GameObject
+    if not go.activeSelf then
+        go:SetActive(true) -- 默认可见
+    end
+
     if parent ~= nil then
-        go.transform.parent = parent.transform
+        -- 传入的 parent 是 图层名称
+        if type(parent) == "string" then
+            parent = Stage.GetLayer(parent)
+        end
+        SetParent(go.transform, parent)
     end
     return go
 end
 
+
+--- 异步加载预设对象，然后创建一个预设的实例，并在回调中传回
+--- 提示：在异步加载预设的过程中，可以调用参数 handler.Clean() 取消创建预设实例，以及取消触发回调
+--- 使用范例：
+---  > function callback(go) self.gameObject = go end
+---  > local handler = handler(callback, self)
+---  > InstantiateAsync("Prefab/Test/Item2.prefab", "MyModuleName", handler, parentGO.transform)
+---@param prefabPath string @ 预设路径
+---@param groupName string @ 资源组名称
+---@param handler Handler @ 异步加载完成，并创建实例成功后的回调
+---@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点(Transform)
+function InstantiateAsync(prefabPath, groupName, handler, parent)
+    ---@param event LoadResEvent
+    local function loadResComplete(event)
+        -- 加载预设资源完成
+        if event.assetPath == prefabPath then
+            RemoveEventListener(Res, LoadResEvent.COMPLETE, loadResComplete)
+
+            -- 已经被取消了
+            if handler.callback == nil then
+                return
+            end
+
+            local go = GameObject.Instantiate(event.assetData) ---@type UnityEngine.GameObject
+            if not go.activeSelf then
+                go:SetActive(true) -- 默认可见
+            end
+
+            if parent ~= nil then
+                -- 传入的 parent 是 图层名称
+                if type(parent) == "string" then
+                    parent = Stage.GetLayer(parent)
+                end
+                SetParent(go.transform, parent)
+            end
+
+            handler:Execute(go)
+        end
+    end
+    AddEventListener(Res, LoadResEvent.COMPLETE, loadResComplete)
+    Res.LoadAssetAsync(prefabPath, groupName)
+end
+
+
+--- 创建并返回一个空 GameObject
+---@param name string @ 名称
+---@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点。例：Constants.LAYER_UI 或 parentGO.transform
+---@return UnityEngine.GameObject
+function CreateGameObject(name, parent)
+    -- 传入的 parent 是 图层名称
+    if type(parent) == "string" then
+        parent = Stage.GetLayer(parent)
+    end
+
+    local go = GameObject.New(name)
+    if parent ~= nil then
+        SetParent(go.transform, parent)
+    end
+    return go
+end
+
+
+--- 设置 child 的父节点为 parent。
+--- 并将 localScale, localPosition, localRotation, localEulerAngles 属性重置
+---@param child UnityEngine.Transform
+---@param parent UnityEngine.Transform
+function SetParent(child, parent)
+    child:SetParent(parent)
+    child.localScale = Vector3.one
+    child.localPosition = Vector3.zero
+    child.localRotation = Quaternion.identity
+    child.localEulerAngles = Vector3.zero
+end
+
+
 --- 销毁指定的对象
----@param obj any @ 目标对象
+---@param go UnityEngine.GameObject @ 目标对象
 ---@param delay number @ 延时删除（秒）。默认：nil，表示立即删除
 ---@return void
 function Destroy(go, delay)
@@ -109,11 +198,39 @@ function Destroy(go, delay)
 end
 
 
+--=-----------------------------[ GetComponent ]-----------------------------=--
+
+-- 获取 gameObject 下的组件
+GetComponent = {}
+
+--- 获取 gameObject 下的 UnityEngine.RectTransform 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.RectTransform
+function GetComponent.RectTransform(go)
+    return go:GetComponent(_typeof_class(UnityEngine.RectTransform))
+end
+
+--- 获取 gameObject 下的 UnityEngine.UI.Text 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.Text
+function GetComponent.Text(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.Text))
+end
+
+--- 获取 gameObject 下的 UnityEngine.UI.Image 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.Image
+function GetComponent.Image(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.Image))
+end
+
+--=--------------------------------------------------------------------------=--
+
 
 --=-----------------------------[ EventDispatcher ]-----------------------------=--
 
 --- 获取 target 对应的 EventDispatcher 对象
----@param target any
+---@param target table | UnityEngine.GameObject
 ---@return EventDispatcher
 local function GetEventDispatcher(target)
     local ed
@@ -140,11 +257,11 @@ local function GetEventDispatcher(target)
 end
 
 --- 注册事件
----@param target EventDispatcher @ 要注册事件的目标
+---@param target table | UnityEngine.GameObject @ 要注册事件的目标
 ---@param type string @ 事件类型
 ---@param listener fun() @ 处理函数
----@param caller any @ self 对象
----@param priority number @ 优先级 [default: 0]
+---@param optional caller any @ self 对象
+---@param optional priority number @ 优先级 [default: 0]
 ---@param ... any[] @ 附带的参数
 ---@return void
 function AddEventListener(target, type, listener, caller, priority, ...)
@@ -152,28 +269,31 @@ function AddEventListener(target, type, listener, caller, priority, ...)
 end
 
 --- 移除事件侦听
----@param target EventDispatcher @ 要移除事件的目标
+---@param target table | UnityEngine.GameObject @ 要移除事件的目标
 ---@param type string @ 事件类型
 ---@param listener fun() @ 处理函数
----@param caller any @ self 对象
+---@param optional caller any @ self 对象
 ---@return void
 function RemoveEventListener(target, type, listener, caller)
     GetEventDispatcher(target):RemoveEventListener(type, listener, caller)
 end
 
 --- 抛出事件
----@param target EventDispatcher @ 要抛出事件的目标
----@param event Event @ 事件对象
----@param bubbles boolean @ 是否冒泡 [default: false]
----@param recycle boolean @ 是否自动回收到池 [default: true]
+---@param target table | UnityEngine.GameObject @ 要抛出事件的目标
+---@param eventOrType Event | string @ 事件对象 或 事件类型
+---@param optional bubbles boolean @ 是否冒泡 [default: false]
+---@param optional recycle boolean @ 是否自动回收到池 [default: true]
 ---@return void
-function DispatchEvent(target, event, bubbles, recycle)
-    GetEventDispatcher(target):DispatchEvent(event, bubbles, recycle)
+function DispatchEvent(target, eventOrType, bubbles, recycle)
+    if type(eventOrType) == "string" then
+        eventOrType = Event.Get(Event, eventOrType)
+    end
+    GetEventDispatcher(target):DispatchEvent(eventOrType, bubbles, recycle)
 end
 
 
 --- 是否正在侦听指定类型的事件
----@param target EventDispatcher @ 要查询事件的目标
+---@param target table | UnityEngine.GameObject @ 要查询事件的目标
 ---@param type string @ 事件类型
 ---@return boolean
 function HasEventListener(target, type)
@@ -181,7 +301,6 @@ function HasEventListener(target, type)
 end
 
 --=-----------------------------------------------------------------------------=--
-
 
 
 --=---------------------[ DelayedCall / CancelDelayedCall ]---------------------=--
@@ -203,7 +322,7 @@ local function UpdateDelayedCall(event)
 
     -- 没有 delayed call
     if num == 0 then
-        RemoveEventListener(stage, Event.UPDATE, UpdateDelayedCall)
+        RemoveEventListener(Stage, Event.UPDATE, UpdateDelayedCall)
         return
     end
 
@@ -252,8 +371,18 @@ function DelayedCall(delay, callback, caller, ...)
     handler.delayedTime = delay
     handler.delayedStartTime = TimeUtil.time
     _dc_addList[#_dc_addList + 1] = handler
-    AddEventListener(stage, Event.UPDATE, UpdateDelayedCall)
+    AddEventListener(Stage, Event.UPDATE, UpdateDelayedCall)
     return handler
+end
+
+
+--- 延迟到下一帧后，执行一次回调
+---@param callback fun() @ 回调函数
+---@param caller any @ 执行域（self）
+---@param ... @ 附带的参数
+---@return Handler
+function DelayToNextFrameCall(callback, caller, ...)
+    return DelayedCall(0.01, callback, caller, ...)
 end
 
 
@@ -280,3 +409,21 @@ function CancelDelayedCall(handler)
 end
 
 --=-----------------------------------------------------------------------------=--
+
+
+--- 快速创建一个 指定执行域（self），携带参数的 Handler 对象
+---@param callback fun() @ 回调函数
+---@param caller any @ 执行域（self）
+---@param once boolean @ 是否只用执行一次，默认：true
+---@param ... any[] @ 附带的参数
+---@return Handler
+function handler(callback, caller, once, ...)
+    if once == nil then
+        once = true
+    end
+
+    local handler = Handler.Once(callback, caller)
+    handler.once = once
+    handler.args = { ... }
+    return handler
+end

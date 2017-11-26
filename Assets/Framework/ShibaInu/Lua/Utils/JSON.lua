@@ -4,7 +4,9 @@
 -- Author LOLO
 --
 
-
+local error = error
+local format = string.format
+local tostring = tostring
 local pcall = pcall
 local cjson = require("cjson")
 
@@ -20,7 +22,7 @@ function JSON.parse(text)
     if status then
         return result
     end
-    --error
+    error(format(Constants.E2001, text))
 end
 
 
@@ -31,7 +33,7 @@ function JSON.stringify(value)
     if status then
         return result
     end
-    --error
+    error(format(Constants.E2002, tostring(value)))
 end
 
 

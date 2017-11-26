@@ -12,6 +12,8 @@ namespace ShibaInu
 		public const string GameObjectName = "[ShibaInu]";
 		/// 启动场景的名称
 		public const string LauncherSceneName = "Launcher";
+		/// 空场景的名称
+		public const string EmptySceneName = "Empty";
 
 		/// lua 文件后缀名
 		public const string LuaExtName = ".lua";
@@ -28,14 +30,18 @@ namespace ShibaInu
 		/// ShibaInu 框架根目录
 		public static readonly string ShibaInuRootPath = Application.dataPath + "/Framework/ShibaInu/";
 
+		/// 资源文件夹路径
+		public const string ResDirPath = "Assets/Res/";
 
-		// -- errors --
 
-		public const string E1001 = "[ERROR] 资源文件不存在 path: {0}";
-		public const string E1002 = "[ERROR] AssetBundle文件不存在 pathMD5: {0}";
-		public const string E1003 = "[ERROR] lua文件不存在 path: {0}";
+		// -- runtime errors --
+		public const string E1002 = "[C# ERROR] lua文件不存在 path: {0}";
 
-		public const string E9001 = "[ERROR] 编码 lua 出现错误 path: {0}";
+		// -- editor play mode errors --
+		public const string E5001 = "[C# ERROR] 资源文件不存在 path: {0}";
+
+		// -- packager errors --
+		public const string E9001 = "[C# ERROR] 编码 lua 出现错误 path: {0}";
 
 	}
 }

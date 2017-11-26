@@ -22,6 +22,7 @@
 local LinkedList = class("LinkedList")
 
 
+--- 构造函数
 function LinkedList:Ctor()
     self._list = {}
 end

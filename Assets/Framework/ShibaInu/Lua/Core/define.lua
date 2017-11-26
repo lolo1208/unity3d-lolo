@@ -6,8 +6,64 @@
 --
 
 
+--=------------------------------[ C# Class ]------------------------------=--
+
+ShibaInu = ShibaInu
+ShibaInu.Stage = ShibaInu.Stage ---@type ShibaInu.Stage
+ShibaInu.ResManager = ShibaInu.ResManager ---@type ShibaInu.ResManager
+ShibaInu.LuaHelper = ShibaInu.LuaHelper ---@type ShibaInu.LuaHelper
+
+
+---@class ShibaInu.Stage
+---@field bgLayer UnityEngine.Transform @ 背景层
+---@field uiLayer UnityEngine.Transform @ UI层
+---@field windowLayer UnityEngine.Transform @ 窗口层
+---@field uiTopLayer UnityEngine.Transform @ 顶级UI层
+---@field alertLayer UnityEngine.Transform @ 提示层
+---@field guideLayer UnityEngine.Transform @ 引导层
+---@field topLayer UnityEngine.Transform @ 顶级层
+---
+---@field Clean fun():void @ 清空场景
+---@field AddDontDestroy fun(go:UnityEngine.GameObject):void @ 添加一个在清除场景时，不需被销毁的 GameObject
+---@field RemoveDontDestroy fun(go:UnityEngine.GameObject):void @ 移除一个在清除场景时，不需被销毁的 GameObject
+---@field LoadScene fun(sceneName:string):void @ 同步加载场景（sceneName : 场景名称）
+---@field LoadSceneAsync fun(sceneName:string):void @ 异步加载场景（sceneName : 场景名称）
+---@field GetProgress fun():number @ 获取当前异步加载进度 0~1
+
+
+---@class ShibaInu.ResManager
+---@field LoadAsset fun(path:string, groupName:string):UnityEngine.Object @ 通过路径获取一个资源（同步）
+---@field LoadAssetAsync fun(path:string, groupName:string):void @ 异步加载资源
+---@field GetProgress fun():number @ 获取当前异步加载总进度 0~1
+---@field Unload fun(groupName:string):void @ 卸载指定资源组所包含的所有资源
+
+
+---@class ShibaInu.LuaHelper
+---@field AddDestroyEvent fun(go:UnityEngine.GameObject, ed:EventDispatcher):void @ 在指定的 gameObject 上添加 DestroyEventDispatcher 脚本。当 gameObject 销毁时，在 lua 层（gameObject上）派发 DestroyEvent.DESTROY 事件
+---@field AddPointerEvent fun(go:UnityEngine.GameObject, ed:EventDispatcher):void @ 在指定的 gameObject 上添加 PointerEventDispatcher 脚本。当 gameObject 与鼠标指针（touch）交互时，派发相关事件
+
+
+--=------------------------------------------------------------------------=--
+
+
+-- Vector2
+---@class UnityEngine.Vector2
+---@field x number
+---@field y number
+---@field normalized Vector2 @ 返回向量的长度为1（只读）
+---@field magnitude number @ 返回向量的长度（只读）
+---@field sqrMagnitude number @ 返回这个向量的长度的平方（只读）
+---
+---@field up Vector2 @    Vector2(0, 1)
+---@field right Vector2 @ Vector2(1, 0)
+---@field zero Vector2 @  Vector2(0, 0)
+---@field one Vector2 @   Vector2(1, 1)
+---
+---@class Vector2 : UnityEngine.Vector2
+
+
 -- Vector3
----@class Vector3
+---@class UnityEngine.Vector3
 ---@field x number
 ---@field y number
 ---@field z number
@@ -15,11 +71,11 @@
 ---@field magnitude number @ 返回向量的长度（只读）
 ---@field sqrMagnitude number @ 返回这个向量的长度的平方（只读）
 ---
----@field zero Vector3 @ Vector3(0, 0, 0)
----@field one Vector3 @ Vector3(1, 1, 1)
+---@field zero Vector3 @    Vector3(0, 0, 0)
+---@field one Vector3 @     Vector3(1, 1, 1)
 ---@field forward Vector3 @ Vector3(0, 0, 1)
----@field up Vector3 @ Vector3(0, 1, 0)
----@field right Vector3 @ Vector3(1, 0, 0)
+---@field up Vector3 @      Vector3(0, 1, 0)
+---@field right Vector3 @   Vector3(1, 0, 0)
 ---
 ---@field Clone fun():Vector3
 ---@field Set fun(x:number, y:number, z:number)
@@ -42,6 +98,23 @@
 ---@field ClampMagnitude fun(vector : Vector3, maxLength : float) : Vector3 @ 返回向量的长度，最大不超过maxLength所指示的长度。也就是说，钳制向量长度到一个特定的长度。
 ---@field Min fun(lhs : Vector3, rhs : Vector3) : Vector3 @ 返回一个由两个向量的最小组件组成的向量。
 ---@field Max fun(lhs : Vector3, rhs : Vector3) : Vector3 @ 返回一个由两个向量的最大组件组成的向量。
+---
+---@class Vector3 : UnityEngine.Vector3
+
+
+-- Quaternion
+---@class UnityEngine.Quaternion @ 四元数
+---@field x number
+---@field y number
+---@field z number
+---@field w number
+---@field eulerAngles Vector3 @ 旋转的欧拉角度
+---
+---@field identity @ Quaternion(0, 0, 0, 1)
+---
+---@field New fun(x : number, y : number, z : number, w : number) : Quaternion
+---
+---@class Quaternion : UnityEngine.Quaternion
 
 
 --=------------------------------[ UnityEngine ]------------------------------=--

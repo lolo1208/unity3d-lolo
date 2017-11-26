@@ -8,7 +8,6 @@ local table = table
 local remove = table.remove
 
 
-
 ---@class Event
 ---@field New fun(type:string, data:any):Event
 ---
@@ -20,7 +19,8 @@ local remove = table.remove
 local Event = class("Event")
 
 
---- 请使用 Event.Get() 和 Event.Recycle() 来创建和回收事件对象
+--- 构造函数
+--- 注意：请使用 Event.Get() 和 Event.Recycle() 来创建和回收事件对象
 ---@param type string
 ---@param data any
 function Event:Ctor(type, data)
@@ -32,14 +32,16 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
----@type string @ 渲染前更新事件
+---@type string @ 帧更新事件。该事件只会在 Stage 上抛出
 Event.UPDATE = "Update"
 
----@type string @ 渲染前更新，在 Event.UPDATE 之后
+---@type string @ 渲染前更新，在 Event.UPDATE 事件之后。该事件只会在 Stage 上抛出
 Event.LATE_UPDATE = "LateUpdate"
 
----@type string @ 固定时间更新（Edit -> Project Setting -> time -> Fixed timestep）
+---@type string @ 固定时间更新（Edit -> Project Setting -> time -> Fixed timestep）。该事件只会在 Stage 上抛出
 Event.FIXED_UPDATE = "FixedUpdate"
+
+--=--
 
 
 --- 从池中获取一个事件对象
@@ -70,10 +72,10 @@ function Event.Recycle(event)
     event.currentTarget = nil
     event.isPropagationStopped = false
 
-    local pool = event.class._pool
+    local pool = event.__class._pool
     if pool == nil then
         pool = {}
-        event.class._pool = pool
+        event.__class._pool = pool
     end
     pool[#pool + 1] = event
 end

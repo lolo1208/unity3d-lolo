@@ -5,7 +5,5 @@
 --
 
 
-Launcher = {}
-
-Launcher.aaa = function(sss) end
+Stage.ShowScene(require("Module.Test.View.TestScene"))
 

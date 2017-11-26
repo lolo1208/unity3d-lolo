@@ -52,13 +52,18 @@ public static class LuaBinder
 		UnityEngine_ResourcesWrap.Register(L);
 		UnityEngine_PlayerPrefsWrap.Register(L);
 		UnityEngine_RectTransformWrap.Register(L);
+		UnityEngine_RectWrap.Register(L);
 		L.BeginModule("UI");
 		UnityEngine_UI_TextWrap.Register(L);
+		UnityEngine_UI_ImageWrap.Register(L);
 		UnityEngine_UI_MaskableGraphicWrap.Register(L);
 		UnityEngine_UI_GraphicWrap.Register(L);
 		L.EndModule();
 		L.BeginModule("EventSystems");
+		UnityEngine_EventSystems_PointerEventDataWrap.Register(L);
 		UnityEngine_EventSystems_UIBehaviourWrap.Register(L);
+		UnityEngine_EventSystems_BaseEventDataWrap.Register(L);
+		UnityEngine_EventSystems_AbstractEventDataWrap.Register(L);
 		L.EndModule();
 		L.BeginModule("Events");
 		L.RegFunction("UnityAction", UnityEngine_Events_UnityAction);
@@ -82,6 +87,7 @@ public static class LuaBinder
 		L.BeginModule("ShibaInu");
 		ShibaInu_LuaHelperWrap.Register(L);
 		ShibaInu_ResManagerWrap.Register(L);
+		ShibaInu_StageWrap.Register(L);
 		L.EndModule();
 		L.BeginModule("System");
 		L.RegFunction("Action", System_Action);

@@ -4,3 +4,8 @@
 -- Author LOLO
 --
 
+local require = require
+
+
+Stage.loadingSceneClass = require("Module.Loading.View.LoadingScene")
+

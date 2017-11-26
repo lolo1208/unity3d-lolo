@@ -21,7 +21,7 @@ TimeUtil.TYPE_M = "m"
 TimeUtil.TYPE_H = "h"
 
 
----@type number @ 当前程序已运行精确时间（秒.毫秒），不会受到 Time.timeScale 影响。由 Update / LateUpdate / FixedUpdate 事件更新
+---@type number @ 当前程序已运行精确时间（单位：秒.毫秒），不会受到 Time.timeScale 影响。由 Update / LateUpdate / FixedUpdate 事件更新
 TimeUtil.time = 0
 
 

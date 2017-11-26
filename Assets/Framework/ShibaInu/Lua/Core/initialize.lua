@@ -7,7 +7,6 @@
 local require = require
 
 
-require("Module.Core.extends")
 require("Core.functions")
 require("Core.variables")
 
@@ -20,6 +19,3 @@ trycall = Logger.TryCall
 
 --=--------------------------------------------------------------------------=--
 
-
-local prefab = RES.GetAsset("Prefab/Test/TestUI.prefab")
-Instantiate(prefab, stage.uiCanvas)

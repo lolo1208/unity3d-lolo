@@ -11,7 +11,6 @@ publish
 
 Assets/StreamingAssets
 
-*.meta
 *.csproj
 *.sln
 *.userprefs

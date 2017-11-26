@@ -8,8 +8,13 @@ public class ShibaInu_ResManagerWrap
 	{
 		L.BeginClass(typeof(ShibaInu.ResManager), typeof(System.Object));
 		L.RegFunction("Initialize", Initialize);
-		L.RegFunction("GetAsset", GetAsset);
-		L.RegFunction("GetABI", GetABI);
+		L.RegFunction("LoadAsset", LoadAsset);
+		L.RegFunction("LoadAssetAsync", LoadAssetAsync);
+		L.RegFunction("GetProgress", GetProgress);
+		L.RegFunction("Unload", Unload);
+		L.RegFunction("GetPathMD5", GetPathMD5);
+		L.RegFunction("GetAbi", GetAbi);
+		L.RegFunction("GetAbiWithAssetPath", GetAbiWithAssetPath);
 		L.RegFunction("GetLuaFileBytes", GetLuaFileBytes);
 		L.RegFunction("New", _CreateShibaInu_ResManager);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -56,13 +61,14 @@ public class ShibaInu_ResManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetAsset(IntPtr L)
+	static int LoadAsset(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
+			ToLua.CheckArgsCount(L, 2);
 			string arg0 = ToLua.CheckString(L, 1);
-			UnityEngine.Object o = ShibaInu.ResManager.GetAsset(arg0);
+			string arg1 = ToLua.CheckString(L, 2);
+			UnityEngine.Object o = ShibaInu.ResManager.LoadAsset(arg0, arg1);
 			ToLua.Push(L, o);
 			return 1;
 		}
@@ -73,13 +79,111 @@ public class ShibaInu_ResManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetABI(IntPtr L)
+	static int LoadAssetAsync(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			string arg0 = ToLua.CheckString(L, 1);
+			string arg1 = ToLua.CheckString(L, 2);
+			ShibaInu.ResManager.LoadAssetAsync(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetProgress(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			float o = ShibaInu.ResManager.GetProgress();
+			LuaDLL.lua_pushnumber(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int Unload(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				ShibaInu.ResManager.Unload(arg0);
+				return 0;
+			}
+			else if (count == 2)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				ShibaInu.ResManager.Unload(arg0, arg1);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.ResManager.Unload");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPathMD5(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			string arg0 = ToLua.CheckString(L, 1);
-			ShibaInu.ABI o = ShibaInu.ResManager.GetABI(arg0);
+			string o = ShibaInu.ResManager.GetPathMD5(arg0);
+			LuaDLL.lua_pushstring(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetAbi(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			ShibaInu.ABI o = ShibaInu.ResManager.GetAbi(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetAbiWithAssetPath(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			ShibaInu.ABI o = ShibaInu.ResManager.GetAbiWithAssetPath(arg0);
 			ToLua.PushObject(L, o);
 			return 1;
 		}

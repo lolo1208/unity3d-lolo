@@ -7,7 +7,43 @@ public class ShibaInu_LuaHelperWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginStaticLibs("LuaHelper");
+		L.RegFunction("AddDestroyEvent", AddDestroyEvent);
+		L.RegFunction("AddPointerEvent", AddPointerEvent);
 		L.EndStaticLibs();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int AddDestroyEvent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
+			ShibaInu.LuaHelper.AddDestroyEvent(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int AddPointerEvent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
+			ShibaInu.LuaHelper.AddPointerEvent(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 }
 

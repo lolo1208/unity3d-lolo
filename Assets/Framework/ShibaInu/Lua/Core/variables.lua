@@ -7,27 +7,32 @@
 local require = require
 
 
---=------------------------------[ C# Class ]------------------------------=--
+EventDispatcher = require("Events.EventDispatcher")
 
----@class LuaHelper
----@field GetEventDispatcher fun(go:UnityEngine.GameObject):EventDispatcher @ 获取 gameObject 对应的 EventDispatcher
+
+-- C# Class
+Res = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.ResManager }) ---@type ShibaInu.ResManager
 LuaHelper = ShibaInu.LuaHelper
-
-RES = ShibaInu.ResManager
-
---=------------------------------------------------------------------------=--
+--Stage = ShibaInu.Stage -- 已整合进 Stage.lua
 
 
----@type boolean @ 是否在 LuaJIT 环境中
-isJIT = jit ~= nil
-
-
+-- UnityEngine
 GameObject = UnityEngine.GameObject
+Transform = UnityEngine.Transform
 PlayerPrefs = UnityEngine.PlayerPrefs
 
 
+
+---@type boolean @ 是否在 LuaJIT 环境中
+_G.isJIT = jit ~= nil
+
+
+Constants = require("Core.Constants")
 Event = require("Events.Event")
-EventDispatcher = require("Events.EventDispatcher")
+LoadResEvent = require("Events.LoadResEvent")
+LoadSceneEvent = require("Events.LoadSceneEvent")
+DestroyEvent = require("Events.DestroyEvent")
+PointerEvent = require("Events.PointerEvent")
 
 JSON = require("Utils.JSON")
 Logger = require("Utils.Logging.Logger")
@@ -36,9 +41,10 @@ ObjectUtil = require("Utils.ObjectUtil")
 Handler = require("Utils.Handler")
 Timer = require("Utils.Timer")
 
+Stage = require("Core.Stage")
+View = require("View.View")
+Module = require("View.Module")
+Scene = require("View.Scene")
 
----@type Stage
-stage = require("Core.Stage").New()
-stage._loopHandler = stage._loopHandler -- 该函数供C#调用
 
-
+print("  isJIT : " .. tostring(isJIT))

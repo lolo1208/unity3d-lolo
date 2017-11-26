@@ -16,6 +16,17 @@ namespace ShibaInu
 		LUAVM,
 	}
 
+	public enum UpdateResInfoType
+	{
+		/// 全部更新
+		ALL = 0,
+		/// 只更新 lua
+		LUA,
+		/// 只更新场景
+		SCENE,
+		/// 只更新资源
+		RES,
+	}
 
 	public class AssetBundleInfo
 	{
@@ -64,9 +75,8 @@ namespace ShibaInu
 
 
 		private static readonly string[] coreScenes = {
-			coreResPath + "Scene/Launcher.unity",
-			coreResPath + "Scene/Scene1.unity",
-			coreResPath + "Scene/Scene2.unity"
+			coreResPath + "Scene/" + Constants.LauncherSceneName + ".unity",
+			coreResPath + "Scene/" + Constants.EmptySceneName + ".unity"
 		};
 		private static readonly Dictionary<string, AssetBundleInfo> _abiDic = new Dictionary<string, AssetBundleInfo> ();
 		private static readonly List<string> _sceneList = new List<string> ();
@@ -84,6 +94,8 @@ namespace ShibaInu
 
 		private static void Pack (BuildTarget buildTarget, LuaEncodeType encodeType)
 		{
+			bool isTestMode = ExitTestModeValidation ();// 是否正在测试模式中
+
 			ClearAllRes ();
 			Directory.CreateDirectory (outputPath);
 			ClearAssetBundleNames ();
@@ -95,7 +107,12 @@ namespace ShibaInu
 			BuildAllScene (buildTarget);
 			BuildAllRes (buildTarget);
 			CreateResInfo ();
-			UnityEngine.Debug.Log ("[ShibaInu.Packager] All Completed.");
+			ClearAssetBundleNames ();
+			AssetDatabase.Refresh ();
+			UnityEngine.Debug.Log ("[Packager] All Completed!");
+
+			if (isTestMode)
+				EnterTestMode ();// 保持测试模式
 		}
 
 
@@ -131,8 +148,7 @@ namespace ShibaInu
 			EncodeLuaPackage (luaPath_shibaInu, "ShibaInu/");
 			EncodeLuaPackage (luaPath_project, "App/");
 			EditorUtility.ClearProgressBar ();
-            AssetDatabase.Refresh();
-			UnityEngine.Debug.Log ("[ShibaInu.Packager] Encode All Lua Completed.");
+			UnityEngine.Debug.Log ("[Packager] Encode Lua Completed.");
 		}
 
 
@@ -223,6 +239,7 @@ namespace ShibaInu
 				_sceneList.Add (outputPath);
 				BuildPipeline.BuildPlayer (levels, outputPath, buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 			}
+			UnityEngine.Debug.Log ("[Packager] Build Scene Completed.");
 		}
 
 		#endregion
@@ -232,6 +249,10 @@ namespace ShibaInu
 
 		private static void BuildAllRes (BuildTarget buildTarget)
 		{
+			if (Directory.Exists (resOutputPath))
+				Directory.Delete (resOutputPath, true);
+			Directory.CreateDirectory (resOutputPath);
+
 			// 资源类型根目录。忽略这一级目录的资源，不调用 CreateAssetBundleInfo()
 			string[] typeDirs = Directory.GetDirectories (resInputPath);
 			foreach (string typeDir in typeDirs) {
@@ -278,6 +299,7 @@ namespace ShibaInu
 				BuildAssetBundleOptions.DeterministicAssetBundle | BuildAssetBundleOptions.ChunkBasedCompression,
 				buildTarget
 			);
+			UnityEngine.Debug.Log ("[Packager] Build Res Completed.");
 		}
 
 
@@ -312,11 +334,11 @@ namespace ShibaInu
 		}
 
 
-		public static void AddFileToABI (string path, string filePath)
+		private static void AddFileToABI (string path, string filePath)
 		{
-            path = path.Replace("\\", "/");
-            // 根据传入的 文件 或 目录 路径，获取对应的 AssetBundle 名称
-            string abPath = path.Replace (resInputPath, "");
+			path = path.Replace ("\\", "/");
+			// 根据传入的 文件 或 目录 路径，获取对应的 AssetBundle 名称
+			string abPath = path.Replace (resInputPath, "");
 			string extName = Path.GetExtension (abPath);
 			if (string.IsNullOrEmpty (extName))
 				abPath += Constants.AbExtName;
@@ -342,48 +364,113 @@ namespace ShibaInu
 
 		#region 创建资源信息（场景列表 以及 ab包内容和依赖关系）
 
-		private static void CreateResInfo ()
+		private static void CreateResInfo (UpdateResInfoType updateType = UpdateResInfoType.ALL)
 		{
+			byte[] luaBytes = null, sceneBytes = null, resBytes = null;
+			if (updateType != UpdateResInfoType.ALL) {
+				if (EnterTestModeValidation ()) {// ResInfo 文件不存在
+					updateType = UpdateResInfoType.ALL;
+				} else {
+					// 只用更新某部分资源信息，将资源信息分类读取出来
+					using (BinaryReader reader = new BinaryReader (File.Open (resInfoFilePath, FileMode.Open))) {
+						ushort ushort1, ushort2, i;
+						byte byte1, byte2;
+						int sceneBytesPos, resBytesPos;
+
+						// - lua bytes
+						ushort1 = reader.ReadUInt16 ();
+						for (i = 0; i < ushort1; i++) {
+							byte2 = reader.ReadByte ();
+							reader.BaseStream.Position += byte2 + 16;
+						}
+						sceneBytesPos = (int)reader.BaseStream.Position;
+						reader.BaseStream.Position = 0;
+						luaBytes = reader.ReadBytes (sceneBytesPos);
+
+						// - scene bytes
+						byte1 = reader.ReadByte ();
+						for (i = 0; i < byte1; i++) {
+							byte2 = reader.ReadByte ();
+							reader.BaseStream.Position += byte2 + 16;
+						}
+						resBytesPos = (int)reader.BaseStream.Position;
+						reader.BaseStream.Position = sceneBytesPos;
+						sceneBytes = reader.ReadBytes (resBytesPos - sceneBytesPos);
+
+						// - res bytes
+						ushort1 = reader.ReadUInt16 ();
+						for (i = 0; i < ushort1; i++) {
+							byte2 = reader.ReadByte ();
+							reader.BaseStream.Position += byte2 + 16;
+
+							// 包含的资源文件
+							ushort2 = reader.ReadUInt16 ();
+							reader.BaseStream.Position += ushort2 * 16;
+
+							// 依赖的 AssetBundle
+							byte2 = reader.ReadByte ();
+							reader.BaseStream.Position += byte2 * 16;
+						}
+						reader.BaseStream.Position = resBytesPos;
+						resBytes = reader.ReadBytes ((int)reader.BaseStream.Length - resBytesPos);
+					}
+				}
+			}
+
+			// 写入资源信息
 			using (BinaryWriter writer = new BinaryWriter (File.Open (resInfoFilePath, FileMode.Create))) {
-				
+
 				// - lua
-				writer.Write ((ushort)_luaList.Count);// 写入lua文件数量
-				foreach (string lua in _luaList) {
-					RenameFileAndWriteMD5 (lua, luaOutputPath, writer);
+				if (updateType == UpdateResInfoType.ALL || updateType == UpdateResInfoType.LUA) {
+					writer.Write ((ushort)_luaList.Count);// 写入lua文件数量
+					foreach (string lua in _luaList) {
+						RenameFileAndWriteMD5 (lua, luaOutputPath, writer);
+					}
+				} else {
+					writer.Write (luaBytes);
 				}
 
+
 				// - scene
-				writer.Write ((byte)_sceneList.Count);// 写入场景文件数量（一字节）
-				foreach (string scene in _sceneList) {
-					RenameFileAndWriteMD5 (scene, sceneOutputPath, writer);
+				if (updateType == UpdateResInfoType.ALL || updateType == UpdateResInfoType.SCENE) {
+					writer.Write ((byte)_sceneList.Count);// 写入场景文件数量（一字节）
+					foreach (string scene in _sceneList) {
+						RenameFileAndWriteMD5 (scene, sceneOutputPath, writer);
+					}
+				} else {
+					writer.Write (sceneBytes);
 				}
 
 				// - res
-				// 加载 Assets/StreamingAssets/Res/Res 文件，读取包含所有ab包引用关系的 manifest
-				AssetBundle ab = AssetBundle.LoadFromFile (resOutputPath + "Res");
-				AssetBundleManifest manifest = (AssetBundleManifest)ab.LoadAsset ("AssetBundleManifest");
-				string[] abList = manifest.GetAllAssetBundles ();
-				writer.Write ((ushort)abList.Length);// 写入ab文件数量
+				if (updateType == UpdateResInfoType.ALL || updateType == UpdateResInfoType.RES) {
+					// 加载 Assets/StreamingAssets/Res/Res 文件，读取包含所有ab包引用关系的 manifest
+					AssetBundle ab = AssetBundle.LoadFromFile (resOutputPath + "Res");
+					AssetBundleManifest manifest = (AssetBundleManifest)ab.LoadAsset ("AssetBundleManifest");
+					string[] abList = manifest.GetAllAssetBundles ();
+					writer.Write ((ushort)abList.Length);// 写入ab文件数量
 
-				AssetBundleInfo abi;
-				foreach (string abPath in abList) {
-					RenameFileAndWriteMD5 (resOutputPath + abPath, resOutputPath, writer);
-					_abiDic.TryGetValue (abPath, out abi);
+					AssetBundleInfo abi;
+					foreach (string abPath in abList) {
+						RenameFileAndWriteMD5 (resOutputPath + abPath, resOutputPath, writer);
+						_abiDic.TryGetValue (abPath, out abi);
 
-                    writer.Write ((ushort)abi.assetList.Count);// 写入包含的资源文件数量
-					foreach (string assetPath in abi.assetList) {
-						writer.Write (MD5Util.GetMD5 (assetPath.Replace (resInputPath, "")).ToCharArray ());// 写入资源文件的路径MD5
+						writer.Write ((ushort)abi.assetList.Count);// 写入包含的资源文件数量
+						foreach (string assetPath in abi.assetList) {
+							writer.Write (MD5Util.GetMD5 (assetPath.Replace (resInputPath, "")).ToCharArray ());// 写入资源文件的路径MD5
+						}
+
+						string[] depList = manifest.GetAllDependencies (abPath);
+						writer.Write ((byte)depList.Length);// 写入依赖的ab文件数量（一字节）
+						foreach (string depPath in depList) {
+							writer.Write (MD5Util.GetMD5 (depPath).ToCharArray ());// 写入ab文件的路径MD5
+						}
 					}
-
-					string[] depList = manifest.GetAllDependencies (abPath);
-					writer.Write ((byte)depList.Length);// 写入依赖的ab文件数量（一字节）
-					foreach (string depPath in depList) {
-						writer.Write (MD5Util.GetMD5 (depPath).ToCharArray ());// 写入ab文件的路径MD5
-					}
+					ab.Unload (true);
+				} else {
+					writer.Write (resBytes);
 				}
-				ab.Unload (true);
 			}
-
+			UnityEngine.Debug.Log ("[Packager] Generates ResInfo Completed.");
 		}
 
 		/// <summary>
@@ -443,86 +530,83 @@ namespace ShibaInu
 
 
 
-		private static void print (params string[] args)
-		{
-			string msg = string.Empty;
-			for (int i = 0; i < args.Length; i++) {
-				if (i > 0)
-					msg += " ";
-				msg += args [i];
-			}
-			UnityEngine.Debug.Log (msg);
-		}
-
-
-
 		#region 定义 Packager 菜单项
 
-		[MenuItem ("Packager/iOS", false, 101)]
+		[MenuItem ("Packager/Build All (Enter Test Mode)", false, 101)]
+		private static void BuildAll ()
+		{
+			Pack (currentEditorBuildTarget, currentEditorLuaEncodeType);
+			if (EnterTestModeValidation ())
+				EnterTestMode ();
+		}
+
+		[MenuItem ("Packager/Re-encode Lua", false, 102)]
+		private static void ReencodeLua ()
+		{
+			EncodeAllLua (currentEditorLuaEncodeType);
+			CreateResInfo (UpdateResInfoType.LUA);
+			AssetDatabase.Refresh ();
+		}
+
+		[MenuItem ("Packager/Rebuild Res", false, 103)]
+		private static void RebuildRes ()
+		{
+			ClearAssetBundleNames ();
+			BuildAllRes (currentEditorBuildTarget);
+			CreateResInfo (UpdateResInfoType.RES);
+			ClearAssetBundleNames ();
+			AssetDatabase.Refresh ();
+		}
+
+		[MenuItem ("Packager/Rebuild Scene", false, 104)]
+		private static void RebuildScene ()
+		{
+			BuildAllScene (currentEditorBuildTarget);
+			CreateResInfo (UpdateResInfoType.SCENE);
+			AssetDatabase.Refresh ();
+		}
+
+		private static readonly BuildTarget currentEditorBuildTarget =
+			Application.platform == RuntimePlatform.OSXEditor
+				? BuildTarget.StandaloneOSXIntel64
+				: BuildTarget.StandaloneWindows64;
+
+		private static readonly LuaEncodeType currentEditorLuaEncodeType =
+			Application.platform == RuntimePlatform.OSXEditor
+				? LuaEncodeType.LUAVM
+				: LuaEncodeType.JIT;
+
+
+		// ----------------------------------------------------
+
+
+		[MenuItem ("Packager/iOS", false, 201)]
 		private static void PackIOS ()
 		{
 			Pack (BuildTarget.iOS, LuaEncodeType.JIT);
 		}
 
-		[MenuItem ("Packager/Android", false, 102)]
+		[MenuItem ("Packager/Android", false, 202)]
 		private static void PackAndroid ()
 		{
 			Pack (BuildTarget.Android, LuaEncodeType.JIT);
 		}
 
-		[MenuItem ("Packager/Win", false, 103)]
+		[MenuItem ("Packager/Win", false, 203)]
 		private static void PackWin64 ()
 		{
 			Pack (BuildTarget.StandaloneWindows64, LuaEncodeType.JIT);
 		}
 
-		[MenuItem ("Packager/Mac", false, 104)]
+		[MenuItem ("Packager/Mac", false, 204)]
 		private static void PackMac64 ()
 		{
 			Pack (BuildTarget.StandaloneOSXIntel64, LuaEncodeType.LUAVM);
 		}
 
-		// ----------------------------------------------------
-
-		[MenuItem ("Packager/Encode LuaJIT", false, 201)]
-		private static void EncodeLuaJIT ()
-		{
-			EncodeAllLua (LuaEncodeType.JIT);
-		}
-
-		[MenuItem ("Packager/Encode LuaVM", false, 202)]
-		private static void EncodeLuaVM ()
-		{
-			EncodeAllLua (LuaEncodeType.LUAVM);
-		}
-
-		[MenuItem ("Packager/Encode LuaVM", true)]
-		private static bool EncodeLuaVMValidation ()
-		{
-			return Application.platform == RuntimePlatform.OSXEditor;
-		}
-
-		[MenuItem ("Packager/Encode LuaNone", false, 203)]
-		private static void EncodeLuaNone ()
-		{
-			EncodeAllLua (LuaEncodeType.NONE);
-		}
 
 		// ----------------------------------------------------
 
-		[MenuItem ("Packager/Build Scene - iOS", false, 301)]
-		private static void BuildSceneIOS ()
-		{
-			BuildAllScene (BuildTarget.iOS);
-		}
-
-		[MenuItem ("Packager/Build Scene - Android", false, 302)]
-		private static void BuildSceneAndroid ()
-		{
-			BuildAllScene (BuildTarget.Android);
-		}
-
-		// ----------------------------------------------------
 
 		[MenuItem ("Packager/Build Player - iOS", false, 401)]
 		private static void BuildPlayerIOS ()
@@ -569,7 +653,7 @@ namespace ShibaInu
 		}
 
 		[MenuItem ("Packager/测试资源包模式 - 进入", true)]
-		private static bool EnterTestModelValidation ()
+		private static bool EnterTestModeValidation ()
 		{
 			return !File.Exists (testModeFlagFilePath);
 		}
@@ -583,7 +667,7 @@ namespace ShibaInu
 		}
 
 		[MenuItem ("Packager/测试资源包模式 - 退出", true)]
-		private static bool ExitTestModelValidation ()
+		private static bool ExitTestModeValidation ()
 		{
 			return File.Exists (testModeFlagFilePath);
 		}

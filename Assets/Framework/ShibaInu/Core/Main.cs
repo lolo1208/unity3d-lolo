@@ -11,15 +11,13 @@ namespace ShibaInu
 
 		void Start ()
 		{
-			if (_initialized) {
-				Destroy (this.gameObject);
-				return;
-			}
-			_initialized = true;
+			if (!_initialized) {
+				_initialized = true;
 
-			Common.go = new GameObject (Constants.GameObjectName);
-			DontDestroyOnLoad (Common.go);
-			Common.go.AddComponent<Launcher> ();
+				Common.go = new GameObject (Constants.GameObjectName);
+				DontDestroyOnLoad (Common.go);
+				Common.go.AddComponent<Launcher> ();
+			}
 
 			Destroy (this.gameObject);
 		}

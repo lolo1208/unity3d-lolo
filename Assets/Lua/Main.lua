@@ -4,6 +4,7 @@
 -- Author LOLO
 --
 
+local require = require
 
 
 local function Main()
@@ -11,6 +12,7 @@ local function Main()
     collectgarbage("collect")
 
     -- 启动游戏
+    require("Module.Core.extends")
     require("Module.Core.launcher")
 end
 

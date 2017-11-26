@@ -151,15 +151,20 @@ public static class CustomSettings
 		_GT(typeof(Resources)),
 
 
-		//for LuaFramework
+		// Component
 		_GT(typeof(UnityEngine.PlayerPrefs)),
-        _GT(typeof(UnityEngine.RectTransform)),
+		_GT(typeof(UnityEngine.RectTransform)),
+		_GT(typeof(UnityEngine.Rect)),
 		_GT(typeof(UnityEngine.UI.Text)),
+		_GT(typeof(UnityEngine.UI.Image)),
+
+		_GT(typeof(UnityEngine.EventSystems.PointerEventData)),
 
 
 		// for ShibaInu
 		_GT(typeof(ShibaInu.LuaHelper)),
 		_GT(typeof(ShibaInu.ResManager)),
+		_GT(typeof(ShibaInu.Stage)),
 
 
 //        _GT(typeof(Util)),
