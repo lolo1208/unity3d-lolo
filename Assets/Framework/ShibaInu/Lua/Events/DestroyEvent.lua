@@ -9,7 +9,7 @@ local DestroyEvent = class("DestroyEvent", Event)
 
 
 function DestroyEvent:Ctor(type, data)
-    self.super:Ctor(type, data)
+    DestroyEvent.super.Ctor(self, type, data)
 end
 
 
@@ -21,13 +21,12 @@ DestroyEvent.DESTROY = "Destroy"
 
 
 
-local event = DestroyEvent.New()
+local event = DestroyEvent.New(DestroyEvent.DESTROY)
 
 --- 抛出 Destroy 事件，由 C# DestroyEventDispatcher.cs 调用
 ---@param ed EventDispatcher
 function DestroyEvent.DispatchEvent(ed)
-    event.type = DestroyEvent.DESTROY
-    ed:DispatchEvent(event, false, false)
+    trycall(ed.DispatchEvent, ed, event, false, false)
 end
 
 

@@ -5,15 +5,18 @@
 --
 
 local require = require
+local setmetatable = setmetatable
 
 
 EventDispatcher = require("Events.EventDispatcher")
+
 
 
 -- C# Class
 Res = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.ResManager }) ---@type ShibaInu.ResManager
 LuaHelper = ShibaInu.LuaHelper
 --Stage = ShibaInu.Stage -- 已整合进 Stage.lua
+
 
 
 -- UnityEngine
@@ -23,16 +26,55 @@ PlayerPrefs = UnityEngine.PlayerPrefs
 
 
 
+-- DOTween
+DOTween = DG.Tweening.DOTween ---@type DG.Tweening.DOTween
+DOTween_Enum = {
+    ---@type DG.Tweening.AutoPlay
+    AutoPlay = DG.Tweening.AutoPlay,
+    ---@type DG.Tweening.AxisConstraint
+    AxisConstraint = DG.Tweening.AxisConstraint,
+    ---@type DG.Tweening.Ease
+    Ease = DG.Tweening.Ease,
+    ---@type DG.Tweening.LogBehaviour
+    LogBehaviour = DG.Tweening.LogBehaviour,
+    ---@type DG.Tweening.LoopType
+    LoopType = DG.Tweening.LoopType,
+    ---@type DG.Tweening.PathMode
+    PathMode = DG.Tweening.PathMode,
+    ---@type DG.Tweening.PathType
+    PathType = DG.Tweening.PathType,
+    ---@type DG.Tweening.RotateMode
+    RotateMode = DG.Tweening.RotateMode,
+    ---@type DG.Tweening.ScrambleMode
+    ScrambleMode = DG.Tweening.ScrambleMode,
+    ---@type DG.Tweening.TweenType
+    TweenType = DG.Tweening.TweenType,
+    ---@type DG.Tweening.UpdateType
+    UpdateType = DG.Tweening.UpdateType,
+}
+TweenParams = DG.Tweening.TweenParams ---@type DG.Tweening.TweenParams
+
+
+
+-- variables
 ---@type boolean @ 是否在 LuaJIT 环境中
-_G.isJIT = jit ~= nil
+isJIT = jit ~= nil
 
 
+
+-- Lua Class
 Constants = require("Core.Constants")
 Event = require("Events.Event")
 LoadResEvent = require("Events.LoadResEvent")
 LoadSceneEvent = require("Events.LoadSceneEvent")
 DestroyEvent = require("Events.DestroyEvent")
 PointerEvent = require("Events.PointerEvent")
+DataEvent = require("Events.DataEvent")
+ListEvent = require("Events.ListEvent")
+
+MapList = require("Data.MapList")
+LinkedList = require("Data.LinkedList")
+RemainTime = require("Data.RemainTime")
 
 JSON = require("Utils.JSON")
 Logger = require("Utils.Logging.Logger")
@@ -42,9 +84,12 @@ Handler = require("Utils.Handler")
 Timer = require("Utils.Timer")
 
 Stage = require("Core.Stage")
-View = require("View.View")
-Module = require("View.Module")
-Scene = require("View.Scene")
+View = require("Views.View")
+Module = require("Views.Module")
+Scene = require("Views.Scene")
+Window = require("Views.Window")
 
+BaseList = require("Components.BaseList")
+ScrollList = require("Components.ScrollList")
+ItemRenderer = require("Components.ItemRenderer")
 
-print("  isJIT : " .. tostring(isJIT))

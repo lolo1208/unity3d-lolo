@@ -8,6 +8,15 @@ namespace ShibaInu
 		
 		/// 目标帧频
 		public const int FrameRate = 60;
+		/// 固定宽度
+		public const int FixedWidth = 1136;
+		/// 是否按 FixedWidth 等比降低分辨率
+		public static bool OptimizeResolution = false;
+		/// 是否永不休眠
+		public static bool NeverSleep = true;
+
+
+
 		/// 不销毁的根节点
 		public const string GameObjectName = "[ShibaInu]";
 		/// 启动场景的名称

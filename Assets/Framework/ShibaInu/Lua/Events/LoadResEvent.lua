@@ -11,7 +11,7 @@ local LoadResEvent = class("LoadResEvent", Event)
 
 
 function LoadResEvent:Ctor(type, data)
-    self.super:Ctor(type, data)
+    LoadResEvent.super.Ctor(self, type, data)
 end
 
 
@@ -40,7 +40,7 @@ function LoadResEvent.DispatchEvent(type, path, data)
     event.type = type
     event.assetPath = path
     event.assetData = data
-    DispatchEvent(Res, event, false, false)
+    trycall(DispatchEvent, nil, Res, event, false, false)
 end
 
 

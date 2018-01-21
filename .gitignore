@@ -6,10 +6,10 @@ obj
 Library
 Temp
 UnityPackageManager
-runtime-src
 publish
 
 Assets/StreamingAssets
+PlatformProjects
 
 *.csproj
 *.sln

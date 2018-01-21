@@ -17,12 +17,14 @@ local barRect ---@type UnityEngine.RectTransform
 
 
 function LoadingScene:Ctor()
-    self.moduleName = "Loading"
+    LoadingScene.super.Ctor(self, "Loading")
 end
 
 
 
 function LoadingScene:OnInitialize()
+    LoadingScene.super.OnInitialize(self)
+
     local transform = GameObject.Find("SceneUICanvas").transform
     progressText = GetComponent.Text(transform:Find("progressText").gameObject)
     barRect = GetComponent.RectTransform(transform:Find("bar").gameObject)

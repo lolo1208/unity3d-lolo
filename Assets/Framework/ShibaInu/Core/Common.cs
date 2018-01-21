@@ -13,7 +13,8 @@ namespace ShibaInu
 		/// 不会被销毁的 GameObject
 		public static GameObject go;
 
-		public static LuaManager lua;
+		public static ThreadManager threadMgr;
+		public static LuaManager luaMgr;
 		public static StageLooper looper;
 
 	}

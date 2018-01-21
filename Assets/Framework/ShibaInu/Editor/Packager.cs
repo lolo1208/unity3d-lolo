@@ -9,24 +9,6 @@ using UnityEngine;
 namespace ShibaInu
 {
 	
-	public enum LuaEncodeType
-	{
-		NONE = 0,
-		JIT,
-		LUAVM,
-	}
-
-	public enum UpdateResInfoType
-	{
-		/// 全部更新
-		ALL = 0,
-		/// 只更新 lua
-		LUA,
-		/// 只更新场景
-		SCENE,
-		/// 只更新资源
-		RES,
-	}
 
 	public class AssetBundleInfo
 	{
@@ -37,6 +19,25 @@ namespace ShibaInu
 
 	public class Packager
 	{
+		
+		public enum LuaEncodeType
+		{
+			NONE = 0,
+			JIT,
+			LUAVM,
+		}
+
+		public enum UpdateResInfoType
+		{
+			/// 全部更新
+			ALL = 0,
+			/// 只更新 lua
+			LUA,
+			/// 只更新场景
+			SCENE,
+			/// 只更新资源
+			RES,
+		}
 
 		/// 资源文件输入根目录
 		private const string resInputPath = "Assets/Res/";
@@ -50,7 +51,7 @@ namespace ShibaInu
 		/// 资源输出根目录
 		private const string resOutputPath = outputPath + "Res/";
 		/// 场景输出根目录
-		private const string sceneOutputPath = outputPath + "Scene/";
+		private const string sceneOutputPath = outputPath + "Scenes/";
 		/// 资源信息文件路径
 		private const string resInfoFilePath = outputPath + "ResInfo";
 		/// 测试模式标识文件路径。文件存在时，表示正处于测试模式
@@ -73,10 +74,16 @@ namespace ShibaInu
 		private const string luavmExe = "";
 		#endif
 
+		private const string pp_xc = "PlatformProjects/Xcode/";
+		private static readonly string[] pp_xc_res = new string[]{ "Data/", "Libraries/", "Classes/Native/" };
+		private const string pp_as = "PlatformProjects/AndroidStudio/";
+		private static readonly string[] pp_as_res = new string[]{ "src/main/assets/", "src/main/jniLibs/" };
+		private const string pp_tp = "PlatformProjects/Temp/";
+
 
 		private static readonly string[] coreScenes = {
-			coreResPath + "Scene/" + Constants.LauncherSceneName + ".unity",
-			coreResPath + "Scene/" + Constants.EmptySceneName + ".unity"
+			coreResPath + "Scenes/" + Constants.LauncherSceneName + ".unity",
+			coreResPath + "Scenes/" + Constants.EmptySceneName + ".unity"
 		};
 		private static readonly Dictionary<string, AssetBundleInfo> _abiDic = new Dictionary<string, AssetBundleInfo> ();
 		private static readonly List<string> _sceneList = new List<string> ();
@@ -92,27 +99,21 @@ namespace ShibaInu
 
 
 
-		private static void Pack (BuildTarget buildTarget, LuaEncodeType encodeType)
+		private static void Pack (BuildTarget buildTarget, LuaEncodeType encodeType, bool enterTestMode = false)
 		{
-			bool isTestMode = ExitTestModeValidation ();// 是否正在测试模式中
-
 			ClearAllRes ();
 			Directory.CreateDirectory (outputPath);
-			ClearAssetBundleNames ();
-			_abiDic.Clear ();
-			_sceneList.Clear ();
-			_luaList.Clear ();
 
 			EncodeAllLua (encodeType);
 			BuildAllScene (buildTarget);
 			BuildAllRes (buildTarget);
 			CreateResInfo ();
-			ClearAssetBundleNames ();
-			AssetDatabase.Refresh ();
-			UnityEngine.Debug.Log ("[Packager] All Completed!");
 
-			if (isTestMode)
-				EnterTestMode ();// 保持测试模式
+			if (enterTestMode)
+				EnterTestMode ();
+			
+			Finish ();
+			UnityEngine.Debug.Log ("[Packager] All Completed!");
 		}
 
 
@@ -148,7 +149,7 @@ namespace ShibaInu
 			EncodeLuaPackage (luaPath_shibaInu, "ShibaInu/");
 			EncodeLuaPackage (luaPath_project, "App/");
 			EditorUtility.ClearProgressBar ();
-			UnityEngine.Debug.Log ("[Packager] Encode Lua Completed.");
+			UnityEngine.Debug.Log ("[Packager] Encode Lua Files Completed.");
 		}
 
 
@@ -174,7 +175,7 @@ namespace ShibaInu
 		/// <param name="outRootPath">输出根目录</param>
 		private static void EncodeLuaFile (string filePath, string inRootPath, string outRootPath)
 		{
-			if (!filePath.EndsWith (".lua") || filePath.EndsWith ("Core/define.lua"))
+			if (!filePath.EndsWith (".lua") || filePath.IndexOf ("ShibaInu/Lua/Define/") != -1)
 				return;
 			EditorUtility.DisplayProgressBar ("Encode Lua Files", filePath, (float)++_pCurr / _pMax);
             
@@ -225,7 +226,7 @@ namespace ShibaInu
 			Directory.CreateDirectory (sceneOutputPath);
 
 			// 项目内的场景列表
-			string[] files = Directory.GetFiles (resInputPath + "Scene");
+			string[] files = Directory.GetFiles (resInputPath + "Scenes");
 			List<string> projScenes = new List<string> ();
 			foreach (string file in files) {
 				if (file.EndsWith (".unity"))
@@ -239,7 +240,7 @@ namespace ShibaInu
 				_sceneList.Add (outputPath);
 				BuildPipeline.BuildPlayer (levels, outputPath, buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
 			}
-			UnityEngine.Debug.Log ("[Packager] Build Scene Completed.");
+			UnityEngine.Debug.Log ("[Packager] Build Scenes Completed.");
 		}
 
 		#endregion
@@ -249,6 +250,8 @@ namespace ShibaInu
 
 		private static void BuildAllRes (BuildTarget buildTarget)
 		{
+			ClearAssetBundleNames ();
+
 			if (Directory.Exists (resOutputPath))
 				Directory.Delete (resOutputPath, true);
 			Directory.CreateDirectory (resOutputPath);
@@ -258,10 +261,10 @@ namespace ShibaInu
 			foreach (string typeDir in typeDirs) {
 				string typeDirName = Path.GetFileName (typeDir);
 
-				if (typeDirName == ".svn" || typeDirName == "Exclude" || typeDirName == "Scene")
+				if (typeDirName == ".svn" || typeDirName == "Excludes" || typeDirName == "Scenes")
 					continue;// 忽略这几个文件夹
 
-				if (typeDirName == "Texture" || typeDirName == "Prefab" || typeDirName == "Shader") {
+				if (typeDirName == "Textures" || typeDirName == "Prefabs" || typeDirName == "Shaders") {
 					CreateAssetBundleInfo (typeDir, true);
 					continue;// 直接递归处理 sprite, prefab, shader（所有shader打在一个ab包里）
 				}
@@ -319,7 +322,7 @@ namespace ShibaInu
 				AssetImporter importer = AssetImporter.GetAtPath (filePath);
 				if (importer is TextureImporter) {
 					string spTag = (importer as TextureImporter).spritePackingTag;
-					string spInputPath = resInputPath + "Texture/";
+					string spInputPath = resInputPath + "Textures/";
 					if (spTag == "#") { // spritePackingTag = # 的图片单独打包
 						spTag = filePath.Replace (spInputPath, "");
 						spTag = spTag.Replace ("/", "_");
@@ -368,7 +371,7 @@ namespace ShibaInu
 		{
 			byte[] luaBytes = null, sceneBytes = null, resBytes = null;
 			if (updateType != UpdateResInfoType.ALL) {
-				if (EnterTestModeValidation ()) {// ResInfo 文件不存在
+				if (!File.Exists (resInfoFilePath)) {// ResInfo 文件不存在
 					updateType = UpdateResInfoType.ALL;
 				} else {
 					// 只用更新某部分资源信息，将资源信息分类读取出来
@@ -470,8 +473,27 @@ namespace ShibaInu
 					writer.Write (resBytes);
 				}
 			}
-			UnityEngine.Debug.Log ("[Packager] Generates ResInfo Completed.");
+
+			if (updateType == UpdateResInfoType.ALL)
+				UnityEngine.Debug.Log ("[Packager] Generates ResInfo Completed.");
+			else
+				UnityEngine.Debug.Log ("[Packager] Update ResInfo Completed!");
 		}
+
+
+		/// <summary>
+		/// 完成时，需要做些数据清理工作
+		/// </summary>
+		private static void Finish ()
+		{
+			_abiDic.Clear ();
+			_sceneList.Clear ();
+			_luaList.Clear ();
+			ClearAssetBundleNames ();
+			AssetDatabase.Refresh ();
+		}
+
+
 
 		/// <summary>
 		/// 重命名文件，加入文件MD5字符串。
@@ -501,8 +523,6 @@ namespace ShibaInu
 
 
 
-
-
 		/// <summary>
 		/// 获取 目录，以及子目录 下所有文件，存入 files 中
 		/// </summary>
@@ -513,7 +533,7 @@ namespace ShibaInu
 		{
 			string[] fs = Directory.GetFiles (dirPath);
 			foreach (string f in fs) {
-				if (f.EndsWith (".meta") || f.EndsWith (".DS_Store"))
+				if (f.EndsWith (".meta") || f.EndsWith (".DS_Store") || f.EndsWith (".manifest"))
 					continue;
 				files.Add (f.Replace ("\\", "/"));
 			}
@@ -529,41 +549,61 @@ namespace ShibaInu
 		}
 
 
+		/// <summary>
+		/// 拷贝文件夹，以及子文件夹
+		/// </summary>
+		/// <param name="sourceDir">Source dir.</param>
+		/// <param name="destDir">Destination dir.</param>
+		private static void CopyDir (string sourceDir, string destDir)
+		{
+			if (!Directory.Exists (destDir))
+				Directory.CreateDirectory (destDir);
+
+			foreach (string file in Directory.GetFiles (sourceDir)) {
+				if (file.EndsWith (".DS_Store") || file.EndsWith (".meta") || file.EndsWith (".manifest"))
+					continue;
+				File.Copy (file, destDir + Path.GetFileName (file));
+			}
+
+			foreach (string dir in Directory.GetDirectories (sourceDir)) {
+				if (dir.EndsWith (".svn"))
+					continue;
+				CopyDir (dir + "/", destDir + Path.GetFileName (dir) + "/");
+			}
+		}
+
+
 
 		#region 定义 Packager 菜单项
 
 		[MenuItem ("Packager/Build All (Enter Test Mode)", false, 101)]
 		private static void BuildAll ()
 		{
-			Pack (currentEditorBuildTarget, currentEditorLuaEncodeType);
-			if (EnterTestModeValidation ())
-				EnterTestMode ();
+			Pack (currentEditorBuildTarget, currentEditorLuaEncodeType, true);
 		}
 
-		[MenuItem ("Packager/Re-encode Lua", false, 102)]
+		[MenuItem ("Packager/Re-encode Lua Files", false, 102)]
 		private static void ReencodeLua ()
 		{
 			EncodeAllLua (currentEditorLuaEncodeType);
 			CreateResInfo (UpdateResInfoType.LUA);
-			AssetDatabase.Refresh ();
+			Finish ();
 		}
 
 		[MenuItem ("Packager/Rebuild Res", false, 103)]
 		private static void RebuildRes ()
 		{
-			ClearAssetBundleNames ();
 			BuildAllRes (currentEditorBuildTarget);
 			CreateResInfo (UpdateResInfoType.RES);
-			ClearAssetBundleNames ();
-			AssetDatabase.Refresh ();
+			Finish ();
 		}
 
-		[MenuItem ("Packager/Rebuild Scene", false, 104)]
+		[MenuItem ("Packager/Rebuild Scenes", false, 104)]
 		private static void RebuildScene ()
 		{
 			BuildAllScene (currentEditorBuildTarget);
 			CreateResInfo (UpdateResInfoType.SCENE);
-			AssetDatabase.Refresh ();
+			Finish ();
 		}
 
 		private static readonly BuildTarget currentEditorBuildTarget =
@@ -608,22 +648,53 @@ namespace ShibaInu
 		// ----------------------------------------------------
 
 
-		[MenuItem ("Packager/Build Player - iOS", false, 401)]
-		private static void BuildPlayerIOS ()
+		[MenuItem ("Packager/Gen or Upd - Xcode", false, 401)]
+		private static void GenOrUpdXcode ()
 		{
-			string path = "runtime-src/proj.ios";
-			if (Directory.Exists (path))
-				Directory.Delete (path);
-			BuildPipeline.BuildPlayer (coreScenes, path, BuildTarget.iOS, BuildOptions.None);
+			PackIOS ();
+
+			// 先导出到 Temp 目录
+			if (Directory.Exists (pp_tp))
+				Directory.Delete (pp_tp, true);
+			BuildPipeline.BuildPlayer (coreScenes, pp_tp, BuildTarget.iOS, BuildOptions.AcceptExternalModificationsToPlayer);
+
+			if (Directory.Exists (pp_xc)) {
+				foreach (string dir in pp_xc_res) {
+					if (Directory.Exists (pp_xc + dir))
+						Directory.Delete (pp_xc + dir, true);
+					CopyDir (pp_tp + dir, pp_xc + dir);
+				}
+				UnityEngine.Debug.Log ("[Packager] Update Xcode Project Complete!");
+
+			} else {
+				CopyDir (pp_tp, pp_xc);
+				UnityEngine.Debug.Log ("[Packager] Generates Xcode Project Complete!");
+			}
 		}
 
-		[MenuItem ("Packager/Build Player - Android", false, 402)]
-		private static void BuildPlayerAndroid ()
+		[MenuItem ("Packager/Gen or Upd - Android Studio", false, 402)]
+		private static void GenOrUpdAndroidStudio ()
 		{
-			string path = "publish/Android/buildPlayer.apk";
-			if (File.Exists (path))
-				File.Delete (path);
-			BuildPipeline.BuildPlayer (coreScenes, path, BuildTarget.Android, BuildOptions.None);
+			PackAndroid ();
+
+			// 先导出到 Temp 目录
+			if (Directory.Exists (pp_tp))
+				Directory.Delete (pp_tp, true);
+			BuildPipeline.BuildPlayer (coreScenes, pp_tp.Substring (0, pp_tp.Length - 1), BuildTarget.Android, BuildOptions.AcceptExternalModificationsToPlayer);
+			string tempDir = Directory.GetDirectories (pp_tp) [0] + "/";// PlatformProjects/Temp/[ProjectName]/
+
+			if (Directory.Exists (pp_as)) {
+				foreach (string dir in pp_as_res) {
+					if (Directory.Exists (pp_as + dir))
+						Directory.Delete (pp_as + dir, true);
+					CopyDir (tempDir + dir, pp_as + dir);
+				}
+				UnityEngine.Debug.Log ("[Packager] Update Android Studio Project Complete!");
+
+			} else {
+				CopyDir (tempDir, pp_as);
+				UnityEngine.Debug.Log ("[Packager] Generates Android Studio Project Complete!");
+			}
 		}
 
 		// ----------------------------------------------------

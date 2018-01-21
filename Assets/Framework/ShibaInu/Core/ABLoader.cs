@@ -259,7 +259,7 @@ namespace ShibaInu
 		{
 			// 不能在 Initialize() 时获取该函数，因为相互依赖
 			if (_dispatchEvent == null)
-				_dispatchEvent = Common.lua.state.GetFunction ("LoadResEvent.DispatchEvent");
+				_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadResEvent.DispatchEvent");
 
 			_dispatchEvent.BeginPCall ();
 			_dispatchEvent.Push (type);

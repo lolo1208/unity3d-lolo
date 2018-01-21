@@ -6,7 +6,7 @@
 
 local error = error
 local format = string.format
-local type = type
+local remove = table.remove
 
 
 ---@class Stage
@@ -24,10 +24,11 @@ local ed = EventDispatcher.New()
 local _prevSceneClass ---@type Scene @ 上一个场景模块类
 local _loadingScene ---@type Scene @ Loading场景实例
 local _currentScene ---@type Scene @ 当前场景模块实例
+local _windowList = {} ---@type table<number, Window> @ 当前已经显示的窗口列表
 
 
 -- layers
-local _sceneLayer, _uiLayer, _windowLayer, _uiTopLayer, _alertLayer, _guideLayer, _topLayer
+local _sceneLayer, _uiLayer, _windowLayer, _uiTopLayer, _alertLayer, _guideLayer, _topLayer ---@type UnityEngine.Transform
 ---@type table<string, UnityEngine.Transform>
 local _layers = {}
 
@@ -81,18 +82,22 @@ end
 
 
 --- 显示场景
----@param sceneClass Scene @ 场景类
+---@param sceneClass any @ 场景类（不是类的实例）
 function Stage.ShowScene(sceneClass)
-    RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
-    RemoveEventListener(Res, LoadResEvent.COMPLETE, LoadResCompleteHandler)
+    local prevScene = _currentScene
+    if prevScene ~= nil and prevScene.__class == sceneClass.__class then
+        return -- 正在该场景中
+    end
 
     -- 清理当前场景
     Stage.Clean()
-    local prevScene = _currentScene
     if prevScene ~= nil then
         _prevSceneClass = prevScene.__class
         prevScene:OnDestroy()
     end
+
+    RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
+    RemoveEventListener(Res, LoadResEvent.COMPLETE, LoadResCompleteHandler)
 
     -- 显示新场景
     _currentScene = sceneClass.New()
@@ -166,6 +171,61 @@ function Stage.Clean()
 end
 
 
+--=-----------------------------[ 窗口 ]-----------------------------=--
+
+--- 打开指定的窗口
+---@param windowClass any  @ 窗口类（不是类的实例）
+---@param optional closeOthers boolean @ 是否关闭其他窗口，默认：true
+---@param optional ... @ 创建实例时传递的参数
+function Stage.OpenWindow(windowClass, closeOthers)
+    closeOthers = closeOthers == nil and true or false
+
+    local opened = false
+    local window ---@type Window
+    for i = 1, #_windowList do
+        window = _windowList[i]
+        if window.__class == windowClass then
+            -- 窗口已打开，调整到最上层显示
+            window.gameObject.transform:SetSiblingIndex(_windowLayer.childCount - 1)
+            opened = true
+        elseif closeOthers then
+            Stage.CloseWindow(window) -- 关闭其他窗口
+        end
+    end
+
+    -- 该窗口还没打开
+    if not opened then
+        window = windowClass.New()
+        _windowList[#_windowList] = window
+    end
+end
+
+
+--- 关闭某个窗口
+---@param window Window
+function Stage.CloseWindow(window)
+    -- 在列表中删除
+    for i = 1, #_windowList do
+        if _windowList[i] == window then
+            remove(_windowList, i)
+            break
+        end
+    end
+
+    View.Hide(window) -- 调用 View:Hide()
+end
+
+
+--- 关闭已打开的所有窗口
+function Stage.CloseAllWindow()
+    for i = 1, #_windowList do
+        local window = _windowList[i]
+        View.Hide(window)
+    end
+    _windowList = {}
+end
+
+
 --=-----------------------------[ 图层 ]-----------------------------=--
 
 --- 将 target 添加到指定图层中
@@ -234,7 +294,8 @@ end
 function Stage._loopHandler(type, time)
     TimeUtil.time = time
     event.type = type
-    ed:DispatchEvent(event, false, false)
+
+    trycall(ed.DispatchEvent, ed, event, false, false)
 end
 
 

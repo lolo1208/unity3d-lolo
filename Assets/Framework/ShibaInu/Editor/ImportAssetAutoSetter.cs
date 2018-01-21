@@ -21,7 +21,7 @@ namespace ShibaInu
 			// 类型
 			textureImporter.textureType = TextureImporterType.Sprite;
 
-			// 打包 tag，最多两级："Assets/Res/Texture/xxx/xxx"
+			// 打包 tag，最多两级："Assets/Res/Textures/xxx/xxx"
 			string[] dirs = assetPath.Split ('/');
 			string tag = dirs [3];
 			if (dirs.Length > 5)

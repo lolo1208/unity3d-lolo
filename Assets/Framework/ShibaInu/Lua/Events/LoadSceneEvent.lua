@@ -10,7 +10,7 @@ local LoadSceneEvent = class("LoadSceneEvent", Event)
 
 
 function LoadSceneEvent:Ctor(type, data)
-    self.super:Ctor(type, data)
+    LoadSceneEvent.super.Ctor(self, type, data)
 end
 
 
@@ -34,7 +34,7 @@ local event = LoadSceneEvent.New()
 function LoadSceneEvent.DispatchEvent(type, sceneName)
     event.type = type
     event.sceneName = sceneName
-    DispatchEvent(Stage, event, false, false)
+    trycall(DispatchEvent, nil, Stage, event, false, false)
 end
 
 

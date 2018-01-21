@@ -17,8 +17,6 @@ public class ShibaInu_StageWrap
 		L.RegFunction("GetProgress", GetProgress);
 		L.RegFunction("New", _CreateShibaInu_Stage);
 		L.RegFunction("__tostring", ToLua.op_ToString);
-		L.RegVar("EVENT_START", get_EVENT_START, null);
-		L.RegVar("EVENT_COMPLETE", get_EVENT_COMPLETE, null);
 		L.RegVar("uiCanvas", get_uiCanvas, set_uiCanvas);
 		L.RegVar("sceneLayer", get_sceneLayer, set_sceneLayer);
 		L.RegVar("uiLayer", get_uiLayer, set_uiLayer);
@@ -173,34 +171,6 @@ public class ShibaInu_StageWrap
 			ToLua.CheckArgsCount(L, 0);
 			float o = ShibaInu.Stage.GetProgress();
 			LuaDLL.lua_pushnumber(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_EVENT_START(IntPtr L)
-	{
-		try
-		{
-			LuaDLL.lua_pushstring(L, ShibaInu.Stage.EVENT_START);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_EVENT_COMPLETE(IntPtr L)
-	{
-		try
-		{
-			LuaDLL.lua_pushstring(L, ShibaInu.Stage.EVENT_COMPLETE);
 			return 1;
 		}
 		catch (Exception e)

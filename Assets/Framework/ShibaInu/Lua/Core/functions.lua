@@ -7,7 +7,6 @@
 local error = error
 local format = string.format
 local type = type
-local unpack = unpack
 local setmetatable = setmetatable
 local remove = table.remove
 local sort = table.sort
@@ -18,15 +17,17 @@ local _typeof = tolua.typeof
 local _typeof_class = typeof
 
 
+
 --- 实现 lua class
---- 调用父类方法 self.super:Fn()
+--- 调用父类方法 Class.super.Fn(self, ...)
+---    不要使用 Class.super:Fn(...) 调用
 ---@param className string @ 类名称
 ---@param optional superClass table @ 父类（不能继承 native class）
 ---@return table
 function class(className, superClass)
     local cls = {}
     cls.__classname = className
-    cls.__class = cls -- 用于 instanceof() 查询
+    cls.__class = cls -- 用于 instanceof() 查询等
     cls.__index = cls
 
     if superClass ~= nil then
@@ -70,7 +71,17 @@ end
 ---@param obj any
 ---@return boolean
 function isnull(obj)
+    if obj == nil then
+        return true
+    end
     return _isnull(obj)
+end
+
+--- Not a Number
+---@param value any
+---@return boolean
+function isNaN(value)
+    return value ~= value
 end
 
 
@@ -79,7 +90,7 @@ end
 --- 创建并返回一个预设的实例
 --- 使用范例：
 ---  > go = Instantiate(prefabObj)
----  > go = Instantiate("Prefab/Test/Item2.prefab", nil, "MyModuleName")
+---  > go = Instantiate("Prefabs/Test/Item2.prefab", nil, "MyModuleName")
 ---  > go = Instantiate(prefabObj, Constants.LAYER_UI)
 ---  > go = Instantiate(prefabObj, parentGO.transform, "MyModuleName")
 ---@param prefab UnityEngine.GameObject | string @ 预设对象 或 预设路径
@@ -116,7 +127,7 @@ end
 --- 使用范例：
 ---  > function callback(go) self.gameObject = go end
 ---  > local handler = handler(callback, self)
----  > InstantiateAsync("Prefab/Test/Item2.prefab", "MyModuleName", handler, parentGO.transform)
+---  > InstantiateAsync("Prefabs/Test/Item2.prefab", "MyModuleName", handler, parentGO.transform)
 ---@param prefabPath string @ 预设路径
 ---@param groupName string @ 资源组名称
 ---@param handler Handler @ 异步加载完成，并创建实例成功后的回调
@@ -157,37 +168,29 @@ end
 --- 创建并返回一个空 GameObject
 ---@param name string @ 名称
 ---@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点。例：Constants.LAYER_UI 或 parentGO.transform
+---@param optional notUI boolean @ 是否不是 UI 对象，默认:false
 ---@return UnityEngine.GameObject
-function CreateGameObject(name, parent)
+function CreateGameObject(name, parent, notUI)
     -- 传入的 parent 是 图层名称
     if type(parent) == "string" then
         parent = Stage.GetLayer(parent)
     end
-
-    local go = GameObject.New(name)
-    if parent ~= nil then
-        SetParent(go.transform, parent)
-    end
-    return go
+    return LuaHelper.CreateGameObject(name, parent, notUI == true)
 end
 
 
---- 设置 child 的父节点为 parent。
---- 并将 localScale, localPosition, localRotation, localEulerAngles 属性重置
----@param child UnityEngine.Transform
+--- 设置 target 的父节点为 parent。
+--- 并将 localScale, localPosition 属性重置
+---@param target UnityEngine.Transform
 ---@param parent UnityEngine.Transform
-function SetParent(child, parent)
-    child:SetParent(parent)
-    child.localScale = Vector3.one
-    child.localPosition = Vector3.zero
-    child.localRotation = Quaternion.identity
-    child.localEulerAngles = Vector3.zero
+function SetParent(target, parent)
+    LuaHelper.SetParent(target, parent)
 end
 
 
 --- 销毁指定的对象
 ---@param go UnityEngine.GameObject @ 目标对象
----@param delay number @ 延时删除（秒）。默认：nil，表示立即删除
+---@param delay number @ 延时删除（秒）。默认：nil，表示立即销毁
 ---@return void
 function Destroy(go, delay)
     if delay == nil then
@@ -196,6 +199,7 @@ function Destroy(go, delay)
         GameObject.Destroy(go, delay)
     end
 end
+
 
 
 --=-----------------------------[ GetComponent ]-----------------------------=--
@@ -208,6 +212,13 @@ GetComponent = {}
 ---@return UnityEngine.RectTransform
 function GetComponent.RectTransform(go)
     return go:GetComponent(_typeof_class(UnityEngine.RectTransform))
+end
+
+--- 获取 gameObject 下的 UnityEngine.CanvasGroup 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.CanvasGroup
+function GetComponent.CanvasGroup(go)
+    return go:GetComponent(_typeof_class(UnityEngine.CanvasGroup))
 end
 
 --- 获取 gameObject 下的 UnityEngine.UI.Text 组件
@@ -224,8 +235,21 @@ function GetComponent.Image(go)
     return go:GetComponent(_typeof_class(UnityEngine.UI.Image))
 end
 
---=--------------------------------------------------------------------------=--
 
+--- 获取 gameObject 下的 ShibaInu.BaseList 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.BaseList
+function GetComponent.BaseList(go)
+    return go:GetComponent(_typeof_class(ShibaInu.BaseList))
+end
+
+
+--- 获取 gameObject 下的 ShibaInu.BaseList 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.BaseList
+function GetComponent.BaseList(go)
+    return go:GetComponent(_typeof_class(ShibaInu.BaseList))
+end
 
 --=-----------------------------[ EventDispatcher ]-----------------------------=--
 
@@ -249,7 +273,11 @@ local function GetEventDispatcher(target)
     else
         ed = target._ed
         if ed == nil then
-            ed = EventDispatcher.New()
+            if instanceof(target, EventDispatcher) then
+                ed = target
+            else
+                ed = EventDispatcher.New()
+            end
             target._ed = ed
         end
     end
@@ -265,7 +293,7 @@ end
 ---@param ... any[] @ 附带的参数
 ---@return void
 function AddEventListener(target, type, listener, caller, priority, ...)
-    GetEventDispatcher(target):AddEventListener(type, listener, caller, priority, unpack({ ... }))
+    GetEventDispatcher(target):AddEventListener(type, listener, caller, priority, ...)
 end
 
 --- 移除事件侦听
@@ -300,7 +328,6 @@ function HasEventListener(target, type)
     return GetEventDispatcher(target):HasEventListener(type)
 end
 
---=-----------------------------------------------------------------------------=--
 
 
 --=---------------------[ DelayedCall / CancelDelayedCall ]---------------------=--
@@ -333,7 +360,6 @@ local function UpdateDelayedCall(event)
         end)
     end
 
-    local trycall = trycall
     local time = TimeUtil.time
     local needClearRemoveList = false
     for i = num, 1, -1 do
@@ -347,8 +373,8 @@ local function UpdateDelayedCall(event)
 
         elseif time - handler.delayedStartTime >= handler.delayedTime then
             -- 时间已满足，执行回调
-            trycall(handler.Execute, handler)
             remove(_dc_list, i)
+            handler:Execute()
         end
     end
 
@@ -408,7 +434,6 @@ function CancelDelayedCall(handler)
     _dc_removeList[handler] = true -- 标记为需移除
 end
 
---=-----------------------------------------------------------------------------=--
 
 
 --- 快速创建一个 指定执行域（self），携带参数的 Handler 对象
@@ -427,3 +452,5 @@ function handler(callback, caller, once, ...)
     handler.args = { ... }
     return handler
 end
+
+

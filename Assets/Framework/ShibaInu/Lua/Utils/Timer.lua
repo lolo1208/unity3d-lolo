@@ -76,7 +76,6 @@ local function UpdateTimer(event)
     end
 
     -- 处理回调
-    local trycall = trycall
     local time = TimeUtil.time
     local removedList = {} ---@type table<number, number> @ 需要被移除的定时器列表 removedList[index] = delay
     for delay, info in pairs(list) do
@@ -109,14 +108,14 @@ local function UpdateTimer(event)
 
                     timer.currentCount = timer.currentCount + 1
                     if timer.timerHander ~= nil then
-                        trycall(timer.timerHander.Execute, timer.timerHander)
+                        timer.timerHander:Execute()
                     end
 
                     -- 定时器已到达允许运行的最大次数
                     if timer.repeatCount ~= 0 and timer.currentCount >= timer.repeatCount then
                         timer:Stop()
                         if timer.timerCompleteHandler ~= nil then
-                            trycall(timer.timerCompleteHandler.Execute, timer.timerCompleteHandler)
+                            timer.timerCompleteHandler:Execute()
                         end
                         break -- 可以忽略后面的计次了
                     end

@@ -9,6 +9,7 @@ local xpcall = xpcall
 local tostring = tostring
 local traceback = debug.traceback
 local concat = table.concat
+local unpack = unpack
 
 
 ---@class Logger
@@ -50,17 +51,25 @@ local traceback = Logger.ErrorTraceback
 --- 调用 fn，并捕获出现的错误（ try ... catch ）
 ---@param fn fun() @ 传入的函数
 ---@param caller any @ self 对象，默认为 nil
+---@param ... any[]
 ---@return flag, msg
-function Logger.TryCall(fn, caller)
+function Logger.TryCall(fn, caller, ...)
     if isJIT then
-        return xpcall(fn, traceback, caller)
+        if caller == nil then
+            return xpcall(fn, traceback, ...)
+        else
+            return xpcall(fn, traceback, caller, ...)
+        end
     else
-        if caller ~= nil then
+        local args = { ... }
+        if caller == nil then
             return xpcall(function()
-                fn(caller)
+                fn(unpack(args))
             end, traceback)
         else
-            return xpcall(fn, traceback)
+            return xpcall(function()
+                fn(caller, unpack(args))
+            end, traceback)
         end
     end
 end

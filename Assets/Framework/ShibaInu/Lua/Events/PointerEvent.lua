@@ -11,7 +11,7 @@ local PointerEvent = class("PointerEvent", Event)
 
 
 function PointerEvent:Ctor(type, data)
-    self.super:Ctor(type, data)
+    PointerEvent.super.Ctor(self, type, data)
 end
 
 
@@ -45,7 +45,7 @@ local event = PointerEvent.New()
 function PointerEvent.DispatchEvent(ed, type, data)
     event.type = type
     event.data = data
-    ed:DispatchEvent(event, false, false)
+    trycall(ed.DispatchEvent, ed, event, false, false)
 end
 
 

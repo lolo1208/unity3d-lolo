@@ -12,8 +12,16 @@ namespace ShibaInu
 	public class Stage
 	{
 		// lua 层的事件类型
-		public const string EVENT_START = "LoadSceneEvent_Start";
-		public const string EVENT_COMPLETE = "LoadSceneEvent_Complete";
+		private const string EVENT_START = "LoadSceneEvent_Start";
+		private const string EVENT_COMPLETE = "LoadSceneEvent_Complete";
+
+		private static readonly Vector3 sceneLayerPos = new Vector3 (0, 0, 750);
+		private static readonly Vector3 uiLayerPos = new Vector3 (0, 0, 650);
+		private static readonly Vector3 windowLayerPos = new Vector3 (0, 0, 550);
+		private static readonly Vector3 uiTopLayerPos = new Vector3 (0, 0, 450);
+		private static readonly Vector3 alertLayerPos = new Vector3 (0, 0, 350);
+		private static readonly Vector3 guideLayerPos = new Vector3 (0, 0, 250);
+		private static readonly Vector3 topLayerPos = new Vector3 (0, 0, 150);
 
 		/// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadSceneEvent.lua
 		private static LuaFunction _dispatchEvent;
@@ -51,22 +59,26 @@ namespace ShibaInu
 		/// </summary>
 		public static void Initialize ()
 		{
-			sceneLayer = new GameObject ("scene").transform;
-			sceneLayer.parent = uiCanvas;
-			uiLayer = new GameObject ("ui").transform;
-			uiLayer.parent = uiCanvas;
-			windowLayer = new GameObject ("window").transform;
-			windowLayer.parent = uiCanvas;
-			uiTopLayer = new GameObject ("uiTop").transform;
-			uiTopLayer.parent = uiCanvas;
-			alertLayer = new GameObject ("alert").transform;
-			alertLayer.parent = uiCanvas;
-			guideLayer = new GameObject ("guide").transform;
-			guideLayer.parent = uiCanvas;
-			topLayer = new GameObject ("top").transform;
-			topLayer.parent = uiCanvas;
+			sceneLayer = LuaHelper.CreateGameObject ("scene", uiCanvas, false).transform;
+			sceneLayer.localPosition = sceneLayerPos;
 
-			sceneLayer.localScale = uiLayer.localScale = windowLayer.localScale = uiTopLayer.localScale = alertLayer.localScale = guideLayer.localScale = topLayer.localScale = Vector3.one;
+			uiLayer = LuaHelper.CreateGameObject ("ui", uiCanvas, false).transform;
+			uiLayer.localPosition = uiLayerPos;
+
+			windowLayer = LuaHelper.CreateGameObject ("window", uiCanvas, false).transform;
+			windowLayer.localPosition = windowLayerPos;
+
+			uiTopLayer = LuaHelper.CreateGameObject ("uiTop", uiCanvas, false).transform;
+			uiTopLayer.localPosition = uiTopLayerPos;
+
+			alertLayer = LuaHelper.CreateGameObject ("alert", uiCanvas, false).transform;
+			alertLayer.localPosition = alertLayerPos;
+
+			guideLayer = LuaHelper.CreateGameObject ("guide", uiCanvas, false).transform;
+			guideLayer.localPosition = guideLayerPos;
+
+			topLayer = LuaHelper.CreateGameObject ("top", uiCanvas, false).transform;
+			topLayer.localPosition = topLayerPos;
 		}
 
 
@@ -255,7 +267,7 @@ namespace ShibaInu
 		{
 			// 不能在 Initialize() 时获取该函数，因为相互依赖
 			if (_dispatchEvent == null)
-				_dispatchEvent = Common.lua.state.GetFunction ("LoadSceneEvent.DispatchEvent");
+				_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadSceneEvent.DispatchEvent");
 
 			_dispatchEvent.BeginPCall ();
 			_dispatchEvent.Push (type);

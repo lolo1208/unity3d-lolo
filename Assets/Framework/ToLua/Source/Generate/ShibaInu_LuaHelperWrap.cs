@@ -9,6 +9,9 @@ public class ShibaInu_LuaHelperWrap
 		L.BeginStaticLibs("LuaHelper");
 		L.RegFunction("AddDestroyEvent", AddDestroyEvent);
 		L.RegFunction("AddPointerEvent", AddPointerEvent);
+		L.RegFunction("CreateGameObject", CreateGameObject);
+		L.RegFunction("SetParent", SetParent);
+		L.RegFunction("SendHttpRequest", SendHttpRequest);
 		L.EndStaticLibs();
 	}
 
@@ -39,6 +42,61 @@ public class ShibaInu_LuaHelperWrap
 			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
 			ShibaInu.LuaHelper.AddPointerEvent(arg0, arg1);
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int CreateGameObject(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			string arg0 = ToLua.CheckString(L, 1);
+			UnityEngine.Transform arg1 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
+			bool arg2 = LuaDLL.luaL_checkboolean(L, 3);
+			UnityEngine.GameObject o = ShibaInu.LuaHelper.CreateGameObject(arg0, arg1, arg2);
+			ToLua.PushSealed(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetParent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 1);
+			UnityEngine.Transform arg1 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
+			ShibaInu.LuaHelper.SetParent(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SendHttpRequest(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			string arg0 = ToLua.CheckString(L, 1);
+			LuaFunction arg1 = ToLua.CheckLuaFunction(L, 2);
+			string arg2 = ToLua.CheckString(L, 3);
+			ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1, arg2);
+			ToLua.PushObject(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

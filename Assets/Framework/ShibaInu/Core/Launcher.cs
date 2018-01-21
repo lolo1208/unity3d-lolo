@@ -12,14 +12,25 @@ namespace ShibaInu
 		
 		void Start ()
 		{
-			Screen.sleepTimeout = SleepTimeout.NeverSleep;
+			if (Constants.OptimizeResolution && Screen.width > Constants.FixedWidth) {
+				float scale = (float)Constants.FixedWidth / (float)Screen.width;
+				int height = Mathf.CeilToInt (Screen.height * scale);
+				Screen.SetResolution (Constants.FixedWidth, height, true);
+				Debug.LogFormat ("resolution: {0} x {1},  scale: {2},  screen: {3} x {4}, {5}", Constants.FixedWidth, height, scale, Screen.width, Screen.height, Screen.resolutions.Length);
+			}
+
+			if (Constants.NeverSleep) {
+				Screen.sleepTimeout = SleepTimeout.NeverSleep;
+			}
+
 			Application.targetFrameRate = Constants.FrameRate;
+
 			Common.isDebug = Application.isEditor && !FileHelper.Exists (Application.streamingAssetsPath + "/TestModeFlag");
 
 			bool isLauncherScene = SceneManager.GetActiveScene ().name == Constants.LauncherSceneName;
 			if (!isLauncherScene)
 				SceneManager.LoadScene (Constants.LauncherSceneName);
-
+			
 			StartCoroutine (Initialize (isLauncherScene));
 		}
 
@@ -38,13 +49,14 @@ namespace ShibaInu
 			uiCanvas.SetParent (transform);
 			eventSystem.SetParent (transform);
 
-			Common.lua = gameObject.AddComponent<LuaManager> ();
+			Common.threadMgr = gameObject.AddComponent<ThreadManager> ();
+			Common.luaMgr = gameObject.AddComponent<LuaManager> ();
 			Common.looper = gameObject.AddComponent<StageLooper> ();
 
 			ResManager.Initialize ();
 			Stage.uiCanvas = uiCanvas;
 			Stage.Initialize ();
-			Common.lua.Initialize ();// start lua
+			Common.luaMgr.Initialize ();// start lua
 
 			Destroy (this);
 		}
