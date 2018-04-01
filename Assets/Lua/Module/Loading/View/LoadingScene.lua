@@ -1,12 +1,11 @@
 --
--- 异步加载场景时，显示的 Loading 场景
+-- 异步加载场景时显示的 Loading 场景
 -- 2017/11/14
 -- Author LOLO
 --
 
 local floor = math.floor
 local tostring = tostring
-
 
 ---@class Loading.LoadingScene : Scene
 ---@field New fun():Loading.LoadingScene
@@ -15,12 +14,9 @@ local LoadingScene = class("Loading.LoadingScene", Scene)
 local progressText ---@type UnityEngine.UI.Text
 local barRect ---@type UnityEngine.RectTransform
 
-
 function LoadingScene:Ctor()
     LoadingScene.super.Ctor(self, "Loading")
 end
-
-
 
 function LoadingScene:OnInitialize()
     LoadingScene.super.OnInitialize(self)
@@ -33,7 +29,6 @@ function LoadingScene:OnInitialize()
     AddEventListener(Stage, LoadSceneEvent.COMPLETE, self.LoadSceneCompleteHandler, self)
 end
 
-
 --- 进度更新
 function LoadingScene:UpdateHandler(event)
     local p = Stage.GetProgress()
@@ -45,17 +40,14 @@ function LoadingScene:UpdateHandler(event)
     progressText.text = tostring(floor(p * 100)) .. "%"
 end
 
-
 --- 加载完成
 function LoadingScene:LoadSceneCompleteHandler(event)
+    self:OnDestroy()
+end
+
+function LoadingScene:OnDestroy()
     RemoveEventListener(Stage, Event.UPDATE, self.UpdateHandler, self)
     RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, self.LoadSceneCompleteHandler, self)
 end
-
-
-function LoadingScene:OnDestroy()
-    print("LoadingScene:OnDestroy")
-end
-
 
 return LoadingScene

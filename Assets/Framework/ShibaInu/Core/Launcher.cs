@@ -51,10 +51,11 @@ namespace ShibaInu
 
 			Common.threadMgr = gameObject.AddComponent<ThreadManager> ();
 			Common.luaMgr = gameObject.AddComponent<LuaManager> ();
+			Common.timerMgr = gameObject.AddComponent<TimerManager> ();
 			Common.looper = gameObject.AddComponent<StageLooper> ();
 
 			ResManager.Initialize ();
-			Stage.uiCanvas = uiCanvas;
+			Stage.uiCanvas = (RectTransform)uiCanvas;
 			Stage.Initialize ();
 			Common.luaMgr.Initialize ();// start lua
 

@@ -12,9 +12,9 @@ namespace ShibaInu
 	/// </summary>
 	[AddComponentMenu ("ShibaInu/Scroll List", 103)]
 	[DisallowMultipleComponent]
-	public class ScrollList :BaseList
+	public class ScrollList : BaseList
 	{
-
+		/// 对应的 lua ScrollList 对象
 		public override LuaTable luaTarget {
 			set {
 				base.luaTarget = value;
@@ -41,7 +41,6 @@ namespace ShibaInu
 			}
 			get { return m_isVertical; }
 		}
-
 
 		[FormerlySerializedAs ("isVertical"), SerializeField]
 		protected bool m_isVertical = true;

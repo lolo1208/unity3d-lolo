@@ -5,7 +5,7 @@
 --
 
 ---@class ListEvent : Event
----@field item ItemRenderer @ 渲染更新
+---@field item ItemRenderer @ 对应的 item
 local ListEvent = class("ListEvent", Event)
 
 
@@ -17,18 +17,18 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
----@type string @ 子项鼠标指针（touch）按下
-ListEvent.ITEM_POINTER_DOWN = "ListEvent_itemPointerDown"
+--- 子项鼠标指针（touch）按下
+ListEvent.ITEM_POINTER_DOWN = "ListEvent_ItemPointerDown"
 
----@type string @ 子项鼠标指针（touch）点击
-ListEvent.ITEM_POINTER_CLICK = "ListEvent_itemPointerClick"
+--- 子项鼠标指针（touch）点击
+ListEvent.ITEM_POINTER_CLICK = "ListEvent_ItemPointerClick"
 
----@type string @ 子项被选中
-ListEvent.ITEM_SELECTED = "ListEvent_itemSelected"
+--- 子项被选中
+ListEvent.ITEM_SELECTED = "ListEvent_ItemSelected"
 
 
----@type string @ 列表有更新
-ListEvent.UPDATE = "ListEvent_listUpdate"
+--- 列表有更新
+ListEvent.UPDATE = "ListEvent_ListUpdate"
 
 --=----------------------------------------------------------------------=--
 

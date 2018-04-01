@@ -6,7 +6,9 @@ using UnityEngine;
 namespace ShibaInu
 {
 
-
+	/// <summary>
+	/// 线程管理
+	/// </summary>
 	public class ThreadManager : MonoBehaviour
 	{
 		private static readonly System.Object LOCK_OBJECT = new System.Object ();
@@ -20,23 +22,12 @@ namespace ShibaInu
 		/// 添加一个 Action 到主线程运行
 		/// </summary>
 		/// <param name="action">Action.</param>
-		public void addActionToMainThread (Action action)
+		public void AddActionToMainThread (Action action)
 		{
 			lock (LOCK_OBJECT) {
 				m_actions.Add (action);
 			}
 		}
-
-
-		void Awake ()
-		{
-			Invoke ("test", 1f);
-		}
-
-		void test ()
-		{
-		}
-
 
 
 		void Update ()
@@ -51,7 +42,11 @@ namespace ShibaInu
 
 			if (m_runningActions.Count > 0) {
 				foreach (Action action in m_runningActions) {
-					action ();
+					try {
+						action ();
+					} catch (Exception e) {
+						Logger.AddErrorLog (e);
+					}
 				}
 				m_runningActions.Clear ();
 			}

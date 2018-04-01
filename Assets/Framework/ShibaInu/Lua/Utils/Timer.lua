@@ -5,10 +5,10 @@
 -- Author LOLO
 --
 
+local error = error
 local pairs = pairs
 local floor = math.floor
 local remove = table.remove
-
 
 ---@class Timer
 ---@field New fun(delay:number, timerHander:Handler, repeatCount:number, timerCompleteHandler:Handler):Timer
@@ -23,7 +23,6 @@ local remove = table.remove
 ---@field protected _key number @ 在列表中的key（ _list[delay].list[_key] = self ）
 ---@field protected _delay number @ 定时器间隔（单位：秒）
 local Timer = class("Timer")
-
 
 --- Ctor
 ---@param delay number @ 定时器间隔（单位：秒）
@@ -43,8 +42,6 @@ function Timer:Ctor(delay, timerHander, repeatCount, timerCompleteHandler)
     self._delay = 0
     self:SetDelay(delay or 1)
 end
-
-
 
 --- Update 事件更新
 ---@param event Event
@@ -163,8 +160,6 @@ local function UpdateTimer(event)
     end
 end
 
-
-
 --- 在 Start() 或 Stop() 的时候，更改 timer 所在列表
 ---@param timer Timer
 local function ChangeTimerState(timer)
@@ -196,14 +191,13 @@ local function ChangeTimerState(timer)
     addList[addListNum + 1] = timer
 end
 
-
 --- 设置定时器间隔（单位：秒）
 ---@param value number
 ---@return void
 function Timer:SetDelay(value)
     if value == 0 then
         self:Stop()
-        error("[Timer:SetDelay] 定时器的间隔不能为 0")
+        error(Constants.E3004)
     end
 
     if value == self._delay then
@@ -227,7 +221,6 @@ function Timer:GetDelay()
     return self._delay
 end
 
-
 --- 开启定时器
 ---@return void
 function Timer:Start()
@@ -244,7 +237,6 @@ function Timer:Start()
     end
 end
 
-
 --- 如果定时器正在运行，则停止定时器
 ---@return void
 function Timer:Stop()
@@ -255,14 +247,12 @@ function Timer:Stop()
     ChangeTimerState(self)
 end
 
-
 --- 如果定时器正在运行，则停止定时器，并将 currentCount 设为 0
 ---@return void
 function Timer:Reset()
     self.currentCount = 0
     self:Stop()
 end
-
 
 --- 在列表中的key（ _list[delay].list[key] = self ）
 function Timer:GetKey()
@@ -273,7 +263,7 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
----@type number @ 可移除标记的最大次数
+--- 可移除标记的最大次数
 Timer.MAX_REMOVE_MARK = 5
 
 ---@type table @ 定时器列表（以delay为key， _list[delay] = { list:已启动的定时器列表, removeMark:被标记了可以移除的次数 }）

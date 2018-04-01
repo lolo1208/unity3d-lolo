@@ -22,7 +22,7 @@ function JSON.parse(text)
     if status then
         return result
     end
-    error(format(Constants.E2001, text))
+    error(format(Constants.E3001, text))
 end
 
 
@@ -33,7 +33,7 @@ function JSON.stringify(value)
     if status then
         return result
     end
-    error(format(Constants.E2002, tostring(value)))
+    error(format(Constants.E3002, tostring(value)))
 end
 
 

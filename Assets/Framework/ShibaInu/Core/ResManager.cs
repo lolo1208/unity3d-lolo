@@ -84,7 +84,7 @@ namespace ShibaInu
 					path = new string (reader.ReadChars (pathLen));// "Loading" or "SceneA"
 					md5 = new string (reader.ReadChars (16));
 
-					abi = new ABI (path, md5, "Scene/");
+					abi = new ABI (path, md5, "Scenes/");
 					pathMD5 = GetPathMD5 (path);
 					_abiDic.Add (pathMD5, abi);
 				}

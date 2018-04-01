@@ -16,8 +16,6 @@ local _isnull = tolua.isnull
 local _typeof = tolua.typeof
 local _typeof_class = typeof
 
-
-
 --- 实现 lua class
 --- 调用父类方法 Class.super.Fn(self, ...)
 ---    不要使用 Class.super:Fn(...) 调用
@@ -84,9 +82,6 @@ function isNaN(value)
     return value ~= value
 end
 
-
-
-
 --- 创建并返回一个预设的实例
 --- 使用范例：
 ---  > go = Instantiate(prefabObj)
@@ -101,7 +96,7 @@ function Instantiate(prefab, parent, groupName)
     -- 传入的 prefab 是 预设路径
     if type(prefab) == "string" then
         if groupName == nil then
-            error(format(Constants.E1003, prefab))
+            error(format(Constants.E2003, prefab))
         end
         prefab = Res.LoadAsset(prefab, groupName)
     end
@@ -120,7 +115,6 @@ function Instantiate(prefab, parent, groupName)
     end
     return go
 end
-
 
 --- 异步加载预设对象，然后创建一个预设的实例，并在回调中传回
 --- 提示：在异步加载预设的过程中，可以调用参数 handler.Clean() 取消创建预设实例，以及取消触发回调
@@ -164,7 +158,6 @@ function InstantiateAsync(prefabPath, groupName, handler, parent)
     Res.LoadAssetAsync(prefabPath, groupName)
 end
 
-
 --- 创建并返回一个空 GameObject
 ---@param name string @ 名称
 ---@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点。例：Constants.LAYER_UI 或 parentGO.transform
@@ -178,7 +171,6 @@ function CreateGameObject(name, parent, notUI)
     return LuaHelper.CreateGameObject(name, parent, notUI == true)
 end
 
-
 --- 设置 target 的父节点为 parent。
 --- 并将 localScale, localPosition 属性重置
 ---@param target UnityEngine.Transform
@@ -186,7 +178,6 @@ end
 function SetParent(target, parent)
     LuaHelper.SetParent(target, parent)
 end
-
 
 --- 销毁指定的对象
 ---@param go UnityEngine.GameObject @ 目标对象
@@ -202,7 +193,7 @@ end
 
 
 
---=-----------------------------[ GetComponent ]-----------------------------=--
+--=-----------------------------[ Component ]-----------------------------=--
 
 -- 获取 gameObject 下的组件
 GetComponent = {}
@@ -221,13 +212,6 @@ function GetComponent.CanvasGroup(go)
     return go:GetComponent(_typeof_class(UnityEngine.CanvasGroup))
 end
 
---- 获取 gameObject 下的 UnityEngine.UI.Text 组件
----@param go UnityEngine.GameObject
----@return UnityEngine.UI.Text
-function GetComponent.Text(go)
-    return go:GetComponent(_typeof_class(UnityEngine.UI.Text))
-end
-
 --- 获取 gameObject 下的 UnityEngine.UI.Image 组件
 ---@param go UnityEngine.GameObject
 ---@return UnityEngine.UI.Image
@@ -235,6 +219,37 @@ function GetComponent.Image(go)
     return go:GetComponent(_typeof_class(UnityEngine.UI.Image))
 end
 
+--- 获取 gameObject 下的 UnityEngine.UI.Text 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.Text
+function GetComponent.Text(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.Text))
+end
+
+--- 获取 gameObject 下的 UnityEngine.UI.InputField 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.InputField
+function GetComponent.InputField(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.InputField))
+end
+
+--- 获取 gameObject 下的 UnityEngine.Animation 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.Animation
+function GetComponent.Animation(go)
+    return go:GetComponent(_typeof_class(UnityEngine.Animation))
+end
+
+--- 获取 gameObject 下的 UnityEngine.Camera 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.Camera
+function GetComponent.Camera(go)
+    return go:GetComponent(_typeof_class(UnityEngine.Camera))
+end
+
+
+--
+
 
 --- 获取 gameObject 下的 ShibaInu.BaseList 组件
 ---@param go UnityEngine.GameObject
@@ -243,13 +258,45 @@ function GetComponent.BaseList(go)
     return go:GetComponent(_typeof_class(ShibaInu.BaseList))
 end
 
-
 --- 获取 gameObject 下的 ShibaInu.BaseList 组件
 ---@param go UnityEngine.GameObject
 ---@return ShibaInu.BaseList
 function GetComponent.BaseList(go)
     return go:GetComponent(_typeof_class(ShibaInu.BaseList))
 end
+
+--- 获取 gameObject 下的 ShibaInu.CircleImage 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.CircleImage
+function GetComponent.CircleImage(go)
+    return go:GetComponent(_typeof_class(ShibaInu.CircleImage))
+end
+
+
+--- 获取 gameObject 下的 ShibaInu.Picker 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.Picker
+function GetComponent.BaseList(go)
+    return go:GetComponent(_typeof_class(ShibaInu.Picker))
+end
+
+
+--
+
+
+--- 添加或获取某个 GameObject 下的组件
+---@param go UnityEngine.GameObject
+---@param ComponentClass any @ 组件的类，如：UnityEngine.UI.Text
+---@return any
+function AddOrGetComponent(go, ComponentClass)
+    local cType = _typeof_class(ComponentClass)
+    local c = go:GetComponent(cType)
+    if c == nil then
+        c = go:AddComponent(cType)
+    end
+    return c
+end
+
 
 --=-----------------------------[ EventDispatcher ]-----------------------------=--
 
@@ -319,7 +366,6 @@ function DispatchEvent(target, eventOrType, bubbles, recycle)
     GetEventDispatcher(target):DispatchEvent(eventOrType, bubbles, recycle)
 end
 
-
 --- 是否正在侦听指定类型的事件
 ---@param target table | UnityEngine.GameObject @ 要查询事件的目标
 ---@param type string @ 事件类型
@@ -384,7 +430,6 @@ local function UpdateDelayedCall(event)
     end
 end
 
-
 --- 延迟指定时间后，执行一次回调
 ---@param delay number @ 延迟时间，秒
 ---@param callback fun() @ 回调函数
@@ -401,7 +446,6 @@ function DelayedCall(delay, callback, caller, ...)
     return handler
 end
 
-
 --- 延迟到下一帧后，执行一次回调
 ---@param callback fun() @ 回调函数
 ---@param caller any @ 执行域（self）
@@ -410,7 +454,6 @@ end
 function DelayToNextFrameCall(callback, caller, ...)
     return DelayedCall(0.01, callback, caller, ...)
 end
-
 
 --- 取消延迟回调
 ---@param handler Handler
@@ -433,8 +476,6 @@ function CancelDelayedCall(handler)
 
     _dc_removeList[handler] = true -- 标记为需移除
 end
-
-
 
 --- 快速创建一个 指定执行域（self），携带参数的 Handler 对象
 ---@param callback fun() @ 回调函数

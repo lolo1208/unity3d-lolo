@@ -40,6 +40,19 @@ namespace ShibaInu
 
 
 		/// <summary>
+		/// 在指定的 gameObject 上添加 DragDropEventDispatcher 脚本。
+		/// 当 gameObject 与鼠标指针（touch）交互时，派发拖放相关事件。
+		/// </summary>
+		/// <param name="go">Go.</param>
+		/// <param name="ed">Ed.</param>
+		public static void AddDragDropEvent (GameObject go, LuaTable ed)
+		{
+			if (go.GetComponent<DragDropEventDispatcher> () == null)
+				go.AddComponent<DragDropEventDispatcher> ().ed = ed;
+		}
+
+
+		/// <summary>
 		/// 创建并返回一个空 GameObject
 		/// </summary>
 		/// <returns>The game object.</returns>
@@ -101,6 +114,7 @@ namespace ShibaInu
 			req.Send ();
 			return req;
 		}
+
 
 		//
 	}

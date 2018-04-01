@@ -19,8 +19,8 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
----@type string @ 数据已改变
-DataEvent.DATA_CHANGED = "DataEvent_dataChanged"
+--- 数据已改变
+DataEvent.DATA_CHANGED = "DataEvent_DataChanged"
 
 
 --=----------------------------------------------------------------------=--

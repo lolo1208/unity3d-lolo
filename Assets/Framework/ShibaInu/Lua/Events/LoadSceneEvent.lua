@@ -18,10 +18,10 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
----@type string @ 异步开始加载场景。该事件只会在 Stage(ShibaInu.Stage) 上抛出
+--- 异步开始加载场景。该事件只会在 Stage(ShibaInu.Stage) 上抛出
 LoadSceneEvent.START = "LoadSceneEvent_Start"
 
----@type string @ 异步加载场景完成。该事件只会在 Stage(ShibaInu.Stage) 上抛出
+--- 异步加载场景完成。该事件只会在 Stage(ShibaInu.Stage) 上抛出
 LoadSceneEvent.COMPLETE = "LoadSceneEvent_Complete"
 
 

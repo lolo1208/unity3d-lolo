@@ -109,7 +109,7 @@ public static class CustomSettings
 		_GT (typeof(DG.Tweening.Core.TweenerCore<float, float, DG.Tweening.Plugins.Options.FloatOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Float").SetLibName ("DG_Tweening_Plugins_Options_Float"),
 		_GT (typeof(DG.Tweening.Core.TweenerCore<uint, uint, DG.Tweening.Plugins.Options.UintOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Uint").SetLibName ("DG_Tweening_Plugins_Options_Uint"),
 		_GT (typeof(DG.Tweening.Core.TweenerCore<Vector3, Vector3, DG.Tweening.Plugins.Options.VectorOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Vector").SetLibName ("DG_Tweening_Plugins_Options_Vector"),
-		_GT (typeof(DG.Tweening.Core.TweenerCore<Quaternion, Quaternion, DG.Tweening.Plugins.Options.QuaternionOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Quaternion").SetLibName ("DG_Tweening_Plugins_Options_Quaternion"),
+		_GT (typeof(DG.Tweening.Core.TweenerCore<Quaternion, Vector3, DG.Tweening.Plugins.Options.QuaternionOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Quaternion").SetLibName ("DG_Tweening_Plugins_Options_Quaternion"),
 		_GT (typeof(DG.Tweening.Core.TweenerCore<Color, Color, DG.Tweening.Plugins.Options.ColorOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Color").SetLibName ("DG_Tweening_Plugins_Options_Color"),
 
 #else
@@ -189,13 +189,17 @@ public static class CustomSettings
 		_GT (typeof(RenderTexture)), 
 		_GT (typeof(Resources)),
 
+		_GT (typeof(Sprite)),
 
 		// Component
 		_GT (typeof(UnityEngine.Rect)),
 		_GT (typeof(UnityEngine.PlayerPrefs)),
 		_GT (typeof(UnityEngine.EventSystems.PointerEventData)),
-		_GT (typeof(UnityEngine.UI.ScrollRect)),
+		_GT (typeof(UnityEngine.Font)),
 
+		_GT (typeof(UnityEngine.UI.ScrollRect)),
+		_GT (typeof(UnityEngine.UI.InputField)),
+		_GT (typeof(UnityEngine.UI.Button)),
 
 		// for ShibaInu
 		_GT (typeof(ShibaInu.LuaHelper)),
@@ -203,9 +207,12 @@ public static class CustomSettings
 		_GT (typeof(ShibaInu.Stage)),
 
 		_GT (typeof(ShibaInu.HttpRequest)),
+		_GT (typeof(ShibaInu.TcpSocketClient)),
 
 		_GT (typeof(ShibaInu.BaseList)),
 		_GT (typeof(ShibaInu.ScrollList)),
+		_GT (typeof(ShibaInu.Picker)),
+		_GT (typeof(ShibaInu.CircleImage)),
 
 
 //        _GT(typeof(Util)),

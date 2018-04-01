@@ -1,5 +1,5 @@
 --
--- 类描述
+-- 时间相关工具类
 -- 2017/10/16
 -- Author LOLO
 --
@@ -11,17 +11,17 @@ local TimeUtil = {}
 
 --=------------------------------[ static ]------------------------------=--
 
----@type string @ 时间类型：毫秒
+--- 时间类型：毫秒
 TimeUtil.TYPE_MS = "ms"
----@type string @ 时间类型：秒
+--- 时间类型：秒
 TimeUtil.TYPE_S = "s"
----@type string @ 时间类型：分钟
+--- 时间类型：分钟
 TimeUtil.TYPE_M = "m"
----@type string @ 时间类型：小时
+--- 时间类型：小时
 TimeUtil.TYPE_H = "h"
 
 
----@type number @ 当前程序已运行精确时间（单位：秒.毫秒），不会受到 Time.timeScale 影响。由 Update / LateUpdate / FixedUpdate 事件更新
+--- 当前程序已运行精确时间（单位：秒.毫秒），不会受到 Time.timeScale 影响。由 Update / LateUpdate / FixedUpdate 事件更新
 TimeUtil.time = 0
 
 

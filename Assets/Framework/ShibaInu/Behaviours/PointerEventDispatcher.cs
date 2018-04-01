@@ -13,6 +13,12 @@ namespace ShibaInu
 	/// </summary>
 	public class PointerEventDispatcher : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 	{
+		private const string EVENT_ENTER = "PointerEvent_Enter";
+		private const string EVENT_EXIT = "PointerEvent_Exit";
+		private const string EVENT_DOWN = "PointerEvent_Down";
+		private const string EVENT_UP = "PointerEvent_Up";
+		private const string EVENT_CLICK = "PointerEvent_Click";
+
 		/// PointerEvent.lua
 		private static readonly LuaFunction m_dispatchEvent = Common.luaMgr.state.GetFunction ("PointerEvent.DispatchEvent");
 
@@ -23,36 +29,49 @@ namespace ShibaInu
 
 		public void OnPointerEnter (PointerEventData eventData)
 		{
-			DispatchLuaEvent (ed, "PointerEvent_Enter", eventData);
+			m_dispatchEvent.BeginPCall ();
+			m_dispatchEvent.Push (ed);
+			m_dispatchEvent.Push (EVENT_ENTER);
+			m_dispatchEvent.Push (eventData);
+			m_dispatchEvent.PCall ();
+			m_dispatchEvent.EndPCall ();
 		}
 
 		public void OnPointerExit (PointerEventData eventData)
 		{
-			DispatchLuaEvent (ed, "PointerEvent_Exit", eventData);
+			m_dispatchEvent.BeginPCall ();
+			m_dispatchEvent.Push (ed);
+			m_dispatchEvent.Push (EVENT_EXIT);
+			m_dispatchEvent.Push (eventData);
+			m_dispatchEvent.PCall ();
+			m_dispatchEvent.EndPCall ();
 		}
 
 		public void OnPointerDown (PointerEventData eventData)
 		{
-			DispatchLuaEvent (ed, "PointerEvent_Down", eventData);
+			m_dispatchEvent.BeginPCall ();
+			m_dispatchEvent.Push (ed);
+			m_dispatchEvent.Push (EVENT_DOWN);
+			m_dispatchEvent.Push (eventData);
+			m_dispatchEvent.PCall ();
+			m_dispatchEvent.EndPCall ();
 		}
 
 		public void OnPointerUp (PointerEventData eventData)
 		{
-			DispatchLuaEvent (ed, "PointerEvent_Up", eventData);
+			m_dispatchEvent.BeginPCall ();
+			m_dispatchEvent.Push (ed);
+			m_dispatchEvent.Push (EVENT_UP);
+			m_dispatchEvent.Push (eventData);
+			m_dispatchEvent.PCall ();
+			m_dispatchEvent.EndPCall ();
 		}
 
 		public void OnPointerClick (PointerEventData eventData)
 		{
-			DispatchLuaEvent (ed, "PointerEvent_Click", eventData);
-		}
-
-
-
-		private static void DispatchLuaEvent (LuaTable ed, string type, PointerEventData eventData)
-		{
 			m_dispatchEvent.BeginPCall ();
 			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (type);
+			m_dispatchEvent.Push (EVENT_CLICK);
 			m_dispatchEvent.Push (eventData);
 			m_dispatchEvent.PCall ();
 			m_dispatchEvent.EndPCall ();

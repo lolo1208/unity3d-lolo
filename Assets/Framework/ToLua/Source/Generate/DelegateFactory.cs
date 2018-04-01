@@ -63,7 +63,11 @@ public class DelegateFactory
 		dict.Add(typeof(UnityEngine.AudioClip.PCMReaderCallback), factory.UnityEngine_AudioClip_PCMReaderCallback);
 		dict.Add(typeof(UnityEngine.AudioClip.PCMSetPositionCallback), factory.UnityEngine_AudioClip_PCMSetPositionCallback);
 		dict.Add(typeof(System.Action<UnityEngine.AsyncOperation>), factory.System_Action_UnityEngine_AsyncOperation);
+		dict.Add(typeof(UnityEngine.Font.FontTextureRebuildCallback), factory.UnityEngine_Font_FontTextureRebuildCallback);
+		dict.Add(typeof(System.Action<UnityEngine.Font>), factory.System_Action_UnityEngine_Font);
+		dict.Add(typeof(UnityEngine.UI.InputField.OnValidateInput), factory.UnityEngine_UI_InputField_OnValidateInput);
 		dict.Add(typeof(System.Action<int,string>), factory.System_Action_int_string);
+		dict.Add(typeof(System.Action<string,object>), factory.System_Action_string_object);
 
 		DelegateTraits<System.Action>.Init(factory.System_Action);
 		DelegateTraits<UnityEngine.Events.UnityAction>.Init(factory.UnityEngine_Events_UnityAction);
@@ -111,7 +115,11 @@ public class DelegateFactory
 		DelegateTraits<UnityEngine.AudioClip.PCMReaderCallback>.Init(factory.UnityEngine_AudioClip_PCMReaderCallback);
 		DelegateTraits<UnityEngine.AudioClip.PCMSetPositionCallback>.Init(factory.UnityEngine_AudioClip_PCMSetPositionCallback);
 		DelegateTraits<System.Action<UnityEngine.AsyncOperation>>.Init(factory.System_Action_UnityEngine_AsyncOperation);
+		DelegateTraits<UnityEngine.Font.FontTextureRebuildCallback>.Init(factory.UnityEngine_Font_FontTextureRebuildCallback);
+		DelegateTraits<System.Action<UnityEngine.Font>>.Init(factory.System_Action_UnityEngine_Font);
+		DelegateTraits<UnityEngine.UI.InputField.OnValidateInput>.Init(factory.UnityEngine_UI_InputField_OnValidateInput);
 		DelegateTraits<System.Action<int,string>>.Init(factory.System_Action_int_string);
+		DelegateTraits<System.Action<string,object>>.Init(factory.System_Action_string_object);
 
 		TypeTraits<System.Action>.Init(factory.Check_System_Action);
 		TypeTraits<UnityEngine.Events.UnityAction>.Init(factory.Check_UnityEngine_Events_UnityAction);
@@ -159,7 +167,11 @@ public class DelegateFactory
 		TypeTraits<UnityEngine.AudioClip.PCMReaderCallback>.Init(factory.Check_UnityEngine_AudioClip_PCMReaderCallback);
 		TypeTraits<UnityEngine.AudioClip.PCMSetPositionCallback>.Init(factory.Check_UnityEngine_AudioClip_PCMSetPositionCallback);
 		TypeTraits<System.Action<UnityEngine.AsyncOperation>>.Init(factory.Check_System_Action_UnityEngine_AsyncOperation);
+		TypeTraits<UnityEngine.Font.FontTextureRebuildCallback>.Init(factory.Check_UnityEngine_Font_FontTextureRebuildCallback);
+		TypeTraits<System.Action<UnityEngine.Font>>.Init(factory.Check_System_Action_UnityEngine_Font);
+		TypeTraits<UnityEngine.UI.InputField.OnValidateInput>.Init(factory.Check_UnityEngine_UI_InputField_OnValidateInput);
 		TypeTraits<System.Action<int,string>>.Init(factory.Check_System_Action_int_string);
+		TypeTraits<System.Action<string,object>>.Init(factory.Check_System_Action_string_object);
 
 		StackTraits<System.Action>.Push = factory.Push_System_Action;
 		StackTraits<UnityEngine.Events.UnityAction>.Push = factory.Push_UnityEngine_Events_UnityAction;
@@ -207,7 +219,11 @@ public class DelegateFactory
 		StackTraits<UnityEngine.AudioClip.PCMReaderCallback>.Push = factory.Push_UnityEngine_AudioClip_PCMReaderCallback;
 		StackTraits<UnityEngine.AudioClip.PCMSetPositionCallback>.Push = factory.Push_UnityEngine_AudioClip_PCMSetPositionCallback;
 		StackTraits<System.Action<UnityEngine.AsyncOperation>>.Push = factory.Push_System_Action_UnityEngine_AsyncOperation;
+		StackTraits<UnityEngine.Font.FontTextureRebuildCallback>.Push = factory.Push_UnityEngine_Font_FontTextureRebuildCallback;
+		StackTraits<System.Action<UnityEngine.Font>>.Push = factory.Push_System_Action_UnityEngine_Font;
+		StackTraits<UnityEngine.UI.InputField.OnValidateInput>.Push = factory.Push_UnityEngine_UI_InputField_OnValidateInput;
 		StackTraits<System.Action<int,string>>.Push = factory.Push_System_Action_int_string;
+		StackTraits<System.Action<string,object>>.Push = factory.Push_System_Action_string_object;
 	}
     
     public static Delegate CreateDelegate(Type t, LuaFunction func = null)
@@ -2985,6 +3001,181 @@ public class DelegateFactory
 		ToLua.Push(L, o);
 	}
 
+	class UnityEngine_Font_FontTextureRebuildCallback_Event : LuaDelegate
+	{
+		public UnityEngine_Font_FontTextureRebuildCallback_Event(LuaFunction func) : base(func) { }
+		public UnityEngine_Font_FontTextureRebuildCallback_Event(LuaFunction func, LuaTable self) : base(func, self) { }
+
+		public void Call()
+		{
+			func.Call();
+		}
+
+		public void CallWithSelf()
+		{
+			func.BeginPCall();
+			func.Push(self);
+			func.PCall();
+			func.EndPCall();
+		}
+	}
+
+	public UnityEngine.Font.FontTextureRebuildCallback UnityEngine_Font_FontTextureRebuildCallback(LuaFunction func, LuaTable self, bool flag)
+	{
+		if (func == null)
+		{
+			UnityEngine.Font.FontTextureRebuildCallback fn = delegate() { };
+			return fn;
+		}
+
+		if(!flag)
+		{
+			UnityEngine_Font_FontTextureRebuildCallback_Event target = new UnityEngine_Font_FontTextureRebuildCallback_Event(func);
+			UnityEngine.Font.FontTextureRebuildCallback d = target.Call;
+			target.method = d.Method;
+			return d;
+		}
+		else
+		{
+			UnityEngine_Font_FontTextureRebuildCallback_Event target = new UnityEngine_Font_FontTextureRebuildCallback_Event(func, self);
+			UnityEngine.Font.FontTextureRebuildCallback d = target.CallWithSelf;
+			target.method = d.Method;
+			return d;
+		}
+	}
+
+	bool Check_UnityEngine_Font_FontTextureRebuildCallback(IntPtr L, int pos)
+	{
+		return TypeChecker.CheckDelegateType(typeof(UnityEngine.Font.FontTextureRebuildCallback), L, pos);
+	}
+
+	void Push_UnityEngine_Font_FontTextureRebuildCallback(IntPtr L, UnityEngine.Font.FontTextureRebuildCallback o)
+	{
+		ToLua.Push(L, o);
+	}
+
+	class System_Action_UnityEngine_Font_Event : LuaDelegate
+	{
+		public System_Action_UnityEngine_Font_Event(LuaFunction func) : base(func) { }
+		public System_Action_UnityEngine_Font_Event(LuaFunction func, LuaTable self) : base(func, self) { }
+
+		public void Call(UnityEngine.Font param0)
+		{
+			func.BeginPCall();
+			func.PushSealed(param0);
+			func.PCall();
+			func.EndPCall();
+		}
+
+		public void CallWithSelf(UnityEngine.Font param0)
+		{
+			func.BeginPCall();
+			func.Push(self);
+			func.PushSealed(param0);
+			func.PCall();
+			func.EndPCall();
+		}
+	}
+
+	public System.Action<UnityEngine.Font> System_Action_UnityEngine_Font(LuaFunction func, LuaTable self, bool flag)
+	{
+		if (func == null)
+		{
+			System.Action<UnityEngine.Font> fn = delegate(UnityEngine.Font param0) { };
+			return fn;
+		}
+
+		if(!flag)
+		{
+			System_Action_UnityEngine_Font_Event target = new System_Action_UnityEngine_Font_Event(func);
+			System.Action<UnityEngine.Font> d = target.Call;
+			target.method = d.Method;
+			return d;
+		}
+		else
+		{
+			System_Action_UnityEngine_Font_Event target = new System_Action_UnityEngine_Font_Event(func, self);
+			System.Action<UnityEngine.Font> d = target.CallWithSelf;
+			target.method = d.Method;
+			return d;
+		}
+	}
+
+	bool Check_System_Action_UnityEngine_Font(IntPtr L, int pos)
+	{
+		return TypeChecker.CheckDelegateType(typeof(System.Action<UnityEngine.Font>), L, pos);
+	}
+
+	void Push_System_Action_UnityEngine_Font(IntPtr L, System.Action<UnityEngine.Font> o)
+	{
+		ToLua.Push(L, o);
+	}
+
+	class UnityEngine_UI_InputField_OnValidateInput_Event : LuaDelegate
+	{
+		public UnityEngine_UI_InputField_OnValidateInput_Event(LuaFunction func) : base(func) { }
+		public UnityEngine_UI_InputField_OnValidateInput_Event(LuaFunction func, LuaTable self) : base(func, self) { }
+
+		public char Call(string param0, int param1, char param2)
+		{
+			func.BeginPCall();
+			func.Push(param0);
+			func.Push(param1);
+			func.Push(param2);
+			func.PCall();
+			char ret = (char)func.CheckNumber();
+			func.EndPCall();
+			return ret;
+		}
+
+		public char CallWithSelf(string param0, int param1, char param2)
+		{
+			func.BeginPCall();
+			func.Push(self);
+			func.Push(param0);
+			func.Push(param1);
+			func.Push(param2);
+			func.PCall();
+			char ret = (char)func.CheckNumber();
+			func.EndPCall();
+			return ret;
+		}
+	}
+
+	public UnityEngine.UI.InputField.OnValidateInput UnityEngine_UI_InputField_OnValidateInput(LuaFunction func, LuaTable self, bool flag)
+	{
+		if (func == null)
+		{
+			UnityEngine.UI.InputField.OnValidateInput fn = delegate(string param0, int param1, char param2) { return '\0'; };
+			return fn;
+		}
+
+		if(!flag)
+		{
+			UnityEngine_UI_InputField_OnValidateInput_Event target = new UnityEngine_UI_InputField_OnValidateInput_Event(func);
+			UnityEngine.UI.InputField.OnValidateInput d = target.Call;
+			target.method = d.Method;
+			return d;
+		}
+		else
+		{
+			UnityEngine_UI_InputField_OnValidateInput_Event target = new UnityEngine_UI_InputField_OnValidateInput_Event(func, self);
+			UnityEngine.UI.InputField.OnValidateInput d = target.CallWithSelf;
+			target.method = d.Method;
+			return d;
+		}
+	}
+
+	bool Check_UnityEngine_UI_InputField_OnValidateInput(IntPtr L, int pos)
+	{
+		return TypeChecker.CheckDelegateType(typeof(UnityEngine.UI.InputField.OnValidateInput), L, pos);
+	}
+
+	void Push_UnityEngine_UI_InputField_OnValidateInput(IntPtr L, UnityEngine.UI.InputField.OnValidateInput o)
+	{
+		ToLua.Push(L, o);
+	}
+
 	class System_Action_int_string_Event : LuaDelegate
 	{
 		public System_Action_int_string_Event(LuaFunction func) : base(func) { }
@@ -3040,6 +3231,65 @@ public class DelegateFactory
 	}
 
 	void Push_System_Action_int_string(IntPtr L, System.Action<int,string> o)
+	{
+		ToLua.Push(L, o);
+	}
+
+	class System_Action_string_object_Event : LuaDelegate
+	{
+		public System_Action_string_object_Event(LuaFunction func) : base(func) { }
+		public System_Action_string_object_Event(LuaFunction func, LuaTable self) : base(func, self) { }
+
+		public void Call(string param0, object param1)
+		{
+			func.BeginPCall();
+			func.Push(param0);
+			func.Push(param1);
+			func.PCall();
+			func.EndPCall();
+		}
+
+		public void CallWithSelf(string param0, object param1)
+		{
+			func.BeginPCall();
+			func.Push(self);
+			func.Push(param0);
+			func.Push(param1);
+			func.PCall();
+			func.EndPCall();
+		}
+	}
+
+	public System.Action<string,object> System_Action_string_object(LuaFunction func, LuaTable self, bool flag)
+	{
+		if (func == null)
+		{
+			System.Action<string,object> fn = delegate(string param0, object param1) { };
+			return fn;
+		}
+
+		if(!flag)
+		{
+			System_Action_string_object_Event target = new System_Action_string_object_Event(func);
+			System.Action<string,object> d = target.Call;
+			target.method = d.Method;
+			return d;
+		}
+		else
+		{
+			System_Action_string_object_Event target = new System_Action_string_object_Event(func, self);
+			System.Action<string,object> d = target.CallWithSelf;
+			target.method = d.Method;
+			return d;
+		}
+	}
+
+	bool Check_System_Action_string_object(IntPtr L, int pos)
+	{
+		return TypeChecker.CheckDelegateType(typeof(System.Action<string,object>), L, pos);
+	}
+
+	void Push_System_Action_string_object(IntPtr L, System.Action<string,object> o)
 	{
 		ToLua.Push(L, o);
 	}

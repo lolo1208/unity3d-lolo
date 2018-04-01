@@ -26,14 +26,14 @@ namespace ShibaInu
 		/// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadSceneEvent.lua
 		private static LuaFunction _dispatchEvent;
 
-		public static Transform uiCanvas;
-		public static Transform sceneLayer;
-		public static Transform uiLayer;
-		public static Transform windowLayer;
-		public static Transform uiTopLayer;
-		public static Transform alertLayer;
-		public static Transform guideLayer;
-		public static Transform topLayer;
+		public static RectTransform uiCanvas;
+		public static RectTransform sceneLayer;
+		public static RectTransform uiLayer;
+		public static RectTransform windowLayer;
+		public static RectTransform uiTopLayer;
+		public static RectTransform alertLayer;
+		public static RectTransform guideLayer;
+		public static RectTransform topLayer;
 
 		/// 不需要被销毁的对象列表 [ key = 对象本身, value = 层级列表（从对象父级[0] 到根图层） ]
 		private static readonly Dictionary<GameObject, List<string>> _dontDestroyMap = new Dictionary<GameObject, List<string>> ();
@@ -59,26 +59,37 @@ namespace ShibaInu
 		/// </summary>
 		public static void Initialize ()
 		{
-			sceneLayer = LuaHelper.CreateGameObject ("scene", uiCanvas, false).transform;
+			sceneLayer = LuaHelper.CreateGameObject ("scene", uiCanvas, false).transform as RectTransform;
 			sceneLayer.localPosition = sceneLayerPos;
 
-			uiLayer = LuaHelper.CreateGameObject ("ui", uiCanvas, false).transform;
+			uiLayer = LuaHelper.CreateGameObject ("ui", uiCanvas, false).transform as RectTransform;
 			uiLayer.localPosition = uiLayerPos;
 
-			windowLayer = LuaHelper.CreateGameObject ("window", uiCanvas, false).transform;
+			windowLayer = LuaHelper.CreateGameObject ("window", uiCanvas, false).transform as RectTransform;
 			windowLayer.localPosition = windowLayerPos;
 
-			uiTopLayer = LuaHelper.CreateGameObject ("uiTop", uiCanvas, false).transform;
+			uiTopLayer = LuaHelper.CreateGameObject ("uiTop", uiCanvas, false).transform as RectTransform;
 			uiTopLayer.localPosition = uiTopLayerPos;
 
-			alertLayer = LuaHelper.CreateGameObject ("alert", uiCanvas, false).transform;
+			alertLayer = LuaHelper.CreateGameObject ("alert", uiCanvas, false).transform as RectTransform;
 			alertLayer.localPosition = alertLayerPos;
 
-			guideLayer = LuaHelper.CreateGameObject ("guide", uiCanvas, false).transform;
+			guideLayer = LuaHelper.CreateGameObject ("guide", uiCanvas, false).transform as RectTransform;
 			guideLayer.localPosition = guideLayerPos;
 
-			topLayer = LuaHelper.CreateGameObject ("top", uiCanvas, false).transform;
+			topLayer = LuaHelper.CreateGameObject ("top", uiCanvas, false).transform as RectTransform;
 			topLayer.localPosition = topLayerPos;
+
+			Resize ();
+		}
+
+
+		/// <summary>
+		/// 屏幕尺寸有改变时，重置所有图层的尺寸
+		/// </summary>
+		public static void Resize ()
+		{
+			sceneLayer.sizeDelta = uiLayer.sizeDelta = windowLayer.sizeDelta = uiTopLayer.sizeDelta = alertLayer.sizeDelta = guideLayer.sizeDelta = topLayer.sizeDelta = uiCanvas.sizeDelta;
 		}
 
 
@@ -323,6 +334,7 @@ namespace ShibaInu
 				Debug.Log ("[Unload] Scene: " + sceneName);
 			}
 		}
+
 
 		//
 	}

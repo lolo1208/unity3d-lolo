@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.Sprites;
 
@@ -18,20 +19,76 @@ namespace ShibaInu
 	public class CircleImage : MaskableGraphic, ICanvasRaycastFilter
 	{
 
+		public Sprite sourceImage {
+			set {
+				if (value != m_sourceImage) {
+					m_sourceImage = value;
+					SetVerticesDirty ();
+				}
+			}
+			get { return m_sourceImage; }
+		}
+
 		[Tooltip ("源图像")]
-		public Sprite sourceImage;
+		[FormerlySerializedAs ("sourceImage"), SerializeField]
+		protected Sprite m_sourceImage;
+
+
+
+
+		//
+		public float fan {
+			set {
+				if (value != m_fan) {
+					m_fan = value;
+					SetVerticesDirty ();
+				}
+			}
+			get { return m_fan; }
+		}
 
 		[Tooltip ("扇形比例，0=整圆")]
 		[Range (0, 1)]
-		public float fan = 0f;
+		[FormerlySerializedAs ("fan"), SerializeField]
+		protected float m_fan = 0f;
+		//
+
+
+		//
+		public float ring {
+			set {
+				if (value != m_ring) {
+					m_ring = value;
+					SetVerticesDirty ();
+				}
+			}
+			get { return m_ring; }
+		}
 
 		[Tooltip ("圆环比例，0=整圆")]
 		[Range (0, 1)]
-		public float ring = 0f;
+		[FormerlySerializedAs ("ring"), SerializeField]
+		protected float m_ring = 0f;
+		//
+
+
+		//
+		public int sides {
+			set {
+				if (value != m_sides) {
+					m_sides = value;
+					SetVerticesDirty ();
+				}
+			}
+			get { return m_sides; }
+		}
 
 		[Tooltip ("边数，值越大越接近圆形")]
 		[Range (3, 100)]
-		public int sides = 20;
+		[FormerlySerializedAs ("sides"), SerializeField]
+		protected int m_sides = 30;
+		//
+
 
 		/// 内环
 		private List<Vector3> m_innerVertices = new List<Vector3> ();

@@ -8,6 +8,7 @@ public class ShibaInu_StageWrap
 	{
 		L.BeginClass(typeof(ShibaInu.Stage), typeof(System.Object));
 		L.RegFunction("Initialize", Initialize);
+		L.RegFunction("Resize", Resize);
 		L.RegFunction("Clean", Clean);
 		L.RegFunction("AddDontDestroy", AddDontDestroy);
 		L.RegFunction("RemoveDontDestroy", RemoveDontDestroy);
@@ -59,6 +60,21 @@ public class ShibaInu_StageWrap
 		{
 			ToLua.CheckArgsCount(L, 0);
 			ShibaInu.Stage.Initialize();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int Resize(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			ShibaInu.Stage.Resize();
 			return 0;
 		}
 		catch (Exception e)
@@ -184,7 +200,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			ToLua.Push(L, ShibaInu.Stage.uiCanvas);
+			ToLua.PushSealed(L, ShibaInu.Stage.uiCanvas);
 			return 1;
 		}
 		catch (Exception e)
@@ -198,7 +214,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			ToLua.Push(L, ShibaInu.Stage.sceneLayer);
+			ToLua.PushSealed(L, ShibaInu.Stage.sceneLayer);
 			return 1;
 		}
 		catch (Exception e)
@@ -212,7 +228,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			ToLua.Push(L, ShibaInu.Stage.uiLayer);
+			ToLua.PushSealed(L, ShibaInu.Stage.uiLayer);
 			return 1;
 		}
 		catch (Exception e)
@@ -226,7 +242,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			ToLua.Push(L, ShibaInu.Stage.windowLayer);
+			ToLua.PushSealed(L, ShibaInu.Stage.windowLayer);
 			return 1;
 		}
 		catch (Exception e)
@@ -240,7 +256,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			ToLua.Push(L, ShibaInu.Stage.uiTopLayer);
+			ToLua.PushSealed(L, ShibaInu.Stage.uiTopLayer);
 			return 1;
 		}
 		catch (Exception e)
@@ -254,7 +270,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			ToLua.Push(L, ShibaInu.Stage.alertLayer);
+			ToLua.PushSealed(L, ShibaInu.Stage.alertLayer);
 			return 1;
 		}
 		catch (Exception e)
@@ -268,7 +284,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			ToLua.Push(L, ShibaInu.Stage.guideLayer);
+			ToLua.PushSealed(L, ShibaInu.Stage.guideLayer);
 			return 1;
 		}
 		catch (Exception e)
@@ -282,7 +298,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			ToLua.Push(L, ShibaInu.Stage.topLayer);
+			ToLua.PushSealed(L, ShibaInu.Stage.topLayer);
 			return 1;
 		}
 		catch (Exception e)
@@ -296,7 +312,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
+			UnityEngine.RectTransform arg0 = (UnityEngine.RectTransform)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform));
 			ShibaInu.Stage.uiCanvas = arg0;
 			return 0;
 		}
@@ -311,7 +327,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
+			UnityEngine.RectTransform arg0 = (UnityEngine.RectTransform)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform));
 			ShibaInu.Stage.sceneLayer = arg0;
 			return 0;
 		}
@@ -326,7 +342,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
+			UnityEngine.RectTransform arg0 = (UnityEngine.RectTransform)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform));
 			ShibaInu.Stage.uiLayer = arg0;
 			return 0;
 		}
@@ -341,7 +357,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
+			UnityEngine.RectTransform arg0 = (UnityEngine.RectTransform)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform));
 			ShibaInu.Stage.windowLayer = arg0;
 			return 0;
 		}
@@ -356,7 +372,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
+			UnityEngine.RectTransform arg0 = (UnityEngine.RectTransform)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform));
 			ShibaInu.Stage.uiTopLayer = arg0;
 			return 0;
 		}
@@ -371,7 +387,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
+			UnityEngine.RectTransform arg0 = (UnityEngine.RectTransform)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform));
 			ShibaInu.Stage.alertLayer = arg0;
 			return 0;
 		}
@@ -386,7 +402,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
+			UnityEngine.RectTransform arg0 = (UnityEngine.RectTransform)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform));
 			ShibaInu.Stage.guideLayer = arg0;
 			return 0;
 		}
@@ -401,7 +417,7 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
+			UnityEngine.RectTransform arg0 = (UnityEngine.RectTransform)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform));
 			ShibaInu.Stage.topLayer = arg0;
 			return 0;
 		}

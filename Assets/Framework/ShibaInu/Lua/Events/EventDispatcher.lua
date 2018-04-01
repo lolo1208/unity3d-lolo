@@ -26,15 +26,12 @@ local insert = table.insert
 ---@field protected _eventMap table<string, EventListenerInfo[]>
 local EventDispatcher = class("EventDispatcher")
 
-
-
 --- 构造函数
 ---@param optional go UnityEngine.GameObject @ 对应的 GameObject（用于冒泡，没有go时，可以不用传）
 function EventDispatcher:Ctor(go)
     self._eventMap = {}
     self.gameObject = go
 end
-
 
 --- 注册事件
 ---@param type string @ 事件类型
@@ -79,13 +76,17 @@ function EventDispatcher:AddEventListener(type, callback, caller, priority, ...)
             LuaHelper.AddDestroyEvent(go, self)
 
         elseif type == PointerEvent.CLICK or type == PointerEvent.UP or type == PointerEvent.DOWN
-        or type == PointerEvent.ENTER or type == PointerEvent.EXIT then
+                or type == PointerEvent.ENTER or type == PointerEvent.EXIT then
             -- PointerEvent 相关事件，由 C# PointerEventDispatcher.cs 派发
             LuaHelper.AddPointerEvent(go, self)
+
+        elseif type == DragDropEvent.BEGIN_DRAG or type == DragDropEvent.DRAG or type == DragDropEvent.END_DRAG
+                or type == DragDropEvent.INITIALIZE_POTENTIAL_DRAG or type == DragDropEvent.DROP then
+            -- DragDropEvent 事件，由 C# DragDropEventDispatcher.cs 派发
+            LuaHelper.AddDragDropEvent(go, self)
         end
     end
 end
-
 
 --- 移除事件侦听
 ---@param type string @ 事件类型
@@ -112,7 +113,6 @@ function EventDispatcher:RemoveEventListener(type, callback, caller)
         end
     end
 end
-
 
 --- 抛出事件
 ---@param event Event @ 事件对象
@@ -165,7 +165,6 @@ function EventDispatcher:DispatchEvent(event, bubbles, recycle)
     end
 end
 
-
 --- 是否正在侦听指定类型的事件
 ---@param type string @ 事件类型
 ---@return boolean
@@ -176,7 +175,5 @@ function EventDispatcher:HasEventListener(type)
     end
     return #list > 0
 end
-
-
 
 return EventDispatcher

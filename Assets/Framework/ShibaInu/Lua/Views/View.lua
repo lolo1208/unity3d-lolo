@@ -8,7 +8,6 @@
 local error = error
 local format = string.format
 
-
 ---@class View : EventDispatcher
 ---@field New fun(prefab:UnityEngine.GameObject | string, parent:string | UnityEngine.Transform, groupName:string, isAsync:boolean):View
 ---
@@ -18,14 +17,11 @@ local format = string.format
 ---@field _initialized boolean @ 是否已经初始化完成了
 local View = class("View", EventDispatcher)
 
-
-
 --- 异步资源加载完成时，初始化
 local function InitializeAsync(view, go)
     view.gameObject = go
     view:OnInitialize()
 end
-
 
 --- 构造函数
 --- 参数详情可参考 Instantiate() 和 InstantiateAsync() 函数使用范例
@@ -51,12 +47,11 @@ function View:Ctor(prefab, parent, groupName, isAsync)
     end
 end
 
-
 --- 初始化时（已创建 prefab 实例），并设置 self.gameObject
 --- 注意：该函数只能被调用一次，子类可以在该函数内做一些初始化的工作。子类覆盖该函数时，记得调用 Class.super.OnInitialize(self)
 function View:OnInitialize()
     if self._initialized then
-        error(format(Constants.E1004, self.__classname))
+        error(format(Constants.E2004, self.__classname))
     end
     self._initialized = true
 
@@ -78,7 +73,7 @@ end
 ---@param value boolean
 local function SetVisibled(self, value)
     if not self._initialized then
-        error(format(Constants.E1005, self.__classname))
+        error(format(Constants.E2005, self.__classname))
     end
 
     self.visibled = value
@@ -96,7 +91,6 @@ local function SetVisibled(self, value)
     end
 end
 
-
 --- 显示 gameObject
 function View:Show()
     if not self.visibled then
@@ -104,14 +98,12 @@ function View:Show()
     end
 end
 
-
 --- 隐藏 gameObject
 function View:Hide()
     if self.visibled then
         SetVisibled(self, false)
     end
 end
-
 
 --- 显示／隐藏 gameObject
 function View:ToggleVisibility()
@@ -122,16 +114,13 @@ function View:ToggleVisibility()
     end
 end
 
-
 --- 显示时
 function View:OnShow()
 end
 
-
 --- 隐藏时
 function View:OnHide()
 end
-
 
 --- 监听或取消监听 self.gameObject 销毁事件
 --- 注意：不要在调用该方法后，立即调用 Destroy(self.gameObject) 这样可能会收到不到事件。推荐在 OnInitialize() 中调用
@@ -141,7 +130,7 @@ function View:EnableDestroyListener(enabled)
 
     local go = self.gameObject
     if isnull(go) then
-        error(format(Constants.E1006, self.__classname))
+        error(format(Constants.E2006, self.__classname))
     end
 
     if enabled then
@@ -151,12 +140,9 @@ function View:EnableDestroyListener(enabled)
     end
 end
 
-
 --- self.gameObject 被销毁时
 --- 请通过 self:EnableDestroyListener() 来设置监听
 function View:OnDestroy()
 end
-
-
 
 return View

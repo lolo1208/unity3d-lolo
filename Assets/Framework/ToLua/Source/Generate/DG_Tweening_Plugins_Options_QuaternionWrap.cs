@@ -6,7 +6,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 {
 	public static void Register(LuaState L)
 	{
-		L.BeginClass(typeof(DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>), typeof(DG.Tweening.Tweener), "DG_Tweening_Plugins_Options_Quaternion");
+		L.BeginClass(typeof(DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>), typeof(DG.Tweening.Tweener), "DG_Tweening_Plugins_Options_Quaternion");
 		L.RegFunction("ChangeStartValue", ChangeStartValue);
 		L.RegFunction("ChangeEndValue", ChangeEndValue);
 		L.RegFunction("ChangeValues", ChangeValues);
@@ -29,7 +29,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 
 			if (count == 2)
 			{
-				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
 				object arg0 = ToLua.ToVarObject(L, 2);
 				DG.Tweening.Tweener o = obj.ChangeStartValue(arg0);
 				ToLua.PushObject(L, o);
@@ -37,7 +37,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 			}
 			else if (count == 3)
 			{
-				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
 				object arg0 = ToLua.ToVarObject(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 				DG.Tweening.Tweener o = obj.ChangeStartValue(arg0, arg1);
@@ -46,7 +46,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 			}
 			else
 			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>.ChangeStartValue");
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>.ChangeStartValue");
 			}
 		}
 		catch (Exception e)
@@ -64,7 +64,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 
 			if (count == 2)
 			{
-				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
 				object arg0 = ToLua.ToVarObject(L, 2);
 				DG.Tweening.Tweener o = obj.ChangeEndValue(arg0);
 				ToLua.PushObject(L, o);
@@ -72,7 +72,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 			}
 			else if (count == 3 && TypeChecker.CheckTypes<float>(L, 3))
 			{
-				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
 				object arg0 = ToLua.ToVarObject(L, 2);
 				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
 				DG.Tweening.Tweener o = obj.ChangeEndValue(arg0, arg1);
@@ -81,7 +81,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 			}
 			else if (count == 3 && TypeChecker.CheckTypes<bool>(L, 3))
 			{
-				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
 				object arg0 = ToLua.ToVarObject(L, 2);
 				bool arg1 = LuaDLL.lua_toboolean(L, 3);
 				DG.Tweening.Tweener o = obj.ChangeEndValue(arg0, arg1);
@@ -90,7 +90,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 			}
 			else if (count == 4)
 			{
-				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
 				object arg0 = ToLua.ToVarObject(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
@@ -100,7 +100,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 			}
 			else
 			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>.ChangeEndValue");
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>.ChangeEndValue");
 			}
 		}
 		catch (Exception e)
@@ -118,7 +118,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 
 			if (count == 3)
 			{
-				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
 				object arg0 = ToLua.ToVarObject(L, 2);
 				object arg1 = ToLua.ToVarObject(L, 3);
 				DG.Tweening.Tweener o = obj.ChangeValues(arg0, arg1);
@@ -127,7 +127,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 			}
 			else if (count == 4)
 			{
-				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)ToLua.CheckObject<DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>>(L, 1);
 				object arg0 = ToLua.ToVarObject(L, 2);
 				object arg1 = ToLua.ToVarObject(L, 3);
 				float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
@@ -137,7 +137,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 			}
 			else
 			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>.ChangeValues");
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>.ChangeValues");
 			}
 		}
 		catch (Exception e)
@@ -154,8 +154,8 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
-			UnityEngine.Quaternion ret = obj.startValue;
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			UnityEngine.Vector3 ret = obj.startValue;
 			ToLua.Push(L, ret);
 			return 1;
 		}
@@ -173,8 +173,8 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
-			UnityEngine.Quaternion ret = obj.endValue;
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			UnityEngine.Vector3 ret = obj.endValue;
 			ToLua.Push(L, ret);
 			return 1;
 		}
@@ -192,8 +192,8 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
-			UnityEngine.Quaternion ret = obj.changeValue;
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			UnityEngine.Vector3 ret = obj.changeValue;
 			ToLua.Push(L, ret);
 			return 1;
 		}
@@ -211,7 +211,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
 			DG.Tweening.Plugins.Options.QuaternionOptions ret = obj.plugOptions;
 			ToLua.PushValue(L, ret);
 			return 1;
@@ -230,7 +230,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
 			DG.Tweening.Core.DOGetter<UnityEngine.Quaternion> ret = obj.getter;
 			ToLua.Push(L, ret);
 			return 1;
@@ -249,7 +249,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
 			DG.Tweening.Core.DOSetter<UnityEngine.Quaternion> ret = obj.setter;
 			ToLua.Push(L, ret);
 			return 1;
@@ -268,8 +268,8 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
-			UnityEngine.Quaternion arg0 = ToLua.ToQuaternion(L, 2);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			UnityEngine.Vector3 arg0 = ToLua.ToVector3(L, 2);
 			obj.startValue = arg0;
 			return 0;
 		}
@@ -287,8 +287,8 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
-			UnityEngine.Quaternion arg0 = ToLua.ToQuaternion(L, 2);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			UnityEngine.Vector3 arg0 = ToLua.ToVector3(L, 2);
 			obj.endValue = arg0;
 			return 0;
 		}
@@ -306,8 +306,8 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
-			UnityEngine.Quaternion arg0 = ToLua.ToQuaternion(L, 2);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			UnityEngine.Vector3 arg0 = ToLua.ToVector3(L, 2);
 			obj.changeValue = arg0;
 			return 0;
 		}
@@ -325,7 +325,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
 			DG.Tweening.Plugins.Options.QuaternionOptions arg0 = StackTraits<DG.Tweening.Plugins.Options.QuaternionOptions>.Check(L, 2);
 			obj.plugOptions = arg0;
 			return 0;
@@ -344,7 +344,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
 			DG.Tweening.Core.DOGetter<UnityEngine.Quaternion> arg0 = (DG.Tweening.Core.DOGetter<UnityEngine.Quaternion>)ToLua.CheckDelegate<DG.Tweening.Core.DOGetter<UnityEngine.Quaternion>>(L, 2);
 			obj.getter = arg0;
 			return 0;
@@ -363,7 +363,7 @@ public class DG_Tweening_Plugins_Options_QuaternionWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Quaternion,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
+			DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions> obj = (DG.Tweening.Core.TweenerCore<UnityEngine.Quaternion,UnityEngine.Vector3,DG.Tweening.Plugins.Options.QuaternionOptions>)o;
 			DG.Tweening.Core.DOSetter<UnityEngine.Quaternion> arg0 = (DG.Tweening.Core.DOSetter<UnityEngine.Quaternion>)ToLua.CheckDelegate<DG.Tweening.Core.DOSetter<UnityEngine.Quaternion>>(L, 2);
 			obj.setter = arg0;
 			return 0;

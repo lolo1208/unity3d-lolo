@@ -53,7 +53,7 @@ end
 function LinkedList:Push(value, key)
     local node = { key = key, value = value, prev = self._tail, next = nil } ---@type LinkedListNode
     if self._head == nil then
-        self._tail = node
+        self._head = node
     else
         self._tail.next = node
     end

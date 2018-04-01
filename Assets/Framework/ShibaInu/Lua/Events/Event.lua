@@ -32,14 +32,17 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
----@type string @ 帧更新事件。该事件只会在 Stage 上抛出
-Event.UPDATE = "Update"
+--- 帧更新事件。该事件只会在 Stage 上抛出
+Event.UPDATE = "Event_Update"
 
----@type string @ 渲染前更新，在 Event.UPDATE 事件之后。该事件只会在 Stage 上抛出
-Event.LATE_UPDATE = "LateUpdate"
+--- 渲染前更新，在 Event.UPDATE 事件之后。该事件只会在 Stage 上抛出
+Event.LATE_UPDATE = "Event_LateUpdate"
 
----@type string @ 固定时间更新（Edit -> Project Setting -> time -> Fixed timestep）。该事件只会在 Stage 上抛出
-Event.FIXED_UPDATE = "FixedUpdate"
+--- 固定时间更新（Edit -> Project Setting -> time -> Fixed timestep）。该事件只会在 Stage 上抛出
+Event.FIXED_UPDATE = "Event_FixedUpdate"
+
+--- 屏幕尺寸有改变
+Event.RESIZE = "Event_Resize"
 
 --=--
 

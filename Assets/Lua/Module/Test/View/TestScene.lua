@@ -1,34 +1,29 @@
 --
--- 测试场景模块
--- 2017/11/14
+-- 测试场景
+-- 2018/3/14
 -- Author LOLO
 --
 
 
 ---@class Test.TestScene : Scene
 ---@field New fun():Test.TestScene
+---
 local TestScene = class("Test.TestScene", Scene)
 
-
-
-
-
-function TestScene:Ctor()
-    TestScene.super.Ctor(self, "Test", "Prefabs/Test/TestUI.prefab", true)
-
-    Stage.OpenWindow(require("Module.Test.View.TestWindow"))
+function TestScene:Ctor(...)
+    TestScene.super.Ctor(self, "Test")
 end
-
-
 
 function TestScene:OnInitialize()
     TestScene.super.OnInitialize(self)
+
 end
 
+
+
+--
 
 function TestScene:OnDestroy()
 end
-
-
 
 return TestScene

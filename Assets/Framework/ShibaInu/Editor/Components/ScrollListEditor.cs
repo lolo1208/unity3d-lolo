@@ -28,13 +28,12 @@ namespace ShibaInu
 		{
 			base.OnInspectorGUI ();
 
-
 			// direction
 			EditorGUILayout.BeginHorizontal ();
 			EditorGUILayout.LabelField (new GUIContent ("Direction", "滚动方向"), GUILayout.Width (m_labelWidth));
 			bool isVertical = m_scrollList.isVertical;
-			bool isH = GUILayout.Toggle (!isVertical, new GUIContent ("Horizontal", "水平"), GUILayout.Width (m_hWidth2));
-			bool isV = GUILayout.Toggle (isVertical, new GUIContent ("Vertical", "垂直"), GUILayout.Width (m_hWidth2));
+			bool isH = GUILayout.Toggle (!isVertical, new GUIContent ("Horizontal", "水平"), GUILayout.Width (m_halfWidth));
+			bool isV = GUILayout.Toggle (isVertical, new GUIContent ("Vertical", "垂直"), GUILayout.Width (m_halfWidth));
 			if (isVertical) {
 				if (isH)
 					m_scrollList.isVertical = false;
@@ -51,8 +50,8 @@ namespace ShibaInu
 			EditorGUILayout.BeginHorizontal ();
 			EditorGUILayout.LabelField (new GUIContent ("Viewport Size", "显示范围 [ 宽, 高 ]"), GUILayout.Width (m_labelWidth));
 			Vector2 viewportSize = m_viewportSize.vector2Value;
-			int vpw = EditorGUILayout.IntField ((int)viewportSize.x, GUILayout.Width (m_hWidth2));
-			int vph = EditorGUILayout.IntField ((int)viewportSize.y, GUILayout.Width (m_hWidth2));
+			int vpw = EditorGUILayout.IntField ((int)viewportSize.x, GUILayout.Width (m_halfWidth));
+			int vph = EditorGUILayout.IntField ((int)viewportSize.y, GUILayout.Width (m_halfWidth));
 			m_scrollList.SetViewportSize ((uint)(vpw < 0 ? 0 : vpw), (uint)(vph < 0 ? 0 : vph));
 			EditorGUILayout.EndHorizontal ();
 

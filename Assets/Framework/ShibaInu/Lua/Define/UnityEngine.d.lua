@@ -21,6 +21,10 @@
 ---@field zero Vector2 @  Vector2(0, 0)
 ---@field one Vector2 @   Vector2(1, 1)
 ---
+---@field Set fun(x:number, y:number)
+---@field Get fun() : x_and_y
+---@field Clone fun():Vector2
+---
 ---@class Vector2 : UnityEngine.Vector2
 
 

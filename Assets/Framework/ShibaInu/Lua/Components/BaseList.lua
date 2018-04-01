@@ -63,16 +63,12 @@ function BaseList:Ctor(go, itemClass)
     self._selectMode = BaseList.SELECT_MODE_INDEX
     self._curSelectedIndex = -1
 
-    self._itemClass = itemClass
-    self.gameObject = go
-    self:OnInitialize()
-
     local list = GetComponent.BaseList(go)
     if list == nil then
-        error(format(Constants.E1007, self.__classname, go.name))
+        error(format(Constants.E2007, self.__classname, go.name))
     end
-    self._list = list
     list.luaTarget = self
+    self._list = list
 
     self._content = list.content
     self._rowCount = list.rowCount
@@ -84,6 +80,10 @@ function BaseList:Ctor(go, itemClass)
     if isnull(self._itemPrefab) then
         self._itemPrefab = nil
     end
+
+    self._itemClass = itemClass
+    self.gameObject = go
+    self:OnInitialize()
 end
 
 
@@ -461,7 +461,7 @@ local event = ListEvent.New()
 ---@param item ItemRenderer
 function BaseList:DispatchListEvent(type, item)
     event.type = type
-    event.item = item;
+    event.item = item
     self:DispatchEvent(event, false, false)
 end
 

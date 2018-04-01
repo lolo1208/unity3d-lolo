@@ -13,8 +13,11 @@ ShibaInu.Stage = ShibaInu.Stage ---@type ShibaInu.Stage
 ShibaInu.ResManager = ShibaInu.ResManager ---@type ShibaInu.ResManager
 ShibaInu.LuaHelper = ShibaInu.LuaHelper ---@type ShibaInu.LuaHelper
 ShibaInu.HttpRequest = ShibaInu.HttpRequest ---@type ShibaInu.HttpRequest
+ShibaInu.TcpSocketClient = ShibaInu.TcpSocketClient ---@type ShibaInu.TcpSocketClient
+ShibaInu.CircleImage = ShibaInu.CircleImage ---@type ShibaInu.CircleImage
 ShibaInu.BaseList = ShibaInu.BaseList ---@type ShibaInu.BaseList
 ShibaInu.ScrollList = ShibaInu.ScrollList ---@type ShibaInu.ScrollList
+ShibaInu.Picker = ShibaInu.Picker ---@type ShibaInu.Picker
 
 
 
@@ -47,6 +50,7 @@ ShibaInu.ScrollList = ShibaInu.ScrollList ---@type ShibaInu.ScrollList
 ---@class ShibaInu.LuaHelper
 ---@field AddDestroyEvent fun(go:UnityEngine.GameObject, ed:EventDispatcher):void @ 在指定的 gameObject 上添加 DestroyEventDispatcher 脚本。当 gameObject 销毁时，在 lua 层（gameObject上）派发 DestroyEvent.DESTROY 事件
 ---@field AddPointerEvent fun(go:UnityEngine.GameObject, ed:EventDispatcher):void @ 在指定的 gameObject 上添加 PointerEventDispatcher 脚本。当 gameObject 与鼠标指针（touch）交互时，派发相关事件
+---@field AddDragDropEvent fun(go:UnityEngine.GameObject, ed:EventDispatcher):void
 ---@field CreateGameObject fun(name:string, parent:UnityEngine.Transform, notUI:boolean):UnityEngine.GameObject @ 创建并返回一个空 GameObject
 ---@field SetParent fun(target:UnityEngine.Transform, parent:UnityEngine.Transform):void @ 设置 target 的父节点为 parent。
 ---@field SendHttpRequest fun(url:string, callbak:fun(statusCode:number, content:string), postData:string):ShibaInu.HttpRequest
@@ -69,6 +73,32 @@ ShibaInu.ScrollList = ShibaInu.ScrollList ---@type ShibaInu.ScrollList
 ---@field Send fun():void
 ---@field Abort fun():void
 
+
+
+---@class ShibaInu.TcpSocketClient
+---@field New fun():ShibaInu.TcpSocketClient
+---
+---@field luaClient TcpSocketClient
+---@field msgProtocol IMsgProtocol
+---@field connentTimeout number
+---@field sendTimeout number
+---@field receiveTimeout number
+---@field host string
+---@field port number
+---@field connected boolean
+---@field connecting boolean
+---
+---@field Content(host:string, port:number):void
+---@field Send(data:any):void
+---@field Close():void
+
+
+
+---@class ShibaInu.CircleImage : UnityEngine.UI.MaskableGraphic
+---@field sourceImage UnityEngine.Sprite @ 源图像
+---@field fan number @ 扇形比例，0=整圆
+---@field ring number @ 圆环比例，0=整圆
+---@field sides number @ 边数，值越大越接近圆形
 
 
 ---@class ShibaInu.BaseList
@@ -95,3 +125,21 @@ ShibaInu.ScrollList = ShibaInu.ScrollList ---@type ShibaInu.ScrollList
 ---
 ---@field SyncPropertys fun(itemPrefab:UnityEngine.GameObject, rowCount:number, columnCount:number, horizontalGap:number, verticalGap:number, isVertical:boolean, viewportWidth:number, viewportHeight:number):void
 
+
+
+---@class ShibaInu.Picker : UnityEngine.UnityEngine.EventSystems.UIBehaviour
+---@field luaTarget Picker
+---@field hitArea UnityEngine.RectTransform @ 拖动点击响应区域
+---@field content UnityEngine.RectTransform @ 内容容器（只读）
+---@field itemPrefab UnityEngine.GameObject @ Item 的预制对象
+---@field itemOffsetCount number @ 上下（左右）每个方向最多显示 Item 数量
+---@field itemAlphaOffset number @ Item 透明度偏移
+---@field itemScaleOffset number @ Item 缩放偏移
+---@field isVertical boolean @ 是否为垂直方向排列
+---@field isBounces boolean @ 是否启用回弹效果
+---@field itemCount number @ Item 数量
+---@field index number @ 当前所选 item 的索引
+---
+---@field ScrollByIndex fun(index:number, duration:number):void @ 缓动到 index 对应的 item 位置
+---@field ScrollToSelectedItem fun(duration:number):void @ 缓动到当前所选的 item 位置
+---@field Clean fun():void @ 清理并销毁所有的 Item

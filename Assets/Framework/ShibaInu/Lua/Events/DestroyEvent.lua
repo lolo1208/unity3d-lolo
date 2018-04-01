@@ -16,8 +16,8 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
----@type string @ GameObject 被销毁。所有的 GameObject 都可以抛出该事件
-DestroyEvent.DESTROY = "Destroy"
+--- GameObject 被销毁。所有的 GameObject 都可以抛出该事件
+DestroyEvent.DESTROY = "DestroyEvent_Destroy"
 
 
 

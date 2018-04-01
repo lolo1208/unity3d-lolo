@@ -13,54 +13,90 @@ namespace ShibaInu
 	/// </summary>
 	public class StageLooper : MonoBehaviour
 	{
-		private LuaFunction _loopHandler;
-		private Stopwatch _stopwatch;
+		/// 当前时间（秒）
+		public static float time = 0;
+
+		private const string EVENT_UPDATE = "Event_Update";
+		private const string EVENT_LATE_UPDATE = "Event_LateUpdate";
+		private const string EVENT_FIXED_UPDATE = "Event_FixedUpdate";
+		private const string EVENT_RESIZE = "Event_Resize";
+
+
+		private LuaFunction m_loopHandler;
+		private Stopwatch m_stopwatch;
+
+		private float m_screenWidth;
+		private float m_screenHeight;
 
 
 
 		void Start ()
 		{
-			_stopwatch = new Stopwatch ();
-			_stopwatch.Start ();
-			_loopHandler = Common.luaMgr.state.GetFunction ("Stage._loopHandler");// - View/Stage.lua
+			m_stopwatch = new Stopwatch ();
+			m_stopwatch.Start ();
+			m_loopHandler = Common.luaMgr.state.GetFunction ("Stage._loopHandler");// - View/Stage.lua
+			m_screenWidth = Screen.width;
+			m_screenHeight = Screen.height;
+		}
+
+
+		public void UpdateTime ()
+		{
+			time = (float)m_stopwatch.ElapsedMilliseconds / 1000;
 		}
 
 
 		void Update ()
 		{
-			_loopHandler.BeginPCall ();
-			_loopHandler.Push ("Update");
-			_loopHandler.Push ((float)_stopwatch.ElapsedMilliseconds / 1000);
-			_loopHandler.PCall ();
-			_loopHandler.EndPCall ();
+			UpdateTime ();
+			m_loopHandler.BeginPCall ();
+			m_loopHandler.Push (EVENT_UPDATE);
+			m_loopHandler.Push (time);
+			m_loopHandler.PCall ();
+			m_loopHandler.EndPCall ();
+
+			// 屏幕尺寸有改变
+			if (Screen.width != m_screenWidth || Screen.height != m_screenHeight) {
+				m_screenWidth = Screen.width;
+				m_screenHeight = Screen.height;
+				Stage.Resize ();
+
+				m_loopHandler.BeginPCall ();
+				m_loopHandler.Push (EVENT_RESIZE);
+				m_loopHandler.Push (time);
+				m_loopHandler.PCall ();
+				m_loopHandler.EndPCall ();
+			}
 		}
 
 
 		void LateUpdate ()
 		{
-			_loopHandler.BeginPCall ();
-			_loopHandler.Push ("LateUpdate");
-			_loopHandler.Push ((float)_stopwatch.ElapsedMilliseconds / 1000);
-			_loopHandler.PCall ();
-			_loopHandler.EndPCall ();
+			UpdateTime ();
+			m_loopHandler.BeginPCall ();
+			m_loopHandler.Push (EVENT_LATE_UPDATE);
+			m_loopHandler.Push (time);
+			m_loopHandler.PCall ();
+			m_loopHandler.EndPCall ();
 		}
 
 
 		void FixedUpdate ()
 		{
-			_loopHandler.BeginPCall ();
-			_loopHandler.Push ("FixedUpdate");
-			_loopHandler.Push ((float)_stopwatch.ElapsedMilliseconds / 1000);
-			_loopHandler.PCall ();
-			_loopHandler.EndPCall ();
+			UpdateTime ();
+			m_loopHandler.BeginPCall ();
+			m_loopHandler.Push (EVENT_FIXED_UPDATE);
+			m_loopHandler.Push (time);
+			m_loopHandler.PCall ();
+			m_loopHandler.EndPCall ();
 		}
 
 
 
 		void OnDestroy ()
 		{
-			_stopwatch.Stop ();
-			_stopwatch = null;
+			m_stopwatch.Stop ();
+			m_stopwatch = null;
 		}
 
 

@@ -15,6 +15,7 @@ namespace ShibaInu
 
 		public static ThreadManager threadMgr;
 		public static LuaManager luaMgr;
+		public static TimerManager timerMgr;
 		public static StageLooper looper;
 
 	}

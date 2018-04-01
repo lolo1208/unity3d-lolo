@@ -19,13 +19,13 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
----@type string @ 开始加载某个资源。该事件只会在 Res(ShibaInu.ResManager) 上抛出
+--- 开始加载某个资源。该事件只会在 Res(ShibaInu.ResManager) 上抛出
 LoadResEvent.START = "LoadResEvent_Start"
 
----@type string @ 加载某个资源完成。该事件只会在 Res(ShibaInu.ResManager) 上抛出
+--- 加载某个资源完成。该事件只会在 Res(ShibaInu.ResManager) 上抛出
 LoadResEvent.COMPLETE = "LoadResEvent_Complete"
 
----@type string @ 加载所有资源完成。该事件只会在 Res(ShibaInu.ResManager) 上抛出
+--- 加载所有资源完成。该事件只会在 Res(ShibaInu.ResManager) 上抛出
 LoadResEvent.ALL_COMPLETE = "LoadResEvent_All_Complete"
 
 

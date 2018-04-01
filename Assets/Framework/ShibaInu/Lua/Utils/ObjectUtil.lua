@@ -1,5 +1,5 @@
 --
--- ObjectUtil
+-- Object 相关工具类
 -- 2017/10/9
 -- Author LOLO
 --

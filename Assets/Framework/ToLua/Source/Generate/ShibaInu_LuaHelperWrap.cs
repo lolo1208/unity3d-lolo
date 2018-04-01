@@ -9,6 +9,7 @@ public class ShibaInu_LuaHelperWrap
 		L.BeginStaticLibs("LuaHelper");
 		L.RegFunction("AddDestroyEvent", AddDestroyEvent);
 		L.RegFunction("AddPointerEvent", AddPointerEvent);
+		L.RegFunction("AddDragDropEvent", AddDragDropEvent);
 		L.RegFunction("CreateGameObject", CreateGameObject);
 		L.RegFunction("SetParent", SetParent);
 		L.RegFunction("SendHttpRequest", SendHttpRequest);
@@ -41,6 +42,23 @@ public class ShibaInu_LuaHelperWrap
 			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
 			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
 			ShibaInu.LuaHelper.AddPointerEvent(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int AddDragDropEvent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
+			ShibaInu.LuaHelper.AddDragDropEvent(arg0, arg1);
 			return 0;
 		}
 		catch (Exception e)

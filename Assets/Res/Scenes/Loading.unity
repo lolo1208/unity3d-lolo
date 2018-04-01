@@ -407,7 +407,7 @@ RectTransform:
   m_GameObject: {fileID: 1131994720}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.010013414, y: 0.010013414, z: 0.010013414}
+  m_LocalScale: {x: 0.010013204, y: 0.010013204, z: 0.010013204}
   m_Children:
   - {fileID: 1268331825}
   - {fileID: 2115601781}
@@ -480,7 +480,7 @@ GameObject:
   - component: {fileID: 1268331828}
   - component: {fileID: 1268331827}
   - component: {fileID: 1268331826}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: SceneUICamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}

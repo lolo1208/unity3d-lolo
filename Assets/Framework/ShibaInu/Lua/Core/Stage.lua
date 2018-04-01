@@ -28,7 +28,7 @@ local _windowList = {} ---@type table<number, Window> @ 当前已经显示的窗
 
 
 -- layers
-local _sceneLayer, _uiLayer, _windowLayer, _uiTopLayer, _alertLayer, _guideLayer, _topLayer ---@type UnityEngine.Transform
+local _sceneLayer, _uiLayer, _windowLayer, _uiTopLayer, _alertLayer, _guideLayer, _topLayer ---@type UnityEngine.RectTransform
 ---@type table<string, UnityEngine.Transform>
 local _layers = {}
 
@@ -66,7 +66,9 @@ local function LoadSceneCompleteHandler(event)
     RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
     _loadingScene:OnDestroy()
     _loadingScene = nil
-    _currentScene:OnInitialize()
+
+    --_currentScene:OnInitialize()
+    DelayToNextFrameCall(_currentScene.OnInitialize, _currentScene)
 end
 
 
@@ -103,7 +105,7 @@ function Stage.ShowScene(sceneClass)
     _currentScene = sceneClass.New()
     local sceneName = _currentScene.moduleName
     if sceneName == nil then
-        error(format(Constants.E1002, _currentScene.__classname))
+        error(format(Constants.E2002, _currentScene.__classname))
     end
 
     -- 独立场景
@@ -234,7 +236,7 @@ end
 function Stage.AddToLayer(target, layerName)
     local layer = _layers[layerName]
     if layer == nil then
-        error(format(Constants.E1001, layerName))
+        error(format(Constants.E2001, layerName))
     end
     SetParent(target, layer)
 end
@@ -246,7 +248,7 @@ end
 function Stage.GetLayer(layerName)
     local layer = _layers[layerName]
     if layer == nil then
-        error(format(Constants.E1001, layerName))
+        error(format(Constants.E2001, layerName))
     end
     return layer
 end
