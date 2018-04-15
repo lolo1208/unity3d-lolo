@@ -122,8 +122,9 @@ end
 function View:OnHide()
 end
 
---- 监听或取消监听 self.gameObject 销毁事件
---- 注意：不要在调用该方法后，立即调用 Destroy(self.gameObject) 这样可能会收到不到事件。推荐在 OnInitialize() 中调用
+--- 监听或取消监听 self.gameObject 销毁事件。
+--- 推荐在 OnInitialize() 中调用该方法。
+--- 注意：不要在调用该方法后，立即调用 Destroy(self.gameObject) 这样可能会收到不到事件。
 ---@param optional enabled boolean @ 默认：true，监听 self.gameObject 销毁事件。false：取消监听
 function View:EnableDestroyListener(enabled)
     enabled = enabled == nil and true or false
@@ -143,6 +144,22 @@ end
 --- self.gameObject 被销毁时
 --- 请通过 self:EnableDestroyListener() 来设置监听
 function View:OnDestroy()
+end
+
+--- 销毁界面对应的 gameObject
+---@param optional dispatchEvent boolean @ 是否抛出 DestroyEvent.DESTROY 事件，默认：nil(false)，不抛出事件
+---@param optional delay number @ 延时删除（秒）。默认：nil，表示立即销毁
+function View:Destroy(dispatchEvent, delay)
+    local go = self.gameObject
+    if isnull(go) then
+        return
+    end
+
+    if dispatchEvent then
+        AddEventListener(go, DestroyEvent.DESTROY, self.OnDestroy, self)
+    end
+
+    Destroy(go, delay)
 end
 
 return View

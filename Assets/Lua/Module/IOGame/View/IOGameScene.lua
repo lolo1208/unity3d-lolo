@@ -18,7 +18,7 @@ local IOGameData = require("Module.IOGame.Model.IOGameData") ---@type IOGame.IOG
 local IOGameScene = class("IOGame.IOGameScene", Scene)
 
 function IOGameScene:Ctor()
-    IOGameScene.super.Ctor(self, "IOGame", nil, true)
+    IOGameScene.super.Ctor(self, IOGameData.NAME, nil, true)
 
     --Stage.OpenWindow(require("Module.IOGame.View.IOGameWindow"))
 end
@@ -44,7 +44,7 @@ function IOGameScene:OnInitialize()
     self._frame = require("Module.IOGame.Controller.FrameController").New(self._map)
     IOGameData.frame = self._frame
 
-    require("Module.IOGame.View.Login").New(GameObject.Find("SceneUICanvas/Login"))
+    require("Module.IOGame.View.UI.Login").New(GameObject.Find("SceneUICanvas/Login"))
 end
 
 

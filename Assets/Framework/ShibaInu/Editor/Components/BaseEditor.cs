@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 using UnityEditor;
 
 
@@ -9,22 +10,35 @@ namespace ShibaInu
 	/// </summary>
 	public class BaseEditor :Editor
 	{
-		/// 可显示的总宽度
-		protected float m_viewWidth;
-		/// 左侧 label 宽度
-		protected float m_labelWidth;
-		/// 除了 label 以外，剩余的内容宽度
-		protected float m_width;
-		/// 半个内容宽度
-		protected float m_halfWidth;
+		
+		/// 可显示的总宽度值
+		protected float m_viewWidthValue;
+		/// 左侧 label 宽度值
+		protected float m_labelWidthValue;
+		/// 除了 label 以外，剩余的内容宽度值
+		protected float m_widthValue;
+		/// 半个内容宽度值
+		protected float m_halfWidthValue;
+
+		/// 左侧 label 宽度 (GUILayoutOption)
+		protected GUILayoutOption m_labelWidth;
+		/// 除了 label 以外，剩余的内容宽度 (GUILayoutOption)
+		protected GUILayoutOption m_width;
+		/// 半个内容宽度 (GUILayoutOption)
+		protected GUILayoutOption m_halfWidth;
+
 
 
 		public override void OnInspectorGUI ()
 		{
-			m_viewWidth = EditorGUIUtility.currentViewWidth - 15;
-			m_labelWidth = EditorGUIUtility.labelWidth - 4;
-			m_width = m_viewWidth - m_labelWidth - 27;
-			m_halfWidth = m_width / 2;
+			m_viewWidthValue = EditorGUIUtility.currentViewWidth - 15;
+			m_labelWidthValue = EditorGUIUtility.labelWidth - 4;
+			m_widthValue = m_viewWidthValue - m_labelWidthValue - 27;
+			m_halfWidthValue = m_widthValue / 2;
+
+			m_labelWidth = GUILayout.Width (m_labelWidthValue);
+			m_width = GUILayout.Width (m_widthValue);
+			m_halfWidth = GUILayout.Width (m_halfWidthValue);
 		}
 
 

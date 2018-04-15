@@ -79,15 +79,30 @@ namespace ShibaInu
 
 		/// <summary>
 		/// 设置 target 的父节点为 parent。
-		/// 并将 localScale, localPosition 属性重置
+		/// 设置 target.layer 属性。
+		/// 并将 localScale, localPosition 属性重置。
 		/// </summary>
 		/// <param name="target">Target.</param>
 		/// <param name="parent">Parent.</param>
 		public static void SetParent (Transform target, Transform parent)
 		{
-			target.SetParent (parent);
+			SetLayerRecursively (target, parent.gameObject.layer);
+			target.SetParent (parent, true);
 			target.localScale = Vector3.one;
 			target.localPosition = Vector3.zero;
+		}
+
+
+		/// <summary>
+		/// 设置目标对象，以及子节点的所属图层
+		/// </summary>
+		/// <param name="target">Target.</param>
+		/// <param name="layer">Layer.</param>
+		public static void SetLayerRecursively (Transform target, int layer)
+		{
+			target.gameObject.layer = layer;
+			foreach (Transform child in target)
+				SetLayerRecursively (child, layer);
 		}
 
 

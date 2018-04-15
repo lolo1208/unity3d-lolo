@@ -8,7 +8,6 @@ local error = error
 local format = string.format
 local remove = table.remove
 
-
 ---@class Stage
 ---
 ---@field loadingSceneClass Scene @ Loading场景类
@@ -51,7 +50,6 @@ local function UpdateLayers()
 end
 UpdateLayers()
 
-
 Stage._ed = ed
 Stage.AddDontDestroy = ShibaInu.Stage.AddDontDestroy
 Stage.RemoveDontDestroy = ShibaInu.Stage.RemoveDontDestroy
@@ -68,9 +66,8 @@ local function LoadSceneCompleteHandler(event)
     _loadingScene = nil
 
     --_currentScene:OnInitialize()
-    DelayToNextFrameCall(_currentScene.OnInitialize, _currentScene)
+    DelayedFrameCall(_currentScene.OnInitialize, _currentScene)
 end
-
 
 --- 异步加载场景 perfab 完成
 ---@param event LoadResEvent
@@ -81,7 +78,6 @@ local function LoadResCompleteHandler(event)
         _currentScene:OnInitialize()
     end
 end
-
 
 --- 显示场景
 ---@param sceneClass any @ 场景类（不是类的实例）
@@ -114,7 +110,7 @@ function Stage.ShowScene(sceneClass)
             -- 先进入 Loading 场景
             _loadingScene = Stage.loadingSceneClass.New()
             ShibaInu.Stage.LoadScene(_loadingScene.moduleName)
-            DelayToNextFrameCall(function()
+            DelayedFrameCall(function()
                 _loadingScene:OnInitialize()
 
                 -- 异步加载目标场景
@@ -123,7 +119,7 @@ function Stage.ShowScene(sceneClass)
             end)
         else
             ShibaInu.Stage.LoadScene(sceneName)
-            DelayToNextFrameCall(_currentScene.OnInitialize, _currentScene)
+            DelayedFrameCall(_currentScene.OnInitialize, _currentScene)
         end
 
         -- 预设场景（UICanvas）
@@ -143,7 +139,6 @@ function Stage.ShowScene(sceneClass)
     end
 end
 
-
 --- 显示上一个场景
 function Stage.ShowPrevScene()
     if _prevSceneClass ~= nil then
@@ -151,20 +146,17 @@ function Stage.ShowPrevScene()
     end
 end
 
-
 --- 获取当前场景名称
 ---@return string
 function Stage.GetCurrentSceneName()
     return _currentScene.moduleName
 end
 
-
 --- 获取上一个场景类
 ---@return string
 function Stage.GetPrevSceneClass()
     return _prevSceneClass
 end
-
 
 --- 清空场景
 function Stage.Clean()
@@ -202,7 +194,6 @@ function Stage.OpenWindow(windowClass, closeOthers)
     end
 end
 
-
 --- 关闭某个窗口
 ---@param window Window
 function Stage.CloseWindow(window)
@@ -216,7 +207,6 @@ function Stage.CloseWindow(window)
 
     View.Hide(window) -- 调用 View:Hide()
 end
-
 
 --- 关闭已打开的所有窗口
 function Stage.CloseAllWindow()
@@ -241,7 +231,6 @@ function Stage.AddToLayer(target, layerName)
     SetParent(target, layer)
 end
 
-
 --- 获取指定图层对象
 ---@param layerName string @ 图层名称，见 Consants.LAYER_*** 系列常量
 ---@return UnityEngine.Transform
@@ -262,7 +251,6 @@ local _modalImage = GetComponent.Image(_modal)
 Stage.AddDontDestroy(_modal)
 _modal:SetActive(false)
 
-
 --- 显示全屏模态
 --- 模态对象为单例，就算调用该方法多次，也只会有一个模态实例存在
 ---@param optional layerName string @ 图层名称。默认：Constants.LAYER_TOP
@@ -277,7 +265,6 @@ function Stage.ShowModal(layerName, color)
         _modal:SetActive(true)
     end
 end
-
 
 --- 隐藏已显示的全屏模态
 function Stage.HideModal()
@@ -295,11 +282,11 @@ end
 ---@param time number
 function Stage._loopHandler(type, time)
     TimeUtil.time = time
+    if type == Event.UPDATE then
+        TimeUtil.frameCount = Time.frameCount
+    end
     event.type = type
-
     trycall(ed.DispatchEvent, ed, event, false, false)
 end
-
-
 
 return Stage

@@ -11,6 +11,18 @@
 ---@field materialForRendering UnityEngine.Material
 ---@field mainTexture UnityEngine.Texture
 local m = {}
+---@param endValue UnityEngine.Color
+---@param duration float
+---@return DG.Tweening.Tweener
+function m:DOColor(endValue, duration) end
+---@param endValue float
+---@param duration float
+---@return DG.Tweening.Tweener
+function m:DOFade(endValue, duration) end
+---@param endValue UnityEngine.Color
+---@param duration float
+---@return DG.Tweening.Tweener
+function m:DOBlendableColor(endValue, duration) end
 function m:SetAllDirty() end
 function m:SetLayoutDirty() end
 function m:SetVerticesDirty() end

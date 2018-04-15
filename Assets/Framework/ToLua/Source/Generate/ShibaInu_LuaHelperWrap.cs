@@ -12,6 +12,7 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("AddDragDropEvent", AddDragDropEvent);
 		L.RegFunction("CreateGameObject", CreateGameObject);
 		L.RegFunction("SetParent", SetParent);
+		L.RegFunction("SetLayerRecursively", SetLayerRecursively);
 		L.RegFunction("SendHttpRequest", SendHttpRequest);
 		L.EndStaticLibs();
 	}
@@ -95,6 +96,23 @@ public class ShibaInu_LuaHelperWrap
 			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 1);
 			UnityEngine.Transform arg1 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
 			ShibaInu.LuaHelper.SetParent(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetLayerRecursively(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 1);
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 2);
+			ShibaInu.LuaHelper.SetLayerRecursively(arg0, arg1);
 			return 0;
 		}
 		catch (Exception e)

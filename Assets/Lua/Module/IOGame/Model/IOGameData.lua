@@ -19,6 +19,7 @@ IOGameData.frame = nil ---@type IOGame.FrameController
 
 
 -- 常量
+IOGameData.NAME = "IOGame"
 IOGameData.F_N_JUMP = 90 --- 跳跃动作帧数
 IOGameData.F_N_ATTACK = 66 --- 攻击动作帧数
 IOGameData.F_N_SHOT = 120 --- 射击动作帧数

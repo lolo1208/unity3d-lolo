@@ -7,6 +7,7 @@ public class ShibaInu_CircleImageWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(ShibaInu.CircleImage), typeof(UnityEngine.UI.MaskableGraphic));
+		L.RegFunction("SetNativeSize", SetNativeSize);
 		L.RegFunction("IsRaycastLocationValid", IsRaycastLocationValid);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -14,8 +15,25 @@ public class ShibaInu_CircleImageWrap
 		L.RegVar("fan", get_fan, set_fan);
 		L.RegVar("ring", get_ring, set_ring);
 		L.RegVar("sides", get_sides, set_sides);
+		L.RegVar("pixelsPerUnit", get_pixelsPerUnit, null);
 		L.RegVar("mainTexture", get_mainTexture, null);
 		L.EndClass();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetNativeSize(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			ShibaInu.CircleImage obj = (ShibaInu.CircleImage)ToLua.CheckObject<ShibaInu.CircleImage>(L, 1);
+			obj.SetNativeSize();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -128,6 +146,25 @@ public class ShibaInu_CircleImageWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index sides on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_pixelsPerUnit(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.CircleImage obj = (ShibaInu.CircleImage)o;
+			float ret = obj.pixelsPerUnit;
+			LuaDLL.lua_pushnumber(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index pixelsPerUnit on a nil value");
 		}
 	}
 

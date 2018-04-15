@@ -8,7 +8,13 @@ namespace ShibaInu
 	[CustomEditor (typeof(ScrollList))]
 	public class ScrollListEditor : BaseListEditor
 	{
+		
 		protected SerializedProperty m_viewportSize;
+
+		protected GUIContent m_c_direction = new GUIContent ("Direction", "滚动方向");
+		protected GUIContent m_c_horizontal = new GUIContent ("Horizontal", "水平");
+		protected GUIContent m_c_vertical = new GUIContent ("Vertical", "垂直");
+		protected GUIContent m_c_viewportSize = new GUIContent ("Viewport Size", "显示范围 [ 宽, 高 ]");
 
 		private ScrollList m_scrollList;
 
@@ -30,10 +36,10 @@ namespace ShibaInu
 
 			// direction
 			EditorGUILayout.BeginHorizontal ();
-			EditorGUILayout.LabelField (new GUIContent ("Direction", "滚动方向"), GUILayout.Width (m_labelWidth));
+			EditorGUILayout.LabelField (m_c_direction, m_labelWidth);
 			bool isVertical = m_scrollList.isVertical;
-			bool isH = GUILayout.Toggle (!isVertical, new GUIContent ("Horizontal", "水平"), GUILayout.Width (m_halfWidth));
-			bool isV = GUILayout.Toggle (isVertical, new GUIContent ("Vertical", "垂直"), GUILayout.Width (m_halfWidth));
+			bool isH = GUILayout.Toggle (!isVertical, m_c_horizontal, m_halfWidth);
+			bool isV = GUILayout.Toggle (isVertical, m_c_vertical, m_halfWidth);
 			if (isVertical) {
 				if (isH)
 					m_scrollList.isVertical = false;
@@ -48,10 +54,10 @@ namespace ShibaInu
 
 			// viewport size
 			EditorGUILayout.BeginHorizontal ();
-			EditorGUILayout.LabelField (new GUIContent ("Viewport Size", "显示范围 [ 宽, 高 ]"), GUILayout.Width (m_labelWidth));
+			EditorGUILayout.LabelField (m_c_viewportSize, m_labelWidth);
 			Vector2 viewportSize = m_viewportSize.vector2Value;
-			int vpw = EditorGUILayout.IntField ((int)viewportSize.x, GUILayout.Width (m_halfWidth));
-			int vph = EditorGUILayout.IntField ((int)viewportSize.y, GUILayout.Width (m_halfWidth));
+			int vpw = EditorGUILayout.IntField ((int)viewportSize.x, m_halfWidth);
+			int vph = EditorGUILayout.IntField ((int)viewportSize.y, m_halfWidth);
 			m_scrollList.SetViewportSize ((uint)(vpw < 0 ? 0 : vpw), (uint)(vph < 0 ? 0 : vph));
 			EditorGUILayout.EndHorizontal ();
 

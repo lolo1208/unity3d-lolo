@@ -21,10 +21,10 @@ namespace ShibaInu
 		private const string EVENT_FIXED_UPDATE = "Event_FixedUpdate";
 		private const string EVENT_RESIZE = "Event_Resize";
 
-
+		// - View/Stage.lua
 		private LuaFunction m_loopHandler;
-		private Stopwatch m_stopwatch;
 
+		private Stopwatch m_stopwatch;
 		private float m_screenWidth;
 		private float m_screenHeight;
 
@@ -34,9 +34,9 @@ namespace ShibaInu
 		{
 			m_stopwatch = new Stopwatch ();
 			m_stopwatch.Start ();
-			m_loopHandler = Common.luaMgr.state.GetFunction ("Stage._loopHandler");// - View/Stage.lua
 			m_screenWidth = Screen.width;
 			m_screenHeight = Screen.height;
+			m_loopHandler = Common.luaMgr.state.GetFunction ("Stage._loopHandler");
 		}
 
 

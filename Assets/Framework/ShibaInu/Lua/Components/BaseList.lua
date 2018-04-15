@@ -10,7 +10,7 @@ local remove = table.remove
 local min = math.min
 local floor = math.floor
 
-
+--
 ---@class BaseList : View
 ---@field New fun(go:UnityEngine.GameObject, itemClass:any):BaseList
 ---
@@ -39,14 +39,14 @@ local floor = math.floor
 ---@field protected _curSelectedKeys table<number, any> @ 当前选中子项的索引列表
 ---
 local BaseList = class("BaseList", View)
-
+--
 
 --- 列表更新时，根据索引来选中子项
 BaseList.SELECT_MODE_INDEX = "index"
 --- 列表更新时，根据键来选中子项
 BaseList.SELECT_MODE_KEY = "key"
 
-
+--
 --- 构造函数
 ---@param go UnityEngine.GameObject
 ---@param itemClass any
@@ -84,10 +84,11 @@ function BaseList:Ctor(go, itemClass)
     self._itemClass = itemClass
     self.gameObject = go
     self:OnInitialize()
+    self:EnableDestroyListener()
 end
 
 
-
+--
 --- 数据
 ---@param value MapList
 function BaseList:SetData(value)
@@ -115,7 +116,7 @@ function BaseList:GetData()
     return self._data
 end
 
-
+--
 --- 数据有改变
 ---@param event DataEvent
 function BaseList:DataChanged(event)
@@ -127,7 +128,7 @@ function BaseList:DataChanged(event)
 end
 
 
-
+--
 --- Item 对应的 Lua Class
 ---@param value any
 function BaseList:SetItemClass(value)
@@ -154,7 +155,7 @@ function BaseList:Update()
     AddEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
 end
 
-
+--
 --- 立即更新显示内容，而不是等待 Event.LATE_UPDATE 事件更新
 function BaseList:UpdateNow()
     RemoveEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
@@ -215,7 +216,7 @@ function BaseList:UpdateNow()
     self:DispatchListEvent(ListEvent.UPDATE)
 end
 
-
+--
 --- 将 item 添加到 _itemList，并调用 item.Update()
 ---@param item ItemRenderer
 function BaseList:UpdateItem(item, data, index)
@@ -225,7 +226,7 @@ function BaseList:UpdateItem(item, data, index)
     item:SetEnabled(self._enabled)
 end
 
-
+--
 --- 在 Update() 之后，更新选中的 item
 function BaseList:UpdateSelectedItem()
     -- 还没有选中过任何子项
@@ -247,7 +248,7 @@ function BaseList:UpdateSelectedItem()
     end
 end
 
-
+--
 --- 通过索引来选中子项。如果指定的 index 不存在，将会自动选中 index-1 的子项
 --- @param index number
 function BaseList:AutoSelectItemByIndex(index)
@@ -277,8 +278,9 @@ function BaseList:SetItemData(item, data)
     end
 end
 
-
+--
 --- 获取一个 item，先尝试从缓存池中拿，如果没有，将创建一个新的 item
+---@return ItemRenderer
 function BaseList:GetItem()
     local itemPool = self._itemPool
     local item ---@type ItemRenderer
@@ -299,7 +301,7 @@ function BaseList:GetItem()
     return item
 end
 
-
+--
 --- 子项 鼠标指针（touch）按下
 ---@param event PointerEvent
 ---@param item ItemRenderer
@@ -308,7 +310,7 @@ function BaseList:ItemPointerDown(event, item)
     self:DispatchListEvent(ListEvent.ITEM_POINTER_DOWN, item)
 end
 
-
+--
 --- 子项 鼠标指针（touch）点击
 ---@param event PointerEvent
 ---@param item ItemRenderer
@@ -317,7 +319,7 @@ function BaseList:ItemPointerClick(event, item)
 end
 
 
-
+--
 --- 切换子项的选中状态
 ---@param item ItemRenderer
 function BaseList:SwitchItem(item)
@@ -334,7 +336,7 @@ function BaseList:SwitchItem(item)
     end
 end
 
-
+--
 --- 设置当前选中的子项（如果值为 nil，将什么都不选中）
 ---@param value ItemRenderer
 function BaseList:SetSelectedItem(value)
@@ -368,17 +370,17 @@ function BaseList:SetSelectedItem(value)
     self:DispatchListEvent(ListEvent.ITEM_SELECTED, value)
 end
 
-
+--
 --- 获取当前选中的子项（如果值为 nil，表示没有选中的子项）
 ---@return ItemRenderer
 function BaseList:GetSelectedItem()
     return self._selectedItem
 end
 
-
+--
 --- 当前选中子项的数据
 ---@return any
-function BaseList:getSelectedItemData()
+function BaseList:GetSelectedItemData()
     if self._selectedItem ~= nil then
         return self._selectedItem:GetData()
     end
@@ -386,7 +388,7 @@ function BaseList:getSelectedItemData()
 end
 
 
-
+--
 --- 通过索引选中子项
 ---@param index number
 function BaseList:SelectItemByIndex(index)
@@ -404,7 +406,7 @@ function BaseList:SelectItemByIndex(index)
     self:SetSelectedItem(self._itemList[index])
 end
 
-
+--
 --- 通过数据中的索引来选中子项
 ---@param index number
 function BaseList:SelectItemByDataIndex(index)
@@ -418,7 +420,7 @@ function BaseList:SelectItemByDataIndex(index)
     self:SetSelectedItem(self:GetItemByIndex(index))
 end
 
-
+--
 --- 通过数据中的键来选中子项
 ---@param key any
 function BaseList:SelectItemByDataKey(key)
@@ -426,7 +428,7 @@ function BaseList:SelectItemByDataKey(key)
 end
 
 
-
+--
 --- 通过索引获取子项
 ---@param index number
 ---@return ItemRenderer
@@ -434,14 +436,14 @@ function BaseList:GetItemByIndex(index)
     return self._itemList[index]
 end
 
-
+--
 --- 通过数据中的键来获取子项
 ---@return ItemRenderer
 function BaseList:GetItemByKey(key)
     return self:GetItemByIndex(self._data:GetIndexByKey(key))
 end
 
-
+--
 --- 获取 Item 总数（数据的值总数）
 function BaseList:GetCount()
     if self._data == nil then
@@ -465,7 +467,7 @@ function BaseList:DispatchListEvent(type, item)
     self:DispatchEvent(event, false, false)
 end
 
-
+--
 --- 是否启用
 ---@param value boolean
 function BaseList:SetEnabled(value)
@@ -485,7 +487,7 @@ function BaseList:GetEnabled()
     return self._enabled
 end
 
-
+--
 --- 刷新列表时，根据什么来选中子项，可选值["index", "key"]，默认值："index"
 ---@param value string
 function BaseList:SetSelectMode(value)
@@ -505,7 +507,7 @@ function BaseList:GetSelectMode()
     return self._selectMode
 end
 
-
+--
 --- 在还未选中过子项时，创建列表（设置数据，翻页）是否自动选中第一个子项，默认值：true
 ---@param value boolean
 function BaseList:SetAutoSelectDefaultItem(value)
@@ -521,7 +523,7 @@ function BaseList:GetAutoSelectDefaultItem()
     return self._autoSelectDefaultItem
 end
 
-
+--
 --- 是否水平方向排序，默认值：true。ScrollList 中，该值为与 ScrollBar.direction 相对应
 ---@param value boolean
 function BaseList:SetIsHorizontalSort(value)
@@ -560,7 +562,7 @@ function BaseList:GetItemPrefab()
     return self._itemPrefab
 end
 
-
+--
 --- 行数
 ---@param value number
 function BaseList:SetRowCount(value)
@@ -576,7 +578,7 @@ function BaseList:GetRowCount()
     return self._rowCount
 end
 
-
+--
 --- 列数
 ---@param value number
 function BaseList:SetColumnCount(value)
@@ -593,7 +595,7 @@ function BaseList:GetColumnCount()
 end
 
 
-
+--
 --- 水平方向子项间的像素间隔
 ---@param value number
 function BaseList:SetHorizontalGap(value)
@@ -609,7 +611,7 @@ function BaseList:GetHorizontalGap()
     return self._horizontalGap
 end
 
-
+--
 --- 垂直方向子项间的像素间隔
 ---@param value number
 function BaseList:SetVerticalGap(value)
@@ -626,14 +628,14 @@ function BaseList:GetVerticalGap()
 end
 
 
-
+--
 --- 属性有改变时，将 lua 中的属性同步到 C# 中
 function BaseList:SyncPropertysToCS()
     self._list:SyncPropertys(self._itemPrefab, self._rowCount, self._columnCount, self._horizontalGap, self._verticalGap)
     self:Update()
 end
 
-
+--
 --- 同步 C# 相关属性
 --- 由 BaseList.cs 调用
 function BaseList:SyncPropertys(itemPrefab, rowCount, columnCount, horizontalGap, verticalGap)
@@ -689,7 +691,7 @@ function BaseList:HidePoolItem(event)
     end
 end
 
-
+--
 --- 清空子项缓存池
 function BaseList:CleanItemPool()
     local itemPool = self._itemPool
@@ -704,10 +706,11 @@ function BaseList:CleanItemPool()
     self._itemPool = {}
 end
 
-
+--
 --- 清空并销毁所有 item，但继续保留数据和选中信息
 function BaseList:CleanAllItem()
     local data = self._data
+    self._data = nil -- 避免 Clean() 时清理 EventListener
     local index = self._curSelectedIndex
     local keys = self._curSelectedKeys
     self:Clean()
@@ -716,7 +719,7 @@ function BaseList:CleanAllItem()
     self._curSelectedKeys = keys
 end
 
-
+--
 --- 清空列表，清空缓存池，销毁所有 item
 function BaseList:Clean()
     RemoveEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
@@ -736,5 +739,14 @@ function BaseList:Clean()
 end
 
 
+--
+function BaseList:OnDestroy()
+    RemoveEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
+    RemoveEventListener(Stage, Event.LATE_UPDATE, self.HidePoolItem, self)
+end
+
+
+
+--
 
 return BaseList

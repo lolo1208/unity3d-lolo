@@ -22,6 +22,7 @@ LuaHelper = ShibaInu.LuaHelper
 GameObject = UnityEngine.GameObject
 Transform = UnityEngine.Transform
 Screen = UnityEngine.Screen
+Time = UnityEngine.Time
 PlayerPrefs = UnityEngine.PlayerPrefs
 
 
@@ -56,7 +57,7 @@ TweenParams = DG.Tweening.TweenParams ---@type DG.Tweening.TweenParams
 
 
 -- variables
----@type boolean @ 是否在 LuaJIT 环境中
+--- 是否在 LuaJIT 环境中
 isJIT = jit ~= nil
 
 

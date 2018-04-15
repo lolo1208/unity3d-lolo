@@ -4,6 +4,7 @@
 -- Author LOLO
 --
 
+
 local error = error
 local format = string.format
 local type = type
@@ -15,6 +16,10 @@ local setpeer = tolua.setpeer
 local _isnull = tolua.isnull
 local _typeof = tolua.typeof
 local _typeof_class = typeof
+
+local uiLayer = LayerMask.NameToLayer("UI")
+--
+
 
 --- 实现 lua class
 --- 调用父类方法 Class.super.Fn(self, ...)
@@ -258,11 +263,18 @@ function GetComponent.BaseList(go)
     return go:GetComponent(_typeof_class(ShibaInu.BaseList))
 end
 
---- 获取 gameObject 下的 ShibaInu.BaseList 组件
+--- 获取 gameObject 下的 ShibaInu.ScrollList 组件
 ---@param go UnityEngine.GameObject
----@return ShibaInu.BaseList
-function GetComponent.BaseList(go)
-    return go:GetComponent(_typeof_class(ShibaInu.BaseList))
+---@return ShibaInu.ScrollList
+function GetComponent.ScrollList(go)
+    return go:GetComponent(_typeof_class(ShibaInu.ScrollList))
+end
+
+--- 获取 gameObject 下的 ShibaInu.Picker 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.Picker
+function GetComponent.Picker(go)
+    return go:GetComponent(_typeof_class(ShibaInu.Picker))
 end
 
 --- 获取 gameObject 下的 ShibaInu.CircleImage 组件
@@ -270,14 +282,6 @@ end
 ---@return ShibaInu.CircleImage
 function GetComponent.CircleImage(go)
     return go:GetComponent(_typeof_class(ShibaInu.CircleImage))
-end
-
-
---- 获取 gameObject 下的 ShibaInu.Picker 组件
----@param go UnityEngine.GameObject
----@return ShibaInu.Picker
-function GetComponent.BaseList(go)
-    return go:GetComponent(_typeof_class(ShibaInu.Picker))
 end
 
 
@@ -407,6 +411,7 @@ local function UpdateDelayedCall(event)
     end
 
     local time = TimeUtil.time
+    local frameCount = TimeUtil.frameCount
     local needClearRemoveList = false
     for i = num, 1, -1 do
         local handler = _dc_list[i]
@@ -416,6 +421,13 @@ local function UpdateDelayedCall(event)
             remove(_dc_list, i)
             handler:Recycle()
             needClearRemoveList = true
+
+        elseif handler.delayedFrame ~= nil then
+            if frameCount - handler.delayedStartFrame > handler.delayedFrame then
+                -- 帧数已满足，执行回调（ 不使用 >= 运算符，多延迟一帧）
+                remove(_dc_list, i)
+                handler:Execute()
+            end
 
         elseif time - handler.delayedStartTime >= handler.delayedTime then
             -- 时间已满足，执行回调
@@ -433,7 +445,7 @@ end
 --- 延迟指定时间后，执行一次回调
 ---@param delay number @ 延迟时间，秒
 ---@param callback fun() @ 回调函数
----@param caller any @ 执行域（self）
+---@param optional caller any @ 执行域（self）
 ---@param ... @ 附带的参数
 ---@return Handler
 function DelayedCall(delay, callback, caller, ...)
@@ -448,11 +460,15 @@ end
 
 --- 延迟到下一帧后，执行一次回调
 ---@param callback fun() @ 回调函数
----@param caller any @ 执行域（self）
+---@param optional caller any @ 执行域（self）
+---@param optional frameCount number @ 延迟帧数，默认：1帧
 ---@param ... @ 附带的参数
 ---@return Handler
-function DelayToNextFrameCall(callback, caller, ...)
-    return DelayedCall(0.01, callback, caller, ...)
+function DelayedFrameCall(callback, caller, frameCount, ...)
+    local handler = DelayedCall(0, callback, caller, ...)
+    handler.delayedStartFrame = TimeUtil.frameCount
+    handler.delayedFrame = frameCount or 1
+    return handler
 end
 
 --- 取消延迟回调
@@ -464,6 +480,8 @@ function CancelDelayedCall(handler)
     end
     handler.delayedTime = nil
     handler.delayedStartTime = nil
+    handler.delayedFrame = nil
+    handler.delayedStartFrame = nil
     handler.once = false -- 避免立即回收到池，由 UpdateDelayedCall() 来调用 Recycle() 回收
 
     -- handler 在 add 列表中

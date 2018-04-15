@@ -8,12 +8,21 @@ namespace ShibaInu
 	[CustomEditor (typeof(Picker))]
 	public class PickerEditor : BaseEditor
 	{
-		
+
 		protected SerializedProperty m_hitArea;
 		protected SerializedProperty m_itemPrefab;
 		protected SerializedProperty m_itemOffsetCount;
 		protected SerializedProperty m_itemAlphaOffset;
 		protected SerializedProperty m_itemScaleOffset;
+
+		protected GUIContent m_c_hitArea = new GUIContent ("Hit Area", "拖动点击响应区域");
+		protected GUIContent m_c_itemPrefab = new GUIContent ("Item Prefab", "Item 的预制对象");
+		protected GUIContent m_c_itemOffsetCount = new GUIContent ("Item Offset Count", "上下（左右）每个方向最多显示 Item 数量");
+		protected GUIContent m_c_itemAlphaOffset = new GUIContent ("Item Alpha Offset", "Item 透明度偏移");
+		protected GUIContent m_c_itemScaleOffset = new GUIContent ("Item Scale Offset", "Item 缩放偏移");
+		protected GUIContent m_c_options = new GUIContent ("Options", "其他选项");
+		protected GUIContent m_c_isVertical = new GUIContent ("isVertical", "是否为垂直方向排列");
+		protected GUIContent m_c_isBounces = new GUIContent ("isBounces", "是否启用回弹效果");
 
 		private Picker m_picker;
 
@@ -39,19 +48,19 @@ namespace ShibaInu
 			// property field
 			bool clean = false, changed = false;
 
-			EditorGUILayout.PropertyField (m_hitArea, new GUIContent ("Hit Area", "拖动点击响应区域"));
+			EditorGUILayout.PropertyField (m_hitArea, m_c_hitArea);
 			serializedObject.ApplyModifiedProperties ();
 
-			EditorGUILayout.PropertyField (m_itemPrefab, new GUIContent ("Item Prefab", "Item 的预制对象"));
+			EditorGUILayout.PropertyField (m_itemPrefab, m_c_itemPrefab);
 			clean = serializedObject.ApplyModifiedProperties ();
 
-			EditorGUILayout.PropertyField (m_itemOffsetCount, new GUIContent ("Item Offset Count", "上下（左右）每个方向最多显示 Item 数量"));
+			EditorGUILayout.PropertyField (m_itemOffsetCount, m_c_itemOffsetCount);
 			changed = changed || serializedObject.ApplyModifiedProperties ();
 
-			EditorGUILayout.PropertyField (m_itemAlphaOffset, new GUIContent ("Item Alpha Offset", "Item 透明度偏移"));
+			EditorGUILayout.PropertyField (m_itemAlphaOffset, m_c_itemAlphaOffset);
 			changed = changed || serializedObject.ApplyModifiedProperties ();
 
-			EditorGUILayout.PropertyField (m_itemScaleOffset, new GUIContent ("Item Scale Offset", "Item 缩放偏移"));
+			EditorGUILayout.PropertyField (m_itemScaleOffset, m_c_itemScaleOffset);
 			changed = changed || serializedObject.ApplyModifiedProperties ();
 
 
@@ -71,9 +80,9 @@ namespace ShibaInu
 
 			// isVertical and isBounces
 			EditorGUILayout.BeginHorizontal ();
-			EditorGUILayout.LabelField (new GUIContent ("Options", "其他选项"), GUILayout.Width (m_labelWidth));
-			m_picker.isVertical = EditorGUILayout.ToggleLeft (new GUIContent ("isVertical", "是否为垂直方向排列"), m_picker.isVertical, GUILayout.Width (m_halfWidth));
-			m_picker.isBounces = EditorGUILayout.ToggleLeft (new GUIContent ("isBounces", "是否启用回弹效果"), m_picker.isBounces, GUILayout.Width (m_halfWidth));
+			EditorGUILayout.LabelField (m_c_options, m_labelWidth);
+			m_picker.isVertical = EditorGUILayout.ToggleLeft (m_c_isVertical, m_picker.isVertical, m_halfWidth);
+			m_picker.isBounces = EditorGUILayout.ToggleLeft (m_c_isBounces, m_picker.isBounces, m_halfWidth);
 			EditorGUILayout.EndHorizontal ();
 
 

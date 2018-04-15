@@ -17,8 +17,13 @@ local remove = table.remove
 ---@field args any[] @ 附带的参数
 ---@field once boolean @ 是否只执行一次，执行完毕后，将会自动回收到池中
 ---@field inPool boolean @ 是否正在缓存池中
----@field delayedStartTime coroutine @ 延迟开始时间。使用 delayedCall() 创建时，才会存在该属性
----@field delayedTime coroutine @ 延迟设定时间。使用 delayedCall() 创建时，才会存在该属性
+---
+---@field delayedTime number @ 延迟设定时间。使用 delayedCall() 创建时，才会存在该属性
+---@field delayedStartTime number @ 延迟开始时间。使用 delayedCall() 创建时，才会存在该属性
+---
+---@field delayedFrame number @ 延迟帧数。使用 delayedCall() 创建（指定延迟帧数的回调）时，才会存在该属性
+---@field delayedStartFrame number @ 延迟开始帧号。使用 delayedCall() 创建（指定延迟帧数的回调）时，才会存在该属性
+---
 ---@field lambda fun(...) @ self:Execute(...) 的匿名函数
 local Handler = class("Handler")
 

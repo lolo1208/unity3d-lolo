@@ -27,21 +27,19 @@ namespace ShibaInu
 
 			Common.isDebug = Application.isEditor && !FileHelper.Exists (Application.streamingAssetsPath + "/TestModeFlag");
 
-			bool isLauncherScene = SceneManager.GetActiveScene ().name == Constants.LauncherSceneName;
-			if (!isLauncherScene)
+			if (SceneManager.GetActiveScene ().name != Constants.LauncherSceneName)
 				SceneManager.LoadScene (Constants.LauncherSceneName);
 			
-			StartCoroutine (Initialize (isLauncherScene));
+			StartCoroutine (Initialize ());
 		}
 
 
 		/// <summary>
 		/// 初始化
 		/// </summary>
-		IEnumerator Initialize (bool isLauncherScene)
+		IEnumerator Initialize ()
 		{
-			if (!isLauncherScene)
-				yield return new WaitForEndOfFrame ();// 等之前场景等内容清除完毕
+			yield return new WaitForEndOfFrame ();// 等之前场景等内容清除完毕
 
 			// UICanvas 放到 Common.go 对象下
 			Transform uiCanvas = GameObject.Find ("UICanvas").transform;
@@ -57,6 +55,7 @@ namespace ShibaInu
 			ResManager.Initialize ();
 			Stage.uiCanvas = (RectTransform)uiCanvas;
 			Stage.Initialize ();
+
 			Common.luaMgr.Initialize ();// start lua
 
 			Destroy (this);

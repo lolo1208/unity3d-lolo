@@ -1,17 +1,16 @@
 ﻿
-
 #define USING_DOTWEENING
 
 
-using UnityEngine;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 using LuaInterface;
 using ShibaInu;
 
 using BindType = ToLuaMenu.BindType;
-using UnityEngine.UI;
-using System.Reflection;
 
 
 public static class CustomSettings
@@ -76,6 +75,7 @@ public static class CustomSettings
 		//_GT(typeof(LineRenderer)).AddExtendType(typeof(DG.Tweening.ShortcutExtensions)),
 		//_GT(typeof(TrailRenderer)).AddExtendType(typeof(DG.Tweening.ShortcutExtensions)),
 		_GT (typeof(RectTransform)).AddExtendType (typeof(DG.Tweening.ShortcutExtensions46)),
+		_GT (typeof(Graphic)).AddExtendType (typeof(DG.Tweening.ShortcutExtensions46)),
 		_GT (typeof(Image)).AddExtendType (typeof(DG.Tweening.ShortcutExtensions46)),
 		_GT (typeof(Text)).AddExtendType (typeof(DG.Tweening.ShortcutExtensions46)),
 		_GT (typeof(Slider)).AddExtendType (typeof(DG.Tweening.ShortcutExtensions46)),
@@ -189,17 +189,18 @@ public static class CustomSettings
 		_GT (typeof(RenderTexture)), 
 		_GT (typeof(Resources)),
 
-		_GT (typeof(Sprite)),
 
-		// Component
-		_GT (typeof(UnityEngine.Rect)),
 		_GT (typeof(UnityEngine.PlayerPrefs)),
-		_GT (typeof(UnityEngine.EventSystems.PointerEventData)),
+		_GT (typeof(UnityEngine.Sprite)),
 		_GT (typeof(UnityEngine.Font)),
+		_GT (typeof(UnityEngine.Rect)),
+		_GT (typeof(UnityEngine.LayerMask)),
+		_GT (typeof(UnityEngine.EventSystems.PointerEventData)),
 
 		_GT (typeof(UnityEngine.UI.ScrollRect)),
 		_GT (typeof(UnityEngine.UI.InputField)),
 		_GT (typeof(UnityEngine.UI.Button)),
+
 
 		// for ShibaInu
 		_GT (typeof(ShibaInu.LuaHelper)),

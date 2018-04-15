@@ -14,6 +14,7 @@ namespace ShibaInu
 	/// 选择器列表，需配合 Picker.lua 使用
 	/// </summary>
 	[AddComponentMenu ("ShibaInu/Picker", 104)]
+	[DisallowMultipleComponent]
 	public class Picker : UIBehaviour
 	{
 
@@ -23,12 +24,16 @@ namespace ShibaInu
 		public virtual LuaTable luaTarget {
 			set {
 				m_luaTarget = value;
-				m_luaSyncPropertys = value.GetLuaFunction ("SyncPropertys");
+				m_luaAddItem = value.GetLuaFunction ("AddItem");
+				m_luaRemoveItem = value.GetLuaFunction ("RemoveItem");
+				m_luaSelectItem = value.GetLuaFunction ("SelectItem");
 			}
 		}
 
 		protected LuaTable m_luaTarget;
-		protected LuaFunction m_luaSyncPropertys;
+		protected LuaFunction m_luaAddItem;
+		protected LuaFunction m_luaRemoveItem;
+		protected LuaFunction m_luaSelectItem;
 
 		#endregion
 
@@ -138,11 +143,14 @@ namespace ShibaInu
 		}
 
 		[FormerlySerializedAs ("isBounces"), SerializeField]
-		protected bool m_isBounces = false;
+		protected bool m_isBounces = true;
 
 		#endregion
 
 
+
+
+		#region 功能实现
 
 		/// Item 容器
 		public RectTransform content {
@@ -169,7 +177,7 @@ namespace ShibaInu
 			get { return m_itemCount; }
 		}
 
-		protected uint m_itemCount = 30;
+		protected uint m_itemCount = 0;
 
 
 		/// 当前所选 item 的索引
@@ -250,8 +258,28 @@ namespace ShibaInu
 
 			// 响应点击区域相关事件
 			EventTrigger trigger = m_hitArea.AddComponent<EventTrigger> ();
+			EventTrigger.Entry entry;
 
-			EventTrigger.Entry entry = new EventTrigger.Entry ();
+			// PointerDown
+			entry = new EventTrigger.Entry ();
+			entry.eventID = EventTriggerType.PointerDown;
+			entry.callback.AddListener ((data) => {
+				if (m_contentTweener != null)
+					m_contentTweener.Kill ();
+			});
+			trigger.triggers.Add (entry);
+
+			// PointerUp
+			entry = new EventTrigger.Entry ();
+			entry.eventID = EventTriggerType.PointerUp;
+			entry.callback.AddListener ((data) => {
+				if (!m_dragging)
+					ScrollToSelectedItem ();
+			});
+			trigger.triggers.Add (entry);
+
+			// BeginDrag
+			entry = new EventTrigger.Entry ();
 			entry.eventID = EventTriggerType.BeginDrag;
 			entry.callback.AddListener ((data) => {
 				m_dragging = true;
@@ -261,6 +289,7 @@ namespace ShibaInu
 			});
 			trigger.triggers.Add (entry);
 
+			// Dragging
 			entry = new EventTrigger.Entry ();
 			entry.eventID = EventTriggerType.Drag;
 			entry.callback.AddListener ((data) => {
@@ -269,6 +298,7 @@ namespace ShibaInu
 			});
 			trigger.triggers.Add (entry);
 
+			// EndDrag
 			entry = new EventTrigger.Entry ();
 			entry.eventID = EventTriggerType.EndDrag;
 			entry.callback.AddListener ((data) => {
@@ -337,7 +367,11 @@ namespace ShibaInu
 			ShowItem (index);
 			int totalCount = 1;
 			if (m_isIndexChanged) {
-				Debug.Log ("selected: " + index);
+				m_luaSelectItem.BeginPCall ();
+				m_luaSelectItem.Push (m_luaTarget);
+				m_luaSelectItem.Push (index);
+				m_luaSelectItem.PCall ();
+				m_luaSelectItem.EndPCall ();
 			}
 
 			// 向下（右）创建 item
@@ -368,12 +402,18 @@ namespace ShibaInu
 			}
 			foreach (int itemIdx in itemsToRemove) {
 				m_itemList.Remove (itemIdx);
-				Debug.Log ("remove: " + itemIdx);
+
+				m_luaRemoveItem.BeginPCall ();
+				m_luaRemoveItem.Push (m_luaTarget);
+				m_luaRemoveItem.Push (itemIdx);
+				m_luaRemoveItem.PCall ();
+				m_luaRemoveItem.EndPCall ();
 			}
 
 			// 隐藏缓存池中的 Item
 			foreach (GameObject go in m_itemPool) {
-				go.SetActive (false);
+				if (go.activeSelf)
+					go.SetActive (false);
 			}
 		}
 
@@ -391,7 +431,13 @@ namespace ShibaInu
 				item = GetItem ();
 				if (!item.activeSelf)
 					item.SetActive (true);
-				Debug.Log ("new: " + index);
+				
+				m_luaAddItem.BeginPCall ();
+				m_luaAddItem.Push (m_luaTarget);
+				m_luaAddItem.Push (index);
+				m_luaAddItem.Push (item);
+				m_luaAddItem.PCall ();
+				m_luaAddItem.EndPCall ();
 			}
 
 			// 记录到 m_itemIdxList 和 m_itemList
@@ -438,23 +484,6 @@ namespace ShibaInu
 			} else {
 				tmpVec3.Set (posVal, 0, 0);
 			}
-
-
-			/*
-			// 设定的间距
-			float gap = m_itemGap * offsetNum;
-			if (m_isVertical) {
-				if (isBigIdx)
-					tempVector3.y -= gap;
-				else
-					tempVector3.y += gap;
-			} else {
-				if (isBigIdx)
-					tempVector3.x += gap;
-				else
-					tempVector3.x -= gap;
-			}
-			*/
 
 
 			// offset position
@@ -531,8 +560,6 @@ namespace ShibaInu
 				}
 			}
 			tra.localPosition = tmpVec3;
-
-			tra.Find ("contentText").gameObject.GetComponent<Text> ().text = "index: " + index;
 		}
 
 
@@ -549,6 +576,7 @@ namespace ShibaInu
 
 
 		/// <summary>
+		/// 重置 item 的宽高
 		/// 临时创建一个 itemPrefab，拿到宽高后放入池中
 		/// </summary>
 		protected void ResetItemSize ()
@@ -560,6 +588,7 @@ namespace ShibaInu
 				m_itemSize.Set (sizeDelta.x, sizeDelta.y);
 				ResetItemSizeValue ();
 				m_itemPool.Push (tempItem);
+				tempItem.SetActive (false);
 				m_renderDirty = true;
 			}
 		}
@@ -588,9 +617,12 @@ namespace ShibaInu
 			}
 		}
 
+		#endregion
 
 
-		#region 滚动相关
+
+
+		#region public functions
 
 		/// <summary>
 		/// 缓动到 index 对应的 item 位置
@@ -609,8 +641,10 @@ namespace ShibaInu
 				m_contentTweener.Kill ();
 			m_contentTweener = m_content.DOLocalMove (tmpVec3, duration).OnComplete (() => {
 				m_contentTweener = null;
+				m_renderDirty = true;
 			});
 		}
+
 
 
 		/// <summary>
@@ -622,22 +656,6 @@ namespace ShibaInu
 			ScrollByIndex (m_index, duration);
 		}
 
-		#endregion
-
-
-
-		#region 回收与清理 item
-
-		/// <summary>
-		/// 将所有 Item 回收到缓存池中
-		/// </summary>
-		protected void RecycleAllItem ()
-		{
-			foreach (KeyValuePair<int, GameObject> entry in m_itemList) {
-				m_itemPool.Push (entry.Value);
-			}
-			m_itemList.Clear ();
-		}
 
 
 		/// <summary>
@@ -653,9 +671,12 @@ namespace ShibaInu
 			m_itemPool.Clear ();
 			m_itemList.Clear ();
 			m_itemIdxList.Clear ();
+			m_itemCount = 0;
+			m_index = -1;
 		}
 
 		#endregion
+
 
 
 
@@ -803,32 +824,33 @@ namespace ShibaInu
 
 
 
+
 		#region 编辑器相关
 
 		#if UNITY_EDITOR
-
 		protected override void OnValidate ()
 		{
 			// hitArea 可在编辑器编辑
 			if (m_hitArea == null) {
 				m_hitArea = LuaHelper.CreateGameObject ("HitArea", transform, false);
-//				m_hitArea.AddComponent<PointerEventPasser> ();
 				Image img = m_hitArea.AddComponent<Image> ();
 				img.color = Color.clear;
 			}
 		}
+		#endif
 
 
 		public void SerializedPropertyChanged (bool clean)
 		{
+			#if UNITY_EDITOR
 			if (clean) {
 				Clean ();
 				ResetItemSize ();
 			}
 			m_renderDirty = true;
+			#endif
 		}
 
-		#endif
 		#endregion
 
 

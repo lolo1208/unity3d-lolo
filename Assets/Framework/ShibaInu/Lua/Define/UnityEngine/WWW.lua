@@ -1,4 +1,4 @@
----@class UnityEngine.WWW : UnityEngine.CustomYieldInstruction
+---@class UnityEngine.WWW : object
 ---@field assetBundle UnityEngine.AssetBundle
 ---@field bytes table
 ---@field bytesDownloaded int

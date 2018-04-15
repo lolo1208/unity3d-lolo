@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.Sprites;
+using DG.Tweening;
 
 
 namespace ShibaInu
@@ -19,6 +20,9 @@ namespace ShibaInu
 	public class CircleImage : MaskableGraphic, ICanvasRaycastFilter
 	{
 
+		#region Inspector 可编辑属性
+
+		//
 		public Sprite sourceImage {
 			set {
 				if (value != m_sourceImage) {
@@ -32,8 +36,7 @@ namespace ShibaInu
 		[Tooltip ("源图像")]
 		[FormerlySerializedAs ("sourceImage"), SerializeField]
 		protected Sprite m_sourceImage;
-
-
+		//
 
 
 		//
@@ -89,6 +92,45 @@ namespace ShibaInu
 		protected int m_sides = 30;
 		//
 
+		#endregion
+
+
+
+		/// <summary>
+		/// Sets the size to match the content.
+		/// </summary>
+		public override void SetNativeSize ()
+		{
+			if (this.m_sourceImage != null) {
+				float pixelsPerUnit = this.pixelsPerUnit;
+				tmpVec2.x = m_sourceImage.rect.width / pixelsPerUnit;
+				tmpVec2.y = m_sourceImage.rect.height / pixelsPerUnit;
+				base.rectTransform.sizeDelta = tmpVec2;
+				base.rectTransform.anchorMax = base.rectTransform.anchorMin;
+				this.SetAllDirty ();
+			}
+		}
+
+		protected Vector2 tmpVec2 = new Vector2 ();
+
+
+		public float pixelsPerUnit {
+			get {
+				float num = 100f;
+				if (this.m_sourceImage) {
+					num = this.m_sourceImage.pixelsPerUnit;
+				}
+				float num2 = 100f;
+				if (base.canvas) {
+					num2 = base.canvas.referencePixelsPerUnit;
+				}
+				return num / num2;
+			}
+		}
+
+
+
+		#region 实现圆形图像
 
 		/// 内环
 		private List<Vector3> m_innerVertices = new List<Vector3> ();
@@ -96,7 +138,10 @@ namespace ShibaInu
 		private List<Vector3> m_outterVertices = new List<Vector3> ();
 
 
-
+		/// <summary>
+		/// Gets the main texture. override!!!
+		/// </summary>
+		/// <value>The main texture.</value>
 		public override Texture mainTexture {
 			get {
 				return sourceImage == null ? s_WhiteTexture : sourceImage.texture;
@@ -239,6 +284,8 @@ namespace ShibaInu
 				}
 			}
 		}
+
+		#endregion
 
 
 		//
