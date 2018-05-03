@@ -33,6 +33,8 @@ DragDropEvent.INITIALIZE_POTENTIAL_DRAG = "DragDropEvent_InitializePotentialDrag
 --- 被放置
 DragDropEvent.DROP = "DragDropEvent_Drop"
 
+
+--
 local event = DragDropEvent.New()
 
 --- 抛出拖放相关事件，由 DragDropEventDispatcher.cs 调用
@@ -40,6 +42,9 @@ local event = DragDropEvent.New()
 ---@param type string
 ---@param data UnityEngine.EventSystems.AxisEventData
 function DragDropEvent.DispatchEvent(ed, type, data)
+    event.target = nil
+    event.isPropagationStopped = false
+
     event.type = type
     event.data = data
     trycall(ed.DispatchEvent, ed, event, false, false)

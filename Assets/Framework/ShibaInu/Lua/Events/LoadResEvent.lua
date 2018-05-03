@@ -9,7 +9,6 @@
 ---@field assetData UnityEngine.Object @ 当前事件对应的资源数据
 local LoadResEvent = class("LoadResEvent", Event)
 
-
 function LoadResEvent:Ctor(type, data)
     LoadResEvent.super.Ctor(self, type, data)
 end
@@ -29,7 +28,7 @@ LoadResEvent.COMPLETE = "LoadResEvent_Complete"
 LoadResEvent.ALL_COMPLETE = "LoadResEvent_All_Complete"
 
 
-
+--
 local event = LoadResEvent.New()
 
 --- 抛出加载相关事件，由 ABLoader.cs / ResManager.cs 调用
@@ -37,6 +36,10 @@ local event = LoadResEvent.New()
 ---@param path string
 ---@param data UnityEngine.Object
 function LoadResEvent.DispatchEvent(type, path, data)
+    event.data = nil
+    event.target = nil
+    event.isPropagationStopped = false
+
     event.type = type
     event.assetPath = path
     event.assetData = data

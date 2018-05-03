@@ -176,7 +176,6 @@ function Picker:SetSelectedItem(value)
 
     self._selectedItem = value
     value:SetSelected(true)
-
     self:DispatchListEvent(ListEvent.ITEM_SELECTED, value)
 end
 
@@ -258,6 +257,10 @@ local event = ListEvent.New()
 ---@param type string
 ---@param item ItemRenderer
 function Picker:DispatchListEvent(type, item)
+    event.data = nil
+    event.target = nil
+    event.isPropagationStopped = false
+
     event.type = type
     event.item = item
     self:DispatchEvent(event, false, false)

@@ -24,7 +24,7 @@ namespace ShibaInu
 		protected GUIContent m_c_isVertical = new GUIContent ("isVertical", "是否为垂直方向排列");
 		protected GUIContent m_c_isBounces = new GUIContent ("isBounces", "是否启用回弹效果");
 
-		private Picker m_picker;
+		protected Picker m_picker;
 
 
 

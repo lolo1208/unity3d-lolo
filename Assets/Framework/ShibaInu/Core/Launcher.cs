@@ -53,6 +53,8 @@ namespace ShibaInu
 			Common.looper = gameObject.AddComponent<StageLooper> ();
 
 			ResManager.Initialize ();
+			Stage.canvas = uiCanvas.gameObject.GetComponent<Canvas> ();
+			UnityEngine.Debug.Log (Stage.canvas);
 			Stage.uiCanvas = (RectTransform)uiCanvas;
 			Stage.Initialize ();
 

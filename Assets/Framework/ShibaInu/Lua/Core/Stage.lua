@@ -285,6 +285,11 @@ function Stage._loopHandler(type, time)
     if type == Event.UPDATE then
         TimeUtil.frameCount = Time.frameCount
     end
+
+    event.data = nil
+    event.target = nil
+    event.isPropagationStopped = false
+
     event.type = type
     trycall(ed.DispatchEvent, ed, event, false, false)
 end

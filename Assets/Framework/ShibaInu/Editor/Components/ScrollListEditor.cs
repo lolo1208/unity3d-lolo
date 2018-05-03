@@ -16,7 +16,7 @@ namespace ShibaInu
 		protected GUIContent m_c_vertical = new GUIContent ("Vertical", "垂直");
 		protected GUIContent m_c_viewportSize = new GUIContent ("Viewport Size", "显示范围 [ 宽, 高 ]");
 
-		private ScrollList m_scrollList;
+		protected ScrollList m_scrollList;
 
 
 

@@ -36,7 +36,6 @@ local type = type
 local pairs = pairs
 local remove = table.remove
 
-
 ---@class MapList : EventDispatcher
 ---@field New fun(values, ...):MapList
 ---
@@ -46,7 +45,6 @@ local remove = table.remove
 ---@field _keys table<any, number> @ 与值列表对应的键列表
 local MapList = class("MapList", EventDispatcher)
 
-
 --- 构造函数
 ---@see MapList#Init
 function MapList:Ctor(values, ...)
@@ -55,7 +53,6 @@ function MapList:Ctor(values, ...)
     self.dispatchChanged = false
     self:Init(values, ...)
 end
-
 
 --- 初始化数据
 ---@param optional values table<number, any> @ 初始的值数组，传入 nil 表示使用 self._values
@@ -122,7 +119,6 @@ function MapList:GetValueByKey(key)
     return self:GetValueByIndex(index)
 end
 
-
 --- 通过索引获取值
 ---@param index number
 ---@return any
@@ -130,14 +126,12 @@ function MapList:GetValueByIndex(index)
     return self._values[index]
 end
 
-
 --- 通过键获取索引。没有对应的值时，返回 -1
 ---@param key any
 ---@return number
 function MapList:GetIndexByKey(key)
     return self._keys[key] or -1
 end
-
 
 --- 通过值获取索引。没有对应的值时，返回 -1
 ---@param value any
@@ -151,7 +145,6 @@ function MapList:GetIndexByValue(value)
     end
     return -1
 end
-
 
 --- 通过索引获取键列表
 ---@param index number
@@ -179,7 +172,6 @@ function MapList:SetValueByIndex(index, value)
     self._values[index] = value
     self:DispatchDataEvent(index, oldValue, value)
 end
-
 
 --- 通过键设置值
 ---@param key any
@@ -212,7 +204,6 @@ function MapList:Add(value, ...)
     return index
 end
 
-
 --- 通过索引为该值添加一个键，并返回该值的索引。如果值不存在，将会添加失败，并返回 -1
 ---@param newKey any
 ---@param index number
@@ -223,7 +214,6 @@ function MapList:AddKeyByIndex(newKey, index)
     self._keys[newKey] = index
     return index
 end
-
 
 --- 通过键为该值添加一个键，并返回该值的索引。如果没有源键，将会添加失败，并返回 -1
 ---@param newKey any
@@ -251,7 +241,6 @@ function MapList:RemoveKey(key)
     self._keys[key] = nil
 end
 
-
 --- 通过索引移除对应的键与值
 ---@param index number
 function MapList:RemoveByIndex(index)
@@ -270,7 +259,6 @@ function MapList:RemoveByIndex(index)
 
     self:DispatchDataEvent()
 end
-
 
 --- 通过键移除对应的键与值
 ---@param key any
@@ -298,7 +286,6 @@ function MapList:GetValues()
     return self._values
 end
 
-
 --- 设置与值列表对应的键列表
 ---@param value table<any, number>
 function MapList:SetKeys(value)
@@ -310,7 +297,6 @@ end
 function MapList:GetKeys()
     return self._keys
 end
-
 
 --- 获取数据（值）总数
 ---@return number
@@ -330,6 +316,10 @@ local event = DataEvent.New(DataEvent.DATA_CHANGED)
 ---@param newValue any
 function MapList:DispatchDataEvent(index, oldValue, newValue)
     if self.dispatchChanged then
+        event.data = nil
+        event.target = nil
+        event.isPropagationStopped = false
+
         event.index = index or -1
         event.oldValue = oldValue
         event.newValue = newValue
@@ -337,13 +327,11 @@ function MapList:DispatchDataEvent(index, oldValue, newValue)
     end
 end
 
-
 --- 克隆
 ---@return MapList
 function MapList:Clone()
     return MapList.New(ObjectUtil.copy(self._values), ObjectUtil.copy(self._keys))
 end
-
 
 --- 清空
 function MapList:Clean()
@@ -351,7 +339,5 @@ function MapList:Clean()
     self._keys = {}
     self:DispatchDataEvent()
 end
-
-
 
 return MapList

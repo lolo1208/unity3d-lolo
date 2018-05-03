@@ -222,8 +222,8 @@ end
 function BaseList:UpdateItem(item, data, index)
     local itemList = self._itemList
     itemList[#itemList + 1] = item
-    item:Update(data, index)
     item:SetEnabled(self._enabled)
+    item:Update(data, index)
 end
 
 --
@@ -306,8 +306,9 @@ end
 ---@param event PointerEvent
 ---@param item ItemRenderer
 function BaseList:ItemPointerDown(event, item)
-    self:SwitchItem(item)
-    self:DispatchListEvent(ListEvent.ITEM_POINTER_DOWN, item)
+    if item:GetEnabled() then
+        self:DispatchListEvent(ListEvent.ITEM_POINTER_DOWN, item)
+    end
 end
 
 --
@@ -315,7 +316,10 @@ end
 ---@param event PointerEvent
 ---@param item ItemRenderer
 function BaseList:ItemPointerClick(event, item)
-    self:DispatchListEvent(ListEvent.ITEM_POINTER_CLICK, item)
+    if item:GetEnabled() then
+        self:SwitchItem(item)
+        self:DispatchListEvent(ListEvent.ITEM_POINTER_CLICK, item)
+    end
 end
 
 
@@ -462,6 +466,10 @@ local event = ListEvent.New()
 ---@param type string
 ---@param item ItemRenderer
 function BaseList:DispatchListEvent(type, item)
+    event.data = nil
+    event.target = nil
+    event.isPropagationStopped = false
+
     event.type = type
     event.item = item
     self:DispatchEvent(event, false, false)

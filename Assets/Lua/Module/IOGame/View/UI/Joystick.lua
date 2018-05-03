@@ -222,7 +222,7 @@ end
 ---@param value boolean
 function Joystick:SetEnabled(value)
     self._enabled = value
-    if value and self.visibled then
+    if value and self.visible then
         AddEventListener(self.gameObject, PointerEvent.DOWN, self.PointerEventHandler, self)
     else
         RemoveEventListener(self.gameObject, PointerEvent.DOWN, self.PointerEventHandler, self)

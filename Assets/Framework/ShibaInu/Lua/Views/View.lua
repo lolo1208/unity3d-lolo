@@ -12,7 +12,7 @@ local format = string.format
 ---@field New fun(prefab:UnityEngine.GameObject | string, parent:string | UnityEngine.Transform, groupName:string, isAsync:boolean):View
 ---
 ---@field gameObject UnityEngine.GameObject
----@field visibled boolean
+---@field visible boolean
 ---
 ---@field _initialized boolean @ 是否已经初始化完成了
 local View = class("View", EventDispatcher)
@@ -34,7 +34,7 @@ function View:Ctor(prefab, parent, groupName, isAsync)
     View.super.Ctor(self)
 
     self._initialized = false
-    self.visibled = false
+    self.visible = false
     if prefab == nil then
         return -- 无需在该构造函数初始化
     end
@@ -60,7 +60,7 @@ function View:OnInitialize()
         showed = self.gameObject.activeSelf
     end
     if showed then
-        self.visibled = showed
+        self.visible = showed
         self:OnShow()
     end
 end
@@ -71,12 +71,12 @@ end
 --- 设置是否可见
 ---@param self View
 ---@param value boolean
-local function SetVisibled(self, value)
+function View:SetVisible(value)
     if not self._initialized then
         error(format(Constants.E2005, self.__classname))
     end
 
-    self.visibled = value
+    self.visible = value
     local go = self.gameObject
     if isnull(go) then
         self.gameObject = nil
@@ -93,24 +93,24 @@ end
 
 --- 显示 gameObject
 function View:Show()
-    if not self.visibled then
-        SetVisibled(self, true)
+    if not self.visible then
+        self:SetVisible(true)
     end
 end
 
 --- 隐藏 gameObject
 function View:Hide()
-    if self.visibled then
-        SetVisibled(self, false)
+    if self.visible then
+        self:SetVisible(false)
     end
 end
 
 --- 显示／隐藏 gameObject
 function View:ToggleVisibility()
-    if self.visibled then
-        SetVisibled(self, false)
+    if self.visible then
+        self:SetVisible(false)
     else
-        SetVisibled(self, true)
+        self:SetVisible(true)
     end
 end
 

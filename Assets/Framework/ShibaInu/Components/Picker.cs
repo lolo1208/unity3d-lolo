@@ -431,13 +431,22 @@ namespace ShibaInu
 				item = GetItem ();
 				if (!item.activeSelf)
 					item.SetActive (true);
-				
+
 				m_luaAddItem.BeginPCall ();
 				m_luaAddItem.Push (m_luaTarget);
 				m_luaAddItem.Push (index);
 				m_luaAddItem.Push (item);
 				m_luaAddItem.PCall ();
 				m_luaAddItem.EndPCall ();
+
+				// 默认选中
+				if (index == m_index) {
+					m_luaSelectItem.BeginPCall ();
+					m_luaSelectItem.Push (m_luaTarget);
+					m_luaSelectItem.Push (index);
+					m_luaSelectItem.PCall ();
+					m_luaSelectItem.EndPCall ();
+				}
 			}
 
 			// 记录到 m_itemIdxList 和 m_itemList

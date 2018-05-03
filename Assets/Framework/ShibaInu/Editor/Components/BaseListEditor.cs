@@ -21,7 +21,7 @@ namespace ShibaInu
 		protected bool m_rowCountDisabled = false;
 		protected bool m_columnCountDisabled = false;
 
-		private BaseList m_baseList;
+		protected BaseList m_baseList;
 
 
 

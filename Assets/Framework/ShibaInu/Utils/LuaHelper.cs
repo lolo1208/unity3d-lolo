@@ -11,6 +11,10 @@ namespace ShibaInu
 	/// </summary>
 	public static class LuaHelper
 	{
+		/// 临时使用的 Vector3 对象
+		private static Vector3 tmpVec3 = new Vector3 ();
+
+
 
 
 		/// <summary>
@@ -103,6 +107,21 @@ namespace ShibaInu
 			target.gameObject.layer = layer;
 			foreach (Transform child in target)
 				SetLayerRecursively (child, layer);
+		}
+
+
+		/// <summary>
+		/// 将世界（主摄像机）坐标转换成 UICanvas 的坐标
+		/// </summary>
+		/// <returns>The to canvas point.</returns>
+		/// <param name="pos">world position</param>
+		public static Vector3 WorldToCanvasPoint(Vector3 pos)
+		{
+			pos = Camera.main.WorldToScreenPoint (pos);
+			pos = Stage.canvas.worldCamera.ScreenToWorldPoint (pos);
+			Vector3 s = Stage.uiCanvas.localScale;
+			tmpVec3.Set (pos.x / s.x, pos.y / s.y, Stage.uiCanvas.anchoredPosition3D.z);
+			return tmpVec3;
 		}
 
 

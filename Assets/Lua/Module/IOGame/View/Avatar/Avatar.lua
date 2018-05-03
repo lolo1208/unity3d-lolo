@@ -120,12 +120,14 @@ end
 
 function Avatar:OnDestroy()
     RemoveEventListener(Stage, Event.UPDATE, self.ChangeAngle, self)
-    self.state:Transition()
+    if self.state ~= nil then
+        self.state:Transition()
+    end
     self.action:Transition()
 end
 
 
---
 
+--
 
 return Avatar

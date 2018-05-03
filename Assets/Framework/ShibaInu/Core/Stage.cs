@@ -26,7 +26,10 @@ namespace ShibaInu
 		/// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadSceneEvent.lua
 		private static LuaFunction _dispatchEvent;
 
+		/// UI Canvas
+		public static Canvas canvas;
 		public static RectTransform uiCanvas;
+
 		public static RectTransform sceneLayer;
 		public static RectTransform uiLayer;
 		public static RectTransform windowLayer;

@@ -9,7 +9,6 @@
 ---@field data UnityEngine.EventSystems.PointerEventData @ 指针事件附带的数据
 local PointerEvent = class("PointerEvent", Event)
 
-
 function PointerEvent:Ctor(type, data)
     PointerEvent.super.Ctor(self, type, data)
 end
@@ -35,7 +34,7 @@ PointerEvent.UP = "PointerEvent_Up"
 PointerEvent.CLICK = "PointerEvent_Click"
 
 
-
+--
 local event = PointerEvent.New()
 
 --- 抛出鼠标指针（touch）相关事件，由 PointerEventDispatcher.cs 调用
@@ -43,6 +42,9 @@ local event = PointerEvent.New()
 ---@param type string
 ---@param data UnityEngine.EventSystems.PointerEventData
 function PointerEvent.DispatchEvent(ed, type, data)
+    event.target = nil
+    event.isPropagationStopped = false
+
     event.type = type
     event.data = data
     trycall(ed.DispatchEvent, ed, event, false, false)
