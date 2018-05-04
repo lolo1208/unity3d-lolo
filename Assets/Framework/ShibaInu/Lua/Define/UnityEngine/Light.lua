@@ -1,26 +1,25 @@
 ---@class UnityEngine.Light : UnityEngine.Behaviour
+---@field shadows UnityEngine.LightShadows
+---@field shadowStrength float
+---@field shadowResolution UnityEngine.Rendering.LightShadowResolution
+---@field cookieSize float
+---@field cookie UnityEngine.Texture
+---@field renderMode UnityEngine.LightRenderMode
+---@field commandBufferCount int
 ---@field type UnityEngine.LightType
+---@field spotAngle float
 ---@field color UnityEngine.Color
 ---@field colorTemperature float
 ---@field intensity float
 ---@field bounceIntensity float
----@field shadows UnityEngine.LightShadows
----@field shadowStrength float
----@field shadowResolution UnityEngine.Rendering.LightShadowResolution
 ---@field shadowCustomResolution int
 ---@field shadowBias float
 ---@field shadowNormalBias float
 ---@field shadowNearPlane float
 ---@field range float
----@field spotAngle float
----@field cookieSize float
----@field cookie UnityEngine.Texture
 ---@field flare UnityEngine.Flare
----@field renderMode UnityEngine.LightRenderMode
----@field alreadyLightmapped bool
----@field isBaked bool
+---@field bakingOutput UnityEngine.LightBakingOutput
 ---@field cullingMask int
----@field commandBufferCount int
 local m = {}
 ---@param endValue UnityEngine.Color
 ---@param duration float

@@ -25,6 +25,7 @@ public class UnityEngine_TextureWrap
 		L.RegVar("wrapModeW", get_wrapModeW, set_wrapModeW);
 		L.RegVar("mipMapBias", get_mipMapBias, set_mipMapBias);
 		L.RegVar("texelSize", get_texelSize, null);
+		L.RegVar("imageContentsHash", get_imageContentsHash, set_imageContentsHash);
 		L.EndClass();
 	}
 
@@ -342,6 +343,25 @@ public class UnityEngine_TextureWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_imageContentsHash(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Texture obj = (UnityEngine.Texture)o;
+			UnityEngine.Hash128 ret = obj.imageContentsHash;
+			ToLua.PushValue(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index imageContentsHash on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_masterTextureLimit(IntPtr L)
 	{
 		try
@@ -558,6 +578,25 @@ public class UnityEngine_TextureWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index mipMapBias on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_imageContentsHash(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Texture obj = (UnityEngine.Texture)o;
+			UnityEngine.Hash128 arg0 = StackTraits<UnityEngine.Hash128>.Check(L, 2);
+			obj.imageContentsHash = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index imageContentsHash on a nil value");
 		}
 	}
 }

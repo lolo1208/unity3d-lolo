@@ -12,18 +12,21 @@
 ---@field volumeDepth int
 ---@field memorylessMode UnityEngine.RenderTextureMemoryless
 ---@field antiAliasing int
+---@field bindTextureMS bool
 ---@field enableRandomWrite bool
+---@field useDynamicScale bool
 ---@field colorBuffer UnityEngine.RenderBuffer
 ---@field depthBuffer UnityEngine.RenderBuffer
 ---@field active UnityEngine.RenderTexture
 ---@field descriptor UnityEngine.RenderTextureDescriptor
 local m = {}
+---@overload fun(width:int, height:int, depthBuffer:int, format:UnityEngine.RenderTextureFormat, readWrite:UnityEngine.RenderTextureReadWrite, antiAliasing:int, memorylessMode:UnityEngine.RenderTextureMemoryless):UnityEngine.RenderTexture
 ---@overload fun(width:int, height:int, depthBuffer:int, format:UnityEngine.RenderTextureFormat, readWrite:UnityEngine.RenderTextureReadWrite, antiAliasing:int):UnityEngine.RenderTexture
 ---@overload fun(width:int, height:int, depthBuffer:int, format:UnityEngine.RenderTextureFormat, readWrite:UnityEngine.RenderTextureReadWrite):UnityEngine.RenderTexture
 ---@overload fun(width:int, height:int, depthBuffer:int, format:UnityEngine.RenderTextureFormat):UnityEngine.RenderTexture
 ---@overload fun(width:int, height:int, depthBuffer:int):UnityEngine.RenderTexture
 ---@overload fun(width:int, height:int):UnityEngine.RenderTexture
----@overload fun(width:int, height:int, depthBuffer:int, format:UnityEngine.RenderTextureFormat, readWrite:UnityEngine.RenderTextureReadWrite, antiAliasing:int, memorylessMode:UnityEngine.RenderTextureMemoryless, vrUsage:UnityEngine.VRTextureUsage):UnityEngine.RenderTexture
+---@overload fun(width:int, height:int, depthBuffer:int, format:UnityEngine.RenderTextureFormat, readWrite:UnityEngine.RenderTextureReadWrite, antiAliasing:int, memorylessMode:UnityEngine.RenderTextureMemoryless, vrUsage:UnityEngine.VRTextureUsage, useDynamicScale:bool):UnityEngine.RenderTexture
 ---@overload fun(desc:UnityEngine.RenderTextureDescriptor):UnityEngine.RenderTexture
 ---@param width int
 ---@param height int
@@ -32,10 +35,13 @@ local m = {}
 ---@param readWrite UnityEngine.RenderTextureReadWrite
 ---@param antiAliasing int
 ---@param memorylessMode UnityEngine.RenderTextureMemoryless
+---@param vrUsage UnityEngine.VRTextureUsage
 ---@return UnityEngine.RenderTexture
-function m.GetTemporary(width, height, depthBuffer, format, readWrite, antiAliasing, memorylessMode) end
+function m.GetTemporary(width, height, depthBuffer, format, readWrite, antiAliasing, memorylessMode, vrUsage) end
 ---@param temp UnityEngine.RenderTexture
 function m.ReleaseTemporary(temp) end
+---@overload fun(target:UnityEngine.RenderTexture):void
+function m:ResolveAntiAliasedSurface() end
 ---@return bool
 function m:Create() end
 function m:Release() end

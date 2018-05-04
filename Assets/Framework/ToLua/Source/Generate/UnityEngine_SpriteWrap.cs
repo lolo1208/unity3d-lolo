@@ -9,12 +9,15 @@ public class UnityEngine_SpriteWrap
 		L.BeginClass(typeof(UnityEngine.Sprite), typeof(UnityEngine.Object));
 		L.RegFunction("Create", Create);
 		L.RegFunction("OverrideGeometry", OverrideGeometry);
+		L.RegFunction("GetPhysicsShapeCount", GetPhysicsShapeCount);
+		L.RegFunction("GetPhysicsShapePointCount", GetPhysicsShapePointCount);
+		L.RegFunction("GetPhysicsShape", GetPhysicsShape);
+		L.RegFunction("OverridePhysicsShape", OverridePhysicsShape);
 		L.RegFunction("New", _CreateUnityEngine_Sprite);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("bounds", get_bounds, null);
 		L.RegVar("rect", get_rect, null);
-		L.RegVar("pixelsPerUnit", get_pixelsPerUnit, null);
 		L.RegVar("texture", get_texture, null);
 		L.RegVar("associatedAlphaSplitTexture", get_associatedAlphaSplitTexture, null);
 		L.RegVar("textureRect", get_textureRect, null);
@@ -27,6 +30,7 @@ public class UnityEngine_SpriteWrap
 		L.RegVar("vertices", get_vertices, null);
 		L.RegVar("triangles", get_triangles, null);
 		L.RegVar("uv", get_uv, null);
+		L.RegVar("pixelsPerUnit", get_pixelsPerUnit, null);
 		L.EndClass();
 	}
 
@@ -116,6 +120,20 @@ public class UnityEngine_SpriteWrap
 				ToLua.PushSealed(L, o);
 				return 1;
 			}
+			else if (count == 8)
+			{
+				UnityEngine.Texture2D arg0 = (UnityEngine.Texture2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Texture2D));
+				UnityEngine.Rect arg1 = StackTraits<UnityEngine.Rect>.Check(L, 2);
+				UnityEngine.Vector2 arg2 = ToLua.ToVector2(L, 3);
+				float arg3 = (float)LuaDLL.luaL_checknumber(L, 4);
+				uint arg4 = (uint)LuaDLL.luaL_checknumber(L, 5);
+				UnityEngine.SpriteMeshType arg5 = (UnityEngine.SpriteMeshType)ToLua.CheckObject(L, 6, typeof(UnityEngine.SpriteMeshType));
+				UnityEngine.Vector4 arg6 = ToLua.ToVector4(L, 7);
+				bool arg7 = LuaDLL.luaL_checkboolean(L, 8);
+				UnityEngine.Sprite o = UnityEngine.Sprite.Create(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+				ToLua.PushSealed(L, o);
+				return 1;
+			}
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Sprite.Create");
@@ -137,6 +155,77 @@ public class UnityEngine_SpriteWrap
 			UnityEngine.Vector2[] arg0 = ToLua.CheckStructArray<UnityEngine.Vector2>(L, 2);
 			ushort[] arg1 = ToLua.CheckNumberArray<ushort>(L, 3);
 			obj.OverrideGeometry(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPhysicsShapeCount(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Sprite obj = (UnityEngine.Sprite)ToLua.CheckObject(L, 1, typeof(UnityEngine.Sprite));
+			int o = obj.GetPhysicsShapeCount();
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPhysicsShapePointCount(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Sprite obj = (UnityEngine.Sprite)ToLua.CheckObject(L, 1, typeof(UnityEngine.Sprite));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			int o = obj.GetPhysicsShapePointCount(arg0);
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPhysicsShape(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			UnityEngine.Sprite obj = (UnityEngine.Sprite)ToLua.CheckObject(L, 1, typeof(UnityEngine.Sprite));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			System.Collections.Generic.List<UnityEngine.Vector2> arg1 = (System.Collections.Generic.List<UnityEngine.Vector2>)ToLua.CheckObject(L, 3, typeof(System.Collections.Generic.List<UnityEngine.Vector2>));
+			int o = obj.GetPhysicsShape(arg0, arg1);
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OverridePhysicsShape(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Sprite obj = (UnityEngine.Sprite)ToLua.CheckObject(L, 1, typeof(UnityEngine.Sprite));
+			System.Collections.Generic.IList<UnityEngine.Vector2[]> arg0 = (System.Collections.Generic.IList<UnityEngine.Vector2[]>)ToLua.CheckObject<System.Collections.Generic.IList<UnityEngine.Vector2[]>>(L, 2);
+			obj.OverridePhysicsShape(arg0);
 			return 0;
 		}
 		catch (Exception e)
@@ -198,25 +287,6 @@ public class UnityEngine_SpriteWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index rect on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_pixelsPerUnit(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			UnityEngine.Sprite obj = (UnityEngine.Sprite)o;
-			float ret = obj.pixelsPerUnit;
-			LuaDLL.lua_pushnumber(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index pixelsPerUnit on a nil value");
 		}
 	}
 
@@ -445,6 +515,25 @@ public class UnityEngine_SpriteWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index uv on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_pixelsPerUnit(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Sprite obj = (UnityEngine.Sprite)o;
+			float ret = obj.pixelsPerUnit;
+			LuaDLL.lua_pushnumber(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index pixelsPerUnit on a nil value");
 		}
 	}
 }

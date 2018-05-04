@@ -160,9 +160,11 @@ namespace ShibaInu
 			m_viewport = (RectTransform)viewport.transform;
 			m_viewport.pivot = Vector2.up;
 			m_viewport.sizeDelta = m_viewportSize;
+			m_viewport.localPosition = Vector3.zero;
 
 			m_content = (RectTransform)LuaHelper.CreateGameObject ("Content", m_viewport, false).transform;
 			m_content.pivot = Vector2.up;
+			m_content.localPosition = Vector3.zero;
 
 			m_scrollRect = gameObject.AddComponent<ScrollRect> ();
 			m_scrollRect.content = m_content;

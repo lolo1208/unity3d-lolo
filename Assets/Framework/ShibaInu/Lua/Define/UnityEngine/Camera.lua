@@ -7,6 +7,7 @@
 ---@field allowHDR bool
 ---@field forceIntoRenderTexture bool
 ---@field allowMSAA bool
+---@field allowDynamicResolution bool
 ---@field orthographicSize float
 ---@field orthographic bool
 ---@field opaqueSortMode UnityEngine.Rendering.OpaqueSortMode
@@ -24,6 +25,8 @@
 ---@field activeTexture UnityEngine.RenderTexture
 ---@field pixelWidth int
 ---@field pixelHeight int
+---@field scaledPixelWidth int
+---@field scaledPixelHeight int
 ---@field cameraToWorldMatrix UnityEngine.Matrix4x4
 ---@field worldToCameraMatrix UnityEngine.Matrix4x4
 ---@field projectionMatrix UnityEngine.Matrix4x4
@@ -192,6 +195,11 @@ function m:GetCommandBuffers(evt) end
 ---@param clipPlane UnityEngine.Vector4
 ---@return UnityEngine.Matrix4x4
 function m:CalculateObliqueMatrix(clipPlane) end
+---@param eye UnityEngine.Camera.StereoscopicEye
+---@return UnityEngine.Matrix4x4
+function m:GetStereoNonJitteredProjectionMatrix(eye) end
+---@param eye UnityEngine.Camera.StereoscopicEye
+function m:CopyStereoDeviceProjectionMatrixToNonJittered(eye) end
 UnityEngine = {}
 UnityEngine.Camera = m
 return m

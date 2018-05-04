@@ -156,8 +156,8 @@ function Login:SocketMessageHandler(event)
     end
 end
 
-local F1 = { pos = Vector3.New(-4.630, 5.830, 0.000), rot = Vector3.New(45.000, 90.000, 0.000) }
-print(F1.pos.y, F1.rot.x)
+
+
 --
 
 return Login

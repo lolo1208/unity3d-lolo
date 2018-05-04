@@ -1135,18 +1135,18 @@ public class UnityEngine_AnimatorWrap
 		{
 			int count = LuaDLL.lua_gettop(L);
 
-			if (count == 3 && TypeChecker.CheckTypes<int, float>(L, 2))
+			if (count == 3 && TypeChecker.CheckTypes<string, float>(L, 2))
 			{
 				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
-				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				string arg0 = ToLua.ToString(L, 2);
 				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
 				obj.CrossFadeInFixedTime(arg0, arg1);
 				return 0;
 			}
-			else if (count == 3 && TypeChecker.CheckTypes<string, float>(L, 2))
+			else if (count == 3 && TypeChecker.CheckTypes<int, float>(L, 2))
 			{
 				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
-				string arg0 = ToLua.ToString(L, 2);
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
 				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
 				obj.CrossFadeInFixedTime(arg0, arg1);
 				return 0;
@@ -1169,6 +1169,16 @@ public class UnityEngine_AnimatorWrap
 				obj.CrossFadeInFixedTime(arg0, arg1, arg2);
 				return 0;
 			}
+			else if (count == 5 && TypeChecker.CheckTypes<int, float, int, float>(L, 2))
+			{
+				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				float arg3 = (float)LuaDLL.lua_tonumber(L, 5);
+				obj.CrossFadeInFixedTime(arg0, arg1, arg2, arg3);
+				return 0;
+			}
 			else if (count == 5 && TypeChecker.CheckTypes<string, float, int, float>(L, 2))
 			{
 				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
@@ -1179,14 +1189,26 @@ public class UnityEngine_AnimatorWrap
 				obj.CrossFadeInFixedTime(arg0, arg1, arg2, arg3);
 				return 0;
 			}
-			else if (count == 5 && TypeChecker.CheckTypes<int, float, int, float>(L, 2))
+			else if (count == 6 && TypeChecker.CheckTypes<string, float, int, float, float>(L, 2))
+			{
+				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
+				string arg0 = ToLua.ToString(L, 2);
+				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				float arg3 = (float)LuaDLL.lua_tonumber(L, 5);
+				float arg4 = (float)LuaDLL.lua_tonumber(L, 6);
+				obj.CrossFadeInFixedTime(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<int, float, int, float, float>(L, 2))
 			{
 				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
 				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
 				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
 				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
 				float arg3 = (float)LuaDLL.lua_tonumber(L, 5);
-				obj.CrossFadeInFixedTime(arg0, arg1, arg2, arg3);
+				float arg4 = (float)LuaDLL.lua_tonumber(L, 6);
+				obj.CrossFadeInFixedTime(arg0, arg1, arg2, arg3, arg4);
 				return 0;
 			}
 			else
@@ -1207,18 +1229,18 @@ public class UnityEngine_AnimatorWrap
 		{
 			int count = LuaDLL.lua_gettop(L);
 
-			if (count == 3 && TypeChecker.CheckTypes<int, float>(L, 2))
+			if (count == 3 && TypeChecker.CheckTypes<string, float>(L, 2))
 			{
 				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
-				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				string arg0 = ToLua.ToString(L, 2);
 				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
 				obj.CrossFade(arg0, arg1);
 				return 0;
 			}
-			else if (count == 3 && TypeChecker.CheckTypes<string, float>(L, 2))
+			else if (count == 3 && TypeChecker.CheckTypes<int, float>(L, 2))
 			{
 				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
-				string arg0 = ToLua.ToString(L, 2);
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
 				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
 				obj.CrossFade(arg0, arg1);
 				return 0;
@@ -1241,6 +1263,16 @@ public class UnityEngine_AnimatorWrap
 				obj.CrossFade(arg0, arg1, arg2);
 				return 0;
 			}
+			else if (count == 5 && TypeChecker.CheckTypes<int, float, int, float>(L, 2))
+			{
+				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				float arg3 = (float)LuaDLL.lua_tonumber(L, 5);
+				obj.CrossFade(arg0, arg1, arg2, arg3);
+				return 0;
+			}
 			else if (count == 5 && TypeChecker.CheckTypes<string, float, int, float>(L, 2))
 			{
 				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
@@ -1251,14 +1283,26 @@ public class UnityEngine_AnimatorWrap
 				obj.CrossFade(arg0, arg1, arg2, arg3);
 				return 0;
 			}
-			else if (count == 5 && TypeChecker.CheckTypes<int, float, int, float>(L, 2))
+			else if (count == 6 && TypeChecker.CheckTypes<string, float, int, float, float>(L, 2))
+			{
+				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
+				string arg0 = ToLua.ToString(L, 2);
+				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				float arg3 = (float)LuaDLL.lua_tonumber(L, 5);
+				float arg4 = (float)LuaDLL.lua_tonumber(L, 6);
+				obj.CrossFade(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<int, float, int, float, float>(L, 2))
 			{
 				UnityEngine.Animator obj = (UnityEngine.Animator)ToLua.CheckObject(L, 1, typeof(UnityEngine.Animator));
 				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
 				float arg1 = (float)LuaDLL.lua_tonumber(L, 3);
 				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
 				float arg3 = (float)LuaDLL.lua_tonumber(L, 5);
-				obj.CrossFade(arg0, arg1, arg2, arg3);
+				float arg4 = (float)LuaDLL.lua_tonumber(L, 6);
+				obj.CrossFade(arg0, arg1, arg2, arg3, arg4);
 				return 0;
 			}
 			else

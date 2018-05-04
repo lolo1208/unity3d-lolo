@@ -1,10 +1,102 @@
 fileFormatVersion: 2
 guid: 24ee6028ad66d4f47ab71fad4b0585fc
-timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: bon_gob_war_face
+    100002: bon_gob_war_jaw
+    100004: dwarf_skn_body
+    100006: DwarfHead
+    100008: DwarfLCalf
+    100010: DwarfLCollarbone
+    100012: DwarfLDigit11
+    100014: DwarfLDigit11 1
+    100016: DwarfLDigit12
+    100018: DwarfLDigit13
+    100020: DwarfLDigit21
+    100022: DwarfLDigit22
+    100024: DwarfLDigit23
+    100026: DwarfLDigit31
+    100028: DwarfLDigit32
+    100030: DwarfLDigit33
+    100032: DwarfLFoot
+    100034: DwarfLForearm
+    100036: DwarfLPalm
+    100038: DwarfLThigh
+    100040: DwarfLUpperarm
+    100042: DwarfNeck
+    100044: DwarfPelvis
+    100046: DwarfRCalf
+    100048: DwarfRCollarbone
+    100050: DwarfRDigit11
+    100052: DwarfRDigit11 1
+    100054: DwarfRDigit12
+    100056: DwarfRDigit13
+    100058: DwarfRDigit21
+    100060: DwarfRDigit22
+    100062: DwarfRDigit23
+    100064: DwarfRDigit31
+    100066: DwarfRDigit32
+    100068: DwarfRDigit33
+    100070: DwarfRFoot
+    100072: DwarfRForearm
+    100074: DwarfRibcage
+    100076: DwarfRPalm
+    100078: DwarfRThigh
+    100080: DwarfRUpperarm
+    100082: DwarfSpine1
+    100084: DwarfSpine2
+    100086: DwarfSpine3
+    100088: //RootNode
+    400000: bon_gob_war_face
+    400002: bon_gob_war_jaw
+    400004: dwarf_skn_body
+    400006: DwarfHead
+    400008: DwarfLCalf
+    400010: DwarfLCollarbone
+    400012: DwarfLDigit11
+    400014: DwarfLDigit11 1
+    400016: DwarfLDigit12
+    400018: DwarfLDigit13
+    400020: DwarfLDigit21
+    400022: DwarfLDigit22
+    400024: DwarfLDigit23
+    400026: DwarfLDigit31
+    400028: DwarfLDigit32
+    400030: DwarfLDigit33
+    400032: DwarfLFoot
+    400034: DwarfLForearm
+    400036: DwarfLPalm
+    400038: DwarfLThigh
+    400040: DwarfLUpperarm
+    400042: DwarfNeck
+    400044: DwarfPelvis
+    400046: DwarfRCalf
+    400048: DwarfRCollarbone
+    400050: DwarfRDigit11
+    400052: DwarfRDigit11 1
+    400054: DwarfRDigit12
+    400056: DwarfRDigit13
+    400058: DwarfRDigit21
+    400060: DwarfRDigit22
+    400062: DwarfRDigit23
+    400064: DwarfRDigit31
+    400066: DwarfRDigit32
+    400068: DwarfRDigit33
+    400070: DwarfRFoot
+    400072: DwarfRForearm
+    400074: DwarfRibcage
+    400076: DwarfRPalm
+    400078: DwarfRThigh
+    400080: DwarfRUpperarm
+    400082: DwarfSpine1
+    400084: DwarfSpine2
+    400086: DwarfSpine3
+    400088: //RootNode
     4300000: dwarf_skn_body
+    7400000: walk
+    11100000: //RootNode
+    13700000: dwarf_skn_body
   externalObjects: {}
   materials:
     importMaterials: 0
@@ -24,6 +116,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -76,6 +169,8 @@ ModelImporter:
     optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88

@@ -7,6 +7,9 @@
 ---@field sleepThreshold float
 ---@field queriesHitTriggers bool
 ---@field queriesHitBackfaces bool
+---@field interCollisionDistance float
+---@field interCollisionStiffness float
+---@field interCollisionSettingsToggle bool
 ---@field autoSimulation bool
 ---@field autoSyncTransforms bool
 ---@field IgnoreRaycastLayer int
@@ -318,6 +321,9 @@ function m.ClosestPoint(point, collider, position, rotation) end
 ---@param step float
 function m.Simulate(step) end
 function m.SyncTransforms() end
+---@param worldBounds UnityEngine.Bounds
+---@param subdivisions int
+function m.RebuildBroadphaseRegions(worldBounds, subdivisions) end
 UnityEngine = {}
 UnityEngine.Physics = m
 return m

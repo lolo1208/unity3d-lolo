@@ -1,33 +1,33 @@
 ---@class UnityEngine.QualitySettings : UnityEngine.Object
 ---@field names table
+---@field shadowCascade4Split UnityEngine.Vector3
+---@field anisotropicFiltering UnityEngine.AnisotropicFiltering
+---@field maxQueuedFrames int
+---@field blendWeights UnityEngine.BlendWeights
 ---@field pixelLightCount int
 ---@field shadows UnityEngine.ShadowQuality
 ---@field shadowProjection UnityEngine.ShadowProjection
 ---@field shadowCascades int
 ---@field shadowDistance float
 ---@field shadowResolution UnityEngine.ShadowResolution
+---@field shadowmaskMode UnityEngine.ShadowmaskMode
 ---@field shadowNearPlaneOffset float
 ---@field shadowCascade2Split float
----@field shadowCascade4Split UnityEngine.Vector3
----@field shadowmaskMode UnityEngine.ShadowmaskMode
----@field masterTextureLimit int
----@field anisotropicFiltering UnityEngine.AnisotropicFiltering
 ---@field lodBias float
+---@field masterTextureLimit int
 ---@field maximumLODLevel int
 ---@field particleRaycastBudget int
 ---@field softParticles bool
 ---@field softVegetation bool
----@field realtimeReflectionProbes bool
----@field billboardsFaceCameraPosition bool
----@field maxQueuedFrames int
 ---@field vSyncCount int
 ---@field antiAliasing int
----@field desiredColorSpace UnityEngine.ColorSpace
----@field activeColorSpace UnityEngine.ColorSpace
----@field blendWeights UnityEngine.BlendWeights
 ---@field asyncUploadTimeSlice int
 ---@field asyncUploadBufferSize int
+---@field realtimeReflectionProbes bool
+---@field billboardsFaceCameraPosition bool
 ---@field resolutionScalingFixedDPIFactor float
+---@field desiredColorSpace UnityEngine.ColorSpace
+---@field activeColorSpace UnityEngine.ColorSpace
 local m = {}
 ---@return int
 function m.GetQualityLevel() end

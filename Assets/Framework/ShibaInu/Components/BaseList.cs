@@ -165,6 +165,7 @@ namespace ShibaInu
 		{
 			m_content = (RectTransform)LuaHelper.CreateGameObject ("Content", transform, false).transform;
 			m_content.pivot = Vector2.up;
+			m_content.localPosition = Vector3.zero;
 		}
 
 

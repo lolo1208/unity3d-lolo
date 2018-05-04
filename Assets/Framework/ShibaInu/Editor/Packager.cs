@@ -608,7 +608,7 @@ namespace ShibaInu
 
 		private static readonly BuildTarget currentEditorBuildTarget =
 			Application.platform == RuntimePlatform.OSXEditor
-				? BuildTarget.StandaloneOSXIntel64
+				? BuildTarget.StandaloneOSX
 				: BuildTarget.StandaloneWindows64;
 
 		private static readonly LuaEncodeType currentEditorLuaEncodeType =
@@ -641,7 +641,7 @@ namespace ShibaInu
 		[MenuItem ("Packager/Mac", false, 204)]
 		private static void PackMac64 ()
 		{
-			Pack (BuildTarget.StandaloneOSXIntel64, LuaEncodeType.LUAVM);
+			Pack (BuildTarget.StandaloneOSX, LuaEncodeType.LUAVM);
 		}
 
 

@@ -13,6 +13,7 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("CreateGameObject", CreateGameObject);
 		L.RegFunction("SetParent", SetParent);
 		L.RegFunction("SetLayerRecursively", SetLayerRecursively);
+		L.RegFunction("WorldToCanvasPoint", WorldToCanvasPoint);
 		L.RegFunction("SendHttpRequest", SendHttpRequest);
 		L.EndStaticLibs();
 	}
@@ -114,6 +115,23 @@ public class ShibaInu_LuaHelperWrap
 			int arg1 = (int)LuaDLL.luaL_checknumber(L, 2);
 			ShibaInu.LuaHelper.SetLayerRecursively(arg0, arg1);
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int WorldToCanvasPoint(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Vector3 arg0 = ToLua.ToVector3(L, 1);
+			UnityEngine.Vector3 o = ShibaInu.LuaHelper.WorldToCanvasPoint(arg0);
+			ToLua.Push(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

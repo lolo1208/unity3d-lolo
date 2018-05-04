@@ -18,6 +18,7 @@ public class ShibaInu_StageWrap
 		L.RegFunction("GetProgress", GetProgress);
 		L.RegFunction("New", _CreateShibaInu_Stage);
 		L.RegFunction("__tostring", ToLua.op_ToString);
+		L.RegVar("canvas", get_canvas, set_canvas);
 		L.RegVar("uiCanvas", get_uiCanvas, set_uiCanvas);
 		L.RegVar("sceneLayer", get_sceneLayer, set_sceneLayer);
 		L.RegVar("uiLayer", get_uiLayer, set_uiLayer);
@@ -196,6 +197,20 @@ public class ShibaInu_StageWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_canvas(IntPtr L)
+	{
+		try
+		{
+			ToLua.PushSealed(L, ShibaInu.Stage.canvas);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_uiCanvas(IntPtr L)
 	{
 		try
@@ -300,6 +315,21 @@ public class ShibaInu_StageWrap
 		{
 			ToLua.PushSealed(L, ShibaInu.Stage.topLayer);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_canvas(IntPtr L)
+	{
+		try
+		{
+			UnityEngine.Canvas arg0 = (UnityEngine.Canvas)ToLua.CheckObject(L, 2, typeof(UnityEngine.Canvas));
+			ShibaInu.Stage.canvas = arg0;
+			return 0;
 		}
 		catch (Exception e)
 		{

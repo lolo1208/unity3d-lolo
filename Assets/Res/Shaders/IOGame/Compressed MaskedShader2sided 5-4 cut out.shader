@@ -43,7 +43,7 @@ SubShader {
 	AlphaTest Greater 0.1
 	Blend SrcAlpha OneMinusSrcAlpha
 	cull off
-	LOD 300
+//	LOD 300
 
 CGPROGRAM
 #pragma surface surf Lambert alphatest:_Cutoff

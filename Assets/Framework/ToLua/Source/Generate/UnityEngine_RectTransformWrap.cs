@@ -12,6 +12,7 @@ public class UnityEngine_RectTransformWrap
 		L.RegFunction("GetWorldCorners", GetWorldCorners);
 		L.RegFunction("SetInsetAndSizeFromParentEdge", SetInsetAndSizeFromParentEdge);
 		L.RegFunction("SetSizeWithCurrentAnchors", SetSizeWithCurrentAnchors);
+		L.RegFunction("ForceUpdateRectTransforms", ForceUpdateRectTransforms);
 		L.RegFunction("DOJumpAnchorPos", DOJumpAnchorPos);
 		L.RegFunction("DOShakeAnchorPos", DOShakeAnchorPos);
 		L.RegFunction("DOPunchAnchorPos", DOPunchAnchorPos);
@@ -161,6 +162,22 @@ public class UnityEngine_RectTransformWrap
 			UnityEngine.RectTransform.Axis arg0 = (UnityEngine.RectTransform.Axis)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform.Axis));
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 			obj.SetSizeWithCurrentAnchors(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ForceUpdateRectTransforms(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
+			obj.ForceUpdateRectTransforms();
 			return 0;
 		}
 		catch (Exception e)

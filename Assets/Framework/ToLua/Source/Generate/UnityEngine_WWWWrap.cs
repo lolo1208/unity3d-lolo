@@ -7,11 +7,14 @@ public class UnityEngine_WWWWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.WWW), typeof(System.Object));
-		L.RegFunction("LoadImageIntoTexture", LoadImageIntoTexture);
-		L.RegFunction("Dispose", Dispose);
 		L.RegFunction("EscapeURL", EscapeURL);
 		L.RegFunction("UnEscapeURL", UnEscapeURL);
 		L.RegFunction("LoadFromCacheOrDownload", LoadFromCacheOrDownload);
+		L.RegFunction("LoadImageIntoTexture", LoadImageIntoTexture);
+		L.RegFunction("Dispose", Dispose);
+		L.RegFunction("GetAudioClip", GetAudioClip);
+		L.RegFunction("GetAudioClipCompressed", GetAudioClipCompressed);
+		L.RegFunction("GetMovieTexture", GetMovieTexture);
 		L.RegFunction("New", _CreateUnityEngine_WWW);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("assetBundle", get_assetBundle, null);
@@ -74,39 +77,6 @@ public class UnityEngine_WWWWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to ctor method: UnityEngine.WWW.New");
 			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int LoadImageIntoTexture(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
-			UnityEngine.Texture2D arg0 = (UnityEngine.Texture2D)ToLua.CheckObject(L, 2, typeof(UnityEngine.Texture2D));
-			obj.LoadImageIntoTexture(arg0);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Dispose(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
-			obj.Dispose();
-			return 0;
 		}
 		catch (Exception e)
 		{
@@ -242,6 +212,150 @@ public class UnityEngine_WWWWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.WWW.LoadFromCacheOrDownload");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int LoadImageIntoTexture(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
+			UnityEngine.Texture2D arg0 = (UnityEngine.Texture2D)ToLua.CheckObject(L, 2, typeof(UnityEngine.Texture2D));
+			obj.LoadImageIntoTexture(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int Dispose(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
+			obj.Dispose();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetAudioClip(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
+				UnityEngine.AudioClip o = obj.GetAudioClip();
+				ToLua.PushSealed(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				UnityEngine.AudioClip o = obj.GetAudioClip(arg0);
+				ToLua.PushSealed(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				UnityEngine.AudioClip o = obj.GetAudioClip(arg0, arg1);
+				ToLua.PushSealed(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				UnityEngine.AudioType arg2 = (UnityEngine.AudioType)ToLua.CheckObject(L, 4, typeof(UnityEngine.AudioType));
+				UnityEngine.AudioClip o = obj.GetAudioClip(arg0, arg1, arg2);
+				ToLua.PushSealed(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.WWW.GetAudioClip");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetAudioClipCompressed(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
+				UnityEngine.AudioClip o = obj.GetAudioClipCompressed();
+				ToLua.PushSealed(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				UnityEngine.AudioClip o = obj.GetAudioClipCompressed(arg0);
+				ToLua.PushSealed(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				UnityEngine.AudioType arg1 = (UnityEngine.AudioType)ToLua.CheckObject(L, 3, typeof(UnityEngine.AudioType));
+				UnityEngine.AudioClip o = obj.GetAudioClipCompressed(arg0, arg1);
+				ToLua.PushSealed(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.WWW.GetAudioClipCompressed");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetMovieTexture(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
+			UnityEngine.MovieTexture o = obj.GetMovieTexture();
+			ToLua.PushSealed(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

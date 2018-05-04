@@ -90,6 +90,7 @@ function m:SetInsetAndSizeFromParentEdge(edge, inset, size) end
 ---@param axis UnityEngine.RectTransform.Axis
 ---@param size float
 function m:SetSizeWithCurrentAnchors(axis, size) end
+function m:ForceUpdateRectTransforms() end
 UnityEngine = {}
 UnityEngine.RectTransform = m
 return m

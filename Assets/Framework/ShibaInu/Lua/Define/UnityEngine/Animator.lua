@@ -185,24 +185,30 @@ function m:MatchTarget(matchPosition, matchRotation, targetBodyPart, weightMask,
 ---@overload fun():void
 ---@param completeMatch bool
 function m:InterruptMatchTarget(completeMatch) end
----@overload fun(stateName:string, transitionDuration:float):void
----@overload fun(stateName:string, transitionDuration:float, layer:int, fixedTime:float):void
----@overload fun(stateNameHash:int, transitionDuration:float, layer:int, fixedTime:float):void
----@overload fun(stateNameHash:int, transitionDuration:float, layer:int):void
----@overload fun(stateNameHash:int, transitionDuration:float):void
+---@overload fun(stateName:string, fixedTransitionDuration:float, layer:int):void
+---@overload fun(stateName:string, fixedTransitionDuration:float):void
+---@overload fun(stateName:string, fixedTransitionDuration:float, layer:int, fixedTimeOffset:float, normalizedTransitionTime:float):void
+---@overload fun(stateHashName:int, fixedTransitionDuration:float, layer:int, fixedTimeOffset:float, normalizedTransitionTime:float):void
+---@overload fun(stateHashName:int, fixedTransitionDuration:float, layer:int, fixedTimeOffset:float):void
+---@overload fun(stateHashName:int, fixedTransitionDuration:float, layer:int):void
+---@overload fun(stateHashName:int, fixedTransitionDuration:float):void
 ---@param stateName string
----@param transitionDuration float
+---@param fixedTransitionDuration float
 ---@param layer int
-function m:CrossFadeInFixedTime(stateName, transitionDuration, layer) end
----@overload fun(stateName:string, transitionDuration:float):void
----@overload fun(stateName:string, transitionDuration:float, layer:int, normalizedTime:float):void
----@overload fun(stateNameHash:int, transitionDuration:float, layer:int, normalizedTime:float):void
----@overload fun(stateNameHash:int, transitionDuration:float, layer:int):void
----@overload fun(stateNameHash:int, transitionDuration:float):void
+---@param fixedTimeOffset float
+function m:CrossFadeInFixedTime(stateName, fixedTransitionDuration, layer, fixedTimeOffset) end
+---@overload fun(stateName:string, normalizedTransitionDuration:float, layer:int):void
+---@overload fun(stateName:string, normalizedTransitionDuration:float):void
+---@overload fun(stateName:string, normalizedTransitionDuration:float, layer:int, normalizedTimeOffset:float, normalizedTransitionTime:float):void
+---@overload fun(stateHashName:int, normalizedTransitionDuration:float, layer:int, normalizedTimeOffset:float, normalizedTransitionTime:float):void
+---@overload fun(stateHashName:int, normalizedTransitionDuration:float, layer:int, normalizedTimeOffset:float):void
+---@overload fun(stateHashName:int, normalizedTransitionDuration:float, layer:int):void
+---@overload fun(stateHashName:int, normalizedTransitionDuration:float):void
 ---@param stateName string
----@param transitionDuration float
+---@param normalizedTransitionDuration float
 ---@param layer int
-function m:CrossFade(stateName, transitionDuration, layer) end
+---@param normalizedTimeOffset float
+function m:CrossFade(stateName, normalizedTransitionDuration, layer, normalizedTimeOffset) end
 ---@overload fun(stateName:string):void
 ---@overload fun(stateName:string, layer:int, fixedTime:float):void
 ---@overload fun(stateNameHash:int, layer:int, fixedTime:float):void
