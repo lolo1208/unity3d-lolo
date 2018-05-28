@@ -200,6 +200,7 @@ public static class CustomSettings
 		_GT (typeof(UnityEngine.UI.ScrollRect)),
 		_GT (typeof(UnityEngine.UI.InputField)),
 		_GT (typeof(UnityEngine.UI.Button)),
+		_GT (typeof(UnityEngine.UI.Toggle)),
 
 
 		// for ShibaInu
@@ -208,7 +209,9 @@ public static class CustomSettings
 		_GT (typeof(ShibaInu.Stage)),
 
 		_GT (typeof(ShibaInu.HttpRequest)),
-		_GT (typeof(ShibaInu.TcpSocketClient)),
+		_GT (typeof(ShibaInu.HttpDownload)),
+		_GT (typeof(ShibaInu.TcpSocket)),
+		_GT (typeof(ShibaInu.UdpSocket)),
 
 		_GT (typeof(ShibaInu.BaseList)),
 		_GT (typeof(ShibaInu.ScrollList)),

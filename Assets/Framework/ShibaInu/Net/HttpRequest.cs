@@ -9,50 +9,42 @@ using LuaInterface;
 
 namespace ShibaInu
 {
-	public class HttpRequestMethod
-	{
-		/// 发送 POST 数据
-		public const string POST = "POST";
-		/// 发送 GET 数据
-		public const string GET = "GET";
-		/// 只获取 response handers (content length)
-		public const string HEAD = "HEAD";
-	}
-
-	public class HttpException
-	{
-		/// 创建线程时发生异常
-		public const int CREATE_THREAD = -1;
-		/// 发送请求时发生异常
-		public const int SEND_REQUEST = -2;
-		/// 获取内容时发生异常
-		public const int GET_RESPONSE = -3;
-		/// 发送请求或获取内容过程中被取消了
-		public const int ABORTED = -4;
-	}
-
-
-
+	
+	/// <summary>
+	/// 用于发送 http 请求，获取返回内容
+	/// </summary>
 	public class HttpRequest
 	{
+		/// 网络地址
 		public string url = null;
+		/// 请求方式
 		public string method = HttpRequestMethod.GET;
+		/// 超时时限（毫秒）
 		public int timeout = 5000;
+		/// 已 EncodeURI() 的 post 数据
 		public string postData = null;
+		/// 请求成功或失败的回调函数 < 状态码, 数据内容 >
 		public Action<int, string> callback = null;
 
-		private bool m_requesting = false;
-		private HttpWebRequest m_request = null;
 
+		private HttpWebRequest m_request = null;
 		private StringBuilder m_postData = null;
 		private string m_proxyHost = null;
 		private int m_proxyPort = 0;
 
 
 
+		/// 是否正在发送请求中
+		public bool requeting {
+			get{ return m_requesting; }
+		}
+
+		private bool m_requesting = false;
+
+
+
 		public HttpRequest ()
 		{
-			
 		}
 
 
@@ -122,7 +114,7 @@ namespace ShibaInu
 			try {
 				ThreadPool.QueueUserWorkItem (DoSend);
 			} catch (Exception e) {
-				DoCallback (HttpException.CREATE_THREAD, e.Message);
+				DoCallback (HttpExceptionStatusCode.CREATE_THREAD, e.Message);
 			}
 		}
 
@@ -130,15 +122,15 @@ namespace ShibaInu
 		/// <summary>
 		/// Dos the send. 线程函数
 		/// </summary>
+		/// <param name="stateInfo">State info.</param>
 		private void DoSend (Object stateInfo)
 		{
 			// 被取消了
 			if (!m_requesting) {
-				DoCallback (HttpException.ABORTED);
+				DoCallback (HttpExceptionStatusCode.ABORTED);
 				return;
 			}
 
-			Stream requestStream = null;
 			try {
 				// 创建 HttpWebRequest
 				m_request = (HttpWebRequest)WebRequest.Create (url);
@@ -149,7 +141,7 @@ namespace ShibaInu
 				if (m_proxyHost != null)
 					m_request.Proxy = new WebProxy (m_proxyHost, m_proxyPort);
 				
-				// post 模式
+				// post 方式
 				if (method == HttpRequestMethod.POST) {
 					// 连接 postData
 					if (m_postData != null) {
@@ -163,75 +155,59 @@ namespace ShibaInu
 					// 写入 post 数据
 					if (postData != null) {
 						byte[] postBytes = Encoding.UTF8.GetBytes (postData);
-						requestStream = m_request.GetRequestStream ();
-						requestStream.Write (postBytes, 0, postBytes.Length);
-						requestStream.Close ();
+						using (Stream requestStream = m_request.GetRequestStream ()) {
+							requestStream.Write (postBytes, 0, postBytes.Length);
+						}
 					}
 				}
 			} catch (Exception e) {
-				if (requestStream != null)
-					requestStream.Close ();
-				
-				DoCallback (HttpException.SEND_REQUEST, e.Message);
+				DoCallback (HttpExceptionStatusCode.SEND_REQUEST, e.Message);
 				return;
 			}
 
 
 			// 被取消了
 			if (!m_requesting) {
-				DoCallback (HttpException.ABORTED);
+				DoCallback (HttpExceptionStatusCode.ABORTED);
 				return;
 			}
 
 
-			HttpWebResponse response = null;
-			Stream responseStream = null;
-			StreamReader readStream = null;
 			try {
 				// 获取响应内容
-				response = (HttpWebResponse)m_request.GetResponse ();
+				using (HttpWebResponse response = (HttpWebResponse)m_request.GetResponse ()) {
+					// 被取消了
+					if (!m_requesting) {
+						DoCallback (HttpExceptionStatusCode.ABORTED);
+						return;
+					}
 
-				// 被取消了
-				if (!m_requesting) {
-					response.Close ();
-					DoCallback (HttpException.ABORTED);
-					return;
+					int statusCode = (int)response.StatusCode;
+					// 只获取 response handers (content length)
+					if (method == HttpRequestMethod.HEAD) {
+						DoCallback (statusCode, response.ContentLength.ToString ());
+						return;
+					}
+
+					// 读取内容
+					using (Stream responseStream = response.GetResponseStream ()) {
+						using (StreamReader readStream = new StreamReader (responseStream, Encoding.UTF8)) {
+							string content = readStream.ReadToEnd ();
+							// 请求成功
+							DoCallback (statusCode, content);
+						}
+					}
 				}
-
-				int statusCode = (int)response.StatusCode;
-				// 只获取 response handers (content length)
-				if (method == HttpRequestMethod.HEAD) {
-					DoCallback (statusCode, response.ContentLength.ToString ());
-					return;
-				}
-
-				// 读取内容
-				responseStream = response.GetResponseStream ();
-				readStream = new StreamReader (responseStream, Encoding.UTF8);
-				string content = readStream.ReadToEnd ();
-
-				readStream.Close ();
-				responseStream.Close ();
-				response.Close ();
-
-				DoCallback (statusCode, content);
 
 			} catch (Exception e) {
-				if (readStream != null)
-					readStream.Close ();
-				if (responseStream != null)
-					responseStream.Close ();
-				if (response != null)
-					response.Close ();
-
 				if (e is WebException) {
-					response = (e as WebException).Response as HttpWebResponse;
+					HttpWebResponse response = (e as WebException).Response as HttpWebResponse;
 					if (response != null)
 						DoCallback ((int)response.StatusCode, e.Message);
 					else
-						DoCallback (HttpException.GET_RESPONSE, e.Message);
+						DoCallback (HttpExceptionStatusCode.GET_RESPONSE, e.Message);
 				} else {
-					DoCallback (HttpException.GET_RESPONSE, e.Message);
+					DoCallback (HttpExceptionStatusCode.GET_RESPONSE, e.Message);
 				}
 			}
 		}
@@ -251,7 +227,7 @@ namespace ShibaInu
 			m_requesting = false;
 
 			if (callback != null) {
-				Common.threadMgr.AddActionToMainThread (() => {
+				Common.looper.AddNetAction (() => {
 					callback (statusCode, content);
 				});
 			}
@@ -266,15 +242,6 @@ namespace ShibaInu
 			m_requesting = false;
 			if (m_request != null)
 				m_request.Abort ();
-		}
-
-
-		/// <summary>
-		/// 是否正在发送请求中
-		/// </summary>
-		/// <value><c>true</c> if requeting; otherwise, <c>false</c>.</value>
-		public bool requeting {
-			get{ return m_requesting; }
 		}
 
 

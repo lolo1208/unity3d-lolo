@@ -71,7 +71,7 @@ function FSM:Transition(stateIndex, initData)
         local pool = _pool[state.index]
         if pool == nil then
             pool = {}
-            pool[state.index] = pool
+            _pool[state.index] = pool
         end
         pool[#pool + 1] = state
     end

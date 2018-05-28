@@ -2,31 +2,31 @@
 using System;
 using LuaInterface;
 
-public class ShibaInu_TcpSocketClientWrap
+public class ShibaInu_TcpSocketWrap
 {
 	public static void Register(LuaState L)
 	{
-		L.BeginClass(typeof(ShibaInu.TcpSocketClient), typeof(System.Object));
-		L.RegFunction("Content", Content);
+		L.BeginClass(typeof(ShibaInu.TcpSocket), typeof(System.Object));
+		L.RegFunction("Connect", Connect);
 		L.RegFunction("Send", Send);
 		L.RegFunction("Close", Close);
-		L.RegFunction("New", _CreateShibaInu_TcpSocketClient);
+		L.RegFunction("New", _CreateShibaInu_TcpSocket);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("connentTimeout", get_connentTimeout, set_connentTimeout);
 		L.RegVar("sendTimeout", get_sendTimeout, set_sendTimeout);
 		L.RegVar("receiveTimeout", get_receiveTimeout, set_receiveTimeout);
-		L.RegVar("luaClient", get_luaClient, set_luaClient);
-		L.RegVar("eventCallback", get_eventCallback, set_eventCallback);
+		L.RegVar("luaTarget", get_luaTarget, set_luaTarget);
+		L.RegVar("callback", get_callback, set_callback);
 		L.RegVar("msgProtocol", get_msgProtocol, set_msgProtocol);
 		L.RegVar("host", get_host, null);
 		L.RegVar("port", get_port, null);
-		L.RegVar("connected", get_connected, null);
 		L.RegVar("connecting", get_connecting, null);
+		L.RegVar("connected", get_connected, null);
 		L.EndClass();
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int _CreateShibaInu_TcpSocketClient(IntPtr L)
+	static int _CreateShibaInu_TcpSocket(IntPtr L)
 	{
 		try
 		{
@@ -34,13 +34,13 @@ public class ShibaInu_TcpSocketClientWrap
 
 			if (count == 0)
 			{
-				ShibaInu.TcpSocketClient obj = new ShibaInu.TcpSocketClient();
+				ShibaInu.TcpSocket obj = new ShibaInu.TcpSocket();
 				ToLua.PushObject(L, obj);
 				return 1;
 			}
 			else
 			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to ctor method: ShibaInu.TcpSocketClient.New");
+				return LuaDLL.luaL_throw(L, "invalid arguments to ctor method: ShibaInu.TcpSocket.New");
 			}
 		}
 		catch (Exception e)
@@ -50,15 +50,15 @@ public class ShibaInu_TcpSocketClientWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Content(IntPtr L)
+	static int Connect(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 3);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)ToLua.CheckObject<ShibaInu.TcpSocketClient>(L, 1);
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)ToLua.CheckObject<ShibaInu.TcpSocket>(L, 1);
 			string arg0 = ToLua.CheckString(L, 2);
 			int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-			obj.Content(arg0, arg1);
+			obj.Connect(arg0, arg1);
 			return 0;
 		}
 		catch (Exception e)
@@ -73,7 +73,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			ToLua.CheckArgsCount(L, 2);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)ToLua.CheckObject<ShibaInu.TcpSocketClient>(L, 1);
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)ToLua.CheckObject<ShibaInu.TcpSocket>(L, 1);
 			object arg0 = ToLua.ToVarObject(L, 2);
 			obj.Send(arg0);
 			return 0;
@@ -90,7 +90,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)ToLua.CheckObject<ShibaInu.TcpSocketClient>(L, 1);
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)ToLua.CheckObject<ShibaInu.TcpSocket>(L, 1);
 			obj.Close();
 			return 0;
 		}
@@ -108,7 +108,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			int ret = obj.connentTimeout;
 			LuaDLL.lua_pushinteger(L, ret);
 			return 1;
@@ -127,7 +127,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			int ret = obj.sendTimeout;
 			LuaDLL.lua_pushinteger(L, ret);
 			return 1;
@@ -146,7 +146,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			int ret = obj.receiveTimeout;
 			LuaDLL.lua_pushinteger(L, ret);
 			return 1;
@@ -158,40 +158,40 @@ public class ShibaInu_TcpSocketClientWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_luaClient(IntPtr L)
+	static int get_luaTarget(IntPtr L)
 	{
 		object o = null;
 
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
-			LuaInterface.LuaTable ret = obj.luaClient;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
+			LuaInterface.LuaTable ret = obj.luaTarget;
 			ToLua.Push(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index luaClient on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index luaTarget on a nil value");
 		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_eventCallback(IntPtr L)
+	static int get_callback(IntPtr L)
 	{
 		object o = null;
 
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
-			System.Action<string,object> ret = obj.eventCallback;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
+			System.Action<string,object> ret = obj.callback;
 			ToLua.Push(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index eventCallback on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index callback on a nil value");
 		}
 	}
 
@@ -203,7 +203,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			ShibaInu.IMsgProtocol ret = obj.msgProtocol;
 			ToLua.PushObject(L, ret);
 			return 1;
@@ -222,7 +222,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			string ret = obj.host;
 			LuaDLL.lua_pushstring(L, ret);
 			return 1;
@@ -241,7 +241,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			int ret = obj.port;
 			LuaDLL.lua_pushinteger(L, ret);
 			return 1;
@@ -253,25 +253,6 @@ public class ShibaInu_TcpSocketClientWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_connected(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
-			bool ret = obj.connected;
-			LuaDLL.lua_pushboolean(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index connected on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_connecting(IntPtr L)
 	{
 		object o = null;
@@ -279,7 +260,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			bool ret = obj.connecting;
 			LuaDLL.lua_pushboolean(L, ret);
 			return 1;
@@ -291,6 +272,25 @@ public class ShibaInu_TcpSocketClientWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_connected(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
+			bool ret = obj.connected;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index connected on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_connentTimeout(IntPtr L)
 	{
 		object o = null;
@@ -298,7 +298,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 			obj.connentTimeout = arg0;
 			return 0;
@@ -317,7 +317,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 			obj.sendTimeout = arg0;
 			return 0;
@@ -336,7 +336,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 			obj.receiveTimeout = arg0;
 			return 0;
@@ -348,40 +348,40 @@ public class ShibaInu_TcpSocketClientWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_luaClient(IntPtr L)
+	static int set_luaTarget(IntPtr L)
 	{
 		object o = null;
 
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			LuaTable arg0 = ToLua.CheckLuaTable(L, 2);
-			obj.luaClient = arg0;
+			obj.luaTarget = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index luaClient on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index luaTarget on a nil value");
 		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_eventCallback(IntPtr L)
+	static int set_callback(IntPtr L)
 	{
 		object o = null;
 
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			System.Action<string,object> arg0 = (System.Action<string,object>)ToLua.CheckDelegate<System.Action<string,object>>(L, 2);
-			obj.eventCallback = arg0;
+			obj.callback = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index eventCallback on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index callback on a nil value");
 		}
 	}
 
@@ -393,7 +393,7 @@ public class ShibaInu_TcpSocketClientWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.TcpSocketClient obj = (ShibaInu.TcpSocketClient)o;
+			ShibaInu.TcpSocket obj = (ShibaInu.TcpSocket)o;
 			ShibaInu.IMsgProtocol arg0 = (ShibaInu.IMsgProtocol)ToLua.CheckObject<ShibaInu.IMsgProtocol>(L, 2);
 			obj.msgProtocol = arg0;
 			return 0;

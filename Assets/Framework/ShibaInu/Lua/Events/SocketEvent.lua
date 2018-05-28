@@ -7,7 +7,6 @@
 ---@class SocketEvent : Event
 local SocketEvent = class("SocketEvent", Event)
 
-
 function SocketEvent:Ctor(type, data)
     SocketEvent.super.Ctor(self, type, data)
 end
@@ -30,9 +29,10 @@ SocketEvent.MESSAGE = "SocketEvent_Message"
 
 
 
+--
 local event = SocketEvent.New()
 
---- 抛出 Socket 相关事件，由 TcpSocketClient.cs 调用
+--- 抛出 Socket 相关事件，由 TcpSocket.cs / UdpSocket.cs 调用
 ---@param client TcpSocketClient
 ---@param type string
 ---@param data any

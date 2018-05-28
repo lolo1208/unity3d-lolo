@@ -11,7 +11,7 @@ local IOGameData = {}
 -- 引用
 IOGameData.scene = nil ---@type IOGame.IOGameScene
 IOGameData.camera = nil ---@type UnityEngine.Transform
-IOGameData.socket = TcpSocketClient.New()
+IOGameData.socket = TcpSocket.New()
 IOGameData.joystick = nil ---@type IOGame.Joystick
 IOGameData.btnBar = nil ---@type IOGame.BtnBar
 IOGameData.map = nil ---@type IOGame.Map

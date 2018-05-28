@@ -1,55 +1,18 @@
 ﻿using System;
 using System.Net.Sockets;
-using UnityEngine;
 using LuaInterface;
 
 
 namespace ShibaInu
 {
 
-
-
-	/// <summary>
-	/// 消息协议接口
-	/// </summary>
-	public interface IMsgProtocol
-	{
-		/// 收到消息的回调。Receive() 解包出一条消息时的回调
-		Action<System.Object> messageCallback{ set; get; }
-
-		/// 接收数据，处理粘包，根据协议解析出消息，并回调 messageCallback
-		void Receive (byte[] buffer, int length);
-
-		/// 重置（清空）已收到的数据包。在连接关闭时会被 TcpSocketClient 调用
-		void Reset ();
-
-		/// 根据协议编码 data，并返回编码后的字节数组
-		byte[] Encode (System.Object data);
-	}
-
-
-
-	/// <summary>
-	/// Socket 相关事件
-	/// </summary>
-	public class SocketEvent
-	{
-		public const string CONNECTED = "SocketEvent_Connected";
-		public const string CONNECT_FAIL = "SocketEvent_ConnectFail";
-		public const string DISCONNECT = "SocketEvent_Disconnect";
-		public const string MESSAGE = "SocketEvent_Message";
-	}
-
-
-
 	/// <summary>
 	/// Tcp socket client.
 	/// </summary>
-	public class TcpSocketClient
+	public class TcpSocket
 	{
 		/// 读取数据的 buffer 尺寸
 		private const int BUFFER_SIZE = 8192;
-
 		/// SocketEvent.lua
 		private static readonly LuaFunction s_dispatchEvent = Common.luaMgr.state.GetFunction ("SocketEvent.DispatchEvent");
 
@@ -64,22 +27,22 @@ namespace ShibaInu
 		/// 读取数据超时时长
 		public int receiveTimeout = 1000;
 
-		/// 对应的 TcpSocketClient.lua 实例
-		public LuaTable luaClient;
+		/// 对应的 TcpSocket.lua 实例
+		public LuaTable luaTarget;
 		/// C# 事件回调函数
-		public Action<string, System.Object> eventCallback;
+		public Action<string, System.Object> callback;
 
 
+		private byte[] m_readBuffer = new byte[BUFFER_SIZE];
 		private TcpClient m_client;
 		private NetworkStream m_stream;
-		private byte[] m_readBuffer = new byte[BUFFER_SIZE];
 
 
 		/// 消息协议处理对象。默认使用 StringMsgProtocol
 		public IMsgProtocol msgProtocol {
 			set { 
 				m_msgProtocol = value;
-				m_msgProtocol.messageCallback = OnMessage;
+				m_msgProtocol.onMessage = OnMessage;
 			}
 			get{ return m_msgProtocol; }
 		}
@@ -104,14 +67,6 @@ namespace ShibaInu
 
 
 		/// 是否正在建立连接中
-		public bool connected {
-			get{ return m_connected; }
-		}
-
-		private bool m_connected = false;
-
-
-		/// 是否已经建立好连接了
 		public bool connecting {
 			get{ return m_connecting; }
 		}
@@ -119,8 +74,16 @@ namespace ShibaInu
 		private bool m_connecting = false;
 
 
+		/// 是否已经建立好连接了
+		public bool connected {
+			get{ return m_connected; }
+		}
 
-		public TcpSocketClient ()
+		private bool m_connected = false;
+
+
+
+		public TcpSocket ()
 		{
 			msgProtocol = new StringMsgProtocol ();
 		}
@@ -132,7 +95,7 @@ namespace ShibaInu
 		/// </summary>
 		/// <param name="host">Host.</param>
 		/// <param name="port">Port.</param>
-		public void Content (string host, int port)
+		public void Connect (string host, int port)
 		{
 			Close ();
 
@@ -347,13 +310,13 @@ namespace ShibaInu
 		/// <param name="data">Data.</param>
 		private void DispatchEvent (string type, System.Object data = null)
 		{
-			Common.threadMgr.AddActionToMainThread (() => {
-				if (eventCallback != null)
-					eventCallback (type, data);
+			Common.looper.AddNetAction (() => {
+				if (callback != null)
+					callback (type, data);
 
-				if (luaClient != null) {
+				if (luaTarget != null) {
 					s_dispatchEvent.BeginPCall ();
-					s_dispatchEvent.Push (luaClient);
+					s_dispatchEvent.Push (luaTarget);
 					s_dispatchEvent.Push (type);
 					s_dispatchEvent.Push (data);
 					s_dispatchEvent.PCall ();

@@ -11,12 +11,12 @@ namespace ShibaInu
 	/// </summary>
 	public class StringMsgProtocol : IMsgProtocol
 	{
-		public Action<System.Object> messageCallback {
-			set { m_responseCallback = value; }
-			get { return m_responseCallback; }
+		public Action<System.Object> onMessage {
+			set { m_onMessage = value; }
+			get { return m_onMessage; }
 		}
 
-		private Action<System.Object> m_responseCallback;
+		private Action<System.Object> m_onMessage;
 
 		/// 未解析的数据缓冲
 		private byte[] m_buffer = new byte[10240];
@@ -51,7 +51,7 @@ namespace ShibaInu
 			string str = Encoding.UTF8.GetString (m_buffer, m_position, m_msgLength);
 			m_position += m_msgLength;
 
-			messageCallback (str);
+			m_onMessage (str);
 
 			m_msgLength = 0;
 			if (m_position == m_length)

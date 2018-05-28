@@ -18,8 +18,6 @@ local abs = math.abs
 ---@field protected _viewportWidth number
 ---@field protected _viewportHeight number
 ---
----@field protected _scrollValue number @ 当前滚动至的位置
----
 ---@field protected _itemWidth number @ 设置的item宽度
 ---@field protected _itemHeight number @ 设置的item高度
 ---@field protected _itemLayoutWidth number @ 用来布局的item宽度（_itemWidth + _horizontalGap）
@@ -34,7 +32,6 @@ local ScrollList = class("ScrollList", BaseList)
 function ScrollList:Ctor(go, itemClass)
     ScrollList.super.Ctor(self, go, itemClass)
 
-    self._scrollValue = 1
     self._itemWidth = 0
     self._itemHeight = 0
     self._itemLayoutWidth = 0
@@ -269,6 +266,11 @@ end
 ---@return number
 function ScrollList:GetViewportHeight()
     return self._viewportHeight
+end
+
+---@return ShibaInu.ScrollList
+function ScrollList:GetCSList()
+    return self._list
 end
 
 

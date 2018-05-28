@@ -65,6 +65,7 @@ public static class LuaBinder
 		UnityEngine_UI_ScrollRectWrap.Register(L);
 		UnityEngine_UI_InputFieldWrap.Register(L);
 		UnityEngine_UI_ButtonWrap.Register(L);
+		UnityEngine_UI_ToggleWrap.Register(L);
 		UnityEngine_UI_MaskableGraphicWrap.Register(L);
 		UnityEngine_UI_SelectableWrap.Register(L);
 		L.BeginModule("InputField");
@@ -167,7 +168,9 @@ public static class LuaBinder
 		ShibaInu_ResManagerWrap.Register(L);
 		ShibaInu_StageWrap.Register(L);
 		ShibaInu_HttpRequestWrap.Register(L);
-		ShibaInu_TcpSocketClientWrap.Register(L);
+		ShibaInu_HttpDownloadWrap.Register(L);
+		ShibaInu_TcpSocketWrap.Register(L);
+		ShibaInu_UdpSocketWrap.Register(L);
 		ShibaInu_BaseListWrap.Register(L);
 		ShibaInu_ScrollListWrap.Register(L);
 		ShibaInu_PickerWrap.Register(L);

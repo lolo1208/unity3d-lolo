@@ -27,7 +27,7 @@ function TestScene:OnInitialize()
 
 
     --
-    local sampleNames = { "Picker", "BaseList", "ScrollList", "CircleImage" }
+    local sampleNames = { "Picker", "BaseList", "ScrollList", "CircleImage", "Network" }
     for i = 1, #sampleNames do
         local sampleName = sampleNames[i]
         local btn = samplesTra:Find(sampleName).gameObject
@@ -40,6 +40,7 @@ function TestScene:OnInitialize()
     AddEventListener(ioGameBtn, PointerEvent.CLICK, self.OnClick_ioGameBtn, self)
 
     self.backBtn = uiCanvasTra:Find("backBtn").gameObject
+    self.backBtn.transform:SetParent(Stage.GetLayer(Constants.LAYER_UI_TOP))
     self.backBtn:SetActive(false)
     AddEventListener(self.backBtn, PointerEvent.CLICK, self.OnClick_backBtn, self)
 end
@@ -69,11 +70,13 @@ function TestScene:OnClick_ioGameBtn(event)
 end
 
 
+
+
 --
-
-
 function TestScene:OnDestroy()
 end
+
+
 
 
 --

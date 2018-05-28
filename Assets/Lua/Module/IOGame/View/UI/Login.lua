@@ -99,7 +99,7 @@ function Login:OnClick_enterBtn(event)
         IOGameData.playerName = name
         socket:AddEventListener(SocketEvent.CONNECTED, self.SocketConnectHandler, self)
         socket:AddEventListener(SocketEvent.CONNECT_FAIL, self.SocketConnectHandler, self)
-        socket:Content(server, port)
+        socket:Connect(server, port)
     end
 end
 

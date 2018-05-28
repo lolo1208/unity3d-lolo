@@ -9,17 +9,31 @@
 local Constants = {
 
 
--- 场景图层
-    LAYER_SCENE = "sceneLayer", ---@type string @ 场景层
-    LAYER_UI = "uiLayer", ---@type string @ UI层
-    LAYER_WINDOW = "windowLayer", ---@type string @ 窗口层
-    LAYER_UI_TOP = "uiTopLayer", ---@type string @ 顶级UI层
-    LAYER_ALERT = "alertLayer", ---@type string @ 提示层
-    LAYER_GUIDE = "guideLayer", ---@type string @ 引导层
-    LAYER_TOP = "topLayer", ---@type string @ 顶级层
+    -- 场景图层
+    LAYER_SCENE = "sceneLayer", -- 场景层
+    LAYER_UI = "uiLayer", -- UI层
+    LAYER_WINDOW = "windowLayer", -- 窗口层
+    LAYER_UI_TOP = "uiTopLayer", -- 顶级UI层
+    LAYER_ALERT = "alertLayer", -- 提示层
+    LAYER_GUIDE = "guideLayer", -- 引导层
+    LAYER_TOP = "topLayer", -- 顶级层
 
 
--- 错误信息
+
+    -- HTTP 相关常量
+    HTTP_EXCEPTION_CREATE_THREAD = -1, -- 异常状态码：创建线程时发生异常
+    HTTP_EXCEPTION_SEND_REQUEST = -2, -- 异常状态码：发送请求时发生异常
+    HTTP_EXCEPTION_GET_RESPONSE = -3, -- 异常状态码：获取内容时发生异常
+    HTTP_EXCEPTION_ABORTED = -4, -- 异常状态码：发送请求或获取内容过程中被取消了
+    HTTP_EXCEPTION_GET_HEAD = -5, -- 异常状态码：获取目标文件大小时发生异常
+
+    HTTP_METHOD_POST = "POST", -- 请求方式：POST
+    HTTP_METHOD_GET = "GET", -- 请求方式：GET
+    HTTP_METHOD_HEAD = "HEAD", -- 请求方式：只获取 response handers (content length)
+
+
+
+    -- 错误信息
     E1001 = "请勿创建全局变量或全局函数！",
 
     E2001 = "不存在的图层：%s",
@@ -34,6 +48,9 @@ local Constants = {
     E3002 = "不能将table转换成JSON字符串：%s",
     E3003 = "HttpRequest.url 不能为 nil",
     E3004 = "定时器的间隔不能为 0",
+    E3005 = "AddEventListener() 的参数 callback 不能为 nil",
+    E3006 = "HttpDownload.url 不能为 nil",
+    E3007 = "HttpDownload.savePath 不能为 nil",
 
 
 }

@@ -13,7 +13,8 @@ ShibaInu.Stage = ShibaInu.Stage ---@type ShibaInu.Stage
 ShibaInu.ResManager = ShibaInu.ResManager ---@type ShibaInu.ResManager
 ShibaInu.LuaHelper = ShibaInu.LuaHelper ---@type ShibaInu.LuaHelper
 ShibaInu.HttpRequest = ShibaInu.HttpRequest ---@type ShibaInu.HttpRequest
-ShibaInu.TcpSocketClient = ShibaInu.TcpSocketClient ---@type ShibaInu.TcpSocketClient
+ShibaInu.TcpSocket = ShibaInu.TcpSocket ---@type ShibaInu.TcpSocket
+ShibaInu.UdpSocket = ShibaInu.UdpSocket ---@type ShibaInu.UdpSocket
 ShibaInu.CircleImage = ShibaInu.CircleImage ---@type ShibaInu.CircleImage
 ShibaInu.BaseList = ShibaInu.BaseList ---@type ShibaInu.BaseList
 ShibaInu.ScrollList = ShibaInu.ScrollList ---@type ShibaInu.ScrollList
@@ -74,11 +75,26 @@ ShibaInu.Picker = ShibaInu.Picker ---@type ShibaInu.Picker
 ---@field Abort fun():void
 
 
-
----@class ShibaInu.TcpSocketClient
----@field New fun():ShibaInu.TcpSocketClient
+---@class ShibaInu.HttpDownload
+---@field New fun():ShibaInu.HttpDownload
 ---
----@field luaClient TcpSocketClient
+---@field url string
+---@field savePath string
+---@field timeout number
+---@field downloading boolean
+---@field progress number
+---@field speed number
+---
+---@field SetProxy fun(host:string, port:number):void
+---@field SetLuaCallback fun(callbak:fun(statusCode:number, content:string)):void
+---@field Start fun():void
+---@field Abort fun():void
+
+
+---@class ShibaInu.TcpSocket
+---@field New fun():ShibaInu.TcpSocket
+---
+---@field luaTarget TcpSocket
 ---@field msgProtocol IMsgProtocol
 ---@field connentTimeout number
 ---@field sendTimeout number
@@ -88,9 +104,24 @@ ShibaInu.Picker = ShibaInu.Picker ---@type ShibaInu.Picker
 ---@field connected boolean
 ---@field connecting boolean
 ---
----@field Content(host:string, port:number):void
----@field Send(data:any):void
----@field Close():void
+---@field Connect fun(host:string, port:number):void
+---@field Send fun(data:any):void
+---@field Close fun():void
+
+
+---@class ShibaInu.UdpSocket
+---@field New fun():ShibaInu.UdpSocket
+---
+---@field luaTarget UdpSocket
+---@field msgProtocol IMsgProtocol
+---@field host string
+---@field port number
+---@field conv number
+---@field connected boolean
+---
+---@field Connect fun(host:string, port:number, conv:number):void
+---@field Send fun(data:any):void
+---@field Close fun():void
 
 
 

@@ -238,6 +238,20 @@ function GetComponent.InputField(go)
     return go:GetComponent(_typeof_class(UnityEngine.UI.InputField))
 end
 
+--- 获取 gameObject 下的 UnityEngine.UI.Button 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.Button
+function GetComponent.Button(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.Button))
+end
+
+--- 获取 gameObject 下的 UnityEngine.UI.Toggle 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.Toggle
+function GetComponent.Toggle(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.Toggle))
+end
+
 --- 获取 gameObject 下的 UnityEngine.Animation 组件
 ---@param go UnityEngine.GameObject
 ---@return UnityEngine.Animation
@@ -406,6 +420,10 @@ local function UpdateDelayedCall(event)
     -- 按 delayedTime 升序
     if addListNum > 0 then
         sort(_dc_list, function(a, b)
+            -- 被 cancel 了，目前还在 _dc_list 中
+            if a.delayedTime == nil or b.delayedTime == nil then
+                return false
+            end
             return a.delayedTime > b.delayedTime
         end)
     end

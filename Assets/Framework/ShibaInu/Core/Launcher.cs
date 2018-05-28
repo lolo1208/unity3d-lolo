@@ -47,17 +47,16 @@ namespace ShibaInu
 			uiCanvas.SetParent (transform);
 			eventSystem.SetParent (transform);
 
-			Common.threadMgr = gameObject.AddComponent<ThreadManager> ();
+			Common.looper = gameObject.AddComponent<Looper> ();
 			Common.luaMgr = gameObject.AddComponent<LuaManager> ();
 			Common.timerMgr = gameObject.AddComponent<TimerManager> ();
-			Common.looper = gameObject.AddComponent<StageLooper> ();
 
-			ResManager.Initialize ();
 			Stage.canvas = uiCanvas.gameObject.GetComponent<Canvas> ();
-			UnityEngine.Debug.Log (Stage.canvas);
 			Stage.uiCanvas = (RectTransform)uiCanvas;
 			Stage.Initialize ();
 
+			TimeUtil.Initialize ();
+			ResManager.Initialize ();
 			Common.luaMgr.Initialize ();// start lua
 
 			Destroy (this);

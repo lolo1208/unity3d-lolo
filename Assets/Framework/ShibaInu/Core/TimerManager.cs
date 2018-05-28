@@ -20,7 +20,7 @@ namespace ShibaInu
 		/// 定时器的总运行次数，0 表示无限次数
 		public int repeatCount;
 		/// 定时器上次触发时间
-		public long lastUpdateTime;
+		public UInt32 lastUpdateTime;
 		/// 定时器每次触发的回调
 		public Action<Timer> callback;
 		/// 附带的数据
@@ -55,14 +55,10 @@ namespace ShibaInu
 		private HashSet<Timer> m_runningTimers;
 		/// 运行状态有变化的定时器列表
 		private HashSet<Timer> m_changedTimers;
-		/// 用于精确计时
-		private Stopwatch m_stopwatch;
 
 
 		void Awake ()
 		{
-			m_stopwatch = new Stopwatch ();
-			m_stopwatch.Start ();
 			m_runningTimers = new HashSet<Timer> ();
 			m_changedTimers = new HashSet<Timer> ();
 		}
@@ -79,8 +75,8 @@ namespace ShibaInu
 			}
 			m_changedTimers.Clear ();
 
-
-			long curTime = m_stopwatch.ElapsedMilliseconds;
+			TimeUtil.UpdateTime ();
+			UInt32 curTime = TimeUtil.GetTimeMsec ();
 			bool ignorable;
 			int delay;
 			foreach (Timer timer in m_runningTimers) {
@@ -119,7 +115,7 @@ namespace ShibaInu
 					}
 
 					// 更新上次触发的时间
-					timer.lastUpdateTime = (ignorable || timer.delay != delay) ? curTime : timer.lastUpdateTime + delay * count;
+					timer.lastUpdateTime = (ignorable || timer.delay != delay) ? curTime : timer.lastUpdateTime + Convert.ToUInt32 (delay * count);
 				}
 			}
 		}
@@ -165,7 +161,7 @@ namespace ShibaInu
 		/// <param name="timer">Timer.</param>
 		public void StartTimer (Timer timer)
 		{
-			timer.lastUpdateTime = m_stopwatch.ElapsedMilliseconds;
+			timer.lastUpdateTime = TimeUtil.GetTimeMsec ();
 			timer.running = true;
 			m_changedTimers.Add (timer);
 		}

@@ -8,6 +8,7 @@ local unpack = unpack
 local table = table
 local remove = table.remove
 local insert = table.insert
+local error = error
 
 
 ---@class EventListenerInfo @ 事件注册者的信息
@@ -41,6 +42,10 @@ end
 ---@param ... any[] @ 附带的参数
 ---@return void
 function EventDispatcher:AddEventListener(type, callback, caller, priority, ...)
+    if callback == nil then
+        error(Constants.E3005)
+    end
+
     priority = priority or 0
     if self._eventMap[type] == nil then
         self._eventMap[type] = {}

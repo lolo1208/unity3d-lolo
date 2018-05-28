@@ -749,8 +749,7 @@ end
 
 --
 function BaseList:OnDestroy()
-    RemoveEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
-    RemoveEventListener(Stage, Event.LATE_UPDATE, self.HidePoolItem, self)
+    self:Clean()
 end
 
 

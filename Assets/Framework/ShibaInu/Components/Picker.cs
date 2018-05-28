@@ -720,7 +720,7 @@ namespace ShibaInu
 		private void StartRecordVelocity ()
 		{
 			m_velocitys.Clear ();
-			m_lastTime = StageLooper.time;
+			m_lastTime = TimeUtil.timeSec;
 			Vector3 pos = m_content.localPosition;
 			m_lastPosition = m_curDragPos;
 		}
@@ -731,7 +731,7 @@ namespace ShibaInu
 		/// </summary>
 		private void RecordVelocity ()
 		{
-			float curTime = StageLooper.time;
+			float curTime = TimeUtil.timeSec;
 			float offsetTime = curTime - m_lastTime;
 			if (offsetTime < VELOCITY_INTERVAL)
 				return;
@@ -790,7 +790,7 @@ namespace ShibaInu
 			}
 
 			// 慢速拖动，不需要继续再滚动了
-			if (Mathf.Abs (pos - posTo) < 100 || (StageLooper.time - m_lastTime) > 0.15) {
+			if (Mathf.Abs (pos - posTo) < 100 || (TimeUtil.timeSec - m_lastTime) > 0.15) {
 				duration = 0;
 			}
 

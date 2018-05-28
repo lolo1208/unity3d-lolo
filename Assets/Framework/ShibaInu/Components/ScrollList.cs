@@ -76,6 +76,7 @@ namespace ShibaInu
 		public void SetContentSize (uint width, uint height)
 		{
 			m_content.sizeDelta = new Vector2 (width, height);
+			ResetContentPosition ();
 		}
 
 
