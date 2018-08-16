@@ -13,12 +13,14 @@
 local RemainTime = class("RemainTime")
 
 
+--
 --- 构造函数
 function RemainTime:Ctor(time, type)
     self:SetTime(time, type)
 end
 
 
+--
 --- 设置剩余时间
 ---@param time number @ 时间值
 ---@param type string @ 时间类型，默认：TimeUtil.TYPE_MS
@@ -27,23 +29,23 @@ function RemainTime:SetTime(time, type)
     time = time or 0
     type = type or TimeUtil.TYPE_MS
 
-    self._startTime = TimeUtil.time
+    self._startTime = TimeUtil.time * 1000
     self._remainTime = TimeUtil.convert(type, TimeUtil.TYPE_MS, time)
 end
 
 
-
+--
 --- 获取剩余时间，返回的最小值为 0
 ---@param type string @ 时间类型，默认：TimeUtil.TYPE_MS
 ---@return number
 function RemainTime:GetTime(type)
     type = type or TimeUtil.TYPE_MS
 
-    local time = self._remainTime - (TimeUtil.time - self._startTime)
+    local time = self._remainTime - (TimeUtil.time * 1000 - self._startTime)
     return time > 0 and time or 0
 end
 
 
 
-
+--
 return RemainTime

@@ -20,6 +20,7 @@
 local ItemRenderer = class("ItemRenderer", View)
 
 
+--
 function ItemRenderer:Ctor()
     ItemRenderer.super.Ctor(self)
 
@@ -29,7 +30,7 @@ function ItemRenderer:Ctor()
 end
 
 
-
+--
 --- 更新内容
 ---@param data any
 ---@param index number
@@ -39,6 +40,7 @@ function ItemRenderer:Update(data, index)
 end
 
 
+--
 --- 是否被选中
 function ItemRenderer:SetSelected(value)
     self._selected = value
@@ -49,6 +51,7 @@ function ItemRenderer:GetSelected()
 end
 
 
+--
 --- 是否启用
 ---@param value boolean
 function ItemRenderer:SetEnabled(value)
@@ -60,19 +63,21 @@ function ItemRenderer:GetEnabled()
 end
 
 
-
+--
 --- 对应的数据
 ---@return any
 function ItemRenderer:GetData()
     return self._data
 end
 
+--
 --- 在列表中的索引
 ---@return number
 function ItemRenderer:GetIndex()
     return self._index
 end
 
+--
 --- 对应的列表
 ---@return BaseList
 function ItemRenderer:GetList()
@@ -93,18 +98,19 @@ function ItemRenderer:OnInitialize()
 end
 
 
+--
 --- 被回收到缓存池时。由 BaseList 调用
 function ItemRenderer:OnRecycle()
-
 end
 
 
+--
 --- 被销毁时。由 BaseList 调用
 function ItemRenderer:OnDestroy()
     ItemRenderer.super.OnDestroy(self)
-
 end
 
 
 
+--
 return ItemRenderer

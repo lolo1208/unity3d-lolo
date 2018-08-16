@@ -72,10 +72,8 @@ namespace ShibaInu
 		void Update ()
 		{
 			TimeUtil.UpdateTime ();
-
-
-			// 更新 UDP Socket
-			UdpSocket.UpdateAll ();
+			Timer.Update ();
+			UdpSocket.Update ();
 
 
 			// 执行需要在主线程运行的 Action

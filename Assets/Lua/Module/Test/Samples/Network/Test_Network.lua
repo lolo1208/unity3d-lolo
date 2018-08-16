@@ -7,6 +7,7 @@
 local insert = table.insert
 local concat = table.concat
 local floor = math.floor
+local tostring = tostring
 
 
 --
@@ -20,11 +21,19 @@ local floor = math.floor
 ---@field hrLog UnityEngine.UI.Text
 ---@field request HttpRequest
 ---
+---@field dlGO UnityEngine.GameObject
 ---@field dlUrl UnityEngine.UI.InputField
 ---@field dlStartBtn UnityEngine.UI.Button
 ---@field dlProgress ShibaInu.CircleImage
 ---@field dlLog UnityEngine.UI.Text
 ---@field download HttpDownload
+---
+---@field ulGO UnityEngine.GameObject
+---@field ulUrl UnityEngine.UI.InputField
+---@field ulStartBtn UnityEngine.UI.Button
+---@field ulProgress ShibaInu.CircleImage
+---@field ulLog UnityEngine.UI.Text
+---@field upload HttpUpload
 ---
 ---@field udpHost UnityEngine.UI.InputField
 ---@field udpPort UnityEngine.UI.InputField
@@ -73,18 +82,40 @@ function Test_Network:OnInitialize()
     self.hrLog.text = ""
 
 
-    -- HttpRequest
+    -- HttpDownload
     local dlTra = transform:Find("HttpDownload")
+    self.dlGO = dlTra.gameObject
     self.dlUrl = GetComponent.InputField(dlTra:Find("url").gameObject)
     self.dlStartBtn = GetComponent.Button(dlTra:Find("startBtn").gameObject)
     self.dlProgress = GetComponent.CircleImage(dlTra:Find("progress").gameObject)
-    self.dlLog = GetComponent.Text(dlTra:Find("log").gameObject)
+    self.dlLog = GetComponent.Text(dlTra:Find("log/viewport/text").gameObject)
     self.download = HttpDownload.New()
     self.download:AddEventListener(HttpEvent.ENDED, self.HttpDownloadEventHandler, self)
     AddEventListener(self.dlStartBtn.gameObject, PointerEvent.CLICK, self.Click_dlStartBtn, self)
     self.dlProgress.fan = 1
     self.dlUrl.text = "http://10.8.40.35:12377"
     self.dlLog.text = ""
+
+
+    -- HttpUpload
+    local ulTra = transform:Find("HttpUpload")
+    self.ulGO = ulTra.gameObject
+    self.ulUrl = GetComponent.InputField(ulTra:Find("url").gameObject)
+    self.ulStartBtn = GetComponent.Button(ulTra:Find("startBtn").gameObject)
+    self.ulProgress = GetComponent.CircleImage(ulTra:Find("progress").gameObject)
+    self.ulLog = GetComponent.Text(ulTra:Find("log/viewport/text").gameObject)
+    self.upload = HttpUpload.New()
+    self.upload:AddEventListener(HttpEvent.ENDED, self.HttpUploadEventHandler, self)
+    AddEventListener(self.ulStartBtn.gameObject, PointerEvent.CLICK, self.Click_ulStartBtn, self)
+    self.ulProgress.fan = 1
+    self.ulUrl.text = "http://10.8.40.35:12366/upload"
+    self.ulLog.text = ""
+
+
+    -- Switch - HttpDownload / HttpUpload
+    local switchBtn = transform:Find("switchBtn").gameObject
+    AddEventListener(switchBtn, PointerEvent.CLICK, self.Click_switchBtn, self)
+    self:Click_switchBtn()
 
 
     -- TcpSocket
@@ -131,7 +162,6 @@ function Test_Network:OnInitialize()
     self.udpConv.text = "123"
     self.udpSendData.text = "Hello, สวัสดี, こんにちは"
     self.udpLog.text = ""
-
 end
 
 
@@ -156,7 +186,7 @@ function Test_Network:Click_hrSendBtn(event)
         end
     end
     self.hrLog.text = "requesting..."
-    self.request.method = self.hrHead.isOn and HttpRequest.METHOD_HEAD or nil
+    self.request.method = self.hrHead.isOn and Constants.HTTP_METHOD_HEAD or nil
     self.request:Send(url)
 end
 
@@ -186,7 +216,7 @@ end
 ---@param event Event
 function Test_Network:HttpDownloadEventHandler(event)
     local p = self.download:GetProgress()
-    local s = floor(self.download:GetSpeed() / 1024)
+    local s = floor(self.download:GetSpeed() / 1024 * 10) / 10
     self.dlProgress.fan = 1 - p
     self.dlLog.text = "downloading... " .. floor(p * 100) .. "%   " .. s .. " kb/s"
 
@@ -199,6 +229,45 @@ function Test_Network:HttpDownloadEventHandler(event)
         else
             self.dlLog.text = "download error! statusCode: " .. self.download.statusCode .. "\nerrMsg: " .. self.download.errMsg
         end
+    end
+end
+
+
+
+
+--=----------------------[ HTTP Upload ]----------------------=--
+
+---@param event PointerEvent
+function Test_Network:Click_ulStartBtn(event)
+    if not self.upload:IsUploading() then
+        self.ulStartBtn.interactable = false
+        AddEventListener(Stage, Event.UPDATE, self.HttpUploadEventHandler, self)
+        self.upload:Start(
+                self.ulUrl.text,
+                --"/Users/limylee/LOLO/nodejs/UnityTestServer/lib/testServers/uploadData.pptx",
+                UnityEngine.Application.persistentDataPath .. "/data.zip",
+                nil,
+                { kkk = "value", aaa = "AASAA", ddd = "大大大" }
+        )
+    end
+end
+
+---@param event Event
+function Test_Network:HttpUploadEventHandler(event)
+    local p = self.upload:GetProgress()
+    local s = floor(self.upload:GetSpeed() / 1024 * 10) / 10
+    self.ulProgress.fan = 1 - p
+    self.ulLog.text = "uploading... " .. floor(p * 100) .. "%   " .. s .. " kb/s"
+
+    if event.type == HttpEvent.ENDED then
+        RemoveEventListener(Stage, Event.UPDATE, self.HttpUploadEventHandler, self)
+        self.ulStartBtn.interactable = true
+
+        local str = ""
+        str = str .. "successful : " .. tostring(self.upload.successful) .. ",  "
+        str = str .. "statusCode : " .. self.upload.statusCode .. "\n"
+        str = str .. "content : " .. self.upload.content
+        self.ulLog.text = str
     end
 end
 
@@ -298,6 +367,15 @@ function Test_Network:Click_udpSendBtn(event)
     end
 end
 
+
+
+--
+---@param event PointerEvent
+function Test_Network:Click_switchBtn(event)
+    local dlVisible = self.dlGO.activeSelf
+    self.dlGO:SetActive(not dlVisible)
+    self.ulGO:SetActive(dlVisible)
+end
 
 
 

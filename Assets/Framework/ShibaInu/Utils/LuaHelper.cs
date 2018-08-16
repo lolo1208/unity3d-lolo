@@ -115,12 +115,12 @@ namespace ShibaInu
 		/// </summary>
 		/// <returns>The to canvas point.</returns>
 		/// <param name="pos">world position</param>
-		public static Vector3 WorldToCanvasPoint(Vector3 pos)
+		public static Vector3 WorldToCanvasPoint (Vector3 pos)
 		{
 			pos = Camera.main.WorldToScreenPoint (pos);
-			pos = Stage.canvas.worldCamera.ScreenToWorldPoint (pos);
-			Vector3 s = Stage.uiCanvas.localScale;
-			tmpVec3.Set (pos.x / s.x, pos.y / s.y, Stage.uiCanvas.anchoredPosition3D.z);
+			pos = Stage.uiCanvas.worldCamera.ScreenToWorldPoint (pos);
+			Vector3 s = Stage.uiCanvasTra.localScale;
+			tmpVec3.Set (pos.x / s.x, pos.y / s.y, Stage.uiCanvasTra.anchoredPosition3D.z);
 			return tmpVec3;
 		}
 
@@ -148,6 +148,156 @@ namespace ShibaInu
 			req.Send ();
 			return req;
 		}
+
+
+
+		/// <summary>
+		/// 添加或获取 GameObject 下的组件
+		/// </summary>
+		/// <returns>The or get component.</returns>
+		/// <param name="go">Go.</param>
+		/// <param name="componentType">Component type.</param>
+		public static Component AddOrGetComponent (GameObject go, Type componentType)
+		{
+			Component c = go.GetComponent (componentType);
+			if (c == null)
+				c = go.AddComponent (componentType);
+			return c;
+		}
+
+
+
+		#region 后处理效果
+
+
+		/// <summary>
+		/// 播放叠影抖动效果
+		/// </summary>
+		/// <returns>The double image shake.</returns>
+		/// <param name="duration">Duration.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="x">The x coordinate.</param>
+		/// <param name="y">The y coordinate.</param>
+		/// <param name="interval">Interval.</param>
+		/// <param name="cam">Cam.</param>
+		public static DoubleImageShake PlayDoubleImageShake (float duration, LuaFunction callback = null, float x = 35f, float y = 10f, float interval = 0.045f, Camera cam = null)
+		{
+			if (cam == null)
+				cam = Camera.main;
+
+			DoubleImageShake dis = (DoubleImageShake)AddOrGetComponent (cam.gameObject, typeof(DoubleImageShake));
+			if (dis.shader == null)
+				dis.shader = (Shader)ResManager.LoadAsset ("Shaders/PostEffect/DoubleImageShake.shader", Stage.currentSceneName);
+
+			Action action = null;
+			if (callback != null)
+				action = () => {
+					callback.BeginPCall ();
+					callback.Call ();
+					callback.EndPCall ();
+				};
+			dis.Play (duration, action, x, y, interval);
+			return dis;
+		}
+
+
+		/// <summary>
+		/// 播放马赛克效果
+		/// </summary>
+		/// <returns>The mosaic.</returns>
+		/// <param name="toTileSize">To tile size.</param>
+		/// <param name="duration">Duration.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="cam">Cam.</param>
+		public static Mosaic PlayMosaic (float toTileSize, float duration, LuaFunction callback = null, Camera cam = null)
+		{
+			if (cam == null)
+				cam = Camera.main;
+			
+			Mosaic mosaic = (Mosaic)AddOrGetComponent (cam.gameObject, typeof(Mosaic));
+			if (mosaic.shader == null)
+				mosaic.shader = (Shader)ResManager.LoadAsset ("Shaders/PostEffect/Mosaic.shader", Stage.currentSceneName);
+
+			Action action = null;
+			if (callback != null)
+				action = () => {
+					callback.BeginPCall ();
+					callback.Call ();
+					callback.EndPCall ();
+				};
+			mosaic.Play (toTileSize, duration, action);
+			return mosaic;
+		}
+
+
+		/// <summary>
+		/// 播放径向模糊效果
+		/// </summary>
+		/// <returns>The radial blur.</returns>
+		/// <param name="toBlurFactor">To blur factor.</param>
+		/// <param name="duration">Duration.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="cam">Cam.</param>
+		public static RadialBlur PlayRadialBlur (float toBlurFactor, float duration, LuaFunction callback = null, Camera cam = null)
+		{
+			if (cam == null)
+				cam = Camera.main;
+
+			RadialBlur radialBlur = (RadialBlur)AddOrGetComponent (cam.gameObject, typeof(RadialBlur));
+			if (radialBlur.shader == null)
+				radialBlur.shader = (Shader)ResManager.LoadAsset ("Shaders/PostEffect/RadialBlur.shader", Stage.currentSceneName);
+
+			Action action = null;
+			if (callback != null)
+				action = () => {
+					callback.BeginPCall ();
+					callback.Call ();
+					callback.EndPCall ();
+				};
+			radialBlur.Play (toBlurFactor, duration, action);
+			return radialBlur;
+		}
+
+
+		/// <summary>
+		/// 启用或禁用高斯模糊效果
+		/// </summary>
+		/// <returns>The gaussian blur enabled.</returns>
+		/// <param name="enabled">If set to <c>true</c> enabled.</param>
+		/// <param name="blurRadius">Blur radius.</param>
+		/// <param name="downSample">Down sample.</param>
+		/// <param name="iteration">Iteration.</param>
+		/// <param name="cam">Cam.</param>
+		public static GaussianBlur SetGaussianBlurEnabled (bool enabled, float blurRadius = 0.6f, int downSample = 2, int iteration = 1, Camera cam = null)
+		{
+			if (cam == null)
+				cam = Camera.main;
+
+			GameObject camGO = cam.gameObject;
+			GaussianBlur gaussianBlur = camGO.GetComponent<GaussianBlur> ();
+
+			if (enabled) {
+				if (gaussianBlur == null) {
+					gaussianBlur = camGO.AddComponent<GaussianBlur> ();
+					gaussianBlur.shader = (Shader)ResManager.LoadAsset ("Shaders/PostEffect/GaussianBlur.shader", Stage.currentSceneName);
+				} else
+					gaussianBlur.enabled = true;
+				
+				gaussianBlur.blurRadius = blurRadius;
+				gaussianBlur.downSample = downSample;
+				gaussianBlur.iteration = iteration;
+			}
+
+			//
+			else {
+				if (gaussianBlur != null)
+					gaussianBlur.enabled = false;
+			}
+
+			return gaussianBlur;
+		}
+
+		#endregion
 
 
 		//

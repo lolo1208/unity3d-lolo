@@ -50,7 +50,7 @@ function Avatar:Ctor(map, data)
     self.gameObject = CreateGameObject(data.name, map.avatarC, true)
     self.transform = self.gameObject.transform
 
-    local go = Instantiate("Prefabs/IOGame/dwarfs/dwarf_" .. data.pic .. ".prefab", self.transform, IOGameData.NAME)
+    local go = Instantiate("Prefabs/IOGame/dwarfs/dwarf_" .. data.pic .. ".prefab", self.transform)
     self.ani = GetComponent.Animation(go)
 
     self.position = Vector3.New(data.x, 0, data.z)

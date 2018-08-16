@@ -629,7 +629,8 @@ namespace ShibaInu
 		[MenuItem ("Packager/Android", false, 202)]
 		private static void PackAndroid ()
 		{
-			Pack (BuildTarget.Android, LuaEncodeType.JIT);
+//			Pack (BuildTarget.Android, LuaEncodeType.JIT);
+			Pack (BuildTarget.Android, LuaEncodeType.NONE);
 		}
 
 		[MenuItem ("Packager/Win", false, 203)]
@@ -693,6 +694,7 @@ namespace ShibaInu
 
 			} else {
 				CopyDir (tempDir, pp_as);
+				CopyDir ("Templates/AndroidProject/java/", pp_as + "src/main/java/");// 拷贝 java 代码
 				UnityEngine.Debug.Log ("[Packager] Generates Android Studio Project Complete!");
 			}
 		}

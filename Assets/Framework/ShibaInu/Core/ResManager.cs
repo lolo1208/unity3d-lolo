@@ -15,30 +15,31 @@ namespace ShibaInu
 	public class ResManager
 	{
 		/// lua的包文件夹列表
-		private static readonly string[] LuaPackages = { "ToLua/", "ShibaInu/", "App/" };
+		private static readonly string[] m_luaPackages = { "ToLua/", "ShibaInu/", "App/" };
 
 		/// 路径 -> 路径MD5 映射列表
-		private static Dictionary<string, string> _pathMD5Dic = new Dictionary<string, string> ();
+		private static Dictionary<string, string> s_pathMD5Dic = new Dictionary<string, string> ();
 		/// lua文件路径 -> 真实完整路径 映射列表
-		private static Dictionary<string, string> _luaPathDic = new Dictionary<string, string> ();
+		private static Dictionary<string, string> s_luaPathDic = new Dictionary<string, string> ();
 
 		/// lua 文件列表[ key = lua文件路径，value = 文件MD5 ]
-		private static Dictionary<string, string> _luaDic = new Dictionary<string, string> ();
+		private static Dictionary<string, string> s_luaDic = new Dictionary<string, string> ();
 		/// ABI 列表[ key = AB文件路径MD5，value = ABI对象 ]
-		private static Dictionary<string, ABI> _abiDic = new Dictionary<string, ABI> ();
+		private static Dictionary<string, ABI> s_abiDic = new Dictionary<string, ABI> ();
 		/// 资源文件列表[ key = 资源文件路径MD5，value = ABI对象 ]
-		private static Dictionary<string, ABI> _resDic = new Dictionary<string, ABI> ();
+		private static Dictionary<string, ABI> s_resDic = new Dictionary<string, ABI> ();
 
 		/// 抛出 ABLoader.EVENT_ALL_COMPLETE 事件的协程对象
-		private static Coroutine _daceCoroutine;
+		private static Coroutine s_daceCoroutine;
 
 		/// 需要被延迟卸载到资源组列表
-		private static HashSet<string> _delayedUnloadList = new HashSet<string> ();
+		private static HashSet<string> s_delayedUnloadList = new HashSet<string> ();
 
 
 
 		#region 初始化
 
+		[NoToLuaAttribute]
 		public static void Initialize ()
 		{
 			if (!Common.isDebug) {
@@ -56,10 +57,11 @@ namespace ShibaInu
 			if (!FileHelper.Exists (resInfoFilePath))// 从未更新过
 				resInfoFilePath = Constants.PackageDir + "ResInfo";
 
-			_luaDic.Clear ();
-			_abiDic.Clear ();
-			_resDic.Clear ();
-			_luaPathDic.Clear ();
+
+			s_luaDic.Clear ();
+			s_abiDic.Clear ();
+			s_resDic.Clear ();
+			s_luaPathDic.Clear ();
 
 			// 解析资源信息文件
 			using (BinaryReader reader = new BinaryReader (new MemoryStream (FileHelper.GetBytes (resInfoFilePath)))) {
@@ -74,7 +76,7 @@ namespace ShibaInu
 					pathLen = reader.ReadByte ();
 					path = new string (reader.ReadChars (pathLen));
 					md5 = new string (reader.ReadChars (16));
-					_luaDic.Add (path, md5);
+					s_luaDic.Add (path, md5);
 				}
 
 				// 所有场景文件
@@ -86,7 +88,7 @@ namespace ShibaInu
 
 					abi = new ABI (path, md5, "Scenes/");
 					pathMD5 = GetPathMD5 (path);
-					_abiDic.Add (pathMD5, abi);
+					s_abiDic.Add (pathMD5, abi);
 				}
 
 				// 所有 AssetBundle 文件
@@ -98,13 +100,13 @@ namespace ShibaInu
 
 					abi = new ABI (path, md5, "Res/");
 					pathMD5 = GetPathMD5 (path + Constants.AbExtName);
-					_abiDic.Add (pathMD5, abi);
+					s_abiDic.Add (pathMD5, abi);
 
 					// 包含的资源文件
 					ushort2 = reader.ReadUInt16 ();
 					for (n = 0; n < ushort2; n++) {
 						pathMD5 = new string (reader.ReadChars (16));
-						_resDic.Add (pathMD5, abi);
+						s_resDic.Add (pathMD5, abi);
 					}
 
 					// 依赖的 AssetBundle
@@ -141,12 +143,12 @@ namespace ShibaInu
 			}
 
 			string pathMD5 = GetPathMD5 (path);
-			if (!_resDic.ContainsKey (pathMD5)) {
+			if (!s_resDic.ContainsKey (pathMD5)) {
 				throw new LuaException (string.Format (Constants.E5001, path));
 			}
 			#endif
 
-			_delayedUnloadList.Remove (groupName);
+			s_delayedUnloadList.Remove (groupName);
 
 			ABI abi = GetAbiWithAssetPath (path);
 			ABLoader.Load (abi, groupName);
@@ -173,19 +175,19 @@ namespace ShibaInu
 					UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object> (Constants.ResDirPath + path)
 				);
 
-				if (_daceCoroutine != null)
-					Common.looper.StopCoroutine (_daceCoroutine);
-				_daceCoroutine = Common.looper.StartCoroutine (DispatchAllCompleteEvent ());
+				if (s_daceCoroutine != null)
+					Common.looper.StopCoroutine (s_daceCoroutine);
+				s_daceCoroutine = Common.looper.StartCoroutine (DispatchAllCompleteEvent ());
 				return;
 			}
 
 			string pathMD5 = GetPathMD5 (path);
-			if (!_resDic.ContainsKey (pathMD5)) {
+			if (!s_resDic.ContainsKey (pathMD5)) {
 				throw new LuaException (string.Format (Constants.E5001, path));
 			}
 			#endif
 
-			_delayedUnloadList.Remove (groupName);
+			s_delayedUnloadList.Remove (groupName);
 
 			ABI abi = GetAbiWithAssetPath (path);
 			abi.AddAssetAsync (path);
@@ -201,7 +203,7 @@ namespace ShibaInu
 		private static IEnumerator DispatchAllCompleteEvent ()
 		{
 			yield return new WaitForSeconds (0.2f);
-			_daceCoroutine = null;
+			s_daceCoroutine = null;
 			ABLoader.DispatchLuaEvent (ABLoader.EVENT_ALL_COMPLETE);
 		}
 		#endif
@@ -244,12 +246,12 @@ namespace ShibaInu
 		private static IEnumerator DelayedUnload (string groupName, float delay)
 		{
 			// 先添加到需要被延迟卸载到列表中，以防 delay 过程中该 groupName 又进行了加载
-			_delayedUnloadList.Add (groupName);
+			s_delayedUnloadList.Add (groupName);
 
 			yield return new WaitForSeconds (delay);
 
-			if (_delayedUnloadList.Contains (groupName)) {
-				_delayedUnloadList.Remove (groupName);
+			if (s_delayedUnloadList.Contains (groupName)) {
+				s_delayedUnloadList.Remove (groupName);
 				ABLoader.RemoveReference (groupName);
 			}
 		}
@@ -265,14 +267,15 @@ namespace ShibaInu
 		/// </summary>
 		/// <returns>The path MD5.</returns>
 		/// <param name="path">Path.</param>
+		[NoToLuaAttribute]
 		public static string GetPathMD5 (string path)
 		{
 			string md5;
-			if (_pathMD5Dic.ContainsKey (path)) {
-				_pathMD5Dic.TryGetValue (path, out md5);
+			if (s_pathMD5Dic.ContainsKey (path)) {
+				s_pathMD5Dic.TryGetValue (path, out md5);
 			} else {
 				md5 = MD5Util.GetMD5 (path);
-				_pathMD5Dic.Add (path, md5);
+				s_pathMD5Dic.Add (path, md5);
 			}
 			return md5;
 		}
@@ -283,10 +286,11 @@ namespace ShibaInu
 		/// </summary>
 		/// <returns>The abi.</returns>
 		/// <param name="abPathMD5">Ab path M d5.</param>
+		[NoToLuaAttribute]
 		public static ABI GetAbi (string abPathMD5)
 		{
 			ABI abi;
-			_abiDic.TryGetValue (abPathMD5, out abi);
+			s_abiDic.TryGetValue (abPathMD5, out abi);
 			return abi;
 		}
 
@@ -296,10 +300,11 @@ namespace ShibaInu
 		/// </summary>
 		/// <returns>The abi with asset path.</returns>
 		/// <param name="path">Path.</param>
+		[NoToLuaAttribute]
 		public static ABI GetAbiWithAssetPath (string path)
 		{
 			ABI abi;
-			_resDic.TryGetValue (GetPathMD5 (path), out abi);
+			s_resDic.TryGetValue (GetPathMD5 (path), out abi);
 			return abi;
 		}
 
@@ -314,23 +319,24 @@ namespace ShibaInu
 		/// </summary>
 		/// <returns>The lua file bytes.</returns>
 		/// <param name="path">lua 路径，如：Module/Core/launcher </param>
+		[NoToLuaAttribute]
 		public static byte[] GetLuaFileBytes (string path)
 		{
 			// 不需要后缀名
 			path = path.Replace (".lua", "");
 
 			// 已经缓存过文件真实路径了，直接返回文件内容
-			if (_luaPathDic.ContainsKey (path)) {
-				_luaPathDic.TryGetValue (path, out path);
+			if (s_luaPathDic.ContainsKey (path)) {
+				s_luaPathDic.TryGetValue (path, out path);
 				return FileHelper.GetBytes (path);
 			}
 
 			// 在 LuaPackages 中找到对应到文件
 			bool isFound = false;
 			string foundPath = string.Empty;
-			for (int i = 0; i < LuaPackages.Length; i++) {
-				foundPath = LuaPackages [i] + path;
-				if (_luaDic.ContainsKey (foundPath)) {
+			for (int i = 0; i < m_luaPackages.Length; i++) {
+				foundPath = m_luaPackages [i] + path;
+				if (s_luaDic.ContainsKey (foundPath)) {
 					isFound = true;
 					break;
 				}
@@ -342,14 +348,14 @@ namespace ShibaInu
 
 			// 转换成真实路径，并查找文件
 			string md5;
-			_luaDic.TryGetValue (foundPath, out md5);
+			s_luaDic.TryGetValue (foundPath, out md5);
 			string realPath = "Lua/" + foundPath + "_" + md5 + Constants.LuaExtName;
 
 			string filePath = Constants.PackageDir + realPath;
 			if (!FileHelper.Exists (filePath))
 				filePath = Constants.UpdateDir + realPath;
 
-			_luaPathDic.Add (path, filePath);
+			s_luaPathDic.Add (path, filePath);
 
 			// 返回文件内容
 			return FileHelper.GetBytes (filePath);

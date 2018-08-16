@@ -12,7 +12,6 @@
 ---@field wrapModeW UnityEngine.TextureWrapMode
 ---@field mipMapBias float
 ---@field texelSize UnityEngine.Vector2
----@field imageContentsHash UnityEngine.Hash128
 local m = {}
 ---@param forcedMin int
 ---@param globalMax int

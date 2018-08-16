@@ -20,7 +20,7 @@ namespace ShibaInu
 		private const string EVENT_CLICK = "PointerEvent_Click";
 
 		/// PointerEvent.lua
-		private static readonly LuaFunction m_dispatchEvent = Common.luaMgr.state.GetFunction ("PointerEvent.DispatchEvent");
+		private static readonly LuaFunction s_dispatchEvent = Common.luaMgr.state.GetFunction ("PointerEvent.DispatchEvent");
 
 		/// 对应 gameObject.peer._ed
 		public LuaTable ed;
@@ -29,52 +29,52 @@ namespace ShibaInu
 
 		public void OnPointerEnter (PointerEventData eventData)
 		{
-			m_dispatchEvent.BeginPCall ();
-			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (EVENT_ENTER);
-			m_dispatchEvent.Push (eventData);
-			m_dispatchEvent.PCall ();
-			m_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (ed);
+			s_dispatchEvent.Push (EVENT_ENTER);
+			s_dispatchEvent.Push (eventData);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 		public void OnPointerExit (PointerEventData eventData)
 		{
-			m_dispatchEvent.BeginPCall ();
-			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (EVENT_EXIT);
-			m_dispatchEvent.Push (eventData);
-			m_dispatchEvent.PCall ();
-			m_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (ed);
+			s_dispatchEvent.Push (EVENT_EXIT);
+			s_dispatchEvent.Push (eventData);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 		public void OnPointerDown (PointerEventData eventData)
 		{
-			m_dispatchEvent.BeginPCall ();
-			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (EVENT_DOWN);
-			m_dispatchEvent.Push (eventData);
-			m_dispatchEvent.PCall ();
-			m_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (ed);
+			s_dispatchEvent.Push (EVENT_DOWN);
+			s_dispatchEvent.Push (eventData);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 		public void OnPointerUp (PointerEventData eventData)
 		{
-			m_dispatchEvent.BeginPCall ();
-			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (EVENT_UP);
-			m_dispatchEvent.Push (eventData);
-			m_dispatchEvent.PCall ();
-			m_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (ed);
+			s_dispatchEvent.Push (EVENT_UP);
+			s_dispatchEvent.Push (eventData);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 		public void OnPointerClick (PointerEventData eventData)
 		{
-			m_dispatchEvent.BeginPCall ();
-			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (EVENT_CLICK);
-			m_dispatchEvent.Push (eventData);
-			m_dispatchEvent.PCall ();
-			m_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (ed);
+			s_dispatchEvent.Push (EVENT_CLICK);
+			s_dispatchEvent.Push (eventData);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 

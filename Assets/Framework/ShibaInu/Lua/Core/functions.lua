@@ -95,13 +95,14 @@ end
 ---  > go = Instantiate(prefabObj, parentGO.transform, "MyModuleName")
 ---@param prefab UnityEngine.GameObject | string @ 预设对象 或 预设路径
 ---@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点(Transform)
----@param optional groupName string @ 资源组名称。参数 prefab 为预设路径时，才需要传入该值
+---@param optional groupName string @ 资源组名称。参数 prefab 为预设路径时，如果该值为 nil，将会使用当前场景名称
 ---@return UnityEngine.GameObject
 function Instantiate(prefab, parent, groupName)
     -- 传入的 prefab 是 预设路径
     if type(prefab) == "string" then
         if groupName == nil then
-            error(format(Constants.E2003, prefab))
+            groupName = Stage.GetCurrentSceneName()
+            --error(format(Constants.E2003, prefab))
         end
         prefab = Res.LoadAsset(prefab, groupName)
     end
@@ -112,10 +113,6 @@ function Instantiate(prefab, parent, groupName)
     end
 
     if parent ~= nil then
-        -- 传入的 parent 是 图层名称
-        if type(parent) == "string" then
-            parent = Stage.GetLayer(parent)
-        end
         SetParent(go.transform, parent)
     end
     return go
@@ -149,10 +146,6 @@ function InstantiateAsync(prefabPath, groupName, handler, parent)
             end
 
             if parent ~= nil then
-                -- 传入的 parent 是 图层名称
-                if type(parent) == "string" then
-                    parent = Stage.GetLayer(parent)
-                end
                 SetParent(go.transform, parent)
             end
 
@@ -179,14 +172,18 @@ end
 --- 设置 target 的父节点为 parent。
 --- 并将 localScale, localPosition 属性重置
 ---@param target UnityEngine.Transform
----@param parent UnityEngine.Transform
+---@param parent string | UnityEngine.Transform
 function SetParent(target, parent)
+    -- 传入的 parent 是 图层名称
+    if type(parent) == "string" then
+        parent = Stage.GetLayer(parent)
+    end
     LuaHelper.SetParent(target, parent)
 end
 
 --- 销毁指定的对象
 ---@param go UnityEngine.GameObject @ 目标对象
----@param delay number @ 延时删除（秒）。默认：nil，表示立即销毁
+---@param optional delay number @ 延时删除（秒）
 ---@return void
 function Destroy(go, delay)
     if delay == nil then
@@ -259,6 +256,20 @@ function GetComponent.Animation(go)
     return go:GetComponent(_typeof_class(UnityEngine.Animation))
 end
 
+--- 获取 gameObject 下的 UnityEngine.Animator 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.Animator
+function GetComponent.Animator(go)
+    return go:GetComponent(_typeof_class(UnityEngine.Animator))
+end
+
+--- 获取 gameObject 下的 UnityEngine.CharacterController 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.CharacterController
+function GetComponent.CharacterController(go)
+    return go:GetComponent(_typeof_class(UnityEngine.CharacterController))
+end
+
 --- 获取 gameObject 下的 UnityEngine.Camera 组件
 ---@param go UnityEngine.GameObject
 ---@return UnityEngine.Camera
@@ -298,11 +309,18 @@ function GetComponent.CircleImage(go)
     return go:GetComponent(_typeof_class(ShibaInu.CircleImage))
 end
 
+--- 获取 gameObject 下的 ShibaInu.ThirdPersonCamera 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.ThirdPersonCamera
+function GetComponent.ThirdPersonCamera(go)
+    return go:GetComponent(_typeof_class(ShibaInu.ThirdPersonCamera))
+end
+
 
 --
 
 
---- 添加或获取某个 GameObject 下的组件
+--- 添加或获取 GameObject 下的组件
 ---@param go UnityEngine.GameObject
 ---@param ComponentClass any @ 组件的类，如：UnityEngine.UI.Text
 ---@return any
@@ -493,7 +511,7 @@ end
 ---@param handler Handler
 ---@return void
 function CancelDelayedCall(handler)
-    if handler.delayedTime == nil then
+    if handler == nil or handler.delayedTime == nil then
         return
     end
     handler.delayedTime = nil
@@ -530,4 +548,12 @@ function handler(callback, caller, once, ...)
     return handler
 end
 
+TestFn = {}
 
+TestFn.Fn1 = function(isPlay, aaa, bbb, ccc)
+    print("Lua - TestFn.Fn1 :::", isPlay, aaa, bbb, ccc)
+end
+
+TestFn.Fn2 = function(isPlay, aaa, bbb)
+    print("Lua - TestFn.Fn2 :::", isPlay, aaa, bbb)
+end

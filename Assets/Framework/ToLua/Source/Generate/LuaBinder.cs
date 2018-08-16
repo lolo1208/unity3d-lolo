@@ -42,6 +42,7 @@ public static class LuaBinder
 		UnityEngine_LightTypeWrap.Register(L);
 		UnityEngine_SleepTimeoutWrap.Register(L);
 		UnityEngine_AnimatorWrap.Register(L);
+		UnityEngine_RuntimeAnimatorControllerWrap.Register(L);
 		UnityEngine_InputWrap.Register(L);
 		UnityEngine_KeyCodeWrap.Register(L);
 		UnityEngine_SkinnedMeshRendererWrap.Register(L);
@@ -54,6 +55,7 @@ public static class LuaBinder
 		UnityEngine_RenderSettingsWrap.Register(L);
 		UnityEngine_ResourcesWrap.Register(L);
 		UnityEngine_PlayerPrefsWrap.Register(L);
+		UnityEngine_CanvasWrap.Register(L);
 		UnityEngine_SpriteWrap.Register(L);
 		UnityEngine_FontWrap.Register(L);
 		UnityEngine_RectWrap.Register(L);
@@ -95,6 +97,9 @@ public static class LuaBinder
 		L.BeginModule("AudioClip");
 		L.RegFunction("PCMReaderCallback", UnityEngine_AudioClip_PCMReaderCallback);
 		L.RegFunction("PCMSetPositionCallback", UnityEngine_AudioClip_PCMSetPositionCallback);
+		L.EndModule();
+		L.BeginModule("Canvas");
+		L.RegFunction("WillRenderCanvases", UnityEngine_Canvas_WillRenderCanvases);
 		L.EndModule();
 		L.BeginModule("Font");
 		L.RegFunction("FontTextureRebuildCallback", UnityEngine_Font_FontTextureRebuildCallback);
@@ -169,12 +174,17 @@ public static class LuaBinder
 		ShibaInu_StageWrap.Register(L);
 		ShibaInu_HttpRequestWrap.Register(L);
 		ShibaInu_HttpDownloadWrap.Register(L);
+		ShibaInu_HttpUploadWrap.Register(L);
 		ShibaInu_TcpSocketWrap.Register(L);
 		ShibaInu_UdpSocketWrap.Register(L);
 		ShibaInu_BaseListWrap.Register(L);
 		ShibaInu_ScrollListWrap.Register(L);
 		ShibaInu_PickerWrap.Register(L);
 		ShibaInu_CircleImageWrap.Register(L);
+		ShibaInu_ThirdPersonCameraWrap.Register(L);
+		ShibaInu_DoubleImageShakeWrap.Register(L);
+		ShibaInu_MosaicWrap.Register(L);
+		ShibaInu_RadialBlurWrap.Register(L);
 		L.EndModule();
 		L.BeginModule("System");
 		L.RegFunction("Action", System_Action);
@@ -438,6 +448,33 @@ public static class LuaBinder
 			{
 				LuaTable self = ToLua.CheckLuaTable(L, 2);
 				Delegate arg1 = DelegateTraits<UnityEngine.AudioClip.PCMSetPositionCallback>.Create(func, self);
+				ToLua.Push(L, arg1);
+			}
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int UnityEngine_Canvas_WillRenderCanvases(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+			LuaFunction func = ToLua.CheckLuaFunction(L, 1);
+
+			if (count == 1)
+			{
+				Delegate arg1 = DelegateTraits<UnityEngine.Canvas.WillRenderCanvases>.Create(func);
+				ToLua.Push(L, arg1);
+			}
+			else
+			{
+				LuaTable self = ToLua.CheckLuaTable(L, 2);
+				Delegate arg1 = DelegateTraits<UnityEngine.Canvas.WillRenderCanvases>.Create(func, self);
 				ToLua.Push(L, arg1);
 			}
 			return 1;

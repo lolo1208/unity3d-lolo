@@ -1,4 +1,4 @@
----@class UnityEngine.WWW : UnityEngine.CustomYieldInstruction
+---@class UnityEngine.WWW : object
 ---@field assetBundle UnityEngine.AssetBundle
 ---@field bytes table
 ---@field bytesDownloaded int
@@ -42,8 +42,6 @@ function m:GetAudioClip() end
 ---@overload fun(threeD:bool, audioType:UnityEngine.AudioType):UnityEngine.AudioClip
 ---@return UnityEngine.AudioClip
 function m:GetAudioClipCompressed() end
----@return UnityEngine.MovieTexture
-function m:GetMovieTexture() end
 UnityEngine = {}
 UnityEngine.WWW = m
 return m

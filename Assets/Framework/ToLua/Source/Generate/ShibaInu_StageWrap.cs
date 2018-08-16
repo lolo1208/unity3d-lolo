@@ -7,19 +7,16 @@ public class ShibaInu_StageWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(ShibaInu.Stage), typeof(System.Object));
-		L.RegFunction("Initialize", Initialize);
-		L.RegFunction("Resize", Resize);
 		L.RegFunction("Clean", Clean);
 		L.RegFunction("AddDontDestroy", AddDontDestroy);
 		L.RegFunction("RemoveDontDestroy", RemoveDontDestroy);
 		L.RegFunction("LoadScene", LoadScene);
 		L.RegFunction("LoadSceneAsync", LoadSceneAsync);
-		L.RegFunction("DispatchLuaEvent", DispatchLuaEvent);
 		L.RegFunction("GetProgress", GetProgress);
 		L.RegFunction("New", _CreateShibaInu_Stage);
 		L.RegFunction("__tostring", ToLua.op_ToString);
-		L.RegVar("canvas", get_canvas, set_canvas);
 		L.RegVar("uiCanvas", get_uiCanvas, set_uiCanvas);
+		L.RegVar("uiCanvasTra", get_uiCanvasTra, set_uiCanvasTra);
 		L.RegVar("sceneLayer", get_sceneLayer, set_sceneLayer);
 		L.RegVar("uiLayer", get_uiLayer, set_uiLayer);
 		L.RegVar("windowLayer", get_windowLayer, set_windowLayer);
@@ -27,6 +24,7 @@ public class ShibaInu_StageWrap
 		L.RegVar("alertLayer", get_alertLayer, set_alertLayer);
 		L.RegVar("guideLayer", get_guideLayer, set_guideLayer);
 		L.RegVar("topLayer", get_topLayer, set_topLayer);
+		L.RegVar("currentSceneName", get_currentSceneName, null);
 		L.EndClass();
 	}
 
@@ -47,36 +45,6 @@ public class ShibaInu_StageWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to ctor method: ShibaInu.Stage.New");
 			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Initialize(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 0);
-			ShibaInu.Stage.Initialize();
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Resize(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 0);
-			ShibaInu.Stage.Resize();
-			return 0;
 		}
 		catch (Exception e)
 		{
@@ -164,23 +132,6 @@ public class ShibaInu_StageWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int DispatchLuaEvent(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			string arg0 = ToLua.CheckString(L, 1);
-			string arg1 = ToLua.CheckString(L, 2);
-			ShibaInu.Stage.DispatchLuaEvent(arg0, arg1);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int GetProgress(IntPtr L)
 	{
 		try
@@ -197,11 +148,11 @@ public class ShibaInu_StageWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_canvas(IntPtr L)
+	static int get_uiCanvas(IntPtr L)
 	{
 		try
 		{
-			ToLua.PushSealed(L, ShibaInu.Stage.canvas);
+			ToLua.PushSealed(L, ShibaInu.Stage.uiCanvas);
 			return 1;
 		}
 		catch (Exception e)
@@ -211,11 +162,11 @@ public class ShibaInu_StageWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_uiCanvas(IntPtr L)
+	static int get_uiCanvasTra(IntPtr L)
 	{
 		try
 		{
-			ToLua.PushSealed(L, ShibaInu.Stage.uiCanvas);
+			ToLua.PushSealed(L, ShibaInu.Stage.uiCanvasTra);
 			return 1;
 		}
 		catch (Exception e)
@@ -323,13 +274,12 @@ public class ShibaInu_StageWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_canvas(IntPtr L)
+	static int get_currentSceneName(IntPtr L)
 	{
 		try
 		{
-			UnityEngine.Canvas arg0 = (UnityEngine.Canvas)ToLua.CheckObject(L, 2, typeof(UnityEngine.Canvas));
-			ShibaInu.Stage.canvas = arg0;
-			return 0;
+			LuaDLL.lua_pushstring(L, ShibaInu.Stage.currentSceneName);
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -342,8 +292,23 @@ public class ShibaInu_StageWrap
 	{
 		try
 		{
-			UnityEngine.RectTransform arg0 = (UnityEngine.RectTransform)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform));
+			UnityEngine.Canvas arg0 = (UnityEngine.Canvas)ToLua.CheckObject(L, 2, typeof(UnityEngine.Canvas));
 			ShibaInu.Stage.uiCanvas = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_uiCanvasTra(IntPtr L)
+	{
+		try
+		{
+			UnityEngine.RectTransform arg0 = (UnityEngine.RectTransform)ToLua.CheckObject(L, 2, typeof(UnityEngine.RectTransform));
+			ShibaInu.Stage.uiCanvasTra = arg0;
 			return 0;
 		}
 		catch (Exception e)

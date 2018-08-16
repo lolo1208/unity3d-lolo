@@ -46,6 +46,7 @@ function LoadingScene:LoadSceneCompleteHandler(event)
 end
 
 function LoadingScene:OnDestroy()
+    LoadingScene.super.OnDestroy(self)
     RemoveEventListener(Stage, Event.UPDATE, self.UpdateHandler, self)
     RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, self.LoadSceneCompleteHandler, self)
 end

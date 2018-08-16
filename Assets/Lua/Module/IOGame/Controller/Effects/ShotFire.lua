@@ -56,8 +56,7 @@ function ShotFire:Start(initData)
 
     self.effect = Instantiate(
             "Prefabs/IOGame/fire/fire" .. floor(random(3)) .. ".prefab",
-            IOGameData.map.effectC,
-            IOGameData.scene.moduleName
+            IOGameData.map.effectC
     ).transform
 
     local frame = IOGameData.frame

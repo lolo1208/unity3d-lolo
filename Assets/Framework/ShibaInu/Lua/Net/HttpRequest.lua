@@ -137,6 +137,7 @@ end
 function HttpRequest:EndedHandler(statusCode, content)
     self._handler = nil
     self._request = nil
+
     self.statusCode = statusCode
     self.content = content
     self.successful = statusCode > 199 and statusCode < 300

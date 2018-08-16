@@ -12,7 +12,7 @@ namespace ShibaInu
 	{
 		/// SocketEvent.lua
 		private static readonly LuaFunction s_dispatchEvent = Common.luaMgr.state.GetFunction ("SocketEvent.DispatchEvent");
-		/// 需要 Update() 的 UdpSocket 列表
+		/// 需要 UpdateKcp() 的 UdpSocket 列表
 		private static List<UdpSocket> s_updateList = new List<UdpSocket> ();
 
 		/// 锁对象
@@ -181,7 +181,7 @@ namespace ShibaInu
 			byte[] buffer = m_msgProtocol.Encode (data);
 			m_kcp.Send (buffer);
 			m_updateDirty = true;
-			Update ();
+			UpdateKcp ();
 		}
 
 
@@ -211,7 +211,7 @@ namespace ShibaInu
 		/// <summary>
 		/// Update KCP
 		/// </summary>
-		public void Update ()
+		public void UpdateKcp ()
 		{
 			if (m_kcp == null)
 				return;
@@ -228,10 +228,10 @@ namespace ShibaInu
 		/// <summary>
 		/// 更新所有活跃的 UdpSocket
 		/// </summary>
-		public static void UpdateAll ()
+		public static void Update ()
 		{
 			foreach (UdpSocket udp in s_updateList)
-				udp.Update ();
+				udp.UpdateKcp ();
 		}
 
 

@@ -14,7 +14,6 @@ public class UnityEngine_WWWWrap
 		L.RegFunction("Dispose", Dispose);
 		L.RegFunction("GetAudioClip", GetAudioClip);
 		L.RegFunction("GetAudioClipCompressed", GetAudioClipCompressed);
-		L.RegFunction("GetMovieTexture", GetMovieTexture);
 		L.RegFunction("New", _CreateUnityEngine_WWW);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("assetBundle", get_assetBundle, null);
@@ -339,23 +338,6 @@ public class UnityEngine_WWWWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.WWW.GetAudioClipCompressed");
 			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetMovieTexture(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			UnityEngine.WWW obj = (UnityEngine.WWW)ToLua.CheckObject<UnityEngine.WWW>(L, 1);
-			UnityEngine.MovieTexture o = obj.GetMovieTexture();
-			ToLua.PushSealed(L, o);
-			return 1;
 		}
 		catch (Exception e)
 		{

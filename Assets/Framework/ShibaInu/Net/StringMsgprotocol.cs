@@ -7,7 +7,8 @@ using System.Collections.Generic;
 namespace ShibaInu
 {
 	/// <summary>
-	/// 纯字符串消息协议实现
+	/// UTF-8 纯字符串消息协议实现
+	///  * 每条消息前 4 个字节为内容长度
 	/// </summary>
 	public class StringMsgProtocol : IMsgProtocol
 	{

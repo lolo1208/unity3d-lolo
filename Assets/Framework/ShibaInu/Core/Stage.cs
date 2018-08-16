@@ -15,20 +15,20 @@ namespace ShibaInu
 		private const string EVENT_START = "LoadSceneEvent_Start";
 		private const string EVENT_COMPLETE = "LoadSceneEvent_Complete";
 
-		private static readonly Vector3 sceneLayerPos = new Vector3 (0, 0, 750);
-		private static readonly Vector3 uiLayerPos = new Vector3 (0, 0, 650);
-		private static readonly Vector3 windowLayerPos = new Vector3 (0, 0, 550);
-		private static readonly Vector3 uiTopLayerPos = new Vector3 (0, 0, 450);
-		private static readonly Vector3 alertLayerPos = new Vector3 (0, 0, 350);
-		private static readonly Vector3 guideLayerPos = new Vector3 (0, 0, 250);
-		private static readonly Vector3 topLayerPos = new Vector3 (0, 0, 150);
+		private static readonly Vector3 s_sceneLayerPos = new Vector3 (0, 0, 750);
+		private static readonly Vector3 s_uiLayerPos = new Vector3 (0, 0, 650);
+		private static readonly Vector3 s_windowLayerPos = new Vector3 (0, 0, 550);
+		private static readonly Vector3 s_uiTopLayerPos = new Vector3 (0, 0, 450);
+		private static readonly Vector3 s_alertLayerPos = new Vector3 (0, 0, 350);
+		private static readonly Vector3 s_guideLayerPos = new Vector3 (0, 0, 250);
+		private static readonly Vector3 s_topLayerPos = new Vector3 (0, 0, 150);
 
 		/// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadSceneEvent.lua
-		private static LuaFunction _dispatchEvent;
+		private static LuaFunction s_dispatchEvent;
 
 		/// UI Canvas
-		public static Canvas canvas;
-		public static RectTransform uiCanvas;
+		public static Canvas uiCanvas;
+		public static RectTransform uiCanvasTra;
 
 		public static RectTransform sceneLayer;
 		public static RectTransform uiLayer;
@@ -39,19 +39,19 @@ namespace ShibaInu
 		public static RectTransform topLayer;
 
 		/// 不需要被销毁的对象列表 [ key = 对象本身, value = 层级列表（从对象父级[0] 到根图层） ]
-		private static readonly Dictionary<GameObject, List<string>> _dontDestroyMap = new Dictionary<GameObject, List<string>> ();
+		private static readonly Dictionary<GameObject, List<string>> s_dontDestroyMap = new Dictionary<GameObject, List<string>> ();
 
 		/// 当前所在场景名称
-		private static string _sceneName = Constants.LauncherSceneName;
+		private static string s_sceneName = Constants.LauncherSceneName;
 
-		private static AssetBundleCreateRequest _abcr = null;
-		private static AsyncOperation _ao = null;
+		private static AssetBundleCreateRequest s_abcr = null;
+		private static AsyncOperation s_ao = null;
 		/// 异步加载场景的协程对象
-		private static Coroutine _alcCoroutine = null;
+		private static Coroutine s_alcCoroutine = null;
 
 		#if UNITY_EDITOR
 		/// 抛出 EVENT_COMPLETE 事件的协程对象
-		private static Coroutine _dceCoroutine = null;
+		private static Coroutine s_dceCoroutine = null;
 		#endif
 
 
@@ -60,28 +60,29 @@ namespace ShibaInu
 		/// <summary>
 		/// 初始化，（重新）创建所有图层
 		/// </summary>
+		[NoToLuaAttribute]
 		public static void Initialize ()
 		{
-			sceneLayer = LuaHelper.CreateGameObject ("scene", uiCanvas, false).transform as RectTransform;
-			sceneLayer.localPosition = sceneLayerPos;
+			sceneLayer = LuaHelper.CreateGameObject ("scene", uiCanvasTra, false).transform as RectTransform;
+			sceneLayer.localPosition = s_sceneLayerPos;
 
-			uiLayer = LuaHelper.CreateGameObject ("ui", uiCanvas, false).transform as RectTransform;
-			uiLayer.localPosition = uiLayerPos;
+			uiLayer = LuaHelper.CreateGameObject ("ui", uiCanvasTra, false).transform as RectTransform;
+			uiLayer.localPosition = s_uiLayerPos;
 
-			windowLayer = LuaHelper.CreateGameObject ("window", uiCanvas, false).transform as RectTransform;
-			windowLayer.localPosition = windowLayerPos;
+			windowLayer = LuaHelper.CreateGameObject ("window", uiCanvasTra, false).transform as RectTransform;
+			windowLayer.localPosition = s_windowLayerPos;
 
-			uiTopLayer = LuaHelper.CreateGameObject ("uiTop", uiCanvas, false).transform as RectTransform;
-			uiTopLayer.localPosition = uiTopLayerPos;
+			uiTopLayer = LuaHelper.CreateGameObject ("uiTop", uiCanvasTra, false).transform as RectTransform;
+			uiTopLayer.localPosition = s_uiTopLayerPos;
 
-			alertLayer = LuaHelper.CreateGameObject ("alert", uiCanvas, false).transform as RectTransform;
-			alertLayer.localPosition = alertLayerPos;
+			alertLayer = LuaHelper.CreateGameObject ("alert", uiCanvasTra, false).transform as RectTransform;
+			alertLayer.localPosition = s_alertLayerPos;
 
-			guideLayer = LuaHelper.CreateGameObject ("guide", uiCanvas, false).transform as RectTransform;
-			guideLayer.localPosition = guideLayerPos;
+			guideLayer = LuaHelper.CreateGameObject ("guide", uiCanvasTra, false).transform as RectTransform;
+			guideLayer.localPosition = s_guideLayerPos;
 
-			topLayer = LuaHelper.CreateGameObject ("top", uiCanvas, false).transform as RectTransform;
-			topLayer.localPosition = topLayerPos;
+			topLayer = LuaHelper.CreateGameObject ("top", uiCanvasTra, false).transform as RectTransform;
+			topLayer.localPosition = s_topLayerPos;
 
 			Resize ();
 		}
@@ -90,9 +91,10 @@ namespace ShibaInu
 		/// <summary>
 		/// 屏幕尺寸有改变时，重置所有图层的尺寸
 		/// </summary>
+		[NoToLuaAttribute]
 		public static void Resize ()
 		{
-			sceneLayer.sizeDelta = uiLayer.sizeDelta = windowLayer.sizeDelta = uiTopLayer.sizeDelta = alertLayer.sizeDelta = guideLayer.sizeDelta = topLayer.sizeDelta = uiCanvas.sizeDelta;
+			sceneLayer.sizeDelta = uiLayer.sizeDelta = windowLayer.sizeDelta = uiTopLayer.sizeDelta = alertLayer.sizeDelta = guideLayer.sizeDelta = topLayer.sizeDelta = uiCanvasTra.sizeDelta;
 		}
 
 
@@ -102,17 +104,17 @@ namespace ShibaInu
 		public static void Clean ()
 		{
 			// 保留不被销毁的对象
-			foreach (var item in _dontDestroyMap) {
+			foreach (var item in s_dontDestroyMap) {
 				Transform trans = item.Key.transform;
 				// 记录层级列表
 				Transform parent = trans.parent;
 				item.Value.Clear ();
-				while (parent != uiCanvas) {
+				while (parent != uiCanvasTra) {
 					item.Value.Add (parent.name);
 					parent = parent.parent;
 				}
 				// 移到 uiCanvas 节点
-				trans.SetParent (uiCanvas);
+				trans.SetParent (uiCanvasTra);
 			}
 
 			// 销毁所有图层。改名是因为使用 Destroy() 不会立即销毁，接下来还是会 Find() 到该对象
@@ -129,8 +131,8 @@ namespace ShibaInu
 			Initialize ();
 
 			// 重新建立保留对象的层级列表
-			foreach (var item in _dontDestroyMap) {
-				Transform parent = uiCanvas;
+			foreach (var item in s_dontDestroyMap) {
+				Transform parent = uiCanvasTra;
 				for (int i = item.Value.Count - 1; i >= 0; i--) {
 					Transform trans = parent.Find (item.Value [i]);
 					if (trans == null) {
@@ -150,8 +152,8 @@ namespace ShibaInu
 		/// <param name="go">Go.</param>
 		public static void AddDontDestroy (GameObject go)
 		{
-			if (!_dontDestroyMap.ContainsKey (go)) {
-				_dontDestroyMap.Add (go, new List<string> ());
+			if (!s_dontDestroyMap.ContainsKey (go)) {
+				s_dontDestroyMap.Add (go, new List<string> ());
 			}
 		}
 
@@ -161,8 +163,8 @@ namespace ShibaInu
 		/// <param name="go">Go.</param>
 		public static void RemoveDontDestroy (GameObject go)
 		{
-			if (_dontDestroyMap.ContainsKey (go)) {
-				_dontDestroyMap.Remove (go);
+			if (s_dontDestroyMap.ContainsKey (go)) {
+				s_dontDestroyMap.Remove (go);
 			}
 		}
 
@@ -191,15 +193,15 @@ namespace ShibaInu
 				ABI abi = ResManager.GetAbi (ResManager.GetPathMD5 (sceneName));
 				if (abi.ab == null) {
 					ABLoader.ParseFilePath (abi);
-					abi.ab = AssetBundle.LoadFromFile (abi.filePath);
+					abi.ab = AssetBundle.LoadFromFile (abi.filePath);// 先加载场景对应的 AssetBundle
 				}
 			}
 
-			if (_sceneName != Constants.LauncherSceneName && _sceneName != Constants.EmptySceneName)
-				Common.looper.StartCoroutine (UnloadSceneAssetBundle (_sceneName));
+			if (s_sceneName != Constants.LauncherSceneName && s_sceneName != Constants.EmptySceneName)
+				Common.looper.StartCoroutine (UnloadSceneAssetBundle (s_sceneName));
 			
-			_sceneName = sceneName;
-			SceneManager.LoadScene (sceneName);
+			s_sceneName = sceneName;
+			SceneManager.LoadScene (sceneName);// 再载入场景
 		}
 
 
@@ -214,19 +216,19 @@ namespace ShibaInu
 			if (Common.isDebug) {
 				DispatchLuaEvent (EVENT_START, sceneName);
 
-				if (_dceCoroutine != null)
-					Common.looper.StopCoroutine (_dceCoroutine);
-				_dceCoroutine = Common.looper.StartCoroutine (DispatchCompleteEvent (sceneName));
+				if (s_dceCoroutine != null)
+					Common.looper.StopCoroutine (s_dceCoroutine);
+				s_dceCoroutine = Common.looper.StartCoroutine (DispatchCompleteEvent (sceneName));
 				return;
 			}
 			#endif
 
-			if (_alcCoroutine != null)
-				Common.looper.StopCoroutine (_alcCoroutine);
+			if (s_alcCoroutine != null)
+				Common.looper.StopCoroutine (s_alcCoroutine);
 			
-			_abcr = null;
-			_ao = null;
-			_alcCoroutine = Common.looper.StartCoroutine (DoLoadSceneAsync (sceneName));
+			s_abcr = null;
+			s_ao = null;
+			s_alcCoroutine = Common.looper.StartCoroutine (DoLoadSceneAsync (sceneName));
 		}
 
 
@@ -235,23 +237,23 @@ namespace ShibaInu
 			DispatchLuaEvent (EVENT_START, sceneName);
 			ABI abi = ResManager.GetAbi (ResManager.GetPathMD5 (sceneName));
 			if (abi.ab == null) {
-				// 异步加载场景对应的 AssetBundle
+				// 先异步加载场景对应的 AssetBundle
 				ABLoader.ParseFilePath (abi);
-				_abcr = AssetBundle.LoadFromFileAsync (abi.filePath);
-				yield return _abcr;
-				abi.ab = _abcr.assetBundle;
-				_abcr = null;
+				s_abcr = AssetBundle.LoadFromFileAsync (abi.filePath);
+				yield return s_abcr;
+				abi.ab = s_abcr.assetBundle;
+				s_abcr = null;
 			}
 
-			// 异步加载场景
-			_ao = SceneManager.LoadSceneAsync (sceneName);
-			yield return _ao;
-			_ao = null;
-			_alcCoroutine = null;
+			// 再异步加载场景
+			s_ao = SceneManager.LoadSceneAsync (sceneName);
+			yield return s_ao;
+			s_ao = null;
+			s_alcCoroutine = null;
 
-			Common.looper.StartCoroutine (UnloadSceneAssetBundle (_sceneName));
+			Common.looper.StartCoroutine (UnloadSceneAssetBundle (s_sceneName));
 
-			_sceneName = sceneName;
+			s_sceneName = sceneName;
 			DispatchLuaEvent (EVENT_COMPLETE, sceneName);
 		}
 
@@ -264,8 +266,8 @@ namespace ShibaInu
 		private static IEnumerator DispatchCompleteEvent (string sceneName)
 		{
 			yield return new WaitForSeconds (0.2f);
-			_dceCoroutine = null;
-			_sceneName = sceneName;
+			s_dceCoroutine = null;
+			s_sceneName = sceneName;
 			SceneManager.LoadScene (sceneName);
 			DispatchLuaEvent (EVENT_COMPLETE, sceneName);
 		}
@@ -277,17 +279,17 @@ namespace ShibaInu
 		/// </summary>
 		/// <param name="type">Type.</param>
 		/// <param name="sceneName">Scene Name.</param>
-		public static void DispatchLuaEvent (string type, string sceneName)
+		private static void DispatchLuaEvent (string type, string sceneName)
 		{
 			// 不能在 Initialize() 时获取该函数，因为相互依赖
-			if (_dispatchEvent == null)
-				_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadSceneEvent.DispatchEvent");
+			if (s_dispatchEvent == null)
+				s_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadSceneEvent.DispatchEvent");
 
-			_dispatchEvent.BeginPCall ();
-			_dispatchEvent.Push (type);
-			_dispatchEvent.Push (sceneName);
-			_dispatchEvent.PCall ();
-			_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (type);
+			s_dispatchEvent.Push (sceneName);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 
@@ -298,18 +300,28 @@ namespace ShibaInu
 		public static float GetProgress ()
 		{
 			// 没有在加载场景
-			if (_abcr == null && _ao == null)
+			if (s_abcr == null && s_ao == null)
 				return 1;
 
 			// 正在加载场景对应的 AssetBundle
-			if (_abcr != null)
-				return _abcr.progress * 0.9f;
+			if (s_abcr != null)
+				return s_abcr.progress * 0.9f;
 
 			// 正在异步加载场景本身
-			return Mathf.Min (_ao.progress + 0.1f, 1f) * 0.1f + 0.9f;
+			return Mathf.Min (s_ao.progress + 0.1f, 1f) * 0.1f + 0.9f;
 		}
 
 		#endregion
+
+
+
+		/// <summary>
+		/// 获取当前场景的名称
+		/// </summary>
+		/// <value>The name of the current scene.</value>
+		public static string currentSceneName {
+			get { return s_sceneName; }
+		}
 
 
 
@@ -323,11 +335,11 @@ namespace ShibaInu
 			yield return new WaitForSeconds (2f);
 
 			// 等待异步场景加载完成
-			while (_alcCoroutine != null) {
+			while (s_alcCoroutine != null) {
 				yield return new WaitForEndOfFrame ();
 			}
 
-			if (_sceneName == sceneName)
+			if (s_sceneName == sceneName)
 				yield break;
 			
 			ABI abi = ResManager.GetAbi (ResManager.GetPathMD5 (sceneName));

@@ -6,13 +6,13 @@ namespace ShibaInu
 {
 	public class Main : MonoBehaviour
 	{
-		private static bool _initialized = false;
+		private static bool s_initialized = false;
 
 
 		void Start ()
 		{
-			if (!_initialized) {
-				_initialized = true;
+			if (!s_initialized) {
+				s_initialized = true;
 
 				Common.go = new GameObject (Constants.GameObjectName);
 				DontDestroyOnLoad (Common.go);

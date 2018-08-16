@@ -14,18 +14,24 @@ namespace ShibaInu
 		/// </summary>
 		void OnPreprocessTexture ()
 		{
+			// 只修改 Assets/Res/Textures/UI 文件夹下的纹理
+			if (!assetPath.StartsWith ("Assets/Res/Textures/UI"))
+				return;
+			
 			TextureImporter textureImporter = (TextureImporter)assetImporter;
+
+			// 只修改没有 PackingTag 的图片
 			if (!string.IsNullOrEmpty (textureImporter.spritePackingTag))
-				return; // 只修改第一次导入的图片
+				return;
 
 			// 类型
 			textureImporter.textureType = TextureImporterType.Sprite;
 
-			// 打包 tag，最多两级："Assets/Res/Textures/xxx/xxx"
+			// 打包 tag，最多两级："Assets/Res/Textures/UI/xxx/yyy/zzz.png"
 			string[] dirs = assetPath.Split ('/');
-			string tag = dirs [3];
-			if (dirs.Length > 5)
-				tag += "_" + dirs [4];
+			string tag = dirs [4];
+			if (dirs.Length > 6)
+				tag += "_" + dirs [5]; // xxx_yyy
 			textureImporter.spritePackingTag = tag;
 		}
 

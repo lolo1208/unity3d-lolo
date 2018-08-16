@@ -32,7 +32,7 @@ end
 function PicPickerItem:Update(data, index)
     PicPickerItem.super.Update(self, data, index)
 
-    self.aniGO = Instantiate("Prefabs/IOGame/dwarfs/dwarf_" .. data .. ".prefab", self.transform, IOGameData.NAME)
+    self.aniGO = Instantiate("Prefabs/IOGame/dwarfs/dwarf_" .. data .. ".prefab", self.transform)
     self.ani = GetComponent.Animation(self.aniGO)
 
     local transform = self.aniGO.transform

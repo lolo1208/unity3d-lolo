@@ -8,23 +8,23 @@ namespace ShibaInu
 {
 	public class LuaManager : MonoBehaviour
 	{
-		private LuaState lua;
-		private LuaLooper loop = null;
+		private LuaState m_lua;
+		private LuaLooper m_looper = null;
 
 		public LuaState state {
-			get { return lua; }
+			get { return m_lua; }
 		}
 
 		
 		void Awake ()
 		{
-			lua = new LuaState ();
+			m_lua = new LuaState ();
 			this.OpenLibs ();
-			lua.LuaSetTop (0);
+			m_lua.LuaSetTop (0);
 
-			LuaBinder.Bind (lua);
+			LuaBinder.Bind (m_lua);
 			DelegateFactory.Init ();
-			LuaCoroutine.Register (lua, this);
+			LuaCoroutine.Register (m_lua, this);
 		}
 
 
@@ -34,7 +34,7 @@ namespace ShibaInu
 		public void Initialize ()
 		{
 			InitLuaPath ();
-			lua.Start ();// 启动LuaVM
+			m_lua.Start ();// 启动LuaVM
 			StartMain ();
 			StartLooper ();
 		}
@@ -48,9 +48,9 @@ namespace ShibaInu
 			if (!Common.isDebug)
 				return;
 			
-			lua.AddSearchPath (Constants.ToLuaRootPath + "Lua");
-			lua.AddSearchPath (Constants.ShibaInuRootPath + "Lua");
-			lua.AddSearchPath (Application.dataPath + "Lua");
+			m_lua.AddSearchPath (Constants.ToLuaRootPath + "Lua");
+			m_lua.AddSearchPath (Constants.ShibaInuRootPath + "Lua");
+			m_lua.AddSearchPath (Application.dataPath + "Lua");
 		}
 
 		/// <summary>
@@ -58,25 +58,25 @@ namespace ShibaInu
 		/// </summary>
 		void OpenLibs ()
 		{
-			lua.OpenLibs (LuaDLL.luaopen_pb);      
-			lua.OpenLibs (LuaDLL.luaopen_sproto_core);
-			lua.OpenLibs (LuaDLL.luaopen_protobuf_c);
-			lua.OpenLibs (LuaDLL.luaopen_lpeg);
-			lua.OpenLibs (LuaDLL.luaopen_bit);
-			lua.OpenLibs (LuaDLL.luaopen_socket_core);
+			m_lua.OpenLibs (LuaDLL.luaopen_pb);      
+			m_lua.OpenLibs (LuaDLL.luaopen_sproto_core);
+			m_lua.OpenLibs (LuaDLL.luaopen_protobuf_c);
+			m_lua.OpenLibs (LuaDLL.luaopen_lpeg);
+			m_lua.OpenLibs (LuaDLL.luaopen_bit);
+			m_lua.OpenLibs (LuaDLL.luaopen_socket_core);
 
 			// cjson 比较特殊，只new了一个table，没有注册库，这里注册一下
-			lua.LuaGetField (LuaIndexes.LUA_REGISTRYINDEX, "_LOADED");
-			lua.OpenLibs (LuaDLL.luaopen_cjson);
-			lua.LuaSetField (-2, "cjson");
-			lua.OpenLibs (LuaDLL.luaopen_cjson_safe);
-			lua.LuaSetField (-2, "cjson.safe");
+			m_lua.LuaGetField (LuaIndexes.LUA_REGISTRYINDEX, "_LOADED");
+			m_lua.OpenLibs (LuaDLL.luaopen_cjson);
+			m_lua.LuaSetField (-2, "cjson");
+			m_lua.OpenLibs (LuaDLL.luaopen_cjson_safe);
+			m_lua.LuaSetField (-2, "cjson.safe");
 		}
 
 		void StartLooper ()
 		{
-			loop = Common.go.AddComponent<LuaLooper> ();
-			loop.luaState = lua;
+			m_looper = Common.go.AddComponent<LuaLooper> ();
+			m_looper.luaState = m_lua;
 		}
 
 
@@ -85,20 +85,20 @@ namespace ShibaInu
 		/// </summary>
 		void StartMain ()
 		{
-			lua.DoFile ("Main.lua");
+			m_lua.DoFile ("Main.lua");
 		}
 
 
 		public void DoFile (string filename)
 		{
-			lua.DoFile (filename);
+			m_lua.DoFile (filename);
 		}
 
 
 		// Update is called once per frame
 		public object[] CallFunction (string funcName, params object[] args)
 		{
-			LuaFunction func = lua.GetFunction (funcName);
+			LuaFunction func = m_lua.GetFunction (funcName);
 			if (func != null) {
 				return func.LazyCall (args);
 			}
@@ -107,17 +107,17 @@ namespace ShibaInu
 
 		public void LuaGC ()
 		{
-			lua.LuaGC (LuaGCOptions.LUA_GCCOLLECT);
+			m_lua.LuaGC (LuaGCOptions.LUA_GCCOLLECT);
 		}
 
 
 		public void Destroy ()
 		{
-			loop.Destroy ();
-			loop = null;
+			m_looper.Destroy ();
+			m_looper = null;
 
-			lua.Dispose ();
-			lua = null;
+			m_lua.Dispose ();
+			m_lua = null;
 		}
 
 

@@ -2,15 +2,15 @@
 .idea
 .vs
 
-obj
 Library
+LuaAPI
+obj
+Packages
+PlatformProjects
 Temp
 UnityPackageManager
-publish
-LuaAPI
 
 Assets/StreamingAssets
-PlatformProjects
 
 *.csproj
 *.sln

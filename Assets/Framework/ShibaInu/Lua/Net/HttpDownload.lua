@@ -22,8 +22,8 @@ local error = error
 ---
 ---@field protected _proxyHost string @ 代理地址
 ---@field protected _proxyPort number @ 代理端口
----@field protected _download ShibaInu.HttpDownload
 ---@field protected _speed number @ 下载结束时，记录的最终速度
+---@field protected _download ShibaInu.HttpDownload
 ---@field protected _handler Handler
 ---
 local HttpDownload = class("HttpDownload", EventDispatcher)
@@ -39,7 +39,7 @@ end
 
 
 --
---- 发送请求
+--- 开始下载
 ---@param optional url string @ 文件网络地址
 ---@param optional savePath string @ 本地保存路径
 ---@param optional callback Handler @ 请求结束时的回调 callback(successful, errMsg)
@@ -58,7 +58,7 @@ function HttpDownload:Start(url, savePath, callback)
         self._handler:Recycle()
         self._handler = nil
     end
-    local download = self._download --- @type ShibaInu.HttpDownload
+    local download = self._download
     if download ~= nil then
         download:Abort()
         self._download = nil
@@ -170,7 +170,7 @@ end
 
 
 --
---- 获取下载速度，字节/秒
+--- 获取下载速度，字节/秒（每秒统计两次）
 ---@return number
 function HttpDownload:GetSpeed()
     if self._download ~= nil then
@@ -181,7 +181,6 @@ function HttpDownload:GetSpeed()
     end
     return 0
 end
-
 
 
 

@@ -34,6 +34,8 @@ namespace ShibaInu
 		public const int ABORTED = -4;
 		/// 获取目标文件大小时发生异常
 		public const int GET_HEAD = -5;
+		/// 要上传的本地文件不存在
+		public const int FILE_ERROE = -6;
 	}
 
 

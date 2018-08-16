@@ -21,8 +21,12 @@ LuaHelper = ShibaInu.LuaHelper
 -- UnityEngine
 GameObject = UnityEngine.GameObject
 Transform = UnityEngine.Transform
+Camera = UnityEngine.Camera
 Screen = UnityEngine.Screen
 Time = UnityEngine.Time
+Application = UnityEngine.Application
+Input = UnityEngine.Input
+KeyCode = UnityEngine.KeyCode
 PlayerPrefs = UnityEngine.PlayerPrefs
 
 
@@ -89,9 +93,11 @@ MathUtil = require("Utils.MathUtil")
 Float3 = require("Utils.Float3")
 Handler = require("Utils.Handler")
 Timer = require("Utils.Timer")
+PrefabPool = require("Utils.Optimize.PrefabPool")
 
 HttpRequest = require("Net.HttpRequest")
 HttpDownload = require("Net.HttpDownload")
+HttpUpload = require("Net.HttpUpload")
 TcpSocket = require("Net.TcpSocket")
 UdpSocket = require("Net.UdpSocket")
 

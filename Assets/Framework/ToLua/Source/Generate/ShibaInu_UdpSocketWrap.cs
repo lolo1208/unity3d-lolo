@@ -9,8 +9,8 @@ public class ShibaInu_UdpSocketWrap
 		L.BeginClass(typeof(ShibaInu.UdpSocket), typeof(System.Object));
 		L.RegFunction("Connect", Connect);
 		L.RegFunction("Send", Send);
+		L.RegFunction("UpdateKcp", UpdateKcp);
 		L.RegFunction("Update", Update);
-		L.RegFunction("UpdateAll", UpdateAll);
 		L.RegFunction("Close", Close);
 		L.RegFunction("New", _CreateShibaInu_UdpSocket);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -85,13 +85,13 @@ public class ShibaInu_UdpSocketWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Update(IntPtr L)
+	static int UpdateKcp(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 1);
 			ShibaInu.UdpSocket obj = (ShibaInu.UdpSocket)ToLua.CheckObject<ShibaInu.UdpSocket>(L, 1);
-			obj.Update();
+			obj.UpdateKcp();
 			return 0;
 		}
 		catch (Exception e)
@@ -101,12 +101,12 @@ public class ShibaInu_UdpSocketWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int UpdateAll(IntPtr L)
+	static int Update(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 0);
-			ShibaInu.UdpSocket.UpdateAll();
+			ShibaInu.UdpSocket.Update();
 			return 0;
 		}
 		catch (Exception e)

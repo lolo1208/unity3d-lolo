@@ -14,7 +14,7 @@ namespace ShibaInu
 	public class HttpDownload
 	{
 		/// 下载完成的状态码
-		private const int STATUS_CODE_COMPLETE = 200;
+		private static readonly int STATUS_CODE_COMPLETE = (int)HttpStatusCode.OK;
 
 
 		/// 文件网络地址
@@ -25,7 +25,6 @@ namespace ShibaInu
 		public int timeout = 5000;
 		/// 下载成功或失败的回调函数 < 状态码, 错误信息 >
 		public Action<int, string> callback = null;
-
 
 		/// 已下载字节数
 		private long m_bytesLoaded = 0;
@@ -104,6 +103,7 @@ namespace ShibaInu
 
 
 
+
 		/// <summary>
 		/// 开始下载
 		/// </summary>
@@ -119,20 +119,20 @@ namespace ShibaInu
 			try {
 				ThreadPool.QueueUserWorkItem (DoDownload);
 			} catch (Exception e) {
-				DoCallback (HttpExceptionStatusCode.CREATE_THREAD, e.Message);
+				InvokeCallback (HttpExceptionStatusCode.CREATE_THREAD, e.Message);
 			}
 		}
 
 
 		/// <summary>
-		/// Dos the download. 线程函数
+		/// 线程函数
 		/// </summary>
 		/// <param name="stateInfo">State info.</param>
 		private void DoDownload (Object stateInfo)
 		{
 			// 被取消了
 			if (!m_downloading) {
-				DoCallback (HttpExceptionStatusCode.ABORTED);
+				InvokeCallback (HttpExceptionStatusCode.ABORTED);
 				return;
 			}
 
@@ -149,14 +149,14 @@ namespace ShibaInu
 				}
 
 			} catch (Exception e) {
-				DoCallback (HttpExceptionStatusCode.GET_HEAD, e.Message);
+				InvokeCallback (HttpExceptionStatusCode.GET_HEAD, e.Message);
 				return;
 			}
 
 
 			// 被取消了
 			if (!m_downloading) {
-				DoCallback (HttpExceptionStatusCode.ABORTED);
+				InvokeCallback (HttpExceptionStatusCode.ABORTED);
 				return;
 			}
 
@@ -164,7 +164,7 @@ namespace ShibaInu
 			try {
 				using (FileStream fs = new FileStream (savePath, FileMode.OpenOrCreate, FileAccess.Write)) {
 					m_bytesLoaded = fs.Length;
-					m_lastTime = TimeUtil.timeSec;
+					m_lastTime = 0f;
 					m_lastBytes = m_bytesLoaded;
 
 					// 继续下载
@@ -181,30 +181,27 @@ namespace ShibaInu
 							
 							// 被取消了
 							if (!m_downloading) {
-								DoCallback (HttpExceptionStatusCode.ABORTED);
+								InvokeCallback (HttpExceptionStatusCode.ABORTED);
 								return;
 							}
 
 							// 获取文件内容
 							using (Stream responseStream = response.GetResponseStream ()) {
-								if (responseStream.CanTimeout)
-									responseStream.ReadTimeout = timeout;
-
 								byte[] buffer = new byte[4096];
 								int len = -1;
 								while ((len = responseStream.Read (buffer, 0, buffer.Length)) > 0) {
 									// 被取消了
 									if (!m_downloading) {
-										DoCallback (HttpExceptionStatusCode.ABORTED);
+										InvokeCallback (HttpExceptionStatusCode.ABORTED);
 										return;
 									}
 
 									fs.Write (buffer, 0, len);
 									m_bytesLoaded += len;
 
-									// 每秒统计一次速度
+									// 每秒统计两次速度
 									float time = TimeUtil.timeSec - m_lastTime;
-									if (time >= 1 || m_speed == 0) {
+									if (time >= 0.5) {
 										m_speed = (UInt32)((m_bytesLoaded - m_lastBytes) / time);
 										m_lastTime = TimeUtil.timeSec;
 										m_lastBytes = m_bytesLoaded;
@@ -215,14 +212,13 @@ namespace ShibaInu
 					}
 
 					// 下载完成
-					DoCallback (STATUS_CODE_COMPLETE);
+					InvokeCallback (STATUS_CODE_COMPLETE);
 				}
 				
 			} catch (Exception e) {
-				DoCallback (HttpExceptionStatusCode.GET_RESPONSE, e.Message);
+				InvokeCallback (HttpExceptionStatusCode.GET_RESPONSE, e.Message);
 			}
 		}
-
 
 
 		/// <summary>
@@ -230,7 +226,7 @@ namespace ShibaInu
 		/// </summary>
 		/// <param name="statusCode">Status code.</param>
 		/// <param name="errMsg">Error Message.</param>
-		private void DoCallback (int statusCode, string errMsg = "")
+		private void InvokeCallback (int statusCode, string errMsg = "")
 		{
 			if (m_request != null) {
 				m_request.Abort ();

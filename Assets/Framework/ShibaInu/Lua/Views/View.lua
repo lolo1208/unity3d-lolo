@@ -12,15 +12,19 @@ local format = string.format
 ---@field New fun(prefab:UnityEngine.GameObject | string, parent:string | UnityEngine.Transform, groupName:string, isAsync:boolean):View
 ---
 ---@field gameObject UnityEngine.GameObject
----@field visible boolean
+---@field transform UnityEngine.Transform
+---@field visible boolean @ 是否已经显示
+---@field destroyed boolean @ 是否已经被销毁
 ---
 ---@field _initialized boolean @ 是否已经初始化完成了
 local View = class("View", EventDispatcher)
 
 --- 异步资源加载完成时，初始化
 local function InitializeAsync(view, go)
-    view.gameObject = go
-    view:OnInitialize()
+    if not view.destroyed then
+        view.gameObject = go
+        view:OnInitialize()
+    end
 end
 
 --- 构造函数
@@ -28,13 +32,15 @@ end
 --- 如果不使用 prefab 来创建 gameObject，或该 view 没有对应的 gameObject，请手动调用 OnInitialize() 函数
 ---@param optional prefab UnityEngine.GameObject | string @ 预设对象 或 预设路径
 ---@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点(Transform)
----@param optional groupName string @ 资源组名称。参数 prefab 为预设路径时，才需要传入该值
+---@param optional groupName string @ 资源组名称。参数 prefab 为预设路径时，才需要传入该值。默认值为当前场景名称
 ---@param optional isAsync boolean @ 是否异步加载资源
 function View:Ctor(prefab, parent, groupName, isAsync)
     View.super.Ctor(self)
 
     self._initialized = false
     self.visible = false
+    self.destroyed = false
+
     if prefab == nil then
         return -- 无需在该构造函数初始化
     end
@@ -57,6 +63,7 @@ function View:OnInitialize()
 
     local showed = true
     if self.gameObject ~= nil then
+        self.transform = self.gameObject.transform
         showed = self.gameObject.activeSelf
     end
     if showed then
@@ -144,12 +151,14 @@ end
 --- self.gameObject 被销毁时
 --- 请通过 self:EnableDestroyListener() 来设置监听
 function View:OnDestroy()
+    self.destroyed = true
 end
 
 --- 销毁界面对应的 gameObject
 ---@param optional dispatchEvent boolean @ 是否抛出 DestroyEvent.DESTROY 事件，默认：nil(false)，不抛出事件
 ---@param optional delay number @ 延时删除（秒）。默认：nil，表示立即销毁
 function View:Destroy(dispatchEvent, delay)
+    self.destroyed = true
     local go = self.gameObject
     if isnull(go) then
         return

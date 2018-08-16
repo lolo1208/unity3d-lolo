@@ -14,7 +14,7 @@
 ---
 local TestScene = class("Test.TestScene", Scene)
 
-function TestScene:Ctor(...)
+function TestScene:Ctor()
     TestScene.super.Ctor(self, "Test")
 end
 
@@ -27,7 +27,7 @@ function TestScene:OnInitialize()
 
 
     --
-    local sampleNames = { "Picker", "BaseList", "ScrollList", "CircleImage", "Network" }
+    local sampleNames = { "Picker", "BaseList", "ScrollList", "CircleImage", "Network", "UIEffects" }
     for i = 1, #sampleNames do
         local sampleName = sampleNames[i]
         local btn = samplesTra:Find(sampleName).gameObject
@@ -39,11 +39,19 @@ function TestScene:OnInitialize()
     local ioGameBtn = samplesTra:Find("ioGameBtn").gameObject
     AddEventListener(ioGameBtn, PointerEvent.CLICK, self.OnClick_ioGameBtn, self)
 
+    local dungeonBtn = samplesTra:Find("dungeonBtn").gameObject
+    AddEventListener(dungeonBtn, PointerEvent.CLICK, self.OnClick_dungeonBtn, self)
+
     self.backBtn = uiCanvasTra:Find("backBtn").gameObject
     self.backBtn.transform:SetParent(Stage.GetLayer(Constants.LAYER_UI_TOP))
     self.backBtn:SetActive(false)
     AddEventListener(self.backBtn, PointerEvent.CLICK, self.OnClick_backBtn, self)
+
 end
+
+
+
+
 
 
 --
@@ -67,6 +75,12 @@ end
 --
 function TestScene:OnClick_ioGameBtn(event)
     Stage.ShowScene(require("Module.IOGame.View.IOGameScene"))
+end
+
+
+--
+function TestScene:OnClick_dungeonBtn(event)
+    Stage.ShowScene(require("Module.Dungeon.View.DungeonScene"))
 end
 
 

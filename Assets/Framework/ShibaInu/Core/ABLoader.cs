@@ -46,7 +46,7 @@ namespace ShibaInu
 		/// <param name="path">Path.</param>
 		public void AddAssetAsync (string path)
 		{
-			if (!loadAssetsAsync.Contains (path) && !ABLoader._loadAssetList.Contains (path)) {
+			if (!loadAssetsAsync.Contains (path) && !ABLoader.LoadAssetListContains (path)) {
 				ABLoader.assetCount++;
 				loadAssetsAsync.Add (path);
 			}
@@ -66,26 +66,26 @@ namespace ShibaInu
 		public const string EVENT_ALL_COMPLETE = "LoadResEvent_All_Complete";
 
 		/// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadResEvent.lua
-		private static LuaFunction _dispatchEvent;
+		private static LuaFunction s_dispatchEvent;
 
 		/// 需加载的 AssetBundle 列表
-		private static Queue<ABI> _loadABList = new Queue<ABI> ();
+		private static Queue<ABI> s_loadABList = new Queue<ABI> ();
 		/// 需加载的资源路径列表
-		public static Queue<string> _loadAssetList = new Queue<string> ();
+		private static Queue<string> s_loadAssetList = new Queue<string> ();
 
 		/// 当前正在加载 AssetBundle 的 ABI
-		private static ABI _abi;
+		private static ABI s_abi;
 		/// 当前正在加载的资源
-		private static AssetBundleRequest _abr;
+		private static AssetBundleRequest s_abr;
 		/// 需要加载的资源总数
 		public static int assetCount = 0;
 
 		/// groupName 引用的 ABI 列表
-		private static Dictionary<string, HashSet<ABI>> _groupMap = new Dictionary<string, HashSet<ABI>> ();
+		private static Dictionary<string, HashSet<ABI>> s_groupMap = new Dictionary<string, HashSet<ABI>> ();
 		/// 卸载资源的协程对象
-		private static Coroutine _unloadCoroutine;
+		private static Coroutine s_unloadCoroutine;
 		/// 需要被卸载的 groupName 列表
-		private static HashSet<string> _unloadList = new HashSet<string> ();
+		private static HashSet<string> s_unloadList = new HashSet<string> ();
 
 
 		#region 同步加载
@@ -99,7 +99,7 @@ namespace ShibaInu
 			// 添加引用关系
 			if (groupName != null) {
 				AddReference (abi, groupName);
-				_unloadList.Remove (groupName);
+				s_unloadList.Remove (groupName);
 			}
 
 			// AssetBundle 文件已加载
@@ -150,11 +150,11 @@ namespace ShibaInu
 			// 添加引用关系
 			if (groupName != null) {
 				AddReference (abi, groupName);
-				_unloadList.Remove (groupName);
+				s_unloadList.Remove (groupName);
 			}
 
 			// abi 已在加载队列
-			if (_loadABList.Contains (abi))
+			if (s_loadABList.Contains (abi))
 				return;
 
 			// AssetBundle 文件已加载
@@ -167,13 +167,13 @@ namespace ShibaInu
 			foreach (string pathMD5 in abi.pedList) {
 				ABI pedABI = ResManager.GetAbi (pathMD5);
 				// 还没加载，并且不在加载队列中
-				if (pedABI.ab == null && !_loadABList.Contains (pedABI)) {
+				if (pedABI.ab == null && !s_loadABList.Contains (pedABI)) {
 					LoadAsync (pedABI);
 				}
 			}
-			_loadABList.Enqueue (abi);
+			s_loadABList.Enqueue (abi);
 
-			if (_abi == null) {
+			if (s_abi == null) {
 				Common.looper.StartCoroutine (LoadNextAsync ());
 			}
 		}
@@ -185,19 +185,19 @@ namespace ShibaInu
 		/// <returns>The next async.</returns>
 		private static IEnumerator LoadNextAsync ()
 		{
-			_abi = _loadABList.Dequeue ();
-			if (_abi.ab == null) {
-				ParseFilePath (_abi);
-				AssetBundleCreateRequest abcr = AssetBundle.LoadFromFileAsync (_abi.filePath);
+			s_abi = s_loadABList.Dequeue ();
+			if (s_abi.ab == null) {
+				ParseFilePath (s_abi);
+				AssetBundleCreateRequest abcr = AssetBundle.LoadFromFileAsync (s_abi.filePath);
 				yield return abcr;
-				_abi.ab = abcr.assetBundle;
+				s_abi.ab = abcr.assetBundle;
 			}
-			LoadAssetAsync (_abi);
+			LoadAssetAsync (s_abi);
 
-			if (_loadABList.Count > 0) {
+			if (s_loadABList.Count > 0) {
 				Common.looper.StartCoroutine (LoadNextAsync ());
 			} else {
-				_abi = null;
+				s_abi = null;
 			}
 		}
 
@@ -212,11 +212,11 @@ namespace ShibaInu
 				return;
 			
 			foreach (string path in abi.loadAssetsAsync) {
-				_loadAssetList.Enqueue (path);
+				s_loadAssetList.Enqueue (path);
 			}
 			abi.loadAssetsAsync.Clear ();
 
-			if (_abr == null)
+			if (s_abr == null)
 				Common.looper.StartCoroutine (LoadNexAssetAsync ());
 		}
 
@@ -227,21 +227,21 @@ namespace ShibaInu
 		/// <returns>The nex asset async.</returns>
 		private static IEnumerator LoadNexAssetAsync ()
 		{
-			string path = _loadAssetList.Dequeue ();
+			string path = s_loadAssetList.Dequeue ();
 			DispatchLuaEvent (EVENT_START, path);
 
 			ABI abi = ResManager.GetAbiWithAssetPath (path);
-			_abr = abi.ab.LoadAssetAsync (Constants.ResDirPath + path);
-			yield return _abr;
+			s_abr = abi.ab.LoadAssetAsync (Constants.ResDirPath + path);
+			yield return s_abr;
 
-			DispatchLuaEvent (EVENT_COMPLETE, path, _abr.asset);
+			DispatchLuaEvent (EVENT_COMPLETE, path, s_abr.asset);
 
-			if (_loadAssetList.Count > 0) {
+			if (s_loadAssetList.Count > 0) {
 				Common.looper.StartCoroutine (LoadNexAssetAsync ());
 			} else {
-				_abr = null;
+				s_abr = null;
 				// 当前没有 AssetBundle 在加载了
-				if (_abi == null && _loadABList.Count == 0) {
+				if (s_abi == null && s_loadABList.Count == 0) {
 					ABLoader.assetCount = 0;
 					DispatchLuaEvent (EVENT_ALL_COMPLETE);
 				}
@@ -258,17 +258,17 @@ namespace ShibaInu
 		public static void DispatchLuaEvent (string type, string path = null, UnityEngine.Object data = null)
 		{
 			// 不能在 Initialize() 时获取该函数，因为相互依赖
-			if (_dispatchEvent == null)
-				_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadResEvent.DispatchEvent");
+			if (s_dispatchEvent == null)
+				s_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadResEvent.DispatchEvent");
 
-			_dispatchEvent.BeginPCall ();
-			_dispatchEvent.Push (type);
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (type);
 			if (path != null)
-				_dispatchEvent.Push (path);
+				s_dispatchEvent.Push (path);
 			if (data != null)
-				_dispatchEvent.Push (data);
-			_dispatchEvent.PCall ();
-			_dispatchEvent.EndPCall ();
+				s_dispatchEvent.Push (data);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 
@@ -282,21 +282,32 @@ namespace ShibaInu
 				return 1;// 没有在加载的资源
 			
 			// 正在加载的队列
-			float count = _loadAssetList.Count;
+			float count = s_loadAssetList.Count;
 
 			// 还没加载的 ABI
-			foreach (ABI abi in _loadABList)
+			foreach (ABI abi in s_loadABList)
 				count += abi.loadAssetsAsync.Count;
 			
 			// 正在加载的 ABI
-			if (_abi != null)
-				count += _abi.loadAssetsAsync.Count;
+			if (s_abi != null)
+				count += s_abi.loadAssetsAsync.Count;
 
 			// 正在加载的资源
-			if (_abr != null)
-				count += 1 - _abr.progress;
+			if (s_abr != null)
+				count += 1 - s_abr.progress;
 
 			return (assetCount - count) / assetCount;
+		}
+
+
+		/// <summary>
+		/// 需加载的资源路径列表是否已存在 path
+		/// </summary>
+		/// <returns><c>true</c>, if asset list contains was loaded, <c>false</c> otherwise.</returns>
+		/// <param name="path">Path.</param>
+		public static bool LoadAssetListContains (string path)
+		{
+			return s_loadAssetList.Contains (path);
 		}
 
 		#endregion
@@ -317,9 +328,9 @@ namespace ShibaInu
 
 			// 标记 groupName 引用了 abi
 			HashSet<ABI> abiList;
-			if (!_groupMap.TryGetValue (groupName, out abiList)) {
-				_groupMap.Add (groupName, new HashSet<ABI> ());
-				abiList = _groupMap [groupName];
+			if (!s_groupMap.TryGetValue (groupName, out abiList)) {
+				s_groupMap.Add (groupName, new HashSet<ABI> ());
+				abiList = s_groupMap [groupName];
 			}
 			abiList.Add (abi);
 
@@ -335,9 +346,9 @@ namespace ShibaInu
 		/// <param name="groupName">Group name.</param>
 		public static void RemoveReference (string groupName)
 		{
-			_unloadList.Add (groupName);
-			if (_unloadCoroutine == null)
-				_unloadCoroutine = Common.looper.StartCoroutine (DoRemoveReference ());
+			s_unloadList.Add (groupName);
+			if (s_unloadCoroutine == null)
+				s_unloadCoroutine = Common.looper.StartCoroutine (DoRemoveReference ());
 		}
 
 
@@ -347,13 +358,13 @@ namespace ShibaInu
 			while (GetProgress () != 1) {
 				yield return new WaitForEndOfFrame ();
 			}
-			_unloadCoroutine = null;
+			s_unloadCoroutine = null;
 
-			foreach (string groupName in _unloadList) {
+			foreach (string groupName in s_unloadList) {
 				HashSet<ABI> abiList;
-				if (!_groupMap.TryGetValue (groupName, out abiList))
+				if (!s_groupMap.TryGetValue (groupName, out abiList))
 					continue;
-				_groupMap.Remove (groupName);
+				s_groupMap.Remove (groupName);
 
 				foreach (ABI abi in abiList) {
 					// 移除引用
@@ -367,7 +378,7 @@ namespace ShibaInu
 					}
 				}
 			}
-			_unloadList.Clear ();
+			s_unloadList.Clear ();
 		}
 
 		#endregion

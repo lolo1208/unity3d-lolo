@@ -23,6 +23,7 @@ TimeUtil.TYPE_H = "h"
 
 --- 当前程序已运行精确时间（单位：秒.毫秒），不会受到 Time.timeScale 影响。由 Update / LateUpdate / FixedUpdate 事件更新
 TimeUtil.time = 0
+
 --- 当前程序已运行帧数（ value = UnityEngine.Time.frameCount ）
 TimeUtil.frameCount = UnityEngine.Time.frameCount
 

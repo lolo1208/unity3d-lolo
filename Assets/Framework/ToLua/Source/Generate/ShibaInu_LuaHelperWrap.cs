@@ -15,6 +15,11 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("SetLayerRecursively", SetLayerRecursively);
 		L.RegFunction("WorldToCanvasPoint", WorldToCanvasPoint);
 		L.RegFunction("SendHttpRequest", SendHttpRequest);
+		L.RegFunction("AddOrGetComponent", AddOrGetComponent);
+		L.RegFunction("PlayDoubleImageShake", PlayDoubleImageShake);
+		L.RegFunction("PlayMosaic", PlayMosaic);
+		L.RegFunction("PlayRadialBlur", PlayRadialBlur);
+		L.RegFunction("SetGaussianBlurEnabled", SetGaussianBlurEnabled);
 		L.EndStaticLibs();
 	}
 
@@ -151,6 +156,252 @@ public class ShibaInu_LuaHelperWrap
 			ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1, arg2);
 			ToLua.PushObject(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int AddOrGetComponent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+			System.Type arg1 = ToLua.CheckMonoType(L, 2);
+			UnityEngine.Component o = ShibaInu.LuaHelper.AddOrGetComponent(arg0, arg1);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int PlayDoubleImageShake(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				ShibaInu.DoubleImageShake o = ShibaInu.LuaHelper.PlayDoubleImageShake(arg0);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				LuaFunction arg1 = ToLua.CheckLuaFunction(L, 2);
+				ShibaInu.DoubleImageShake o = ShibaInu.LuaHelper.PlayDoubleImageShake(arg0, arg1);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				LuaFunction arg1 = ToLua.CheckLuaFunction(L, 2);
+				float arg2 = (float)LuaDLL.luaL_checknumber(L, 3);
+				ShibaInu.DoubleImageShake o = ShibaInu.LuaHelper.PlayDoubleImageShake(arg0, arg1, arg2);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				LuaFunction arg1 = ToLua.CheckLuaFunction(L, 2);
+				float arg2 = (float)LuaDLL.luaL_checknumber(L, 3);
+				float arg3 = (float)LuaDLL.luaL_checknumber(L, 4);
+				ShibaInu.DoubleImageShake o = ShibaInu.LuaHelper.PlayDoubleImageShake(arg0, arg1, arg2, arg3);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 5)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				LuaFunction arg1 = ToLua.CheckLuaFunction(L, 2);
+				float arg2 = (float)LuaDLL.luaL_checknumber(L, 3);
+				float arg3 = (float)LuaDLL.luaL_checknumber(L, 4);
+				float arg4 = (float)LuaDLL.luaL_checknumber(L, 5);
+				ShibaInu.DoubleImageShake o = ShibaInu.LuaHelper.PlayDoubleImageShake(arg0, arg1, arg2, arg3, arg4);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 6)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				LuaFunction arg1 = ToLua.CheckLuaFunction(L, 2);
+				float arg2 = (float)LuaDLL.luaL_checknumber(L, 3);
+				float arg3 = (float)LuaDLL.luaL_checknumber(L, 4);
+				float arg4 = (float)LuaDLL.luaL_checknumber(L, 5);
+				UnityEngine.Camera arg5 = (UnityEngine.Camera)ToLua.CheckObject(L, 6, typeof(UnityEngine.Camera));
+				ShibaInu.DoubleImageShake o = ShibaInu.LuaHelper.PlayDoubleImageShake(arg0, arg1, arg2, arg3, arg4, arg5);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.LuaHelper.PlayDoubleImageShake");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int PlayMosaic(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				ShibaInu.Mosaic o = ShibaInu.LuaHelper.PlayMosaic(arg0, arg1);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				LuaFunction arg2 = ToLua.CheckLuaFunction(L, 3);
+				ShibaInu.Mosaic o = ShibaInu.LuaHelper.PlayMosaic(arg0, arg1, arg2);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				LuaFunction arg2 = ToLua.CheckLuaFunction(L, 3);
+				UnityEngine.Camera arg3 = (UnityEngine.Camera)ToLua.CheckObject(L, 4, typeof(UnityEngine.Camera));
+				ShibaInu.Mosaic o = ShibaInu.LuaHelper.PlayMosaic(arg0, arg1, arg2, arg3);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.LuaHelper.PlayMosaic");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int PlayRadialBlur(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				ShibaInu.RadialBlur o = ShibaInu.LuaHelper.PlayRadialBlur(arg0, arg1);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				LuaFunction arg2 = ToLua.CheckLuaFunction(L, 3);
+				ShibaInu.RadialBlur o = ShibaInu.LuaHelper.PlayRadialBlur(arg0, arg1, arg2);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				LuaFunction arg2 = ToLua.CheckLuaFunction(L, 3);
+				UnityEngine.Camera arg3 = (UnityEngine.Camera)ToLua.CheckObject(L, 4, typeof(UnityEngine.Camera));
+				ShibaInu.RadialBlur o = ShibaInu.LuaHelper.PlayRadialBlur(arg0, arg1, arg2, arg3);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.LuaHelper.PlayRadialBlur");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetGaussianBlurEnabled(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 1);
+				ShibaInu.GaussianBlur o = ShibaInu.LuaHelper.SetGaussianBlurEnabled(arg0);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				ShibaInu.GaussianBlur o = ShibaInu.LuaHelper.SetGaussianBlurEnabled(arg0, arg1);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				int arg2 = (int)LuaDLL.luaL_checknumber(L, 3);
+				ShibaInu.GaussianBlur o = ShibaInu.LuaHelper.SetGaussianBlurEnabled(arg0, arg1, arg2);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				int arg2 = (int)LuaDLL.luaL_checknumber(L, 3);
+				int arg3 = (int)LuaDLL.luaL_checknumber(L, 4);
+				ShibaInu.GaussianBlur o = ShibaInu.LuaHelper.SetGaussianBlurEnabled(arg0, arg1, arg2, arg3);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 5)
+			{
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 1);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 2);
+				int arg2 = (int)LuaDLL.luaL_checknumber(L, 3);
+				int arg3 = (int)LuaDLL.luaL_checknumber(L, 4);
+				UnityEngine.Camera arg4 = (UnityEngine.Camera)ToLua.CheckObject(L, 5, typeof(UnityEngine.Camera));
+				ShibaInu.GaussianBlur o = ShibaInu.LuaHelper.SetGaussianBlurEnabled(arg0, arg1, arg2, arg3, arg4);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.LuaHelper.SetGaussianBlurEnabled");
+			}
 		}
 		catch (Exception e)
 		{

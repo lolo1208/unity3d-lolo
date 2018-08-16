@@ -10,7 +10,7 @@ namespace ShibaInu
 	/// <summary>
 	/// 可以使 IPointerDownHandler, IPointerUpHandler, IPointerClickHandler 向上穿透一级
 	/// </summary>
-	[AddComponentMenu ("ShibaInu/Pointer Event Passer", 203)]
+	[AddComponentMenu ("ShibaInu/Pointer Event Passer", 301)]
 	[DisallowMultipleComponent]
 	public class PointerEventPasser : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 	{

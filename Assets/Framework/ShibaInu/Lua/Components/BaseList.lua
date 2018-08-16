@@ -669,10 +669,12 @@ end
 function BaseList:RecycleAllItem()
     local itemList = self._itemList
     local itemPool = self._itemPool
-    for i = 1, #itemList do
+    local poolCount = #itemPool
+    for i = #itemList, 1, -1 do
         local item = itemList[i]
         item:OnRecycle()
-        itemPool[#itemPool + 1] = item
+        poolCount = poolCount + 1
+        itemPool[poolCount] = item
     end
     self._itemList = {}
 
@@ -749,6 +751,7 @@ end
 
 --
 function BaseList:OnDestroy()
+    BaseList.super.OnDestroy(self)
     self:Clean()
 end
 

@@ -156,6 +156,7 @@ public static class CustomSettings
         _GT(typeof(UnityEngine.Experimental.Director.DirectorPlayer)),
 #endif
 		_GT (typeof(Animator)),
+		_GT (typeof(RuntimeAnimatorController)),
 		_GT (typeof(Input)),
 		_GT (typeof(KeyCode)),
 		_GT (typeof(SkinnedMeshRenderer)),
@@ -191,6 +192,7 @@ public static class CustomSettings
 
 
 		_GT (typeof(UnityEngine.PlayerPrefs)),
+		_GT (typeof(UnityEngine.Canvas)),
 		_GT (typeof(UnityEngine.Sprite)),
 		_GT (typeof(UnityEngine.Font)),
 		_GT (typeof(UnityEngine.Rect)),
@@ -210,6 +212,7 @@ public static class CustomSettings
 
 		_GT (typeof(ShibaInu.HttpRequest)),
 		_GT (typeof(ShibaInu.HttpDownload)),
+		_GT (typeof(ShibaInu.HttpUpload)),
 		_GT (typeof(ShibaInu.TcpSocket)),
 		_GT (typeof(ShibaInu.UdpSocket)),
 
@@ -218,21 +221,11 @@ public static class CustomSettings
 		_GT (typeof(ShibaInu.Picker)),
 		_GT (typeof(ShibaInu.CircleImage)),
 
+		_GT (typeof(ShibaInu.ThirdPersonCamera)),
 
-//        _GT(typeof(Util)),
-//        _GT(typeof(AppConst)),
-//        _GT(typeof(LuaHelper)),
-//        _GT(typeof(ByteBuffer)),
-//        _GT(typeof(LuaBehaviour)),
-
-//        _GT(typeof(GameManager)),
-//        _GT(typeof(LuaManager)),
-//        _GT(typeof(PanelManager)),
-//        _GT(typeof(SoundManager)),
-//        _GT(typeof(TimerManager)),
-//        _GT(typeof(ThreadManager)),
-//        _GT(typeof(NetworkManager)),
-//        _GT(typeof(ResourceManager)),	
+		_GT (typeof(ShibaInu.DoubleImageShake)),
+		_GT (typeof(ShibaInu.Mosaic)),
+		_GT (typeof(ShibaInu.RadialBlur)),
 
 	};
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using UnityEngine;
 
 
 namespace ShibaInu
@@ -10,6 +11,10 @@ namespace ShibaInu
 	/// </summary>
 	public class FileHelper
 	{
+		#if UNITY_ANDROID && !UNITY_EDITOR
+		private static readonly AndroidJavaClass m_androidStreamingAssetsUtil = new AndroidJavaClass ("shibaInu.utils.StreamingAssetsUtil");
+		#endif
+
 
 
 		/// <summary>
@@ -19,9 +24,12 @@ namespace ShibaInu
 		/// <param name="path">文件的真实完整路径</param>
 		public static byte[] GetBytes (string path)
 		{
-			#if UNITY_ANDROID
+			#if UNITY_ANDROID && !UNITY_EDITOR
 
-			return null;
+			if (path.StartsWith (Constants.PackageDir))
+				return m_androidStreamingAssetsUtil.CallStatic<byte[]> ("getFileBytes", path.Replace (Constants.PackageDir, ""));
+			else
+				return File.ReadAllBytes (path);
 
 			#else
 
@@ -31,6 +39,7 @@ namespace ShibaInu
 		}
 
 
+
 		/// <summary>
 		/// 文件是否存在
 		/// </summary>
@@ -38,9 +47,12 @@ namespace ShibaInu
 		/// <param name="path">文件的真实完整路径</param>
 		public static bool Exists (string path)
 		{
-			#if UNITY_ANDROID
+			#if UNITY_ANDROID && !UNITY_EDITOR
 
-			return false;
+			if(path.StartsWith(Constants.PackageDir))
+				return m_androidStreamingAssetsUtil.CallStatic<bool> ("exists", path.Replace (Constants.PackageDir, ""));
+			else
+				return File.Exists (path);
 
 			#else
 
@@ -51,7 +63,7 @@ namespace ShibaInu
 
 
 
-
+		//
 	}
 }
 

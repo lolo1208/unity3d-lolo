@@ -18,7 +18,7 @@ namespace ShibaInu
 		private const string EVENT_DROP = "DragDropEvent_Drop";
 
 		/// PointerEvent.lua
-		private static readonly LuaFunction m_dispatchEvent = Common.luaMgr.state.GetFunction ("DragDropEvent.DispatchEvent");
+		private static readonly LuaFunction s_dispatchEvent = Common.luaMgr.state.GetFunction ("DragDropEvent.DispatchEvent");
 
 		/// 对应 gameObject.peer._ed
 		public LuaTable ed;
@@ -26,52 +26,52 @@ namespace ShibaInu
 
 		public void OnBeginDrag (PointerEventData eventData)
 		{
-			m_dispatchEvent.BeginPCall ();
-			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (EVENT_BEGIN_DRAG);
-			m_dispatchEvent.Push (eventData);
-			m_dispatchEvent.PCall ();
-			m_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (ed);
+			s_dispatchEvent.Push (EVENT_BEGIN_DRAG);
+			s_dispatchEvent.Push (eventData);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 		public void OnDrag (PointerEventData eventData)
 		{
-			m_dispatchEvent.BeginPCall ();
-			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (EVENT_DRAG);
-			m_dispatchEvent.Push (eventData);
-			m_dispatchEvent.PCall ();
-			m_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (ed);
+			s_dispatchEvent.Push (EVENT_DRAG);
+			s_dispatchEvent.Push (eventData);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 		public void OnEndDrag (PointerEventData eventData)
 		{
-			m_dispatchEvent.BeginPCall ();
-			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (EVENT_END_DRAG);
-			m_dispatchEvent.Push (eventData);
-			m_dispatchEvent.PCall ();
-			m_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (ed);
+			s_dispatchEvent.Push (EVENT_END_DRAG);
+			s_dispatchEvent.Push (eventData);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 		public void OnInitializePotentialDrag (PointerEventData eventData)
 		{
-			m_dispatchEvent.BeginPCall ();
-			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (EVENT_INITIALIZE_POTENTIAL_DRAG);
-			m_dispatchEvent.Push (eventData);
-			m_dispatchEvent.PCall ();
-			m_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (ed);
+			s_dispatchEvent.Push (EVENT_INITIALIZE_POTENTIAL_DRAG);
+			s_dispatchEvent.Push (eventData);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 		public void OnDrop (PointerEventData eventData)
 		{
-			m_dispatchEvent.BeginPCall ();
-			m_dispatchEvent.Push (ed);
-			m_dispatchEvent.Push (EVENT_DROP);
-			m_dispatchEvent.Push (eventData);
-			m_dispatchEvent.PCall ();
-			m_dispatchEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (ed);
+			s_dispatchEvent.Push (EVENT_DROP);
+			s_dispatchEvent.Push (eventData);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 

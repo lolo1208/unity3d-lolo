@@ -28,6 +28,7 @@ end
 
 --- 场景被销毁时，由 Stage.lua 调用
 function Scene:OnDestroy()
+    Scene.super.OnDestroy(self)
 end
 
 

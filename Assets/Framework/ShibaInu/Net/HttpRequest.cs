@@ -48,6 +48,7 @@ namespace ShibaInu
 		}
 
 
+
 		/// <summary>
 		/// 添加 post data
 		/// </summary>
@@ -63,6 +64,7 @@ namespace ShibaInu
 
 			m_postData.Append (key).Append ("=").Append (EncodeURI (value));
 		}
+
 
 		/// <summary>
 		/// 清空 post data
@@ -102,6 +104,8 @@ namespace ShibaInu
 		}
 
 
+
+
 		/// <summary>
 		/// 发送请求
 		/// </summary>
@@ -114,20 +118,20 @@ namespace ShibaInu
 			try {
 				ThreadPool.QueueUserWorkItem (DoSend);
 			} catch (Exception e) {
-				DoCallback (HttpExceptionStatusCode.CREATE_THREAD, e.Message);
+				InvokeCallback (HttpExceptionStatusCode.CREATE_THREAD, e.Message);
 			}
 		}
 
 
 		/// <summary>
-		/// Dos the send. 线程函数
+		/// 线程函数
 		/// </summary>
 		/// <param name="stateInfo">State info.</param>
 		private void DoSend (Object stateInfo)
 		{
 			// 被取消了
 			if (!m_requesting) {
-				DoCallback (HttpExceptionStatusCode.ABORTED);
+				InvokeCallback (HttpExceptionStatusCode.ABORTED);
 				return;
 			}
 
@@ -161,14 +165,14 @@ namespace ShibaInu
 					}
 				}
 			} catch (Exception e) {
-				DoCallback (HttpExceptionStatusCode.SEND_REQUEST, e.Message);
+				InvokeCallback (HttpExceptionStatusCode.SEND_REQUEST, e.Message);
 				return;
 			}
 
 
 			// 被取消了
 			if (!m_requesting) {
-				DoCallback (HttpExceptionStatusCode.ABORTED);
+				InvokeCallback (HttpExceptionStatusCode.ABORTED);
 				return;
 			}
 
@@ -178,14 +182,14 @@ namespace ShibaInu
 				using (HttpWebResponse response = (HttpWebResponse)m_request.GetResponse ()) {
 					// 被取消了
 					if (!m_requesting) {
-						DoCallback (HttpExceptionStatusCode.ABORTED);
+						InvokeCallback (HttpExceptionStatusCode.ABORTED);
 						return;
 					}
 
 					int statusCode = (int)response.StatusCode;
 					// 只获取 response handers (content length)
 					if (method == HttpRequestMethod.HEAD) {
-						DoCallback (statusCode, response.ContentLength.ToString ());
+						InvokeCallback (statusCode, response.ContentLength.ToString ());
 						return;
 					}
 
@@ -194,7 +198,7 @@ namespace ShibaInu
 						using (StreamReader readStream = new StreamReader (responseStream, Encoding.UTF8)) {
 							string content = readStream.ReadToEnd ();
 							// 请求成功
-							DoCallback (statusCode, content);
+							InvokeCallback (statusCode, content);
 						}
 					}
 				}
@@ -203,11 +207,11 @@ namespace ShibaInu
 				if (e is WebException) {
 					HttpWebResponse response = (e as WebException).Response as HttpWebResponse;
 					if (response != null)
-						DoCallback ((int)response.StatusCode, e.Message);
+						InvokeCallback ((int)response.StatusCode, e.Message);
 					else
-						DoCallback (HttpExceptionStatusCode.GET_RESPONSE, e.Message);
+						InvokeCallback (HttpExceptionStatusCode.GET_RESPONSE, e.Message);
 				} else {
-					DoCallback (HttpExceptionStatusCode.GET_RESPONSE, e.Message);
+					InvokeCallback (HttpExceptionStatusCode.GET_RESPONSE, e.Message);
 				}
 			}
 		}
@@ -218,7 +222,7 @@ namespace ShibaInu
 		/// </summary>
 		/// <param name="statusCode">Status code.</param>
 		/// <param name="content">Content.</param>
-		private void DoCallback (int statusCode, string content = "")
+		private void InvokeCallback (int statusCode, string content = "")
 		{
 			if (m_request != null) {
 				m_request.Abort ();

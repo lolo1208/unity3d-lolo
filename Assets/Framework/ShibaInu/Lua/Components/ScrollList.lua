@@ -8,7 +8,6 @@ local floor = math.floor
 local ceil = math.ceil
 local abs = math.abs
 
-
 ---@class ScrollList : BaseList
 ---@field New fun(go:UnityEngine.GameObject, itemClass:any):ScrollList
 ---
@@ -23,9 +22,12 @@ local abs = math.abs
 ---@field protected _itemLayoutWidth number @ 用来布局的item宽度（_itemWidth + _horizontalGap）
 ---@field protected _itemLayoutHeight number @ 用来布局的item高度（_itemHeight + _verticalGap）
 ---
+---@field protected _lastUpdatePos number @ _content 上次滚动更新的位置
+---@field protected _updateDirty boolean @ 是否已经被标记当前帧会更新
+---
 local ScrollList = class("ScrollList", BaseList)
 
-
+--
 --- 构造函数
 ---@param go UnityEngine.GameObject
 ---@param itemClass any
@@ -36,6 +38,8 @@ function ScrollList:Ctor(go, itemClass)
     self._itemHeight = 0
     self._itemLayoutWidth = 0
     self._itemLayoutHeight = 0
+    self._lastUpdatePos = 0
+    self._updateDirty = false
 
     self._isVertical = self._list.isVertical
     self._viewport = self._list.viewport
@@ -46,9 +50,41 @@ end
 
 
 
+--
+--- 滚动更新，由 ScrollList.cs 调用
+function ScrollList:UpdateScroll()
+    if self._updateDirty then
+        return
+    end
 
+    -- 验证滚动距离是否已经有一个 item 的尺寸
+    local itemSize = self._isVertical and self._itemLayoutHeight or self._itemLayoutWidth
+    if itemSize > 0 then
+        local contentPos = self._content.localPosition
+        local curPos = self._isVertical and contentPos.y or contentPos.x
+        if abs(curPos - self._lastUpdatePos) > itemSize then
+            self:Update()
+            self._updateDirty = true
+            AddEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
+        end
+    end
+end
+
+
+--
+--- 更新列表（在 Event.LATE_UPDATE 事件中更新）
+function ScrollList:Update()
+    if not self._updateDirty then
+        self._updateDirty = true
+        AddEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
+    end
+end
+
+
+--
 --- 立即更新显示内容，而不是等待 Event.LATE_UPDATE 事件更新
 function ScrollList:UpdateNow()
+    self._updateDirty = false
     RemoveEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
     self:RecycleAllItem()
 
@@ -88,18 +124,20 @@ function ScrollList:UpdateNow()
     end
     self._list:SetContentSize(cw, ch)
 
-    -- 只用显示该范围内的item
+    -- 只用显示该范围内的item，前后都多创建一排，作为缓冲
     local minI, maxI
     if isVertical then
-        local contentY = self._content.localPosition.y
+        self._lastUpdatePos = self._content.localPosition.y
+        local contentY = self._lastUpdatePos - self._itemLayoutWidth
         local minY = contentY < 0 and 0 or contentY
-        local maxY = minY + self._viewportHeight
+        local maxY = minY + self._viewportHeight + self._itemLayoutWidth * 2
         minI = floor(minY / self._itemLayoutHeight) * self._columnCount
         maxI = ceil(maxY / self._itemLayoutHeight) * self._columnCount
     else
-        local contentX = abs(self._content.localPosition.x)
+        self._lastUpdatePos = self._content.localPosition.x
+        local contentX = abs(self._lastUpdatePos) - self._itemLayoutWidth
         local minX = contentX < 0 and 0 or contentX
-        local maxX = minX + self._viewportWidth
+        local maxX = minX + self._viewportWidth + self._itemLayoutWidth * 2
         minI = floor(minX / self._itemLayoutWidth) * self._rowCount
         maxI = ceil(maxX / self._itemLayoutWidth) * self._rowCount
     end
@@ -157,7 +195,6 @@ function ScrollList:UpdateNow()
     self:DispatchListEvent(ListEvent.UPDATE)
 end
 
-
 --- 通过索引来选中子项。
 --- @param index number
 function ScrollList:AutoSelectItemByIndex(index)
@@ -169,6 +206,7 @@ function ScrollList:AutoSelectItemByIndex(index)
 end
 
 
+--
 --- 通过索引选中子项
 ---@param index number
 function ScrollList:SelectItemByIndex(index)
@@ -179,7 +217,7 @@ end
 
 
 
-
+--
 --- 通过索引获取子项
 ---@param index number
 ---@return ItemRenderer
@@ -227,6 +265,7 @@ function ScrollList:SetIsVertical(value)
     if value == self._isVertical then
         return
     end
+    self._lastUpdatePos = 0
     self._isVertical = value
     self:SyncPropertysToCS()
     self._list:ResetContentPosition()
@@ -238,6 +277,7 @@ function ScrollList:GetIsVertical()
 end
 
 
+--
 --- 设置显示区域宽高
 ---@param width number
 ---@param height number
@@ -252,6 +292,7 @@ function ScrollList:SetViewportSize(width, height)
         return
     end
 
+    self._lastUpdatePos = 0
     self._viewportWidth = width
     self._viewportHeight = height
     self:SyncPropertysToCS()
@@ -275,6 +316,7 @@ end
 
 
 
+--
 --- 属性有改变时，将 lua 中的属性同步到 C# 中
 function ScrollList:SyncPropertysToCS()
     self._list:SyncPropertys(self._itemPrefab, self._rowCount, self._columnCount, self._horizontalGap, self._verticalGap, self._isVertical, self._viewportWidth, self._viewportHeight)
@@ -282,6 +324,7 @@ function ScrollList:SyncPropertysToCS()
 end
 
 
+--
 --- 同步 C# 相关属性
 --- 由 ScrollList.cs 调用
 function ScrollList:SyncPropertys(itemPrefab, rowCount, columnCount, horizontalGap, verticalGap, isVertical, viewportWidth, viewportHeight)
@@ -297,7 +340,13 @@ end
 
 --=------------------------------[ recycle & clean ]------------------------------=--
 
+function ScrollList:Clean()
+    ScrollList.super.Clean(self)
+    self._updateDirty = false
+    self._lastUpdatePos = 0
+end
 
 
 
+--
 return ScrollList

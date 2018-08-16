@@ -8,6 +8,8 @@ local error = error
 local format = string.format
 local remove = table.remove
 
+
+--
 ---@class Stage
 ---
 ---@field loadingSceneClass Scene @ Loading场景类
@@ -15,6 +17,7 @@ local remove = table.remove
 ---@field AddDontDestroy fun(go:UnityEngine.GameObject):void @ 添加一个在清除场景时，不需被销毁的 GameObject
 ---@field RemoveDontDestroy fun(go:UnityEngine.GameObject):void @ 移除一个在清除场景时，不需被销毁的 GameObject
 ---@field GetProgress fun():number @ 获取当前异步加载进度 0~1
+---
 local Stage = {}
 
 local event = Event.New()
@@ -31,6 +34,11 @@ local _sceneLayer, _uiLayer, _windowLayer, _uiTopLayer, _alertLayer, _guideLayer
 ---@type table<string, UnityEngine.Transform>
 local _layers = {}
 
+---@type UnityEngine.GameObject @ prebab 缓存池（不可见）。由 PrefabPool 维护
+Stage.prefabPool = nil
+
+
+--
 local function UpdateLayers()
     _sceneLayer = ShibaInu.Stage.sceneLayer
     _uiLayer = ShibaInu.Stage.uiLayer
@@ -54,10 +62,14 @@ Stage._ed = ed
 Stage.AddDontDestroy = ShibaInu.Stage.AddDontDestroy
 Stage.RemoveDontDestroy = ShibaInu.Stage.RemoveDontDestroy
 Stage.GetProgress = ShibaInu.Stage.GetProgress
+Stage.uiCanvas = ShibaInu.Stage.uiCanvas
+Stage.uiCanvasTra = ShibaInu.Stage.uiCanvasTra
+
 
 
 --=-----------------------------[ 场景 ]-----------------------------=--
 
+--
 --- 异步加载场景完成
 ---@param event LoadSceneEvent
 local function LoadSceneCompleteHandler(event)
@@ -69,6 +81,8 @@ local function LoadSceneCompleteHandler(event)
     DelayedFrameCall(_currentScene.OnInitialize, _currentScene)
 end
 
+
+--
 --- 异步加载场景 perfab 完成
 ---@param event LoadResEvent
 local function LoadResCompleteHandler(event)
@@ -79,6 +93,8 @@ local function LoadResCompleteHandler(event)
     end
 end
 
+
+--
 --- 显示场景
 ---@param sceneClass any @ 场景类（不是类的实例）
 function Stage.ShowScene(sceneClass)
@@ -139,6 +155,8 @@ function Stage.ShowScene(sceneClass)
     end
 end
 
+
+--
 --- 显示上一个场景
 function Stage.ShowPrevScene()
     if _prevSceneClass ~= nil then
@@ -146,21 +164,28 @@ function Stage.ShowPrevScene()
     end
 end
 
+
+--
 --- 获取当前场景名称
 ---@return string
 function Stage.GetCurrentSceneName()
     return _currentScene.moduleName
 end
 
+
+--
 --- 获取上一个场景类
 ---@return string
 function Stage.GetPrevSceneClass()
     return _prevSceneClass
 end
 
+
+--
 --- 清空场景
 function Stage.Clean()
     ShibaInu.Stage.Clean()
+    PrefabPool.Clean()
     UpdateLayers()
 end
 
@@ -245,7 +270,7 @@ end
 
 --=----------------------------[ 全屏模态 ]----------------------------=--
 
-local _modal = GameObject.Find("UICanvas").transform:Find("MODAL").gameObject
+local _modal = Stage.uiCanvasTra:Find("MODAL").gameObject
 local _modalTransform = _modal.transform
 local _modalImage = GetComponent.Image(_modal)
 Stage.AddDontDestroy(_modal)

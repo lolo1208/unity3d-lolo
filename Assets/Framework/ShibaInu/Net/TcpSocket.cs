@@ -107,7 +107,7 @@ namespace ShibaInu
 
 			try {
 				m_client.BeginConnect (host, port, new AsyncCallback (OnConnected), m_client);
-				Common.timerMgr.Once (connentTimeout, OnConnectTimeout, m_client);
+				Timer.Once (connentTimeout, OnConnectTimeout, m_client);
 
 			} catch (Exception e) {
 				Close ("Error - Content: " + e.Message);

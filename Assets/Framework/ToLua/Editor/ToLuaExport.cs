@@ -135,7 +135,7 @@ public static class ToLuaExport
         "Light.lightmapBakeType",
         "Security.GetChainOfTrustValue",
         "Texture2D.alphaIsTransparency",
-        "WWW.movie",
+		"WWW.movie",
         "WebCamTexture.MarkNonReadable",
         "WebCamTexture.isReadable",
         "Graphic.OnRebuildRequested",
@@ -154,7 +154,11 @@ public static class ToLuaExport
         "UIWidget.showHandlesWithMoveTool",
         "UIWidget.showHandles",
         "Input.IsJoystickPreconfigured",
-        "UIDrawCall.isActive"
+        "UIDrawCall.isActive",
+
+		// 2017.3
+		"WWW.GetMovieTexture",
+		"Texture.imageContentsHash",
     };
 
     class _MethodBase

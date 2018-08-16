@@ -18,7 +18,7 @@ namespace ShibaInu
 		public override LuaTable luaTarget {
 			set {
 				base.luaTarget = value;
-				m_luaUpdate = value.GetLuaFunction ("Update");
+				m_luaUpdate = value.GetLuaFunction ("UpdateScroll");
 			}
 		}
 
