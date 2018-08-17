@@ -19,8 +19,6 @@ namespace ShibaInu
 		private float m_curTileSize = 0.001f;
 		/// 每秒递增的马赛克块尺寸
 		private float m_addTileSize = 0f;
-		/// 上次更新马赛克块尺寸的时间
-		private float m_lastTime = 0f;
 		/// 剩余持续时间
 		private float m_remainTime = 0f;
 		/// 结束时的回调
@@ -63,7 +61,6 @@ namespace ShibaInu
 		{
 			if (toTileSize < 0.001)
 				toTileSize = 0.001f;
-			m_lastTime = TimeUtil.GetTimeSec ();
 			m_remainTime = duration;
 			m_addTileSize = (toTileSize - m_curTileSize) / duration;
 			m_tileSize = toTileSize;
@@ -91,10 +88,9 @@ namespace ShibaInu
 
 
 			if (m_remainTime > 0) {
-				float deltaTime = TimeUtil.GetTimeSec () - m_lastTime;
+				float deltaTime = Time.deltaTime;
 				if (deltaTime < m_remainTime) {
 					m_remainTime -= deltaTime;
-					m_lastTime = TimeUtil.timeSec;
 				} else {
 					deltaTime = m_remainTime;
 					m_remainTime = 0f;

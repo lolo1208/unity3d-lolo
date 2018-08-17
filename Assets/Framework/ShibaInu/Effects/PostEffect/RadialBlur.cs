@@ -8,7 +8,7 @@ namespace ShibaInu
 	/// <summary>
 	/// 后处理效果 - 径向模糊
 	/// </summary>
-	[ExecuteInEditMode]
+	[RequireComponent (typeof(Camera))]
 	public class RadialBlur : MonoBehaviour
 	{
 		public Shader shader = null;
@@ -18,8 +18,6 @@ namespace ShibaInu
 		private float m_curBlurFactor = 1f;
 		/// 每秒递增的模糊强度
 		private float m_addBlurFactor = 0f;
-		/// 上次更新模糊强度的时间
-		private float m_lastTime = 0f;
 		/// 剩余持续时间
 		private float m_remainTime = 0f;
 		/// 结束时的回调
@@ -100,7 +98,6 @@ namespace ShibaInu
 		{
 			if (toBlurFactor < 1)
 				toBlurFactor = 1;
-			m_lastTime = TimeUtil.GetTimeSec ();
 			m_remainTime = duration;
 			m_addBlurFactor = (toBlurFactor - m_curBlurFactor) / duration;
 			m_blurFactor = toBlurFactor;
@@ -130,10 +127,9 @@ namespace ShibaInu
 
 
 			if (m_remainTime > 0) {
-				float deltaTime = TimeUtil.GetTimeSec () - m_lastTime;
+				float deltaTime = Time.deltaTime;
 				if (deltaTime < m_remainTime) {
 					m_remainTime -= deltaTime;
-					m_lastTime = TimeUtil.timeSec;
 				} else {
 					deltaTime = m_remainTime;
 					m_remainTime = 0f;

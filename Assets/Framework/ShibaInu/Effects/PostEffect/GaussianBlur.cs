@@ -9,6 +9,7 @@ namespace ShibaInu
 	/// 后处理效果 - 高斯模糊
 	/// </summary>
 	[ExecuteInEditMode]
+	[RequireComponent (typeof(Camera))]
 	public class GaussianBlur : MonoBehaviour
 	{
 		public Shader shader = null;
@@ -79,4 +80,3 @@ namespace ShibaInu
 		//
 	}
 }
-

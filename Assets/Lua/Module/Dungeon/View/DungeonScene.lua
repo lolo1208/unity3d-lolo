@@ -104,6 +104,17 @@ function DungeonScene:PlayMosaic()
             end)
         end)
     end)
+
+    --self.testDC = DelayedCall(2, function()
+    --    LuaHelper.SetGaussianBlurEnabled(true)
+    --    self.testDC = DelayedCall(2, function()
+    --        LuaHelper.SetGaussianBlurEnabled(false)
+    --        self.testDC = DelayedCall(2, function()
+    --            self:PlayMosaic()
+    --        end)
+    --    end)
+    --end)
+
 end
 
 --

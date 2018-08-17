@@ -282,7 +282,7 @@ namespace ShibaInu
 					gaussianBlur.shader = (Shader)ResManager.LoadAsset ("Shaders/PostEffect/GaussianBlur.shader", Stage.currentSceneName);
 				} else
 					gaussianBlur.enabled = true;
-				
+
 				gaussianBlur.blurRadius = blurRadius;
 				gaussianBlur.downSample = downSample;
 				gaussianBlur.iteration = iteration;
