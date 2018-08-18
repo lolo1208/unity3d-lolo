@@ -11,7 +11,7 @@ Temp
 UnityPackageManager
 
 Assets/StreamingAssets
-Assets/Framework/ToLua/Source/Generate
+Assets/Framework/ToLua/Source/Generate/*
 !Assets/Framework/ToLua/Source/Generate/DelegateFactory.cs
 !Assets/Framework/ToLua/Source/Generate/LuaBinder.cs
 
