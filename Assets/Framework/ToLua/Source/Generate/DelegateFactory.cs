@@ -12,7 +12,6 @@ public class DelegateFactory
 	public static void Init()
 	{
 		Register();
-
 	}
 
 	public static void Register()
