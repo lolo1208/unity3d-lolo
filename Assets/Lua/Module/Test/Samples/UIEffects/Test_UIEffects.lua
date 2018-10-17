@@ -36,6 +36,9 @@ function Test_UIEffects:OnInitialize()
     AddEventListener(self.transform:Find("FlyBezier").gameObject, PointerEvent.CLICK, self.Click_FlyBezier, self)
     AddEventListener(self.transform:Find("FlyBehind").gameObject, PointerEvent.CLICK, self.Click_FlyBehind, self)
     AddEventListener(self.transform:Find("DelayedHide").gameObject, PointerEvent.CLICK, self.Click_DelayedHide, self)
+
+    self:EnableDestroyListener()
+    Profiler.Begin("10.8.6.44", 1208)
 end
 
 
@@ -100,6 +103,14 @@ function Test_UIEffects:GetItem(path)
     return tra
 end
 
+
+
+
+--
+function Test_UIEffects:OnDestroy()
+    Test_UIEffects.super.OnDestroy(self)
+    --Profiler.End()
+end
 
 
 

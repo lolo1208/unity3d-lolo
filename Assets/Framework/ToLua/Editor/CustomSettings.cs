@@ -204,6 +204,8 @@ public static class CustomSettings
 		_GT (typeof(UnityEngine.UI.Button)),
 		_GT (typeof(UnityEngine.UI.Toggle)),
 
+		_GT (typeof(UnityEngine.TextMesh)),
+
 
 		// for ShibaInu
 		_GT (typeof(ShibaInu.LuaHelper)),
@@ -226,6 +228,8 @@ public static class CustomSettings
 		_GT (typeof(ShibaInu.DoubleImageShake)),
 		_GT (typeof(ShibaInu.Mosaic)),
 		_GT (typeof(ShibaInu.RadialBlur)),
+
+		_GT (typeof(ShibaInu.LuaProfiler)),
 
 	};
 

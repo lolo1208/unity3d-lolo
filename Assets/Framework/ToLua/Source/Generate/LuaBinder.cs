@@ -59,6 +59,7 @@ public static class LuaBinder
 		UnityEngine_SpriteWrap.Register(L);
 		UnityEngine_FontWrap.Register(L);
 		UnityEngine_RectWrap.Register(L);
+		UnityEngine_TextMeshWrap.Register(L);
 		L.BeginModule("UI");
 		UnityEngine_UI_GraphicWrap.Register(L);
 		UnityEngine_UI_ImageWrap.Register(L);
@@ -185,6 +186,7 @@ public static class LuaBinder
 		ShibaInu_DoubleImageShakeWrap.Register(L);
 		ShibaInu_MosaicWrap.Register(L);
 		ShibaInu_RadialBlurWrap.Register(L);
+		ShibaInu_LuaProfilerWrap.Register(L);
 		L.EndModule();
 		L.BeginModule("System");
 		L.RegFunction("Action", System_Action);

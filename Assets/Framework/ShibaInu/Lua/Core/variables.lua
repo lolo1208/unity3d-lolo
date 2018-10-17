@@ -113,3 +113,4 @@ Picker = require("Components.Picker")
 ItemRenderer = require("Components.ItemRenderer")
 
 Stats = require("UI.Stats")
+Profiler = require("Utils.Optimize.Profiler")

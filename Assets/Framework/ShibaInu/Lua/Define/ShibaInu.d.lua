@@ -19,6 +19,7 @@ ShibaInu.CircleImage = ShibaInu.CircleImage ---@type ShibaInu.CircleImage
 ShibaInu.BaseList = ShibaInu.BaseList ---@type ShibaInu.BaseList
 ShibaInu.ScrollList = ShibaInu.ScrollList ---@type ShibaInu.ScrollList
 ShibaInu.Picker = ShibaInu.Picker ---@type ShibaInu.Picker
+ShibaInu.LuaProfiler = ShibaInu.LuaProfiler ---@type ShibaInu.LuaProfiler
 
 
 
@@ -224,6 +225,11 @@ ShibaInu.Picker = ShibaInu.Picker ---@type ShibaInu.Picker
 ---@field dragDownLimit number @ 向下拖拽最大限定值
 ---
 ---@field AdjustPosition fun(frameNum:number):void @ 矫正镜头到 up 和 back 设置的位置，用时：frameNum 帧（默认：20帧）
+
+
+---@class ShibaInu.LuaProfiler : UnityEngine.MonoBehaviour
+---@field Begin fun(host:string, port:number):void
+---@field End fun():void
 
 
 

@@ -58,11 +58,11 @@ public class StreamingAssetsUtil {
     /**
      * 文件是否存在
      *
-     * @param path
+     * @param filePath
      * @return
      */
-    public static boolean exists(String path) {
-        return _streamingAssets.contains(path);
+    public static boolean exists(String filePath) {
+        return _streamingAssets.contains(filePath);
     }
 
 

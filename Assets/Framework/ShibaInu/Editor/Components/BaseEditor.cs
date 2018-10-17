@@ -8,7 +8,7 @@ namespace ShibaInu
 	/// <summary>
 	/// 组件在编辑器环境中的基类
 	/// </summary>
-	public class BaseEditor :Editor
+	public class BaseEditor : Editor
 	{
 		
 		/// 可显示的总宽度值

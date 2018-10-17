@@ -277,6 +277,20 @@ function GetComponent.Camera(go)
     return go:GetComponent(_typeof_class(UnityEngine.Camera))
 end
 
+--- 获取 gameObject 下的 UnityEngine.MeshRenderer 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.MeshRenderer
+function GetComponent.MeshRenderer(go)
+    return go:GetComponent(_typeof_class(UnityEngine.MeshRenderer))
+end
+
+--- 获取 gameObject 下的 UnityEngine.TextMesh 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.TextMesh
+function GetComponent.TextMesh(go)
+    return go:GetComponent(_typeof_class(UnityEngine.TextMesh))
+end
+
 
 --
 
@@ -546,14 +560,4 @@ function handler(callback, caller, once, ...)
     handler.once = once
     handler.args = { ... }
     return handler
-end
-
-TestFn = {}
-
-TestFn.Fn1 = function(isPlay, aaa, bbb, ccc)
-    print("Lua - TestFn.Fn1 :::", isPlay, aaa, bbb, ccc)
-end
-
-TestFn.Fn2 = function(isPlay, aaa, bbb)
-    print("Lua - TestFn.Fn2 :::", isPlay, aaa, bbb)
 end
