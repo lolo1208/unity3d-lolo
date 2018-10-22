@@ -255,7 +255,8 @@ namespace ShibaInu
 				m_client = null;
 				m_kcp = null;
 
-				s_updateList.Remove (this);
+				if (s_updateList.Contains (this))
+					s_updateList.Remove (this);
 			}
 
 			if (connected) {

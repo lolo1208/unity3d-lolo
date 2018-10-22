@@ -26,6 +26,7 @@ local id = 0 --- 唯一ID（key）
 local cache = {} --- 已获取信息的缓存列表。 cache[fn]=key
 local newFn = {} --- 距离上次汇总，新增的函数信息列表 newCache = { key:{ s:source, n:name, l:linedefined }, ... }
 local ignoreCache = {} --- C# 函数忽略缓存 ignoreCache[C#fn] = true
+local ignoreFrameCount = 0 --- 剩余忽略帧数（在开始统计时需要忽略几帧数据）
 
 --- 需要被忽略的 lua 函数名称列表
 local ignoreList = {
@@ -72,7 +73,7 @@ local function ProfilerHook(type)
         end
 
         local tail = stack[count]
-        while count > 0 and key ~= tail.k do
+        while count > 1 and key ~= tail.k do
             --print("移除", tail.k)
             count = count - 1
             tail = stack[count]
@@ -141,25 +142,27 @@ local function ProfilerHook(type)
 end
 
 
-
-
 --
 --- 开始采样统计
 ---@param host string
 ---@param port number
-function Profiler.Begin(host, port)
+---@param isUDP boolean
+function Profiler.Begin(host, port, isUDP)
     if Profiler.profiling then
         return
     end
 
     if host ~= nil and port ~= nil then
-        ShibaInu.LuaProfiler.Begin(host, port)
+        ShibaInu.LuaProfiler.Begin(host, port, isUDP)
     end
 
     Profiler.profiling = true
-    sethook(ProfilerHook, "cr")
+    if isJIT and not isUDP then
+        ignoreFrameCount = 15
+    else
+        ignoreFrameCount = 5
+    end
 end
-
 
 
 --
@@ -170,6 +173,15 @@ function Profiler.GetData()
     tree = {}
     newFn = {}
     stack = {}
+
+    if ignoreFrameCount > 0 then
+        ignoreFrameCount = ignoreFrameCount - 1
+        if ignoreFrameCount == 0 then
+            sethook(ProfilerHook, "cr")
+        end
+        return '{ "t":{}, "n":{} }'
+    end
+
     return JSON.stringify({
         t = t,
         n = n,
@@ -184,6 +196,7 @@ function Profiler.End()
         return
     end
     Profiler.profiling = false
+    ignoreFrameCount = 0
     tree = {}
     stack = {}
     cache = {}
@@ -193,6 +206,9 @@ function Profiler.End()
 end
 
 
+--
+--- 显示或隐藏控制台
+Profiler.Console = ShibaInu.LuaProfiler.Console
 
 
 --

@@ -75,6 +75,7 @@ namespace ShibaInu
 
 		public void Reset ()
 		{
+			m_length = m_position = m_msgLength = 0;
 		}
 
 

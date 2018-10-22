@@ -19,10 +19,13 @@ namespace ShibaInu
 
 		void OnDestroy ()
 		{
-			s_dispatchEvent.BeginPCall ();
-			s_dispatchEvent.Push (ed);
-			s_dispatchEvent.PCall ();
-			s_dispatchEvent.EndPCall ();
+			try {
+				s_dispatchEvent.BeginPCall ();
+				s_dispatchEvent.Push (ed);
+				s_dispatchEvent.PCall ();
+				s_dispatchEvent.EndPCall ();
+			} catch (Exception) {
+			}
 		}
 
 

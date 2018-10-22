@@ -228,8 +228,9 @@ ShibaInu.LuaProfiler = ShibaInu.LuaProfiler ---@type ShibaInu.LuaProfiler
 
 
 ---@class ShibaInu.LuaProfiler : UnityEngine.MonoBehaviour
----@field Begin fun(host:string, port:number):void
+---@field Begin fun(host:string, port:number, isUDP:boolean):void
 ---@field End fun():void
+---@field Console(show:boolean):void
 
 
 

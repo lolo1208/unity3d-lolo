@@ -8,15 +8,21 @@ using LuaInterface;
 
 namespace ShibaInu
 {
+	/// <summary>
+	/// Lua profiler 工具
+	/// </summary>
 	public class LuaProfiler : MonoBehaviour
 	{
-		private static UdpSocket s_udp = new UdpSocket ();
+		private static UdpSocket s_udp;
+		private static TcpSocket s_tcp;
+		private static bool s_isUDP;
 		private static StringBuilder s_sb = new StringBuilder ();
 
 		// - Utils/Optimize/Profiler.lua
 		private static LuaFunction s_luaBegin;
 		private static LuaFunction s_luaEnd;
 		private static LuaFunction s_luaGetData;
+
 
 
 		void Awake ()
@@ -27,7 +33,9 @@ namespace ShibaInu
 		}
 
 
-
+		/// <summary>
+		/// 每帧收集数据
+		/// </summary>
 		void LateUpdate ()
 		{
 			s_luaGetData.BeginPCall ();
@@ -52,13 +60,22 @@ namespace ShibaInu
 			s_sb.Append (data);
 			s_sb.Append ("}");
 
-			s_udp.Send (s_sb.ToString ());
+			if (s_isUDP)
+				s_udp.Send (s_sb.ToString ());
+			else
+				s_tcp.Send (s_sb.ToString ());
 			s_sb.Clear ();
 		}
 
 
 
-		public static void Begin (string host, int port)
+		/// <summary>
+		/// 连接到工具服务端，开始收集数据
+		/// </summary>
+		/// <param name="host">Host.</param>
+		/// <param name="port">Port.</param>
+		/// <param name="isUDP">If set to <c>true</c> is UD.</param>
+		public static void Begin (string host, int port, bool isUDP)
 		{
 			GameObject go = Common.go;
 			LuaProfiler profiler = go.GetComponent<LuaProfiler> ();
@@ -70,17 +87,33 @@ namespace ShibaInu
 				profiler.enabled = true;
 			}
 
-			Debug.Log ("Lua Profiler Begin!");
+			s_isUDP = isUDP;
+			if (isUDP) {
+				if (s_udp == null) {
+					s_udp = new UdpSocket ();
+					s_udp.callback = EventCallback;
+				}
+				s_udp.Connect (host, port, (UInt32)port);
 
-			s_udp.callback = EventCallback;
-			s_udp.Connect (host, port, (UInt32)port);
+			} else {
+				if (s_tcp == null) {
+					s_tcp = new TcpSocket ();
+					s_tcp.callback = EventCallback;
+				}
+				s_tcp.Connect (host, port);
+			}
 
 			s_luaBegin.BeginPCall ();
 			s_luaBegin.PCall ();
 			s_luaBegin.EndPCall ();
+
+			Debug.Log ("Lua Profiler - Begin!");
 		}
 
 
+		/// <summary>
+		/// 结束数据收集
+		/// </summary>
 		public static void End ()
 		{
 			GameObject go = Common.go;
@@ -89,22 +122,50 @@ namespace ShibaInu
 				return;
 			
 			profiler.enabled = false;
-			s_udp.Close ();
+			if (s_isUDP) {
+				if (s_udp != null)
+					s_udp.Close ();
+			} else {
+				if (s_tcp != null)
+					s_tcp.Close ();
+			}
 
 			s_luaEnd.BeginPCall ();
 			s_luaEnd.PCall ();
 			s_luaEnd.EndPCall ();
 
-			Debug.Log ("Lua Profiler Stopped!");
+			Debug.Log ("Lua Profiler - Stopped!");
 		}
+
+
+
+		/// <summary>
+		/// 显示或隐藏对应的控制台
+		/// </summary>
+		/// <param name="show">If set to <c>true</c> show.</param>
+		public static void Console (bool show)
+		{
+			GameObject go = Common.go;
+			LuaProfilerConsole console = go.GetComponent<LuaProfilerConsole> ();
+			if (show) {
+				if (console == null)
+					console = go.AddComponent<LuaProfilerConsole> ();
+				if (!console.enabled)
+					console.enabled = true;
+			} else {
+				if (console != null && console.enabled)
+					console.enabled = false;
+			}
+		}
+
 
 
 		private static void EventCallback (string type, System.Object data)
 		{
 			if (data != null)
-				Debug.Log (type + ",   " + data.ToString ());
+				Debug.Log ("Lua Profiler - SocketEvent [" + type + "]: " + data.ToString ());
 			else
-				Debug.Log (type);
+				Debug.Log ("Lua Profiler - SocketEvent [" + type + "]");
 			
 			switch (type) {
 

@@ -38,7 +38,7 @@ function Test_UIEffects:OnInitialize()
     AddEventListener(self.transform:Find("DelayedHide").gameObject, PointerEvent.CLICK, self.Click_DelayedHide, self)
 
     self:EnableDestroyListener()
-    Profiler.Begin("10.8.6.44", 1208)
+    Profiler.Console(true)
 end
 
 
