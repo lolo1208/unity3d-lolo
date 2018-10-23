@@ -30,7 +30,7 @@ local ignoreFrameCount = 0 --- 剩余忽略帧数（在开始统计时需要忽�
 
 --- 需要被忽略的 lua 函数名称列表
 local ignoreList = {
-    "(for generator)",
+    "(for generator)", "trycall"
 }
 
 -- ignoreList[fnName] = true
@@ -182,10 +182,7 @@ function Profiler.GetData()
         return '{ "t":{}, "n":{} }'
     end
 
-    return JSON.stringify({
-        t = t,
-        n = n,
-    })
+    return JSON.stringify({ t = t, n = n })
 end
 
 

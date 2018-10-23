@@ -44,13 +44,13 @@ namespace ShibaInu
 				Vector3 rot = transform.localEulerAngles;
 
 				string format = "{0:N3}";
-				string str = m_cameraTool.copyFormat;
-				str = str.Replace ("p.x", String.Format (format, pos.x));
-				str = str.Replace ("p.y", String.Format (format, pos.y));
-				str = str.Replace ("p.z", String.Format (format, pos.z));
-				str = str.Replace ("r.x", String.Format (format, rot.x));
-				str = str.Replace ("r.y", String.Format (format, rot.y));
-				str = str.Replace ("r.z", String.Format (format, rot.z));
+				string str = m_cameraTool.copyFormat
+					.Replace ("p.x", String.Format (format, pos.x))
+					.Replace ("p.y", String.Format (format, pos.y))
+					.Replace ("p.z", String.Format (format, pos.z))
+					.Replace ("r.x", String.Format (format, rot.x))
+					.Replace ("r.y", String.Format (format, rot.y))
+					.Replace ("r.z", String.Format (format, rot.z));
 				GUIUtility.systemCopyBuffer = str;
 			}
 
@@ -58,21 +58,21 @@ namespace ShibaInu
 			if (GUILayout.Button (m_c_pasteFromTheClipboard)) {
 				m_cameraTool.alignSceneView = false;
 
-				string str = GUIUtility.systemCopyBuffer;
-				str = str.Replace (" ", "");
-				str = str.Replace ("Vector3", "");
-				str = str.Replace (".New", "");
-				str = str.Replace ("new", "");
-				str = str.Replace ("pos", "");
-				str = str.Replace ("rot", "");
-				str = str.Replace ("=", "");
-				str = str.Replace ("(", "");
-				str = str.Replace (")", "");
-				str = str.Replace ("{", "");
-				str = str.Replace ("}", "");
-				str = str.Replace ("[", "");
-				str = str.Replace ("]", "");
-				str = str.Replace (";", "");
+				string str = GUIUtility.systemCopyBuffer
+					.Replace (" ", "")
+					.Replace ("Vector3", "")
+					.Replace (".New", "")
+					.Replace ("new", "")
+					.Replace ("pos", "")
+					.Replace ("rot", "")
+					.Replace ("=", "")
+					.Replace ("(", "")
+					.Replace (")", "")
+					.Replace ("{", "")
+					.Replace ("}", "")
+					.Replace ("[", "")
+					.Replace ("]", "")
+					.Replace (";", "");
 
 				string[] arr = str.Split (',');
 				Vector3 pos = new Vector3 (float.Parse (arr [0]), float.Parse (arr [1]), float.Parse (arr [2]));

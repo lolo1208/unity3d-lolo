@@ -42,7 +42,6 @@ function Test_UIEffects:OnInitialize()
 end
 
 
-
 --
 function Test_UIEffects:Click_FlyUp(event)
     FlyUp.Once(self:GetItem(), TIPS_PATH)
