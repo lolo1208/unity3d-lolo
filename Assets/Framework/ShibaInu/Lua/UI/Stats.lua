@@ -36,11 +36,12 @@ function Stats.Show()
     end
 
     _go = CreateGameObject("Stats", Constants.LAYER_TOP)
+    Stage.AddDontDestroy(_go)
     _text = AddOrGetComponent(_go, UnityEngine.UI.Text)
     _text.raycastTarget = false
+    AddOrGetComponent(_go, UnityEngine.UI.Shadow)
 
-    local Font = UnityEngine.Font
-    _text.font = Font.CreateDynamicFontFromOSFont("Arial", 16)
+    _text.font = UnityEngine.Font.CreateDynamicFontFromOSFont("Arial", 16)
     _text.fontSize = 16
 
     local rt = GetComponent.RectTransform(_go)
@@ -83,5 +84,4 @@ end
 
 
 --
-
 return Stats

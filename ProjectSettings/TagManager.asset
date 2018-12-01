@@ -13,12 +13,12 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - SceneUI
+  - Temp
+  - Building
+  - Player
+  - Avatar
+  - Effect
   - 
   - 
   - 

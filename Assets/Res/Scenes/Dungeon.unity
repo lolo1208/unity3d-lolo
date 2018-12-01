@@ -2298,7 +2298,7 @@ GameObject:
   - component: {fileID: 251705336}
   - component: {fileID: 251705338}
   - component: {fileID: 251705337}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3400,7 +3400,7 @@ GameObject:
   - component: {fileID: 335364775}
   - component: {fileID: 335364777}
   - component: {fileID: 335364776}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: bg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4940,7 +4940,7 @@ GameObject:
   - component: {fileID: 474071252}
   - component: {fileID: 474071254}
   - component: {fileID: 474071253}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5832,7 +5832,7 @@ GameObject:
   - component: {fileID: 531470950}
   - component: {fileID: 531470952}
   - component: {fileID: 531470951}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: TPCDragTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7710,7 +7710,7 @@ GameObject:
   - component: {fileID: 712841247}
   - component: {fileID: 712841246}
   - component: {fileID: 712841245}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: backBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9911,7 +9911,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 934934214}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: TestBtns
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9954,7 +9954,7 @@ GameObject:
   - component: {fileID: 935415406}
   - component: {fileID: 935415408}
   - component: {fileID: 935415407}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Joystick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13588,7 +13588,7 @@ GameObject:
   - component: {fileID: 1243648427}
   - component: {fileID: 1243648426}
   - component: {fileID: 1243648425}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: mosaicBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14623,7 +14623,7 @@ GameObject:
   - component: {fileID: 1319400302}
   - component: {fileID: 1319400301}
   - component: {fileID: 1319400300}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: doubleImageShakeBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16466,7 +16466,7 @@ GameObject:
   - component: {fileID: 1502173303}
   - component: {fileID: 1502173305}
   - component: {fileID: 1502173304}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16876,7 +16876,7 @@ GameObject:
   - component: {fileID: 1551200435}
   - component: {fileID: 1551200434}
   - component: {fileID: 1551200433}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: radialBlurBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17040,7 +17040,7 @@ GameObject:
   - component: {fileID: 1555597933}
   - component: {fileID: 1555597935}
   - component: {fileID: 1555597934}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18810,7 +18810,7 @@ GameObject:
   - component: {fileID: 1670980022}
   - component: {fileID: 1670980024}
   - component: {fileID: 1670980023}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: sight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19545,7 +19545,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967263
+    m_Bits: 4294966495
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -20475,7 +20475,7 @@ GameObject:
   - component: {fileID: 1763228429}
   - component: {fileID: 1763228431}
   - component: {fileID: 1763228430}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21191,7 +21191,7 @@ GameObject:
   - component: {fileID: 1822860303}
   - component: {fileID: 1822860302}
   - component: {fileID: 1822860301}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: SceneUICamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21215,14 +21215,14 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0
-  far clip plane: 8
+  far clip plane: 40
   field of view: 60
   orthographic: 1
   orthographic size: 3.2
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967272
+    m_Bits: 256
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -21436,7 +21436,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1847474522}
   - component: {fileID: 1847474523}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22294,7 +22294,7 @@ GameObject:
   - component: {fileID: 1935790074}
   - component: {fileID: 1935790073}
   - component: {fileID: 1935790072}
-  m_Layer: 5
+  m_Layer: 8
   m_Name: SceneUICanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

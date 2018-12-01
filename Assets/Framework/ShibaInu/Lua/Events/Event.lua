@@ -41,8 +41,11 @@ Event.LATE_UPDATE = "Event_LateUpdate"
 --- 固定时间更新（Edit -> Project Setting -> time -> Fixed timestep）。该事件只会在 Stage 上抛出
 Event.FIXED_UPDATE = "Event_FixedUpdate"
 
---- 屏幕尺寸有改变
+--- 屏幕尺寸有改变。该事件只会在 Stage 上抛出
 Event.RESIZE = "Event_Resize"
+
+--- 当前场景有改变。该事件只会在 Stage 上抛出
+Event.SCENE_CHANGED = "Event_SceneChanged"
 
 --=--
 

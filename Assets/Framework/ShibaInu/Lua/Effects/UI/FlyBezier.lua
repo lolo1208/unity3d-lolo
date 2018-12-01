@@ -123,7 +123,7 @@ end
 
 --
 --- 结束播放效果
----@param optional complete boolean @ 效果是否正常结束。默认：false
+---@param complete boolean @ -可选- 效果是否正常结束。默认：false
 function FlyBezier:End(complete)
     RemoveEventListener(Stage, Event.LATE_UPDATE, self.Stage_LateUpdate, self)
     self.running = false
@@ -153,13 +153,13 @@ end
 --- 注意：使用 FlyBezier.Once() 创建的实例 once 属性默认为 true。
 --- 播放完毕后，实例(_pool) 和 target(PrefabPool) 将会自动回收到池中。
 --- !!!
----@param optional target UnityEngine.Transform @ 应用该效果的目标
----@param optional pStrat Vector3 @ 起始点。默认值：nil，表示使用 target 当前位置
----@param optional pEnd Vector3 @ 结束点
----@param optional recycleKey string @ 播放结束后，target 回收到 PrefabPool 时使用的 prefabPath（默认值：nil 不回收）
----@param optional onComplete Handler @ 飘动结束后的回调。onComplete(complete:boolean, float:IFloat)
----@param optional start boolean @ 是否立即开始播放。默认：true
----@param optional orientToBezier boolean @ 目标是否跟随贝塞尔曲线旋转。默认：true
+---@param target UnityEngine.Transform @ -可选- 应用该效果的目标
+---@param pStrat Vector3 @ -可选- 起始点。默认值：nil，表示使用 target 当前位置
+---@param pEnd Vector3 @ -可选- 结束点
+---@param recycleKey string @ -可选- 播放结束后，target 回收到 PrefabPool 时使用的 prefabPath（默认值：nil 不回收）
+---@param onComplete Handler @ -可选- 飘动结束后的回调。onComplete(complete:boolean, float:IFloat)
+---@param start boolean @ -可选- 是否立即开始播放。默认：true
+---@param orientToBezier boolean @ 目标是否跟随贝塞尔曲线旋转。默认：true
 function FlyBezier.Once(target, pStrat, pEnd, recycleKey, onComplete, start, orientToBezier)
     local count = #_pool
     local flyBezier = count > 0 and remove(_pool) or FlyBezier.New()

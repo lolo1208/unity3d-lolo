@@ -116,7 +116,6 @@ namespace ShibaInu
 						abi.pedList.Add (pathMD5);
 					}
 				}
-				// Debug.Log ("!!!!  " + reader.BaseStream.Position.ToString () + "  " + reader.BaseStream.Length.ToString ());
 			}
 		}
 
@@ -132,14 +131,43 @@ namespace ShibaInu
 		/// <returns>The asset.</returns>
 		/// <param name="path">Path.</param>
 		/// <param name="path">Group Name.</param>
-		public static UnityEngine.Object LoadAsset (string path, string groupName)
+		public static UnityEngine.Object LoadAsset (string path, string groupName = null)
 		{
+			return LoadAssetWithType<UnityEngine.Object> (path, groupName);
+		}
+
+		public static UnityEngine.Sprite LoadSprite (string path, string groupName = null)
+		{
+			return LoadAssetWithType<UnityEngine.Sprite> (path, groupName);
+		}
+
+		public static UnityEngine.Shader LoadShader (string path, string groupName = null)
+		{
+			return LoadAssetWithType<UnityEngine.Shader> (path, groupName);
+		}
+
+		public static UnityEngine.AudioClip LoadAudioClip (string path, string groupName = null)
+		{
+			return LoadAssetWithType<UnityEngine.AudioClip> (path, groupName);
+		}
+
+		public static string LoadText (string path, string groupName = null)
+		{
+			TextAsset asset = LoadAssetWithType<UnityEngine.TextAsset> (path, groupName);
+			return asset.text;
+		}
+
+		private static T LoadAssetWithType<T> (string path, string groupName) where T : UnityEngine.Object
+		{
+			if (groupName == null)
+				groupName = Stage.currentSceneName;
+
 			#if UNITY_EDITOR
 			if (Common.isDebug) {
 				if (!File.Exists (Constants.ResDirPath + path)) {
 					throw new LuaException (string.Format (Constants.E5001, path));
 				}
-				return UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object> (Constants.ResDirPath + path);
+				return UnityEditor.AssetDatabase.LoadAssetAtPath<T> (Constants.ResDirPath + path);
 			}
 
 			string pathMD5 = GetPathMD5 (path);
@@ -152,8 +180,9 @@ namespace ShibaInu
 
 			ABI abi = GetAbiWithAssetPath (path);
 			ABLoader.Load (abi, groupName);
-			return abi.ab.LoadAsset (Constants.ResDirPath + path);
+			return abi.ab.LoadAsset<T> (Constants.ResDirPath + path);
 		}
+
 
 
 		/// <summary>
@@ -162,22 +191,40 @@ namespace ShibaInu
 		/// </summary>
 		/// <param name="path">Path.</param>
 		/// <param name="path">Group Name.</param>
-		public static void LoadAssetAsync (string path, string groupName)
+		public static void LoadAssetAsync (string path, string groupName = null)
 		{
+			LoadAssetAsyncWithType<UnityEngine.Object> (path, groupName);
+		}
+
+		public static void LoadSpriteAsync (string path, string groupName = null)
+		{
+			LoadAssetAsyncWithType<UnityEngine.Sprite> (path, groupName);
+		}
+
+		public static void LoadShaderAsync (string path, string groupName = null)
+		{
+			LoadAssetAsyncWithType<UnityEngine.Shader> (path, groupName);
+		}
+
+		public static void LoadAudioClipAsync (string path, string groupName = null)
+		{
+			LoadAssetAsyncWithType<UnityEngine.AudioClip> (path, groupName);
+		}
+
+		private static void LoadAssetAsyncWithType<T> (string path, string groupName) where T : UnityEngine.Object
+		{
+			if (groupName == null)
+				groupName = Stage.currentSceneName;
+			
 			#if UNITY_EDITOR
 			if (Common.isDebug) {
-				if (!File.Exists (Constants.ResDirPath + path)) {
+				if (!File.Exists (Constants.ResDirPath + path))
 					throw new LuaException (string.Format (Constants.E5001, path));
-				}
 
-				ABLoader.DispatchLuaEvent (ABLoader.EVENT_START, path);
-				ABLoader.DispatchLuaEvent (ABLoader.EVENT_COMPLETE, path,
-					UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object> (Constants.ResDirPath + path)
-				);
-
-				if (s_daceCoroutine != null)
-					Common.looper.StopCoroutine (s_daceCoroutine);
-				s_daceCoroutine = Common.looper.StartCoroutine (DispatchAllCompleteEvent ());
+				DispatchLuaEvent (EVENT_START, path);
+				Common.looper.StartCoroutine (DispatchCompleteEvent (path,
+					UnityEditor.AssetDatabase.LoadAssetAtPath<T> (Constants.ResDirPath + path)
+				));
 				return;
 			}
 
@@ -190,22 +237,46 @@ namespace ShibaInu
 			s_delayedUnloadList.Remove (groupName);
 
 			ABI abi = GetAbiWithAssetPath (path);
-			abi.AddAssetAsync (path);
+			abi.AddAssetAsync (path, typeof(T));
 			ABLoader.LoadAsync (abi, groupName);
 		}
 
 
+
 		#if UNITY_EDITOR
+
 		/// <summary>
-		/// 在 editor play mode 状态下，延迟零点几秒后抛出所有资源异步加载完成事件
+		/// 在 editor play mode 状态下，延迟抛出资源异步加载完成事件
+		/// </summary>
+		/// <returns>The complete event.</returns>
+		/// <param name="path">Path.</param>
+		/// <param name="data">Data.</param>
+		private static IEnumerator DispatchCompleteEvent (string path, UnityEngine.Object data)
+		{
+			if (s_daceCoroutine != null) {
+				Common.looper.StopCoroutine (s_daceCoroutine);
+				s_daceCoroutine = null;
+			}
+			
+			yield return new WaitForSeconds (0.1f);
+			DispatchLuaEvent (EVENT_COMPLETE, path, data);
+
+			if (s_daceCoroutine != null)
+				Common.looper.StopCoroutine (s_daceCoroutine);
+			s_daceCoroutine = Common.looper.StartCoroutine (DispatchAllCompleteEvent ());
+		}
+
+		/// <summary>
+		/// 在 editor play mode 状态下，延迟抛出所有资源异步加载完成事件
 		/// </summary>
 		/// <returns>The all complete event.</returns>
 		private static IEnumerator DispatchAllCompleteEvent ()
 		{
-			yield return new WaitForSeconds (0.2f);
+			yield return new WaitForSeconds (0.1f);
 			s_daceCoroutine = null;
-			ABLoader.DispatchLuaEvent (ABLoader.EVENT_ALL_COMPLETE);
+			DispatchLuaEvent (EVENT_ALL_COMPLETE);
 		}
+
 		#endif
 
 
@@ -359,6 +430,45 @@ namespace ShibaInu
 
 			// 返回文件内容
 			return FileHelper.GetBytes (filePath);
+		}
+
+		#endregion
+
+
+		#region 在 lua 层抛出事件
+
+		// lua 层的事件类型
+		[NoToLuaAttribute]
+		public const string EVENT_START = "LoadResEvent_Start";
+		[NoToLuaAttribute]
+		public const string EVENT_COMPLETE = "LoadResEvent_Complete";
+		[NoToLuaAttribute]
+		public const string EVENT_ALL_COMPLETE = "LoadResEvent_All_Complete";
+
+		/// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadResEvent.lua
+		private static LuaFunction s_dispatchEvent;
+
+		/// <summary>
+		/// 在 lua 层抛出事件
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <param name="path">Path.</param>
+		/// <param name="data">Data.</param>
+		[NoToLuaAttribute]
+		public static void DispatchLuaEvent (string type, string path = null, UnityEngine.Object data = null)
+		{
+			// 不能在 Initialize() 时获取该函数，因为相互依赖
+			if (s_dispatchEvent == null)
+				s_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadResEvent.DispatchEvent");
+
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (type);
+			if (path != null)
+				s_dispatchEvent.Push (path);
+			if (data != null)
+				s_dispatchEvent.Push (data);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 		#endregion

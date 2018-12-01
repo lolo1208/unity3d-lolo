@@ -32,7 +32,7 @@ end
 
 
 --- 验证字符串长度大于零，并且没有空格(包括全角空格)
----@param str
+---@param str string
 ---@return boolean
 function Validator.noSpace(str)
     local len = #str

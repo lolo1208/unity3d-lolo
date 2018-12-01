@@ -4,7 +4,6 @@
 -- Author LOLO
 --
 
-local require = require
 
 require("Core.functions")
 require("Core.variables")
@@ -17,13 +16,3 @@ logError = Logger.AddErrorLog
 trycall = Logger.TryCall
 
 --=--------------------------------------------------------------------------=--
-
-
--- 禁止创建全局变量或全局函数
-setmetatable(_G, {
-    __newindex = function(_, name, value)
-        error(Constants.E1001)
-    end
-})
-
-

@@ -87,17 +87,17 @@ function FlyDown:Start()
     local tweener = DOTween.Sequence()
     tmpVec3.x = tx
     tmpVec3.y = y1
-    tweener:Append(target:DOLocalMove(tmpVec3, self.step1_duration):SetEase(DOTween_Enum.Ease.Linear))
+    tweener:Append(target:DOLocalMove(tmpVec3, self.step1_duration))
     if hasCanvasGroup then
-        tweener:Join(self.targetCG:DOFade(1, self.step1_duration):SetEase(DOTween_Enum.Ease.Linear))
+        tweener:Join(self.targetCG:DOFade(1, self.step1_duration))
     end
 
     tweener:AppendInterval(self.step2_delay)
 
     tmpVec3.y = y2
-    tweener:Append(target:DOLocalMove(tmpVec3, self.step2_duration):SetEase(DOTween_Enum.Ease.Linear))
+    tweener:Append(target:DOLocalMove(tmpVec3, self.step2_duration))
     if hasCanvasGroup then
-        tweener:Join(self.targetCG:DOFade(0, self.step2_duration):SetEase(DOTween_Enum.Ease.Linear))
+        tweener:Join(self.targetCG:DOFade(0, self.step2_duration))
     end
 
     tweener:AppendCallback(function()
@@ -120,7 +120,7 @@ end
 
 --
 --- 结束播放效果
----@param optional complete boolean @ 效果是否正常结束。默认：false
+---@param complete boolean @ -可选- 效果是否正常结束。默认：false
 function FlyDown:End(complete)
     complete = complete == true
 
@@ -154,10 +154,10 @@ end
 --- 注意：使用 FlyDown.Once() 创建的实例 once 属性默认为 true。
 --- 播放完毕后，实例(_pool) 和 target(PrefabPool) 将会自动回收到池中。
 --- !!!
----@param optional target UnityEngine.Transform @ 应用该效果的目标
----@param optional recycleKey string @ 播放结束后，target 回收到 PrefabPool 时使用的 prefabPath（默认值：nil 不回收）
----@param optional onComplete Handler @ 飘动结束后的回调。onComplete(complete:boolean, float:IFloat)
----@param optional start boolean @ 是否立即开始播放。默认：true
+---@param target UnityEngine.Transform @ -可选- 应用该效果的目标
+---@param recycleKey string @ -可选- 播放结束后，target 回收到 PrefabPool 时使用的 prefabPath（默认值：nil 不回收）
+---@param onComplete Handler @ -可选- 飘动结束后的回调。onComplete(complete:boolean, float:IFloat)
+---@param start boolean @ -可选- 是否立即开始播放。默认：true
 function FlyDown.Once(target, recycleKey, onComplete, start)
     local count = #_pool
     local flyDown = count > 0 and remove(_pool) or FlyDown.New()

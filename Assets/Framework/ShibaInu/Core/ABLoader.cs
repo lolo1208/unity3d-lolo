@@ -8,7 +8,6 @@ using LuaInterface;
 namespace ShibaInu
 {
 
-
 	/// <summary>
 	/// AssetBundle Info Object
 	/// </summary>
@@ -19,6 +18,9 @@ namespace ShibaInu
 
 		/// （异步）加载 AssetBundle 完成后，需要异步加载的资源路径列表
 		public List<string> loadAssetsAsync = new List<string> ();
+		/// loadAssetsAsync 对应的类型列表
+		public List<Type> loadAssetsTypeAsync = new List<Type> ();
+
 
 		/// 文件路径
 		public string path;
@@ -44,11 +46,12 @@ namespace ShibaInu
 		/// 添加一个需要异步加载的资源
 		/// </summary>
 		/// <param name="path">Path.</param>
-		public void AddAssetAsync (string path)
+		public void AddAssetAsync (string path, Type type)
 		{
 			if (!loadAssetsAsync.Contains (path) && !ABLoader.LoadAssetListContains (path)) {
 				ABLoader.assetCount++;
 				loadAssetsAsync.Add (path);
+				loadAssetsTypeAsync.Add (type);
 			}
 		}
 	}
@@ -60,18 +63,12 @@ namespace ShibaInu
 	/// </summary>
 	public class ABLoader
 	{
-		// lua 层的事件类型
-		public const string EVENT_START = "LoadResEvent_Start";
-		public const string EVENT_COMPLETE = "LoadResEvent_Complete";
-		public const string EVENT_ALL_COMPLETE = "LoadResEvent_All_Complete";
-
-		/// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadResEvent.lua
-		private static LuaFunction s_dispatchEvent;
-
 		/// 需加载的 AssetBundle 列表
 		private static Queue<ABI> s_loadABList = new Queue<ABI> ();
 		/// 需加载的资源路径列表
 		private static Queue<string> s_loadAssetList = new Queue<string> ();
+		/// s_loadAssetList 对应的类型列表
+		private static Queue<Type> s_loadAssetTypeList = new Queue<Type> ();
 
 		/// 当前正在加载 AssetBundle 的 ABI
 		private static ABI s_abi;
@@ -188,17 +185,20 @@ namespace ShibaInu
 			s_abi = s_loadABList.Dequeue ();
 			if (s_abi.ab == null) {
 				ParseFilePath (s_abi);
-				AssetBundleCreateRequest abcr = AssetBundle.LoadFromFileAsync (s_abi.filePath);
+				AssetBundleCreateRequest abcr = null;
+				abcr = AssetBundle.LoadFromFileAsync (s_abi.filePath);
 				yield return abcr;
-				s_abi.ab = abcr.assetBundle;
+				// 可能在异步加载过程中，该 AB 已经被同步加载好了，会报错（无需理会）：
+				// The AssetBundle 'xxx' can't be loaded because another AssetBundle with the same files is already loaded.
+				if (s_abi.ab == null)
+					s_abi.ab = abcr.assetBundle;
 			}
-			LoadAssetAsync (s_abi);
 
-			if (s_loadABList.Count > 0) {
+			LoadAssetAsync (s_abi);
+			s_abi = null;
+
+			if (s_loadABList.Count > 0)
 				Common.looper.StartCoroutine (LoadNextAsync ());
-			} else {
-				s_abi = null;
-			}
 		}
 
 
@@ -216,8 +216,13 @@ namespace ShibaInu
 			}
 			abi.loadAssetsAsync.Clear ();
 
+			foreach (Type type in abi.loadAssetsTypeAsync) {
+				s_loadAssetTypeList.Enqueue (type);
+			}
+			abi.loadAssetsTypeAsync.Clear ();
+
 			if (s_abr == null)
-				Common.looper.StartCoroutine (LoadNexAssetAsync ());
+				Common.looper.StartCoroutine (LoadNextAssetAsync ());
 		}
 
 
@@ -225,51 +230,31 @@ namespace ShibaInu
 		/// 协程加载下个资源
 		/// </summary>
 		/// <returns>The nex asset async.</returns>
-		private static IEnumerator LoadNexAssetAsync ()
+		private static IEnumerator LoadNextAssetAsync ()
 		{
 			string path = s_loadAssetList.Dequeue ();
-			DispatchLuaEvent (EVENT_START, path);
+			Type type = s_loadAssetTypeList.Dequeue ();
+			ResManager.DispatchLuaEvent (ResManager.EVENT_START, path);
+
+			yield return new WaitForEndOfFrame ();
 
 			ABI abi = ResManager.GetAbiWithAssetPath (path);
-			s_abr = abi.ab.LoadAssetAsync (Constants.ResDirPath + path);
+			s_abr = abi.ab.LoadAssetAsync (Constants.ResDirPath + path, type);
 			yield return s_abr;
-
-			DispatchLuaEvent (EVENT_COMPLETE, path, s_abr.asset);
+			ResManager.DispatchLuaEvent (ResManager.EVENT_COMPLETE, path, s_abr.asset);
 
 			if (s_loadAssetList.Count > 0) {
-				Common.looper.StartCoroutine (LoadNexAssetAsync ());
+				Common.looper.StartCoroutine (LoadNextAssetAsync ());
 			} else {
 				s_abr = null;
 				// 当前没有 AssetBundle 在加载了
 				if (s_abi == null && s_loadABList.Count == 0) {
 					ABLoader.assetCount = 0;
-					DispatchLuaEvent (EVENT_ALL_COMPLETE);
+					ResManager.DispatchLuaEvent (ResManager.EVENT_ALL_COMPLETE);
 				}
 			}
 		}
 
-
-		/// <summary>
-		/// 在 lua 层抛出事件
-		/// </summary>
-		/// <param name="type">Type.</param>
-		/// <param name="path">Path.</param>
-		/// <param name="data">Data.</param>
-		public static void DispatchLuaEvent (string type, string path = null, UnityEngine.Object data = null)
-		{
-			// 不能在 Initialize() 时获取该函数，因为相互依赖
-			if (s_dispatchEvent == null)
-				s_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadResEvent.DispatchEvent");
-
-			s_dispatchEvent.BeginPCall ();
-			s_dispatchEvent.Push (type);
-			if (path != null)
-				s_dispatchEvent.Push (path);
-			if (data != null)
-				s_dispatchEvent.Push (data);
-			s_dispatchEvent.PCall ();
-			s_dispatchEvent.EndPCall ();
-		}
 
 
 		/// <summary>

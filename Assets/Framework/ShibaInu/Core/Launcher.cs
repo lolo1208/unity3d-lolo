@@ -35,11 +35,10 @@ namespace ShibaInu
 
 			if (Common.NeverSleep)
 				Screen.sleepTimeout = SleepTimeout.NeverSleep;
-
 			Application.targetFrameRate = Common.FrameRate;
 
 
-			// Call Initialize
+			// 先进入启动场景
 			if (SceneManager.GetActiveScene ().name != Constants.LauncherSceneName)
 				SceneManager.LoadScene (Constants.LauncherSceneName);
 			
@@ -69,6 +68,7 @@ namespace ShibaInu
 
 			TimeUtil.Initialize ();
 			ResManager.Initialize ();
+			Localization.Initialize ();
 			Common.luaMgr.Initialize ();// start lua
 
 			Destroy (this);

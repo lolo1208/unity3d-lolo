@@ -264,10 +264,15 @@ namespace ShibaInu
 				if (typeDirName == ".svn" || typeDirName == "Excludes" || typeDirName == "Scenes")
 					continue;// 忽略这几个文件夹
 
-				if (typeDirName == "Textures" || typeDirName == "Prefabs" || typeDirName == "Shaders") {
+				// texture 按 spritePackingTag 打包
+				// prefab 每个单独打包
+				if (typeDirName == "Textures" || typeDirName == "Prefabs") {
 					CreateAssetBundleInfo (typeDir, true);
-					continue;// 直接递归处理 sprite, prefab, shader（所有shader打在一个ab包里）
+					continue;// 直接递归处理
 				}
+
+				// 根目录资源
+				CreateAssetBundleInfo (typeDir, false);
 
 				// 子目录（按模块划分的根目录）
 				string[] childDirs = Directory.GetDirectories (typeDir);

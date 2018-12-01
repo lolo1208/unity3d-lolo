@@ -116,20 +116,20 @@ function FlyBehind:Start()
 
     local tweener = DOTween.Sequence()
     tmpVec3:Set(x1, y1, 0)
-    tweener:Append(target:DOLocalMove(tmpVec3, d1_h):SetEase(DOTween_Enum.Ease.Linear))
+    tweener:Append(target:DOLocalMove(tmpVec3, d1_h))
     if hasCanvasGroup then
-        tweener:Join(self.targetCG:DOFade(1, d1_h):SetEase(DOTween_Enum.Ease.Linear))
+        tweener:Join(self.targetCG:DOFade(1, d1_h))
     end
 
     tmpVec3:Set(x2, y2, 0)
-    tweener:Append(target:DOLocalMove(tmpVec3, d1_h):SetEase(DOTween_Enum.Ease.Linear))
+    tweener:Append(target:DOLocalMove(tmpVec3, d1_h))
 
     tweener:AppendInterval(self.step2_delay)
 
     tmpVec3:Set(x3, y3, 0)
-    tweener:Append(target:DOLocalMove(tmpVec3, self.step2_duration):SetEase(DOTween_Enum.Ease.Linear))
+    tweener:Append(target:DOLocalMove(tmpVec3, self.step2_duration))
     if hasCanvasGroup then
-        tweener:Join(self.targetCG:DOFade(0, self.step2_duration):SetEase(DOTween_Enum.Ease.Linear))
+        tweener:Join(self.targetCG:DOFade(0, self.step2_duration))
     end
 
     tweener:AppendCallback(function()
@@ -152,7 +152,7 @@ end
 
 --
 --- 结束播放效果
----@param optional complete boolean @ 效果是否正常结束。默认：false
+---@param complete boolean @ -可选- 效果是否正常结束。默认：false
 function FlyBehind:End(complete)
     self.running = false
     if self.tweener ~= nil then
@@ -184,11 +184,11 @@ end
 --- 注意：使用 FlyBehind.Once() 创建的实例 once 属性默认为 true。
 --- 播放完毕后，实例(_pool) 和 target(PrefabPool) 将会自动回收到池中。
 --- !!!
----@param optional target UnityEngine.Transform @ 应用该效果的目标
----@param optional actionPoint Vector3 @ 作用点（正面的位置）
----@param optional recycleKey string @ 播放结束后，target 回收到 PrefabPool 时使用的 prefabPath（默认值：nil 不回收）
----@param optional onComplete Handler @ 飘动结束后的回调。onComplete(complete:boolean, float:IFloat)
----@param optional start boolean @ 是否立即开始播放。默认：true
+---@param target UnityEngine.Transform @ -可选- 应用该效果的目标
+---@param actionPoint Vector3 @ -可选- 作用点（正面的位置）
+---@param recycleKey string @ -可选- 播放结束后，target 回收到 PrefabPool 时使用的 prefabPath（默认值：nil 不回收）
+---@param onComplete Handler @ -可选- 飘动结束后的回调。onComplete(complete:boolean, float:IFloat)
+---@param start boolean @ -可选- 是否立即开始播放。默认：true
 function FlyBehind.Once(target, actionPoint, recycleKey, onComplete, start)
     local count = #_pool
     local flyBehind = count > 0 and remove(_pool) or FlyBehind.New()

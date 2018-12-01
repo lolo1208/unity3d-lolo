@@ -19,7 +19,7 @@ local _transform ---@type UnityEngine.Transform
 --
 --- 获取一个 prefab 的实例
 ---@param prefabPath string @ prefab 路径
----@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点(Transform)
+---@param parent string | UnityEngine.Transform @ -可选- 图层名称 或 父节点(Transform)
 ---@return UnityEngine.GameObject
 function PrefabPool.Get(prefabPath, parent)
     local pool = _pool[prefabPath]
@@ -30,6 +30,9 @@ function PrefabPool.Get(prefabPath, parent)
 
     if #pool > 0 then
         local go = remove(pool)
+        if isnull(go) then
+            return PrefabPool.Get(prefabPath, parent)
+        end
         if parent ~= nil then
             SetParent(go.transform, parent)
         end
@@ -45,6 +48,10 @@ end
 ---@param go UnityEngine.GameObject
 ---@param prefabPath string @ prefab 路径
 function PrefabPool.Recycle(go, prefabPath)
+    if isnull(go) then
+        return
+    end
+
     local pool = _pool[prefabPath]
     if pool == nil then
         pool = {}
@@ -53,7 +60,7 @@ function PrefabPool.Recycle(go, prefabPath)
     pool[#pool + 1] = go
 
     if _transform == nil then
-        local poolGO = GameObject.New("PrefabPool")
+        local poolGO = GameObject.New("[PrefabPool]")
         poolGO:SetActive(false)
         _transform = poolGO.transform
     end

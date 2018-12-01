@@ -68,7 +68,7 @@ namespace ShibaInu
 		/// 接收数据，处理粘包，根据协议解析出消息，并回调 messageCallback
 		void Receive (byte[] buffer, int length);
 
-		/// 重置（清空）已收到的数据包。在连接关闭时会被 TcpSocketClient 调用
+		/// 重置（清空）已收到的数据包。在连接关闭时会被 SocketClient 调用
 		void Reset ();
 
 		/// 根据协议编码 data，并返回编码后的字节数组

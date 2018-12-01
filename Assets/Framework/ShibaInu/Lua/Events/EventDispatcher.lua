@@ -28,7 +28,7 @@ local error = error
 local EventDispatcher = class("EventDispatcher")
 
 --- 构造函数
----@param optional go UnityEngine.GameObject @ 对应的 GameObject（用于冒泡，没有go时，可以不用传）
+---@param go UnityEngine.GameObject @ -可选- 对应的 GameObject（用于冒泡，没有go时，可以不用传）
 function EventDispatcher:Ctor(go)
     self._eventMap = {}
     self.gameObject = go

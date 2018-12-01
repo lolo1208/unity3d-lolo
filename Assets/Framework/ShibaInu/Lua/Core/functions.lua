@@ -5,8 +5,6 @@
 --
 
 
-local error = error
-local format = string.format
 local type = type
 local setmetatable = setmetatable
 local remove = table.remove
@@ -17,7 +15,7 @@ local _isnull = tolua.isnull
 local _typeof = tolua.typeof
 local _typeof_class = typeof
 
-local uiLayer = LayerMask.NameToLayer("UI")
+
 --
 
 
@@ -25,7 +23,7 @@ local uiLayer = LayerMask.NameToLayer("UI")
 --- 调用父类方法 Class.super.Fn(self, ...)
 ---    不要使用 Class.super:Fn(...) 调用
 ---@param className string @ 类名称
----@param optional superClass table @ 父类（不能继承 native class）
+---@param superClass table @ -可选- 父类（不能继承 native class）
 ---@return table
 function class(className, superClass)
     local cls = {}
@@ -94,15 +92,14 @@ end
 ---  > go = Instantiate(prefabObj, Constants.LAYER_UI)
 ---  > go = Instantiate(prefabObj, parentGO.transform, "MyModuleName")
 ---@param prefab UnityEngine.GameObject | string @ 预设对象 或 预设路径
----@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点(Transform)
----@param optional groupName string @ 资源组名称。参数 prefab 为预设路径时，如果该值为 nil，将会使用当前场景名称
+---@param parent string | UnityEngine.Transform @ -可选- 图层名称 或 父节点(Transform)
+---@param groupName string @ -可选- 资源组名称。参数 prefab 为预设路径时，默认值：nil，将会使用当前场景名称
 ---@return UnityEngine.GameObject
 function Instantiate(prefab, parent, groupName)
     -- 传入的 prefab 是 预设路径
     if type(prefab) == "string" then
         if groupName == nil then
-            groupName = Stage.GetCurrentSceneName()
-            --error(format(Constants.E2003, prefab))
+            groupName = Stage.GetCurrentAssetGroup()
         end
         prefab = Res.LoadAsset(prefab, groupName)
     end
@@ -127,7 +124,7 @@ end
 ---@param prefabPath string @ 预设路径
 ---@param groupName string @ 资源组名称
 ---@param handler Handler @ 异步加载完成，并创建实例成功后的回调
----@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点(Transform)
+---@param parent string | UnityEngine.Transform @ -可选- 图层名称 或 父节点(Transform)
 function InstantiateAsync(prefabPath, groupName, handler, parent)
     ---@param event LoadResEvent
     local function loadResComplete(event)
@@ -158,8 +155,8 @@ end
 
 --- 创建并返回一个空 GameObject
 ---@param name string @ 名称
----@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点。例：Constants.LAYER_UI 或 parentGO.transform
----@param optional notUI boolean @ 是否不是 UI 对象，默认:false
+---@param parent string | UnityEngine.Transform @ -可选- 图层名称 或 父节点。例：Constants.LAYER_UI 或 parentGO.transform
+---@param notUI boolean @ -可选- 是否不是 UI 对象，默认:false
 ---@return UnityEngine.GameObject
 function CreateGameObject(name, parent, notUI)
     -- 传入的 parent 是 图层名称
@@ -183,7 +180,7 @@ end
 
 --- 销毁指定的对象
 ---@param go UnityEngine.GameObject @ 目标对象
----@param optional delay number @ 延时删除（秒）
+---@param delay number @ -可选- 延时删除（秒）
 ---@return void
 function Destroy(go, delay)
     if delay == nil then
@@ -284,11 +281,32 @@ function GetComponent.MeshRenderer(go)
     return go:GetComponent(_typeof_class(UnityEngine.MeshRenderer))
 end
 
+--- 获取 gameObject 下的 UnityEngine.SkinnedMeshRenderer 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.SkinnedMeshRenderer
+function GetComponent.SkinnedMeshRenderer(go)
+    return go:GetComponent(_typeof_class(UnityEngine.SkinnedMeshRenderer))
+end
+
 --- 获取 gameObject 下的 UnityEngine.TextMesh 组件
 ---@param go UnityEngine.GameObject
 ---@return UnityEngine.TextMesh
 function GetComponent.TextMesh(go)
     return go:GetComponent(_typeof_class(UnityEngine.TextMesh))
+end
+
+--- 获取 gameObject 下的 UnityEngine.BoxCollider 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.BoxCollider
+function GetComponent.BoxCollider(go)
+    return go:GetComponent(_typeof_class(UnityEngine.BoxCollider))
+end
+
+--- 获取 gameObject 下的 UnityEngine.ParticleSystem 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.ParticleSystem
+function GetComponent.ParticleSystem(go)
+    return go:GetComponent(_typeof_class(UnityEngine.ParticleSystem))
 end
 
 
@@ -385,9 +403,9 @@ end
 ---@param target table | UnityEngine.GameObject @ 要注册事件的目标
 ---@param type string @ 事件类型
 ---@param listener fun() @ 处理函数
----@param optional caller any @ self 对象
----@param optional priority number @ 优先级 [default: 0]
----@param ... any[] @ 附带的参数
+---@param caller any @ -可选- self 对象
+---@param priority number @ -可选- 优先级 [default: 0]
+---@param ... any[] @ -可选- 附带的参数
 ---@return void
 function AddEventListener(target, type, listener, caller, priority, ...)
     GetEventDispatcher(target):AddEventListener(type, listener, caller, priority, ...)
@@ -397,7 +415,7 @@ end
 ---@param target table | UnityEngine.GameObject @ 要移除事件的目标
 ---@param type string @ 事件类型
 ---@param listener fun() @ 处理函数
----@param optional caller any @ self 对象
+---@param caller any @ -可选- self 对象
 ---@return void
 function RemoveEventListener(target, type, listener, caller)
     GetEventDispatcher(target):RemoveEventListener(type, listener, caller)
@@ -406,8 +424,8 @@ end
 --- 抛出事件
 ---@param target table | UnityEngine.GameObject @ 要抛出事件的目标
 ---@param eventOrType Event | string @ 事件对象 或 事件类型
----@param optional bubbles boolean @ 是否冒泡 [default: false]
----@param optional recycle boolean @ 是否自动回收到池 [default: true]
+---@param bubbles boolean @ -可选- 是否冒泡 [default: false]
+---@param recycle boolean @ -可选- 是否自动回收到池 [default: true]
 ---@return void
 function DispatchEvent(target, eventOrType, bubbles, recycle)
     if type(eventOrType) == "string" then
@@ -495,8 +513,8 @@ end
 --- 延迟指定时间后，执行一次回调
 ---@param delay number @ 延迟时间，秒
 ---@param callback fun() @ 回调函数
----@param optional caller any @ 执行域（self）
----@param ... @ 附带的参数
+---@param caller any @ -可选- 执行域（self）
+---@param ... @ -可选- 附带的参数
 ---@return Handler
 function DelayedCall(delay, callback, caller, ...)
     local handler = Handler.Once(callback, caller)
@@ -510,9 +528,9 @@ end
 
 --- 延迟到下一帧后，执行一次回调
 ---@param callback fun() @ 回调函数
----@param optional caller any @ 执行域（self）
----@param optional frameCount number @ 延迟帧数，默认：1帧
----@param ... @ 附带的参数
+---@param caller any @ -可选- 执行域（self）
+---@param frameCount number @ -可选- 延迟帧数，默认：1帧
+---@param ... @ -可选- 附带的参数
 ---@return Handler
 function DelayedFrameCall(callback, caller, frameCount, ...)
     local handler = DelayedCall(0, callback, caller, ...)

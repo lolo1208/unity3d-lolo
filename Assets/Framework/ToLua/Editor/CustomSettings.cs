@@ -156,6 +156,7 @@ public static class CustomSettings
         _GT(typeof(UnityEngine.Experimental.Director.DirectorPlayer)),
 #endif
 		_GT (typeof(Animator)),
+		_GT (typeof(AnimatorStateInfo)),
 		_GT (typeof(RuntimeAnimatorController)),
 		_GT (typeof(Input)),
 		_GT (typeof(KeyCode)),
@@ -203,14 +204,20 @@ public static class CustomSettings
 		_GT (typeof(UnityEngine.UI.InputField)),
 		_GT (typeof(UnityEngine.UI.Button)),
 		_GT (typeof(UnityEngine.UI.Toggle)),
+		_GT (typeof(UnityEngine.UI.Shadow)),
 
 		_GT (typeof(UnityEngine.TextMesh)),
+
+
+		// for .Net#
+		_GT (typeof(System.DateTime)),
 
 
 		// for ShibaInu
 		_GT (typeof(ShibaInu.LuaHelper)),
 		_GT (typeof(ShibaInu.ResManager)),
 		_GT (typeof(ShibaInu.Stage)),
+		_GT (typeof(ShibaInu.Localization)),
 
 		_GT (typeof(ShibaInu.HttpRequest)),
 		_GT (typeof(ShibaInu.HttpDownload)),

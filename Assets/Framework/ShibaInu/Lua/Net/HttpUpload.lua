@@ -42,10 +42,10 @@ end
 
 --
 --- 开始上传
----@param optional url string @ 网络地址
----@param optional filePath string @ 本地文件地址
----@param optional callback Handler @ 请求结束时的回调 callback(successful, content)
----@param optional postData table<string, string> @ 要发送的 post 数据列表
+---@param url string @ -可选- 网络地址
+---@param filePath string @ -可选- 本地文件地址
+---@param callback Handler @ -可选- 请求结束时的回调 callback(successful, content)
+---@param postData table<string, string> @ -可选- 要发送的 post 数据列表
 function HttpUpload:Start(url, filePath, callback, postData)
     if callback ~= nil then
         self.callback = callback
@@ -158,7 +158,7 @@ end
 --
 --- 设置代理
 ---@param host string @ 代理地址
----@param optional port number @ 代理端口，默认：80
+---@param port number @ -可选- 代理端口，默认：80
 function HttpUpload:SetProxy(host, port)
     self._proxyHost = host
     self._proxyPort = port or 80

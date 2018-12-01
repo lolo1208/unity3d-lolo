@@ -12,6 +12,7 @@ namespace ShibaInu
 	/// </summary>
 	[AddComponentMenu ("ShibaInu/Pointer Event Passer", 301)]
 	[DisallowMultipleComponent]
+	[RequireComponent (typeof(PointerEventDispatcher))]// PointerEventDispatcher 脚本必须在之前添加好，保证在穿透前自身先抛出事件
 	public class PointerEventPasser : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 	{
 		

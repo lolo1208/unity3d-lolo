@@ -55,8 +55,8 @@ function MapList:Ctor(values, ...)
 end
 
 --- 初始化数据
----@param optional values table<number, any> @ 初始的值数组，传入 nil 表示使用 self._values
----@param optional ... table<any, number> | table<number, string> @ 如果只有一个值，并且为 table 对象时，将会设置为 _keys。 如果值为字符串数组时，将会做为 key 属性名称列表，在 values 中获取对应的 key
+---@param values table<number, any> @ -可选- 初始的值数组，传入 nil 表示使用 self._values
+---@param ... table<any, number> | table<number, string> @ -可选- 如果只有一个值，并且为 table 对象时，将会设置为 _keys。 如果值为字符串数组时，将会做为 key 属性名称列表，在 values 中获取对应的 key
 function MapList:Init(values, ...)
     if values == nil then
         -- 没传 values
@@ -178,7 +178,9 @@ end
 ---@param value any
 function MapList:SetValueByKey(key, value)
     local index = self._keys[key]
-    if index ~= nil then
+    if index == nil then
+        self:Add(value, key)
+    else
         self:SetValueByIndex(index, value)
     end
 end

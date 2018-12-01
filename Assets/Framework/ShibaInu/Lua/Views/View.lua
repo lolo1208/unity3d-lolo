@@ -30,10 +30,10 @@ end
 --- 构造函数
 --- 参数详情可参考 Instantiate() 和 InstantiateAsync() 函数使用范例
 --- 如果不使用 prefab 来创建 gameObject，或该 view 没有对应的 gameObject，请手动调用 OnInitialize() 函数
----@param optional prefab UnityEngine.GameObject | string @ 预设对象 或 预设路径
----@param optional parent string | UnityEngine.Transform @ 图层名称 或 父节点(Transform)
----@param optional groupName string @ 资源组名称。参数 prefab 为预设路径时，才需要传入该值。默认值为当前场景名称
----@param optional isAsync boolean @ 是否异步加载资源
+---@param prefab UnityEngine.GameObject | string @ -可选- 预设对象 或 预设路径
+---@param parent string | UnityEngine.Transform @ -可选- 图层名称 或 父节点(Transform)
+---@param groupName string @ -可选- 资源组名称。参数 prefab 为预设路径时，才需要传入该值。默认值为当前场景名称
+---@param isAsync boolean @ -可选- 是否异步加载资源。默认：false
 function View:Ctor(prefab, parent, groupName, isAsync)
     View.super.Ctor(self)
 
@@ -132,9 +132,9 @@ end
 --- 监听或取消监听 self.gameObject 销毁事件。
 --- 推荐在 OnInitialize() 中调用该方法。
 --- 注意：不要在调用该方法后，立即调用 Destroy(self.gameObject) 这样可能会收到不到事件。
----@param optional enabled boolean @ 默认：true，监听 self.gameObject 销毁事件。false：取消监听
+---@param enabled boolean @ -可选- 默认：true，监听 self.gameObject 销毁事件。false：取消监听
 function View:EnableDestroyListener(enabled)
-    enabled = enabled == nil and true or false
+    enabled = enabled == nil and true or enabled
 
     local go = self.gameObject
     if isnull(go) then
@@ -155,8 +155,8 @@ function View:OnDestroy()
 end
 
 --- 销毁界面对应的 gameObject
----@param optional dispatchEvent boolean @ 是否抛出 DestroyEvent.DESTROY 事件，默认：nil(false)，不抛出事件
----@param optional delay number @ 延时删除（秒）。默认：nil，表示立即销毁
+---@param dispatchEvent boolean @ -可选- 是否抛出 DestroyEvent.DESTROY 事件，默认：nil(false)，不抛出事件
+---@param delay number @ -可选- 延时销毁（秒）。默认：nil，表示立即销毁
 function View:Destroy(dispatchEvent, delay)
     self.destroyed = true
     local go = self.gameObject

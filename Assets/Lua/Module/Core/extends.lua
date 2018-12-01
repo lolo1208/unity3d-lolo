@@ -4,8 +4,10 @@
 -- Author LOLO
 --
 
-local require = require
 
+--Localization.Language = "zh-CN"
+require("Data.Languages." .. Localization.Language)
 
 Stage.loadingSceneClass = require("Module.Loading.View.LoadingScene")
 
+Stats.Show()

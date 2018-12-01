@@ -300,7 +300,7 @@ end
 
 --
 --- 重置（清空并销毁）当前所有 item，保留数据和选中信息，根据数据再重新创建和选中 item
----@param optional newData MapList @ 新数据
+---@param newData MapList @ -可选- 新数据
 function Picker:ResetAllItem(newData)
     local data
     if newData == nil then

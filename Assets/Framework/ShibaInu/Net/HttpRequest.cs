@@ -138,6 +138,7 @@ namespace ShibaInu
 			try {
 				// 创建 HttpWebRequest
 				m_request = (HttpWebRequest)WebRequest.Create (url);
+				m_request.ServicePoint.ConnectionLimit = 10;
 				m_request.Method = method;
 				m_request.Timeout = timeout;
 

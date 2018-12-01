@@ -127,6 +127,7 @@ namespace ShibaInu
 				m_luaLoopHandler.EndPCall ();
 			}
 
+			StageTouchEventDispatcher.Update ();
 
 			// lua Update
 			m_luaLoopHandler.BeginPCall ();

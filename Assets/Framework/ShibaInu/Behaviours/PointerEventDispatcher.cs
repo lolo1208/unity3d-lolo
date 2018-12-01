@@ -20,61 +20,52 @@ namespace ShibaInu
 		private const string EVENT_CLICK = "PointerEvent_Click";
 
 		/// PointerEvent.lua
-		private static readonly LuaFunction s_dispatchEvent = Common.luaMgr.state.GetFunction ("PointerEvent.DispatchEvent");
+		private static LuaFunction s_dispatchEvent = null;
 
 		/// 对应 gameObject.peer._ed
 		public LuaTable ed;
 
 
-
-		public void OnPointerEnter (PointerEventData eventData)
+		private void DispatchLuaEvent (string type, PointerEventData eventData)
 		{
+			if (ed == null)
+				return;
+			
+			if (s_dispatchEvent == null)
+				s_dispatchEvent = Common.luaMgr.state.GetFunction ("PointerEvent.DispatchEvent");
+
 			s_dispatchEvent.BeginPCall ();
 			s_dispatchEvent.Push (ed);
-			s_dispatchEvent.Push (EVENT_ENTER);
+			s_dispatchEvent.Push (type);
 			s_dispatchEvent.Push (eventData);
 			s_dispatchEvent.PCall ();
 			s_dispatchEvent.EndPCall ();
+		}
+
+
+		public void OnPointerEnter (PointerEventData eventData)
+		{
+			DispatchLuaEvent (EVENT_ENTER, eventData);
 		}
 
 		public void OnPointerExit (PointerEventData eventData)
 		{
-			s_dispatchEvent.BeginPCall ();
-			s_dispatchEvent.Push (ed);
-			s_dispatchEvent.Push (EVENT_EXIT);
-			s_dispatchEvent.Push (eventData);
-			s_dispatchEvent.PCall ();
-			s_dispatchEvent.EndPCall ();
+			DispatchLuaEvent (EVENT_EXIT, eventData);
 		}
 
 		public void OnPointerDown (PointerEventData eventData)
 		{
-			s_dispatchEvent.BeginPCall ();
-			s_dispatchEvent.Push (ed);
-			s_dispatchEvent.Push (EVENT_DOWN);
-			s_dispatchEvent.Push (eventData);
-			s_dispatchEvent.PCall ();
-			s_dispatchEvent.EndPCall ();
+			DispatchLuaEvent (EVENT_DOWN, eventData);
 		}
 
 		public void OnPointerUp (PointerEventData eventData)
 		{
-			s_dispatchEvent.BeginPCall ();
-			s_dispatchEvent.Push (ed);
-			s_dispatchEvent.Push (EVENT_UP);
-			s_dispatchEvent.Push (eventData);
-			s_dispatchEvent.PCall ();
-			s_dispatchEvent.EndPCall ();
+			DispatchLuaEvent (EVENT_UP, eventData);
 		}
 
 		public void OnPointerClick (PointerEventData eventData)
 		{
-			s_dispatchEvent.BeginPCall ();
-			s_dispatchEvent.Push (ed);
-			s_dispatchEvent.Push (EVENT_CLICK);
-			s_dispatchEvent.Push (eventData);
-			s_dispatchEvent.PCall ();
-			s_dispatchEvent.EndPCall ();
+			DispatchLuaEvent (EVENT_CLICK, eventData);
 		}
 
 

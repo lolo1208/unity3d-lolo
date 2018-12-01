@@ -35,7 +35,7 @@ local to = Float3.To
 ---@param pos Vector3 @ 位置
 ---@param angle number @ 角度
 ---@param distance number @ 距离
----@param optional resultPos Vector3 @ 如果传入该值，偏移后的结果将会修改到该值，否则结果修改到参数 pos
+---@param resultPos Vector3 @ -可选- 如果传入该值，偏移后的结果将会修改到该值，否则结果修改到参数 pos
 function Float3.OffsetByAngle(pos, angle, distance, resultPos)
     resultPos = resultPos or pos
     local radian = RADIAN * angle

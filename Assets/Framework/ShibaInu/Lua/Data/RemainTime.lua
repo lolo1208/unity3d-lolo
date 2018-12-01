@@ -29,7 +29,7 @@ function RemainTime:SetTime(time, type)
     time = time or 0
     type = type or TimeUtil.TYPE_MS
 
-    self._startTime = TimeUtil.time * 1000
+    self._startTime = TimeUtil.timeMsec
     self._remainTime = TimeUtil.convert(type, TimeUtil.TYPE_MS, time)
 end
 
@@ -40,8 +40,8 @@ end
 ---@return number
 function RemainTime:GetTime(type)
     type = type or TimeUtil.TYPE_MS
-
-    local time = self._remainTime - (TimeUtil.time * 1000 - self._startTime)
+    local time = self._remainTime - (TimeUtil.timeMsec - self._startTime)
+    time = TimeUtil.convert(TimeUtil.TYPE_MS, type, time)
     return time > 0 and time or 0
 end
 

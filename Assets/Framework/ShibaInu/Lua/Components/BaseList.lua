@@ -10,6 +10,7 @@ local remove = table.remove
 local min = math.min
 local floor = math.floor
 
+
 --
 ---@class BaseList : View
 ---@field New fun(go:UnityEngine.GameObject, itemClass:any):BaseList
@@ -41,10 +42,12 @@ local floor = math.floor
 local BaseList = class("BaseList", View)
 --
 
+
 --- 列表更新时，根据索引来选中子项
 BaseList.SELECT_MODE_INDEX = "index"
 --- 列表更新时，根据键来选中子项
 BaseList.SELECT_MODE_KEY = "key"
+
 
 --
 --- 构造函数
@@ -294,6 +297,8 @@ function BaseList:GetItem()
         item._list = self
         local go = Instantiate(self._itemPrefab, self._content)
         AddEventListener(go, PointerEvent.DOWN, self.ItemPointerDown, self, 0, item)
+        AddEventListener(go, PointerEvent.UP, self.ItemPointerUp, self, 0, item)
+        AddEventListener(go, PointerEvent.EXIT, self.ItemPointerExit, self, 0, item)
         AddEventListener(go, PointerEvent.CLICK, self.ItemPointerClick, self, 0, item)
         item.gameObject = go
         item:OnInitialize()
@@ -308,6 +313,26 @@ end
 function BaseList:ItemPointerDown(event, item)
     if item:GetEnabled() then
         self:DispatchListEvent(ListEvent.ITEM_POINTER_DOWN, item)
+    end
+end
+
+--
+--- 子项 鼠标指针（touch）释放
+---@param event PointerEvent
+---@param item ItemRenderer
+function BaseList:ItemPointerUp(event, item)
+    if item:GetEnabled() then
+        self:DispatchListEvent(ListEvent.ITEM_POINTER_UP, item)
+    end
+end
+
+--
+--- 子项 鼠标指针（touch）离开对象
+---@param event PointerEvent
+---@param item ItemRenderer
+function BaseList:ItemPointerExit(event, item)
+    if item:GetEnabled() then
+        self:DispatchListEvent(ListEvent.ITEM_POINTER_EXIT, item)
     end
 end
 
@@ -709,6 +734,8 @@ function BaseList:CleanItemPool()
         local item = itemPool[i]
         local go = item.gameObject
         RemoveEventListener(go, PointerEvent.DOWN, self.ItemPointerDown, self)
+        RemoveEventListener(go, PointerEvent.UP, self.ItemPointerUp, self, 0, item)
+        RemoveEventListener(go, PointerEvent.EXIT, self.ItemPointerExit, self, 0, item)
         RemoveEventListener(go, PointerEvent.CLICK, self.ItemPointerClick, self)
         Destroy(go)
         item:OnDestroy()

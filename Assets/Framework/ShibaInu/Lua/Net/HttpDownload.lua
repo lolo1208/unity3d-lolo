@@ -40,9 +40,9 @@ end
 
 --
 --- 开始下载
----@param optional url string @ 文件网络地址
----@param optional savePath string @ 本地保存路径
----@param optional callback Handler @ 请求结束时的回调 callback(successful, errMsg)
+---@param url string @ -可选- 文件网络地址
+---@param savePath string @ -可选- 本地保存路径
+---@param callback Handler @ -可选- 请求结束时的回调 callback(successful, errMsg)
 function HttpDownload:Start(url, savePath, callback)
     if callback ~= nil then
         self.callback = callback

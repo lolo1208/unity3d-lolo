@@ -12,7 +12,8 @@ namespace ShibaInu
 	/// 摄像机相关工具
 	/// 该工具类只在 Editor Play Mode 使用
 	/// </summary>
-	[AddComponentMenu ("ShibaInu/Camera Tool", 203)]
+	[AddComponentMenu ("ShibaInu/Camera Tool", 401)]
+	[DisallowMultipleComponent]
 	public class CameraTool : MonoBehaviour
 	{
 

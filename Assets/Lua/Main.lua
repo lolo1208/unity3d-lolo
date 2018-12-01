@@ -4,29 +4,38 @@
 -- Author LOLO
 --
 
-local require = require
 
-
+-- 启动函数
 local function Main()
     require("Core.initialize")
-    collectgarbage("collect")
+    require("Module.Core.extends")
+
+    -- 禁止创建全局变量或全局函数
+    setmetatable(_G, {
+        __newindex = function(_, name, value)
+            error(Constants.E1001)
+        end
+    })
 
     -- 启动游戏
-    require("Module.Core.extends")
+    collectgarbage("collect")
     require("Module.Core.launcher")
 end
 
 
+-- 设置当前时间为随机种子
+local now = System.DateTime.Now
+math.randomseed(now.Minute * 60 * 1000 + now.Second * 1000 + now.Millisecond)
 
 
-
+-- try 启动函数
 local function errorTraceback(msg)
     local err = {
         "[LUA ERROR : Main] ",
         tostring(msg),
         debug.traceback("", 2)
     }
-    print(table.concat(err, ""))
+    LuaHelper.ConsoleLogError(table.concat(err, ""))
 end
 xpcall(Main, errorTraceback)
 

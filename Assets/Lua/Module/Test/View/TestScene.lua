@@ -5,6 +5,7 @@
 --
 
 
+--
 ---@class Test.TestScene : Scene
 ---@field New fun():Test.TestScene
 ---
@@ -47,6 +48,7 @@ function TestScene:OnInitialize()
     self.backBtn:SetActive(false)
     AddEventListener(self.backBtn, PointerEvent.CLICK, self.OnClick_backBtn, self)
 
+    print("Language", Language.aa)
 end
 
 

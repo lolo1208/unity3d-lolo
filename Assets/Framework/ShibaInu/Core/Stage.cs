@@ -15,15 +15,15 @@ namespace ShibaInu
 		private const string EVENT_START = "LoadSceneEvent_Start";
 		private const string EVENT_COMPLETE = "LoadSceneEvent_Complete";
 
-		private static readonly Vector3 s_sceneLayerPos = new Vector3 (0, 0, 750);
-		private static readonly Vector3 s_uiLayerPos = new Vector3 (0, 0, 650);
-		private static readonly Vector3 s_windowLayerPos = new Vector3 (0, 0, 550);
-		private static readonly Vector3 s_uiTopLayerPos = new Vector3 (0, 0, 450);
-		private static readonly Vector3 s_alertLayerPos = new Vector3 (0, 0, 350);
-		private static readonly Vector3 s_guideLayerPos = new Vector3 (0, 0, 250);
-		private static readonly Vector3 s_topLayerPos = new Vector3 (0, 0, 150);
+		private static readonly Vector3 s_sceneLayerPos = new Vector3 (0, 0, 2100);
+		private static readonly Vector3 s_uiLayerPos = new Vector3 (0, 0, 1800);
+		private static readonly Vector3 s_windowLayerPos = new Vector3 (0, 0, 1500);
+		private static readonly Vector3 s_uiTopLayerPos = new Vector3 (0, 0, 1200);
+		private static readonly Vector3 s_alertLayerPos = new Vector3 (0, 0, 900);
+		private static readonly Vector3 s_guideLayerPos = new Vector3 (0, 0, 600);
+		private static readonly Vector3 s_topLayerPos = new Vector3 (0, 0, 300);
 
-		/// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadSceneEvent.lua
+		/// 在 lua 层抛出 LoadSceneEvent 的方法。 - Events/LoadSceneEvent.lua
 		private static LuaFunction s_dispatchEvent;
 
 		/// UI Canvas
@@ -44,7 +44,9 @@ namespace ShibaInu
 		/// 当前所在场景名称
 		private static string s_sceneName = Constants.LauncherSceneName;
 
+		/// 加载场景对应 AssetBundle 的请求对象
 		private static AssetBundleCreateRequest s_abcr = null;
+		/// 载入场景的异步操作对象
 		private static AsyncOperation s_ao = null;
 		/// 异步加载场景的协程对象
 		private static Coroutine s_alcCoroutine = null;
@@ -197,9 +199,7 @@ namespace ShibaInu
 				}
 			}
 
-			if (s_sceneName != Constants.LauncherSceneName && s_sceneName != Constants.EmptySceneName)
-				Common.looper.StartCoroutine (UnloadSceneAssetBundle (s_sceneName));
-			
+			Common.looper.StartCoroutine (UnloadSceneAssetBundle (s_sceneName));
 			s_sceneName = sceneName;
 			SceneManager.LoadScene (sceneName);// 再载入场景
 		}
@@ -223,19 +223,22 @@ namespace ShibaInu
 			}
 			#endif
 
+			Common.looper.StartCoroutine (UnloadSceneAssetBundle (s_sceneName));
+			s_sceneName = sceneName;
+
 			if (s_alcCoroutine != null)
 				Common.looper.StopCoroutine (s_alcCoroutine);
 			
 			s_abcr = null;
 			s_ao = null;
-			s_alcCoroutine = Common.looper.StartCoroutine (DoLoadSceneAsync (sceneName));
+			s_alcCoroutine = Common.looper.StartCoroutine (DoLoadSceneAsync ());
 		}
 
 
-		private static IEnumerator DoLoadSceneAsync (string sceneName)
+		private static IEnumerator DoLoadSceneAsync ()
 		{
-			DispatchLuaEvent (EVENT_START, sceneName);
-			ABI abi = ResManager.GetAbi (ResManager.GetPathMD5 (sceneName));
+			DispatchLuaEvent (EVENT_START, s_sceneName);
+			ABI abi = ResManager.GetAbi (ResManager.GetPathMD5 (s_sceneName));
 			if (abi.ab == null) {
 				// 先异步加载场景对应的 AssetBundle
 				ABLoader.ParseFilePath (abi);
@@ -246,15 +249,12 @@ namespace ShibaInu
 			}
 
 			// 再异步加载场景
-			s_ao = SceneManager.LoadSceneAsync (sceneName);
+			s_ao = SceneManager.LoadSceneAsync (s_sceneName);
 			yield return s_ao;
 			s_ao = null;
 			s_alcCoroutine = null;
 
-			Common.looper.StartCoroutine (UnloadSceneAssetBundle (s_sceneName));
-
-			s_sceneName = sceneName;
-			DispatchLuaEvent (EVENT_COMPLETE, sceneName);
+			DispatchLuaEvent (EVENT_COMPLETE, s_sceneName);
 		}
 
 
@@ -332,18 +332,18 @@ namespace ShibaInu
 		/// <param name="sceneName">Scene name.</param>
 		private static IEnumerator UnloadSceneAssetBundle (string sceneName)
 		{
-			yield return new WaitForSeconds (2f);
+			yield return new WaitForSeconds (5f);
 
 			// 等待异步场景加载完成
 			while (s_alcCoroutine != null) {
 				yield return new WaitForEndOfFrame ();
 			}
 
-			if (s_sceneName == sceneName)
+			if (sceneName == s_sceneName)
 				yield break;
-			
+
 			ABI abi = ResManager.GetAbi (ResManager.GetPathMD5 (sceneName));
-			if (abi.ab != null) {
+			if (abi != null && abi.ab != null) {
 				abi.ab.Unload (true);
 				abi.ab = null;
 				Debug.Log ("[Unload] Scene: " + sceneName);

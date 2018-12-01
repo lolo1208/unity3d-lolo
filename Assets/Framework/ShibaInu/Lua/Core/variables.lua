@@ -15,6 +15,7 @@ EventDispatcher = require("Events.EventDispatcher")
 Res = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.ResManager }) ---@type ShibaInu.ResManager
 LuaHelper = ShibaInu.LuaHelper
 --Stage = ShibaInu.Stage -- 已整合进 Stage.lua
+Localization = ShibaInu.Localization
 
 
 
@@ -28,6 +29,8 @@ Application = UnityEngine.Application
 Input = UnityEngine.Input
 KeyCode = UnityEngine.KeyCode
 PlayerPrefs = UnityEngine.PlayerPrefs
+Shader = UnityEngine.Shader
+Material = UnityEngine.Material
 
 
 -- DOTween
@@ -57,12 +60,16 @@ DOTween_Enum = {
     UpdateType = DG.Tweening.UpdateType,
 }
 TweenParams = DG.Tweening.TweenParams ---@type DG.Tweening.TweenParams
+DOTween.defaultEaseType = DOTween_Enum.Ease.Linear
 
 
 
 -- variables
 --- 是否在 LuaJIT 环境中
 isJIT = jit ~= nil
+
+--- 语言包
+Language = {}
 
 
 
@@ -74,14 +81,17 @@ LoadSceneEvent = require("Events.LoadSceneEvent")
 DestroyEvent = require("Events.DestroyEvent")
 PointerEvent = require("Events.PointerEvent")
 DragDropEvent = require("Events.DragDropEvent")
+TouchEvent = require("Events.TouchEvent")
 DataEvent = require("Events.DataEvent")
 ListEvent = require("Events.ListEvent")
 HttpEvent = require("Events.HttpEvent")
 SocketEvent = require("Events.SocketEvent")
+AnimationEvent = require("Events.AnimationEvent")
 
 MapList = require("Data.MapList")
 LinkedList = require("Data.LinkedList")
 RemainTime = require("Data.RemainTime")
+Countdown = require("Utils.Countdown")
 
 JSON = require("Utils.JSON")
 Logger = require("Utils.Logging.Logger")
@@ -111,6 +121,7 @@ BaseList = require("Components.BaseList")
 ScrollList = require("Components.ScrollList")
 Picker = require("Components.Picker")
 ItemRenderer = require("Components.ItemRenderer")
+Animation = require("Components.Animation")
 
 Stats = require("UI.Stats")
 Profiler = require("Utils.Optimize.Profiler")

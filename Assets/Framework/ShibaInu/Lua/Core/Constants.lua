@@ -8,6 +8,9 @@
 ---@class Constants
 local Constants = {
 
+    -- 核心资源组名称（不会被销毁）
+    ASSET_GROUP_CORE = "core",
+
 
     -- 场景图层
     LAYER_SCENE = "sceneLayer", -- 场景层
@@ -39,7 +42,6 @@ local Constants = {
 
     E2001 = "不存在的图层：%s",
     E2002 = "必须设定场景名称（moduleName）。className：%s",
-    --E2003 = "参数错误！参数 prefab 为 预设路径，请传入 groupName 参数，指定资源组名称。prefab：%s",
     E2004 = "View 只能被初始化一次。className：%s",
     E2005 = "View 还未被初始化。className：%s",
     E2006 = "View 实例.gameObject 值为 nil，不能监听（或取消监听）销毁事件。className：%s",
@@ -54,6 +56,7 @@ local Constants = {
     E3007 = "HttpDownload.savePath 不能为 nil",
     E3008 = "HttpUpload.url 不能为 nil",
     E3009 = "Httpupload.filePath 不能为 nil",
+    E3010 = "Countdown.intervalTime 的值不能为 %s",
 
 
 }

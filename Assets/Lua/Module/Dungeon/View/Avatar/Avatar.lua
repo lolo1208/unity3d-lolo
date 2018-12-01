@@ -180,7 +180,7 @@ function Avatar:PlayAnimation(aniName, callback, transitionDuration)
         CancelDelayedCall(self.aniEndHandler)
         self.aniEndHandler = nil
     end
-    -- 主城新回调
+    -- 注册新回调
     if callback ~= nil then
         local aniLength = self.aniLengthList[aniName]
         self.aniEndHandler = DelayedCall(aniLength / self.aniSpeed, function()

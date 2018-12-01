@@ -139,6 +139,7 @@ namespace ShibaInu
 			try {
 				// 先使用 HEAD 模式获取文件大小
 				m_request = (HttpWebRequest)WebRequest.Create (url);
+				m_request.ServicePoint.ConnectionLimit = 10;
 				m_request.Method = HttpRequestMethod.HEAD;
 				m_request.Timeout = timeout;
 				if (m_proxyHost != null)
@@ -172,6 +173,7 @@ namespace ShibaInu
 						fs.Seek (m_bytesLoaded, SeekOrigin.Begin);
 
 						m_request = (HttpWebRequest)WebRequest.Create (url);
+						m_request.ServicePoint.ConnectionLimit = 10;
 						m_request.AddRange ((int)m_bytesLoaded);
 						m_request.Timeout = timeout;
 						if (m_proxyHost != null)

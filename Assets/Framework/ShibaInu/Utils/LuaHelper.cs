@@ -38,8 +38,10 @@ namespace ShibaInu
 		/// <param name="ed">Ed.</param>
 		public static void AddPointerEvent (GameObject go, LuaTable ed)
 		{
-			if (go.GetComponent<PointerEventDispatcher> () == null)
-				go.AddComponent<PointerEventDispatcher> ().ed = ed;
+			PointerEventDispatcher ped = go.GetComponent<PointerEventDispatcher> ();
+			if (ped == null)
+				ped = go.AddComponent<PointerEventDispatcher> ();
+			ped.ed = ed;
 		}
 
 
@@ -111,7 +113,7 @@ namespace ShibaInu
 
 
 		/// <summary>
-		/// 将世界（主摄像机）坐标转换成 UICanvas 的坐标
+		/// 将世界（主摄像机）坐标转换成 UICanvas 坐标
 		/// </summary>
 		/// <returns>The to canvas point.</returns>
 		/// <param name="pos">world position</param>
@@ -121,6 +123,24 @@ namespace ShibaInu
 			pos = Stage.uiCanvas.worldCamera.ScreenToWorldPoint (pos);
 			Vector3 s = Stage.uiCanvasTra.localScale;
 			tmpVec3.Set (pos.x / s.x, pos.y / s.y, Stage.uiCanvasTra.anchoredPosition3D.z);
+			return tmpVec3;
+		}
+
+
+		/// <summary>
+		/// 将屏幕坐标转换成 UICanvas 坐标
+		/// </summary>
+		/// <returns>The to canvas point.</returns>
+		/// <param name="pos">Position.</param>
+		/// <param name="parent">Parent.</param>
+		public static Vector3 ScreenToCanvasPoint (Vector3 pos, RectTransform parent = null)
+		{
+			if (parent == null)
+				parent = Stage.uiLayer;
+			
+			Vector2 p = Vector2.zero;
+			RectTransformUtility.ScreenPointToLocalPointInRectangle (parent, pos, Stage.uiCanvas.worldCamera, out p);
+			tmpVec3.Set (p.x, p.y, Stage.uiCanvasTra.anchoredPosition3D.z);
 			return tmpVec3;
 		}
 
@@ -163,6 +183,35 @@ namespace ShibaInu
 			if (c == null)
 				c = go.AddComponent (componentType);
 			return c;
+		}
+
+
+		/// <summary>
+		/// 获取指定名字（gameObject.name）的标记点 GameObject
+		/// </summary>
+		/// <returns>The mark point game object.</returns>
+		/// <param name="root">根节点</param>
+		/// <param name="name">需匹配的 GameObject 名称</param>
+		public static GameObject GetMarkPointGameObject (GameObject root, string name)
+		{
+			MarkPoint[] list = root.GetComponentsInChildren<MarkPoint> (true);
+			foreach (MarkPoint mp in list) {
+				GameObject go = mp.gameObject;
+				if (go.name == name)
+					return go;
+			}
+			return null;
+		}
+
+
+
+		/// <summary>
+		/// 在控制台打印一条错误日志
+		/// </summary>
+		/// <param name="msg">Message.</param>
+		public static void ConsoleLogError (string msg)
+		{
+			Debug.LogError (msg);
 		}
 
 
