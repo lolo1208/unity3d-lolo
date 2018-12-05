@@ -145,6 +145,17 @@ namespace ShibaInu
 		[FormerlySerializedAs ("isBounces"), SerializeField]
 		protected bool m_isBounces = true;
 
+
+		/// 拖拽结束后，继续滚动距离比例
+		public float scrollRatio {
+			set { m_scrollRatio = value; }
+			get { return m_scrollRatio; }
+		}
+
+		[Range (0, 1)]
+		[FormerlySerializedAs ("scrollRatio"), SerializeField]
+		protected float m_scrollRatio = 0.5f;
+
 		#endregion
 
 
@@ -737,7 +748,7 @@ namespace ShibaInu
 				return;
 
 			float offsetPosition = m_lastPosition - m_curDragPos;
-			m_velocitys.Enqueue (offsetPosition / offsetTime);
+			m_velocitys.Enqueue (offsetPosition / offsetTime * 0.5f);
 			while (m_velocitys.Count > VELOCITY_MAX_COUNT)
 				m_velocitys.Dequeue ();
 			m_lastTime = curTime;
@@ -761,7 +772,7 @@ namespace ShibaInu
 			}
 
 			// 继续滚动
-			float pixelsPerMS = velocity / 1000 / weight;
+			float pixelsPerMS = velocity / 1000 / weight * m_scrollRatio;
 			float absPixelsPerMS = Mathf.Abs (pixelsPerMS);
 			float duration = 0;
 			float posTo = 0;

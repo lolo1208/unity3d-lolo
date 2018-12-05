@@ -14,6 +14,7 @@ namespace ShibaInu
 		protected SerializedProperty m_itemOffsetCount;
 		protected SerializedProperty m_itemAlphaOffset;
 		protected SerializedProperty m_itemScaleOffset;
+		protected SerializedProperty m_scrollRatio;
 
 		protected GUIContent m_c_hitArea = new GUIContent ("Hit Area", "拖动点击响应区域");
 		protected GUIContent m_c_itemPrefab = new GUIContent ("Item Prefab", "Item 的预制对象");
@@ -23,6 +24,7 @@ namespace ShibaInu
 		protected GUIContent m_c_options = new GUIContent ("Options", "其他选项");
 		protected GUIContent m_c_isVertical = new GUIContent ("isVertical", "是否为垂直方向排列");
 		protected GUIContent m_c_isBounces = new GUIContent ("isBounces", "是否启用回弹效果");
+		protected GUIContent m_c_scrollRatio = new GUIContent ("Scroll Ratio", "拖拽结束后，继续滚动距离比例");
 
 		protected Picker m_picker;
 
@@ -37,6 +39,7 @@ namespace ShibaInu
 			m_itemOffsetCount = serializedObject.FindProperty ("m_itemOffsetCount");
 			m_itemAlphaOffset = serializedObject.FindProperty ("m_itemAlphaOffset");
 			m_itemScaleOffset = serializedObject.FindProperty ("m_itemScaleOffset");
+			m_scrollRatio = serializedObject.FindProperty ("m_scrollRatio");
 		}
 
 
@@ -69,15 +72,6 @@ namespace ShibaInu
 			}
 
 
-			// item position offset
-//			EditorGUILayout.BeginHorizontal ();
-//			EditorGUILayout.LabelField (new GUIContent ("Item Position Offset", "Item 位置偏移 [ x, y ]"), GUILayout.Width (m_labelWidth));
-//			float x = EditorGUILayout.FloatField (m_picker.itemPositionOffset.x, GUILayout.Width (m_halfWidth));
-//			float y = EditorGUILayout.FloatField (m_picker.itemPositionOffset.y, GUILayout.Width (m_halfWidth));
-//			m_picker.itemPositionOffset = new Vector2 (x, y);
-//			EditorGUILayout.EndHorizontal ();
-
-
 			// isVertical and isBounces
 			EditorGUILayout.BeginHorizontal ();
 			EditorGUILayout.LabelField (m_c_options, m_labelWidth);
@@ -86,7 +80,8 @@ namespace ShibaInu
 			EditorGUILayout.EndHorizontal ();
 
 
-//			serializedObject.ApplyModifiedProperties ();
+			EditorGUILayout.PropertyField (m_scrollRatio, m_c_scrollRatio);
+			serializedObject.ApplyModifiedProperties ();
 		}
 
 
