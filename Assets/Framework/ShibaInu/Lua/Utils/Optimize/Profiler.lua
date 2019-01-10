@@ -182,7 +182,7 @@ function Profiler.GetData()
         return '{ "t":{}, "n":{} }'
     end
 
-    return JSON.stringify({ t = t, n = n })
+    return JSON.Stringify({ t = t, n = n })
 end
 
 

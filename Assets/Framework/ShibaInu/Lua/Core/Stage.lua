@@ -267,6 +267,19 @@ function Stage.OpenWindow(window, closeOthers)
         _windowList[#_windowList] = window
     end
 
+    -- 加入到 _windowList 中
+    local hasWindow = false
+    local windowCount = #_windowList
+    for i = 1, windowCount do
+        hasWindow = _windowList[i] == window
+        if hasWindow then
+            break
+        end
+    end
+    if not hasWindow then
+        _windowList[windowCount + 1] = window
+    end
+
     -- 关闭其他窗口
     if closeOthers then
         Stage.CloseAllWindow(window)
@@ -367,6 +380,7 @@ function Stage._loopHandler(type, time)
 
     if type == Event.UPDATE then
         TimeUtil.frameCount = Time.frameCount
+        TimeUtil.deltaTime = Time.deltaTime
     end
 
     event.data = nil
@@ -377,4 +391,8 @@ function Stage._loopHandler(type, time)
     trycall(ed.DispatchEvent, ed, event, false, false)
 end
 
+
+
+
+--
 return Stage

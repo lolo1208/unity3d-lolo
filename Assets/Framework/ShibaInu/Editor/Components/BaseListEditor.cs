@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
+
 namespace ShibaInu
 {
 	[CustomEditor (typeof(BaseList))]

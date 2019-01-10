@@ -127,7 +127,7 @@ function Joystick:AngleTimerHandler()
         end
 
         -- 变换角度
-        IOGameData.socket:Send(JSON.stringify({
+        IOGameData.socket:Send(JSON.Stringify({
             cmd = IOGameData.CMD_ANGLE,
             id = IOGameData.playerID,
             angle = self._curAngle
@@ -137,7 +137,7 @@ function Joystick:AngleTimerHandler()
     -- 移动状态有改变
     if moveing ~= self._moveing then
         self._moveing = moveing
-        IOGameData.socket:Send(JSON.stringify({
+        IOGameData.socket:Send(JSON.Stringify({
             cmd = IOGameData.CMD_MOVE,
             id = IOGameData.playerID,
             moveing = moveing

@@ -123,7 +123,7 @@ namespace ShibaInu
 
 
 
-		#region 加载资源
+		#region 同步加载资源
 
 		/// <summary>
 		/// 同步加载 path 对应的 AssetBundle，并返回返回 path 对应的数据
@@ -149,6 +149,11 @@ namespace ShibaInu
 		public static UnityEngine.AudioClip LoadAudioClip (string path, string groupName = null)
 		{
 			return LoadAssetWithType<UnityEngine.AudioClip> (path, groupName);
+		}
+
+		public static UnityEngine.AnimationClip LoadAnimationClip (string path, string groupName = null)
+		{
+			return LoadAssetWithType<UnityEngine.AnimationClip> (path, groupName);
 		}
 
 		public static string LoadText (string path, string groupName = null)
@@ -183,7 +188,11 @@ namespace ShibaInu
 			return abi.ab.LoadAsset<T> (Constants.ResDirPath + path);
 		}
 
+		#endregion
 
+
+
+		#region 异步加载资源
 
 		/// <summary>
 		/// 异步加载资源。
@@ -209,6 +218,11 @@ namespace ShibaInu
 		public static void LoadAudioClipAsync (string path, string groupName = null)
 		{
 			LoadAssetAsyncWithType<UnityEngine.AudioClip> (path, groupName);
+		}
+
+		public static void LoadAnimationClipAsync (string path, string groupName = null)
+		{
+			LoadAssetAsyncWithType<UnityEngine.AnimationClip> (path, groupName);
 		}
 
 		private static void LoadAssetAsyncWithType<T> (string path, string groupName) where T : UnityEngine.Object
@@ -240,7 +254,6 @@ namespace ShibaInu
 			abi.AddAssetAsync (path, typeof(T));
 			ABLoader.LoadAsync (abi, groupName);
 		}
-
 
 
 		#if UNITY_EDITOR
@@ -433,6 +446,7 @@ namespace ShibaInu
 		}
 
 		#endregion
+
 
 
 		#region 在 lua 层抛出事件

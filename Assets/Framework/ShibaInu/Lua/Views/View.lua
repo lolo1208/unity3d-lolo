@@ -13,12 +13,17 @@ local format = string.format
 ---
 ---@field gameObject UnityEngine.GameObject
 ---@field transform UnityEngine.Transform
+---@field initShow boolean @ 初始化时是否直接显示（默认是否显示）。默认值：true
 ---@field visible boolean @ 是否已经显示
 ---@field destroyed boolean @ 是否已经被销毁
 ---
 ---@field _initialized boolean @ 是否已经初始化完成了
 local View = class("View", EventDispatcher)
 
+View.initShow = true
+
+
+--
 --- 异步资源加载完成时，初始化
 local function InitializeAsync(view, go)
     if not view.destroyed then
@@ -27,6 +32,8 @@ local function InitializeAsync(view, go)
     end
 end
 
+
+--
 --- 构造函数
 --- 参数详情可参考 Instantiate() 和 InstantiateAsync() 函数使用范例
 --- 如果不使用 prefab 来创建 gameObject，或该 view 没有对应的 gameObject，请手动调用 OnInitialize() 函数
@@ -53,6 +60,8 @@ function View:Ctor(prefab, parent, groupName, isAsync)
     end
 end
 
+
+--
 --- 初始化时（已创建 prefab 实例），并设置 self.gameObject
 --- 注意：该函数只能被调用一次，子类可以在该函数内做一些初始化的工作。子类覆盖该函数时，记得调用 Class.super.OnInitialize(self)
 function View:OnInitialize()
@@ -61,13 +70,14 @@ function View:OnInitialize()
     end
     self._initialized = true
 
-    local showed = true
+    self.visible = self.initShow
     if self.gameObject ~= nil then
         self.transform = self.gameObject.transform
-        showed = self.gameObject.activeSelf
+        if self.gameObject.activeSelf ~= self.visible then
+            self.gameObject:SetActive(self.visible)
+        end
     end
-    if showed then
-        self.visible = showed
+    if self.visible then
         self:OnShow()
     end
 end
@@ -129,6 +139,8 @@ end
 function View:OnHide()
 end
 
+
+--
 --- 监听或取消监听 self.gameObject 销毁事件。
 --- 推荐在 OnInitialize() 中调用该方法。
 --- 注意：不要在调用该方法后，立即调用 Destroy(self.gameObject) 这样可能会收到不到事件。
@@ -171,4 +183,7 @@ function View:Destroy(dispatchEvent, delay)
     Destroy(go, delay)
 end
 
+
+
+--
 return View

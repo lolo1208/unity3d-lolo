@@ -77,8 +77,6 @@ namespace ShibaInu
 		public GameObject dragTarget {
 			set {
 				if (value != m_dragTarget) {
-					if (m_dragTrigger != null)
-						Destroy (m_dragTrigger);
 					m_dragTarget = value;
 					AddDragTargetEventTrigger ();
 				}
@@ -130,7 +128,8 @@ namespace ShibaInu
 
 		void Start ()
 		{
-			AddDragTargetEventTrigger ();
+			if (m_dragTrigger == null)
+				AddDragTargetEventTrigger ();
 			CalculateDistance ();
 		}
 
@@ -162,6 +161,9 @@ namespace ShibaInu
 		{
 			if (m_dragTarget == null)
 				return;
+			
+			if (m_dragTrigger != null)
+				Destroy (m_dragTrigger);
 			
 			// 响应拖拽，记录拖拽位置
 			m_dragTrigger = m_dragTarget.AddComponent<EventTrigger> ();

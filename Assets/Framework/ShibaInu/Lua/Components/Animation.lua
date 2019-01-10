@@ -68,11 +68,15 @@ function Animation:Play(aniName, restart)
     self.animator:Play(aniName)
     self.animator:Update(0) -- 手动调用一次才能拿到 Current State Info
 
+    local length = self.animator:GetCurrentAnimatorStateInfo(0).length
+    if length == 0 then
+        return -- 可能 self.animator.gameObject.activeSelf = false
+    end
+    self.completeTimer:SetDelay(length / self.speed)
+    self.completeTimer:Start()
+
     if self.isDispatchEvent then
         DispatchAnimationEvent(self, AnimationEvent.ANI_STAR)
-        local length = self.animator:GetCurrentAnimatorStateInfo(0).length
-        self.completeTimer:SetDelay(length / self.speed)
-        self.completeTimer:Start()
     end
 end
 
@@ -86,11 +90,15 @@ function Animation:TransitionTo(aniName, duration)
     self.animator:CrossFadeInFixedTime(aniName, duration or 0.15)
     self.animator:Update(0) -- 手动调用一次才能拿到 Next State Info
 
+    local length = self.animator:GetNextAnimatorStateInfo(0).length
+    if length == 0 then
+        return -- 可能 self.animator.gameObject.activeSelf = false
+    end
+    self.completeTimer:SetDelay(length / self.speed)
+    self.completeTimer:Start()
+
     if self.isDispatchEvent then
         DispatchAnimationEvent(self, AnimationEvent.ANI_STAR)
-        local length = self.animator:GetNextAnimatorStateInfo(0).length
-        self.completeTimer:SetDelay(length / self.speed)
-        self.completeTimer:Start()
     end
 end
 
@@ -99,7 +107,39 @@ end
 --- 当前动画播放完成
 function Animation:CompleteHandler()
     self.completeTimer:Stop()
-    DispatchAnimationEvent(self, AnimationEvent.ANI_COMPLETE)
+
+    if isnull(self.animator) then
+        return
+    end
+
+    -- 动画状态机在当前动画播放完毕时，切换到了别的动画
+    -- 只有循环播放的动画，self.aniName 才会继续保留
+    if not self:IsAniName(self.aniName) then
+        self.aniName = nil
+    end
+
+    if self.isDispatchEvent then
+        DispatchAnimationEvent(self, AnimationEvent.ANI_COMPLETE)
+    end
+end
+
+
+--
+--- 状态机当前是否正在播放 aniName
+---@param aniName string
+---@return boolean
+function Animation:IsAniName(aniName)
+    return self.animator:GetCurrentAnimatorStateInfo(0):IsName(aniName)
+end
+
+
+--
+--- 当前动画名称是否为 aniName 或 nil（画播放完毕时，切换到了别的动画）
+--- 该函数比 IsAniName() 函数效率更高，但精准稍逊
+---@param aniName string
+---@return boolean
+function Animation:IsAniNameOrNil(aniName)
+    return self.aniName == aniName or self.aniName == nil
 end
 
 

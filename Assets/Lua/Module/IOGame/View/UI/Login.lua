@@ -117,7 +117,7 @@ function Login:SocketConnectHandler(event)
         socket:AddEventListener(SocketEvent.DISCONNECT, self.SocketDisonnectHandler, self)
         socket:AddEventListener(SocketEvent.MESSAGE, self.SocketMessageHandler, self)
 
-        socket:Send(JSON.stringify({
+        socket:Send(JSON.Stringify({
             cmd = "enter",
             name = IOGameData.playerName,
             pic = self._picPicker:GetSelectedItemData()
@@ -138,7 +138,7 @@ end
 
 function Login:SocketMessageHandler(event)
     --print(event.type, event.data)
-    local data = JSON.parse(event.data)
+    local data = JSON.Parse(event.data)
     local cmd = data.cmd
     if cmd == nil then
         IOGameData.frame:AppendFrameData(data)

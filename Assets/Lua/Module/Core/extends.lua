@@ -5,9 +5,11 @@
 --
 
 
---Localization.Language = "zh-CN"
-require("Data.Languages." .. Localization.Language)
-
+-- ShibaInu
+Config = require("Data.Config")
+Language = require("Data.Languages." .. Config.language)
 Stage.loadingSceneClass = require("Module.Loading.View.LoadingScene")
+--
+
 
 Stats.Show()

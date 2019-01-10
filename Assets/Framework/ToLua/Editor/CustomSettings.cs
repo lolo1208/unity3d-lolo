@@ -217,7 +217,6 @@ public static class CustomSettings
 		_GT (typeof(ShibaInu.LuaHelper)),
 		_GT (typeof(ShibaInu.ResManager)),
 		_GT (typeof(ShibaInu.Stage)),
-		_GT (typeof(ShibaInu.Localization)),
 
 		_GT (typeof(ShibaInu.HttpRequest)),
 		_GT (typeof(ShibaInu.HttpDownload)),
@@ -229,8 +228,10 @@ public static class CustomSettings
 		_GT (typeof(ShibaInu.ScrollList)),
 		_GT (typeof(ShibaInu.Picker)),
 		_GT (typeof(ShibaInu.CircleImage)),
+		_GT (typeof(ShibaInu.LocalizationText)),
 
 		_GT (typeof(ShibaInu.ThirdPersonCamera)),
+		_GT (typeof(ShibaInu.PointerScaler)),
 
 		_GT (typeof(ShibaInu.DoubleImageShake)),
 		_GT (typeof(ShibaInu.Mosaic)),

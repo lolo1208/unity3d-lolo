@@ -68,9 +68,6 @@ DOTween.defaultEaseType = DOTween_Enum.Ease.Linear
 --- 是否在 LuaJIT 环境中
 isJIT = jit ~= nil
 
---- 语言包
-Language = {}
-
 
 
 -- Lua Class
@@ -122,6 +119,7 @@ ScrollList = require("Components.ScrollList")
 Picker = require("Components.Picker")
 ItemRenderer = require("Components.ItemRenderer")
 Animation = require("Components.Animation")
+TabNavigator = require("Components.TabNavigator")
 
 Stats = require("UI.Stats")
 Profiler = require("Utils.Optimize.Profiler")

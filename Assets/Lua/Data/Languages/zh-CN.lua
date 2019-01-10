@@ -1,4 +1,9 @@
-local l = Language
-l.aa = "asdasdas"
-l.bbb = "bBBBbdb"
-l.fds_dsd = "cccsCCdscvd"
+---@class Language.zh_CN
+local data = {
+["aa.sdd"] = "asdasdas",
+["bbb"] = "bBBB\nbb",
+["fds_dsd"] = "fdsf",
+["1"] = "一",
+["fff"] = "fdf",
+}
+return data

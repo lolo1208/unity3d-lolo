@@ -178,7 +178,7 @@ function SetParent(target, parent)
     LuaHelper.SetParent(target, parent)
 end
 
---- 销毁指定的对象
+--- 销毁指定的对象（或 Component）
 ---@param go UnityEngine.GameObject @ 目标对象
 ---@param delay number @ -可选- 延时删除（秒）
 ---@return void
@@ -197,19 +197,7 @@ end
 -- 获取 gameObject 下的组件
 GetComponent = {}
 
---- 获取 gameObject 下的 UnityEngine.RectTransform 组件
----@param go UnityEngine.GameObject
----@return UnityEngine.RectTransform
-function GetComponent.RectTransform(go)
-    return go:GetComponent(_typeof_class(UnityEngine.RectTransform))
-end
-
---- 获取 gameObject 下的 UnityEngine.CanvasGroup 组件
----@param go UnityEngine.GameObject
----@return UnityEngine.CanvasGroup
-function GetComponent.CanvasGroup(go)
-    return go:GetComponent(_typeof_class(UnityEngine.CanvasGroup))
-end
+--
 
 --- 获取 gameObject 下的 UnityEngine.UI.Image 组件
 ---@param go UnityEngine.GameObject
@@ -244,6 +232,29 @@ end
 ---@return UnityEngine.UI.Toggle
 function GetComponent.Toggle(go)
     return go:GetComponent(_typeof_class(UnityEngine.UI.Toggle))
+end
+
+--- 获取 gameObject 下的 UnityEngine.UI.ScrollRect 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.ScrollRect
+function GetComponent.ScrollRect(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.ScrollRect))
+end
+
+--
+
+--- 获取 gameObject 下的 UnityEngine.RectTransform 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.RectTransform
+function GetComponent.RectTransform(go)
+    return go:GetComponent(_typeof_class(UnityEngine.RectTransform))
+end
+
+--- 获取 gameObject 下的 UnityEngine.CanvasGroup 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.CanvasGroup
+function GetComponent.CanvasGroup(go)
+    return go:GetComponent(_typeof_class(UnityEngine.CanvasGroup))
 end
 
 --- 获取 gameObject 下的 UnityEngine.Animation 组件
@@ -309,9 +320,14 @@ function GetComponent.ParticleSystem(go)
     return go:GetComponent(_typeof_class(UnityEngine.ParticleSystem))
 end
 
-
 --
 
+--- 获取 gameObject 下的 ShibaInu.LocalizationText 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.LocalizationText
+function GetComponent.LocalizationText(go)
+    return go:GetComponent(_typeof_class(ShibaInu.LocalizationText))
+end
 
 --- 获取 gameObject 下的 ShibaInu.BaseList 组件
 ---@param go UnityEngine.GameObject

@@ -27,7 +27,7 @@ end
 
 --- FrameController 调用
 function commands.doReportMapInfo()
-    IOGameData.socket:Send(JSON.stringify({
+    IOGameData.socket:Send(JSON.Stringify({
         cmd = IOGameData.CMD_MAP_INFO,
         avatars = IOGameData.map:GetReportData()
     }))

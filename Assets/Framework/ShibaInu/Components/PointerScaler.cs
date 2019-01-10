@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using LuaInterface;
 
 
 namespace ShibaInu
@@ -53,6 +54,7 @@ namespace ShibaInu
 		}
 
 
+		[NoToLuaAttribute]
 		public void OnPointerEnter (PointerEventData eventData)
 		{
 			if (m_pressed)
@@ -64,6 +66,7 @@ namespace ShibaInu
 		}
 
 
+		[NoToLuaAttribute]
 		public void OnPointerExit (PointerEventData eventData)
 		{
 			if (m_pressed)
@@ -75,6 +78,7 @@ namespace ShibaInu
 		}
 
 
+		[NoToLuaAttribute]
 		public void OnPointerDown (PointerEventData eventData)
 		{
 			m_pressed = true;
@@ -85,6 +89,7 @@ namespace ShibaInu
 		}
 
 
+		[NoToLuaAttribute]
 		public void OnPointerUp (PointerEventData eventData)
 		{
 			m_pressed = false;

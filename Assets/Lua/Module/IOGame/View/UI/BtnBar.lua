@@ -130,7 +130,7 @@ end
 function BtnBar:JumpBtn_Click(event)
     self:SetCD(IOGameData.F_N_JUMP)
 
-    IOGameData.socket:Send(JSON.stringify({
+    IOGameData.socket:Send(JSON.Stringify({
         cmd = IOGameData.CMD_JUMP,
         id = IOGameData.playerID
     }))
@@ -142,7 +142,7 @@ function BtnBar:AttackBtn_Click(event)
     self:SetCD(IOGameData.F_N_ATTACK)
 
     self._attackGrade = self._attackGrade == 4 and 1 or self._attackGrade + 1
-    IOGameData.socket:Send(JSON.stringify({
+    IOGameData.socket:Send(JSON.Stringify({
         cmd = IOGameData.CMD_ATTACK,
         id = IOGameData.playerID,
         grade = self._attackGrade
@@ -157,7 +157,7 @@ end
 function BtnBar:ShotBtn_Click(event)
     self:SetCD(IOGameData.F_N_SHOT)
 
-    IOGameData.socket:Send(JSON.stringify({
+    IOGameData.socket:Send(JSON.Stringify({
         cmd = IOGameData.CMD_SHOT,
         id = IOGameData.playerID
     }))

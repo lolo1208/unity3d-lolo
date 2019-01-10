@@ -15,9 +15,12 @@ local cjson = require("cjson")
 local JSON = {}
 
 
+
+--
 --- 将字 string 解析成 table
 ---@param text string
-function JSON.parse(text)
+---@return table
+function JSON.Parse(text)
     local status, result = pcall(cjson.decode, text)
     if status then
         return result
@@ -26,9 +29,11 @@ function JSON.parse(text)
 end
 
 
+--
 --- 将 table 格式化成 string
 ---@param value table
-function JSON.stringify(value)
+---@return string
+function JSON.Stringify(value)
     local status, result = pcall(cjson.encode, value)
     if status then
         return result
@@ -37,4 +42,7 @@ function JSON.stringify(value)
 end
 
 
+
+
+--
 return JSON

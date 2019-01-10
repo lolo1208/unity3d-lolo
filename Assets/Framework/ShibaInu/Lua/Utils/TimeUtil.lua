@@ -21,13 +21,15 @@ TimeUtil.TYPE_M = "m"
 TimeUtil.TYPE_H = "h"
 
 
---- 当前程序已运行精确时间（单位：秒.毫秒），不会受到 Time.timeScale 影响。由 Update / LateUpdate / FixedUpdate 事件更新
+--- 当前程序已运行精确时间（秒.毫秒），不会受到 Time.timeScale 影响。由 Update / LateUpdate / FixedUpdate 事件更新
 TimeUtil.time = 0
 --- 当前程序已运行时间（毫秒）
 TimeUtil.timeMsec = 0
 
 --- 当前程序已运行帧数（ value = UnityEngine.Time.frameCount ）
 TimeUtil.frameCount = UnityEngine.Time.frameCount
+--- 距离上一帧的时间（秒.毫秒）
+TimeUtil.deltaTime = 0
 
 
 
@@ -36,7 +38,7 @@ TimeUtil.frameCount = UnityEngine.Time.frameCount
 ---@param typeTo string
 ---@param time number
 ---@return number
-function TimeUtil.convert(typeFrom, typeTo, time)
+function TimeUtil.Convert(typeFrom, typeTo, time)
     if typeFrom == typeTo then
         return time
     end

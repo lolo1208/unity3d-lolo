@@ -188,7 +188,6 @@ public static class LuaBinder
 		ShibaInu_LuaHelperWrap.Register(L);
 		ShibaInu_ResManagerWrap.Register(L);
 		ShibaInu_StageWrap.Register(L);
-		ShibaInu_LocalizationWrap.Register(L);
 		ShibaInu_HttpRequestWrap.Register(L);
 		ShibaInu_HttpDownloadWrap.Register(L);
 		ShibaInu_HttpUploadWrap.Register(L);
@@ -198,7 +197,9 @@ public static class LuaBinder
 		ShibaInu_ScrollListWrap.Register(L);
 		ShibaInu_PickerWrap.Register(L);
 		ShibaInu_CircleImageWrap.Register(L);
+		ShibaInu_LocalizationTextWrap.Register(L);
 		ShibaInu_ThirdPersonCameraWrap.Register(L);
+		ShibaInu_PointerScalerWrap.Register(L);
 		ShibaInu_DoubleImageShakeWrap.Register(L);
 		ShibaInu_MosaicWrap.Register(L);
 		ShibaInu_RadialBlurWrap.Register(L);

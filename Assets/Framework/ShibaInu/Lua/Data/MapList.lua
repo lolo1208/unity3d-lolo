@@ -243,10 +243,11 @@ function MapList:RemoveKey(key)
     self._keys[key] = nil
 end
 
---- 通过索引移除对应的键与值
+--- 通过索引移除对应的键与值，并返回该值
 ---@param index number
+---@return any
 function MapList:RemoveByIndex(index)
-    remove(self._values, index)
+    local value = remove(self._values, index)
 
     local list = self._keys
     for k, v in pairs(list) do
@@ -260,14 +261,16 @@ function MapList:RemoveByIndex(index)
     end
 
     self:DispatchDataEvent()
+    return value
 end
 
---- 通过键移除对应的键与值
+--- 通过键移除对应的键与值，并返回该值
 ---@param key any
+---@return any
 function MapList:RemoveByKey(key)
     local index = self._keys[key]
     if index ~= nil then
-        self:RemoveByIndex(index)
+        return self:RemoveByIndex(index)
     end
 end
 
