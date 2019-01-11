@@ -171,6 +171,7 @@ function BaseList:UpdateNow()
         if self._selectedItem ~= nil then
             self:SetSelectedItem(nil) -- 取消选中
         end
+        self:HideItemPool()
         self:DispatchListEvent(ListEvent.UPDATE)
         return
     end
@@ -207,7 +208,7 @@ function BaseList:UpdateNow()
         end
 
         item = self:GetItem()
-        item.gameObject.transform.localPosition = pos
+        item.transform.localPosition = pos
         self:UpdateItem(item, data:GetValueByIndex(i), i)
 
         lastItem = item
@@ -215,6 +216,7 @@ function BaseList:UpdateNow()
         lastItemY = pos.y
     end
 
+    self:HideItemPool()
     self:UpdateSelectedItem()
     self:DispatchListEvent(ListEvent.UPDATE)
 end
@@ -690,6 +692,7 @@ end
 
 --=------------------------------[ recycle & clean ]------------------------------=--
 
+--
 --- 移除所有子项，并回收到缓存池中
 function BaseList:RecycleAllItem()
     local itemList = self._itemList
@@ -708,15 +711,11 @@ function BaseList:RecycleAllItem()
         curItem:SetSelected(false)
         self._selectedItem = nil
     end
-
-    AddEventListener(Stage, Event.LATE_UPDATE, self.HidePoolItem, self)
 end
 
---- 延迟后隐藏缓存池中的所有 item
----@param event Event
-function BaseList:HidePoolItem(event)
-    RemoveEventListener(Stage, Event.LATE_UPDATE, self.HidePoolItem, self)
-
+--
+--- 隐藏缓存池中的所有 item
+function BaseList:HideItemPool()
     local itemPool = self._itemPool
     for i = 1, #itemPool do
         local item = itemPool[i]
@@ -731,14 +730,8 @@ end
 function BaseList:CleanItemPool()
     local itemPool = self._itemPool
     for i = 1, #itemPool do
-        local item = itemPool[i]
-        local go = item.gameObject
-        RemoveEventListener(go, PointerEvent.DOWN, self.ItemPointerDown, self)
-        RemoveEventListener(go, PointerEvent.UP, self.ItemPointerUp, self, 0, item)
-        RemoveEventListener(go, PointerEvent.EXIT, self.ItemPointerExit, self, 0, item)
-        RemoveEventListener(go, PointerEvent.CLICK, self.ItemPointerClick, self)
+        local go = itemPool[i].gameObject
         Destroy(go)
-        item:OnDestroy()
     end
     self._itemPool = {}
 end
@@ -761,7 +754,6 @@ end
 function BaseList:Clean()
     RemoveEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
     self:RecycleAllItem()
-    RemoveEventListener(Stage, Event.LATE_UPDATE, self.HidePoolItem, self)
     self:CleanItemPool()
 
     if self._data ~= nil then
@@ -776,6 +768,7 @@ function BaseList:Clean()
 end
 
 
+
 --
 function BaseList:OnDestroy()
     BaseList.super.OnDestroy(self)
@@ -784,6 +777,6 @@ end
 
 
 
---
 
+--
 return BaseList

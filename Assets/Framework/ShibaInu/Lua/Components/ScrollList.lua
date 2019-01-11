@@ -96,6 +96,7 @@ function ScrollList:UpdateNow()
             self:SetSelectedItem(nil) -- 取消选中
         end
         self._list:SetContentSize(0, 0)
+        self:HideItemPool()
         self:DispatchListEvent(ListEvent.UPDATE)
         return
     end
@@ -183,7 +184,7 @@ function ScrollList:UpdateNow()
         end
 
         item = self:GetItem()
-        item.gameObject.transform.localPosition = pos
+        item.transform.localPosition = pos
         self:UpdateItem(item, data:GetValueByIndex(i), i)
 
         lastItem = item
@@ -191,6 +192,7 @@ function ScrollList:UpdateNow()
         lastItemY = pos.y
     end
 
+    self:HideItemPool()
     self:UpdateSelectedItem()
     self:DispatchListEvent(ListEvent.UPDATE)
 end
@@ -250,7 +252,7 @@ function ScrollList:GetItemByIndex(index)
         pos.x = floor(idx / self._rowCount) * self._itemLayoutWidth
         pos.y = (idx % self._rowCount) * self._itemLayoutHeight
     end
-    item.gameObject.transform.localPosition = pos
+    item.transform.localPosition = pos
     return item
 end
 
