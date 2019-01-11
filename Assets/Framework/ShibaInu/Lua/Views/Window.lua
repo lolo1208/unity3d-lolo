@@ -62,7 +62,7 @@ local instances = {}
 --
 --- [static] 打开窗口（创建单例实例）
 ---@param closeOthers boolean @ -可选- 是否关闭其他窗口，默认：true
----@param ... @ -可选- 创建该窗口时，传入构造函数的参数
+---@vararg any @ -可选- 创建该窗口时，传入构造函数的参数
 ---@return Window
 function Window:Open(closeOthers, ...)
     -- self 值为 WindowClass，而不是 Window 实例

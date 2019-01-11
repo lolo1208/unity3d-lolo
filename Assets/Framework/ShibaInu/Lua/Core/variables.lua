@@ -15,7 +15,6 @@ EventDispatcher = require("Events.EventDispatcher")
 Res = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.ResManager }) ---@type ShibaInu.ResManager
 LuaHelper = ShibaInu.LuaHelper
 --Stage = ShibaInu.Stage -- 已整合进 Stage.lua
-Localization = ShibaInu.Localization
 
 
 

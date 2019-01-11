@@ -50,16 +50,16 @@ end
 
 --- instance 是否为 class 的实例
 ---@param instance any @ 实例
----@param class any @ 类
-function instanceof(instance, class)
+---@param cls any @ 类
+function instanceof(instance, cls)
     if type(instance) == "userdata" then
         local typeInstance = _typeof(instance)
-        local typeClass = _typeof_class(class)
+        local typeClass = _typeof_class(cls)
         return typeInstance == typeClass and typeInstance ~= nil and typeClass ~= nil
     else
         local instanceClass = instance.__class
         while instanceClass ~= nil do
-            if instanceClass == class then
+            if instanceClass == cls then
                 return true
             end
             instanceClass = instanceClass.super
@@ -421,7 +421,7 @@ end
 ---@param listener fun() @ 处理函数
 ---@param caller any @ -可选- self 对象
 ---@param priority number @ -可选- 优先级 [default: 0]
----@param ... any[] @ -可选- 附带的参数
+---@vararg any @ -可选- 附带的参数
 ---@return void
 function AddEventListener(target, type, listener, caller, priority, ...)
     GetEventDispatcher(target):AddEventListener(type, listener, caller, priority, ...)
@@ -530,7 +530,7 @@ end
 ---@param delay number @ 延迟时间，秒
 ---@param callback fun() @ 回调函数
 ---@param caller any @ -可选- 执行域（self）
----@param ... @ -可选- 附带的参数
+---@vararg any @ -可选- 附带的参数
 ---@return Handler
 function DelayedCall(delay, callback, caller, ...)
     local handler = Handler.Once(callback, caller)
@@ -546,7 +546,7 @@ end
 ---@param callback fun() @ 回调函数
 ---@param caller any @ -可选- 执行域（self）
 ---@param frameCount number @ -可选- 延迟帧数，默认：1帧
----@param ... @ -可选- 附带的参数
+---@vararg any @ -可选- 附带的参数
 ---@return Handler
 function DelayedFrameCall(callback, caller, frameCount, ...)
     local handler = DelayedCall(0, callback, caller, ...)
@@ -583,7 +583,7 @@ end
 ---@param callback fun() @ 回调函数
 ---@param caller any @ 执行域（self）
 ---@param once boolean @ 是否只用执行一次，默认：true
----@param ... any[] @ 附带的参数
+---@vararg any @ 附带的参数
 ---@return Handler
 function handler(callback, caller, once, ...)
     if once == nil then

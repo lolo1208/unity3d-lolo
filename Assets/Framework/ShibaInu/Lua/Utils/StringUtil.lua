@@ -43,7 +43,7 @@ end
 --
 --- 将指定字符串内的 "{n}" 标记替换成传入的参数，并返回替换后的新字符串
 ---@param str string @ 要替换的字符串
----@param ... string[] @ 参数列表
+---@vararg string @ 参数列表
 ---@return string
 function StringUtil.Substitute(str, ...)
     if str == nil then

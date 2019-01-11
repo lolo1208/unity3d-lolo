@@ -32,7 +32,7 @@ local Handler = class("Handler")
 --- 如果 Handler 只需要被执行一次，推荐使用 Handler.create() 创建
 ---@param callback fun()
 ---@param caller any
----@param ... any[] @ 附带的参数
+---@vararg any @ 附带的参数
 function Handler:Ctor(callback, caller, ...)
     self:SetTo(callback, caller, { ... }, false)
 
@@ -57,7 +57,7 @@ end
 
 
 --- 执行回调
----@param ... @ 附带的参数。在执行回调时，args 的值会添加到创建时传入的 args 之前。args.concat(self.args)
+---@vararg any @ 附带的参数。在执行回调时，args 的值会添加到创建时传入的 args 之前。args.concat(self.args)
 ---@return void
 function Handler:Execute(...)
     if self.delayedTime ~= nil then

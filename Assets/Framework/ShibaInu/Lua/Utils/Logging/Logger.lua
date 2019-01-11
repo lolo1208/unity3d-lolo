@@ -51,7 +51,7 @@ local traceback = Logger.ErrorTraceback
 --- 调用 fn，并捕获出现的错误（ try ... catch ）
 ---@param fn fun() @ 传入的函数
 ---@param caller any @ -可选- self 对象，默认为 nil
----@param ... any[] @ -可选- 附带的参数
+---@vararg any @ -可选- 附带的参数
 ---@return boolean, any
 function Logger.TryCall(fn, caller, ...)
     if isJIT then

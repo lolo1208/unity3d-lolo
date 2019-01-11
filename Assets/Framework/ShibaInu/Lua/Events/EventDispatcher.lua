@@ -39,8 +39,7 @@ end
 ---@param callback fun() @ 处理函数
 ---@param caller any @ 执行域（self）
 ---@param priority number @ 优先级 [default: 0]
----@param ... any[] @ 附带的参数
----@return void
+---@vararg any @ 附带的参数
 function EventDispatcher:AddEventListener(type, callback, caller, priority, ...)
     if callback == nil then
         error(Constants.E3005)
