@@ -5,10 +5,18 @@
 --
 
 
+
+-- 设置当前时间为随机种子
+local now = System.DateTime.Now
+math.randomseed(now.Minute * 60 * 1000 + now.Second * 1000 + now.Millisecond)
+
+
+
 -- 启动函数
 local function Main()
     require("Core.initialize")
     require("Module.Core.extends")
+
 
     -- 禁止创建全局变量或全局函数
     setmetatable(_G, {
@@ -23,20 +31,8 @@ local function Main()
 end
 
 
--- 设置当前时间为随机种子
-local now = System.DateTime.Now
-math.randomseed(now.Minute * 60 * 1000 + now.Second * 1000 + now.Millisecond)
-
-
--- try 启动函数
-local function errorTraceback(msg)
-    local err = {
-        "[LUA ERROR : Main] ",
-        tostring(msg),
-        debug.traceback("", 2)
-    }
-    LuaHelper.ConsoleLogError(table.concat(err, ""))
+-- try call Main
+local function errorHandler(msg)
+    ShibaInu.Logger.LogError("[Lua Main Error]\n" .. msg, debug.traceback("", 2))
 end
-xpcall(Main, errorTraceback)
-
-
+xpcall(Main, errorHandler)

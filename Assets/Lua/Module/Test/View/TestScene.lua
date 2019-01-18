@@ -47,7 +47,6 @@ function TestScene:OnInitialize()
     self.backBtn.transform:SetParent(Stage.GetLayer(Constants.LAYER_UI_TOP))
     self.backBtn:SetActive(false)
     AddEventListener(self.backBtn, PointerEvent.CLICK, self.OnClick_backBtn, self)
-
 end
 
 

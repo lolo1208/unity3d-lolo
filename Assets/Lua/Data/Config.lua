@@ -11,6 +11,9 @@ local Config = {}
 --- 使用的语种地区代码
 Config.language = "zh-CN"
 
+--- 是否记录网络通信日志
+Config.logNetEnabled = true
+
 
 
 -- ------------------[ C#LocalizationText 调用 ]------------------ --

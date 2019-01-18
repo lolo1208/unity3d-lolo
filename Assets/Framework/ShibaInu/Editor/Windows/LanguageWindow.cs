@@ -3,7 +3,9 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+
 using UnityEngine;
+
 using UnityEditor;
 
 
@@ -44,7 +46,6 @@ namespace ShibaInu
 		private GUILayoutOption m_w100;
 		private GUILayoutOption m_w120;
 		private GUILayoutOption m_w400;
-		private GUILayoutOption m_h19;
 		private GUILayoutOption m_h22;
 		private GUILayoutOption m_h28;
 		private GUILayoutOption m_h150;
@@ -55,7 +56,7 @@ namespace ShibaInu
 		private Color m_color2;
 
 
-		[MenuItem ("ShibaInu/Language", false, 101)]
+		[MenuItem ("ShibaInu/Language Window", false, 101)]
 		public static void Open ()
 		{
 			Open (null);
@@ -133,19 +134,18 @@ namespace ShibaInu
 			m_w120 = GUILayout.Width (120);
 			m_w400 = GUILayout.Width (400);
 
-			m_h19 = GUILayout.Height (19);
 			m_h22 = GUILayout.Height (22);
 			m_h28 = GUILayout.Height (28);
 			m_h150 = GUILayout.Height (150);
 
 			m_bg1 = new GUIStyle ();
 			m_bg1.normal.background = new Texture2D (1, 1);
-			m_bg1.normal.background.SetPixel (0, 0, new Color (0.25f, 0.25f, 0.25f));
+			m_bg1.normal.background.SetPixel (0, 0, new Color (0.23f, 0.23f, 0.23f));
 			m_bg1.normal.background.Apply ();
 
 			m_bg2 = new GUIStyle ();
 			m_bg2.normal.background = new Texture2D (1, 1);
-			m_bg2.normal.background.SetPixel (0, 0, new Color (0.2f, 0.2f, 0.2f));
+			m_bg2.normal.background.SetPixel (0, 0, new Color (0.21f, 0.21f, 0.21f));
 			m_bg2.normal.background.Apply ();
 
 			m_bg3 = new GUIStyle ();
@@ -181,8 +181,8 @@ namespace ShibaInu
 			}
 
 
+			TextAnchor textFieldAlignment = GUI.skin.textField.alignment;
 			float wndWidth = this.position.width;
-			GUI.skin.label.alignment = TextAnchor.UpperLeft;
 			GUILayout.Space (13);
 
 
@@ -200,11 +200,11 @@ namespace ShibaInu
 			GUILayout.Space (70);
 			GUI.skin.textField.alignment = TextAnchor.UpperLeft;
 			m_query = EditorGUILayout.TextField (m_query, m_w120);
+			GUI.skin.textField.alignment = textFieldAlignment;
 
-			GUILayout.BeginVertical ();
-			GUILayout.Space (1);
+			GUILayout.BeginVertical (m_w60);
 			bool isClearQuery = m_state == LanguageWindowState.Query && m_query.Trim () == "";
-			if (GUILayout.Button (isClearQuery ? "显示全部" : "查询", m_w60)) {
+			if (GUILayout.Button (isClearQuery ? "显示全部" : "查询")) {
 				if (isClearQuery) {
 					ChangeState (LanguageWindowState.Normal);
 
@@ -213,7 +213,7 @@ namespace ShibaInu
 					m_curPage = 1;
 					string query = m_query.ToLower ();
 					foreach (var item in m_data) {
-						if (item.key.ToLower ().IndexOf (query) != -1 || item.value.ToLower ().IndexOf (query) != -1)
+						if (item.key_lower.Contains (query) || item.value_lower.Contains (query))
 							m_result.Add (item);
 					}
 					ChangeState (LanguageWindowState.Query);
@@ -222,22 +222,22 @@ namespace ShibaInu
 			GUILayout.EndVertical ();
 
 
-			GUILayout.Space (wndWidth - 515);
-			GUILayout.BeginVertical ();
-			GUILayout.Space (1);
-			if (GUILayout.Button ("+ 新增", m_w60)) {
+			GUILayout.Space (wndWidth - 508);
+			GUILayout.BeginVertical (m_w60);
+			if (GUILayout.Button ("+ 新增")) {
 				m_oKey = m_oValue = m_key = m_value = "";
 				ChangeState (LanguageWindowState.Append);
 			}
 			GUILayout.EndVertical ();
 
 
+			// list
 			GUILayout.EndHorizontal ();
 			GUILayout.Space (12);
 			GUILayoutOption keyW = GUILayout.Width ((wndWidth - 110) * 0.35f);
 			GUILayoutOption valueW = GUILayout.Width ((wndWidth - 110) * 0.65f);
 
-			Color textColor = GUI.skin.label.normal.textColor;
+			Color labelColor = GUI.skin.label.normal.textColor;
 			List<LanguageItem> list = m_state == LanguageWindowState.Query ? m_result : m_data;
 			int startIndex = (m_curPage - 1) * PAGE_SIZE;
 			for (int i = 0; i < PAGE_SIZE; i++) {
@@ -286,35 +286,37 @@ namespace ShibaInu
 				GUILayout.Space (10);
 				GUILayout.EndHorizontal ();
 			}
-			GUI.skin.label.normal.textColor = textColor;
+			GUI.skin.label.normal.textColor = labelColor;
 
 
+			// page
 			GUILayout.Space (13);
 			GUILayout.BeginHorizontal ();
 			GUILayout.Space (wndWidth / 2 - 100);
 
 			EditorGUI.BeginDisabledGroup (m_curPage <= 1);
-			if (GUILayout.Button ("上一页", m_w60)) {
+			GUILayout.BeginVertical (m_w60);
+			if (GUILayout.Button ("上一页")) {
 				m_curPage--;
 			}
+			GUILayout.EndVertical ();
 			EditorGUI.EndDisabledGroup ();
 
 			GUILayout.Space (3);
-			GUI.skin.textField.alignment = TextAnchor.MiddleCenter;
 			int pageNum = GetPageNum ();
-			m_curPage = EditorGUILayout.IntField (m_curPage, m_w50, m_h19);
+			GUI.skin.textField.alignment = TextAnchor.MiddleCenter;
+			m_curPage = EditorGUILayout.IntField (m_curPage, m_w50);
 			m_curPage = Mathf.Min (Mathf.Max (1, m_curPage), pageNum);
+			GUI.skin.textField.alignment = textFieldAlignment;
 
-			GUI.skin.textField.alignment = TextAnchor.UpperLeft;
-			GUILayout.BeginVertical (m_w30);
-			GUILayout.Space (3);
-			GUILayout.Label ("/" + pageNum);
-			GUILayout.EndVertical ();
+			GUILayout.Label ("/" + pageNum, m_w30);
 
 			EditorGUI.BeginDisabledGroup (m_curPage >= pageNum);
-			if (GUILayout.Button ("下一页", m_w60)) {
+			GUILayout.BeginVertical (m_w60);
+			if (GUILayout.Button ("下一页")) {
 				m_curPage++;
 			}
+			GUILayout.EndVertical ();
 			EditorGUI.EndDisabledGroup ();
 
 			GUILayout.EndHorizontal ();
@@ -326,6 +328,7 @@ namespace ShibaInu
 		/// </summary>
 		private void EditOrAppend ()
 		{
+			TextAnchor labelAlignment = GUI.skin.label.alignment;
 			bool isAppend = m_state == LanguageWindowState.Append;
 
 			GUILayout.Space (30);
@@ -344,10 +347,9 @@ namespace ShibaInu
 			GUILayout.Label (isAppend ? "新增一条数据" : m_oKey);
 			GUILayout.EndHorizontal ();
 
-			GUI.skin.label.alignment = TextAnchor.MiddleRight;
-
 			GUILayout.Space (10);
 			GUILayout.BeginHorizontal ();
+			GUI.skin.label.alignment = TextAnchor.MiddleRight;
 			GUILayout.Label ("Key：", m_w100);
 			m_key = EditorGUILayout.TextField (m_key, m_w400);
 			GUILayout.EndHorizontal ();
@@ -355,6 +357,7 @@ namespace ShibaInu
 			GUILayout.Space (10);
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Value：", m_w100);
+			GUI.skin.label.alignment = labelAlignment;
 			m_value = EditorGUILayout.TextArea (m_value, m_w400, m_h150);
 			GUILayout.EndHorizontal ();
 
@@ -367,10 +370,10 @@ namespace ShibaInu
 
 			GUILayout.Space (10);
 			EditorGUI.BeginDisabledGroup (isAppend);
-			Color textColor = GUI.skin.button.normal.textColor;
-			GUI.skin.button.normal.textColor = Color.red;
 			GUILayout.BeginVertical ();
 			GUILayout.Space (0);
+			Color buttonTextColor = GUI.skin.button.normal.textColor;
+			GUI.skin.button.normal.textColor = Color.red;
 			if (GUILayout.Button ("- 删除", m_w60, m_h22)) {
 				if (EditorUtility.DisplayDialog ("请确认",
 					    "您确定要从语言包: " + m_language + " 中删除这条数据吗？\n\n   Key: " + m_oKey + "\n\nValue: " + m_oValue,
@@ -380,9 +383,9 @@ namespace ShibaInu
 					SaveLanguage ();
 				}
 			}
+			GUI.skin.button.normal.textColor = buttonTextColor;
 			GUILayout.EndVertical ();
 			EditorGUI.EndDisabledGroup ();
-			GUI.skin.button.normal.textColor = textColor;
 
 
 			GUILayout.Space (115);
@@ -678,11 +681,15 @@ namespace ShibaInu
 	{
 		public string key;
 		public string value;
+		public string key_lower;
+		public string value_lower;
 
 		public LanguageItem (string key, string value)
 		{
 			this.key = key;
 			this.value = value;
+			this.key_lower = this.key.ToLower ();
+			this.value_lower = this.value.ToLower ();
 		}
 
 		public int CompareTo (LanguageItem other)

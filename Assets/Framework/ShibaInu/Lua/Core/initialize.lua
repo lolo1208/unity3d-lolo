@@ -11,14 +11,15 @@ require("Core.variables")
 
 -- 全局函数和全局变量定义完成后，才能定义的内容 --
 
-
 -- log function
-logError = Logger.AddErrorLog
 trycall = Logger.TryCall
+log = Logger.Log
+logWarning = Logger.LogWarning
+logError = Logger.LogError
 
 
 -- PlayerPrefs on Editor
-if Application.isEditor then
+if isEditor then
     local path = Application.dataPath
     local playerPrefs = PlayerPrefs
     ---@type UnityEngine.PlayerPrefs

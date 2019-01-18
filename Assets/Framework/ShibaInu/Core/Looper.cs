@@ -16,6 +16,7 @@ namespace ShibaInu
 		private const string EVENT_FIXED_UPDATE = "Event_FixedUpdate";
 		private const string EVENT_RESIZE = "Event_Resize";
 
+		/// 锁对象
 		private static readonly System.Object LOCK_OBJECT = new System.Object ();
 
 
@@ -88,7 +89,7 @@ namespace ShibaInu
 					try {
 						action ();
 					} catch (Exception e) {
-						Logger.AddErrorLog (e);
+						Logger.LogException (e);
 					}
 				}
 				m_tempActions.Clear ();
@@ -107,7 +108,7 @@ namespace ShibaInu
 					try {
 						action ();
 					} catch (Exception e) {
-						Logger.AddErrorLog (e);
+						Logger.LogException (e);
 					}
 				}
 				m_tempActions.Clear ();
@@ -159,6 +160,13 @@ namespace ShibaInu
 			m_luaLoopHandler.Push (TimeUtil.timeSec);
 			m_luaLoopHandler.PCall ();
 			m_luaLoopHandler.EndPCall ();
+		}
+
+
+
+		void OnDestroy()
+		{
+			LogFileWriter.Destroy ();
 		}
 
 

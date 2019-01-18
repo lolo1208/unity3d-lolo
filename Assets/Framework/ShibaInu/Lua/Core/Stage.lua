@@ -21,8 +21,8 @@ local floor = math.floor
 ---
 local Stage = {}
 
-local event = Event.New()
-local ed = EventDispatcher.New()
+local _event = Event.New()
+local _ed = EventDispatcher.New()
 
 local _currentSceneClass ---@type Scene @ 当前正要进入的场景模块类
 local _prevSceneClass ---@type Scene @ 上一个场景模块类
@@ -60,7 +60,7 @@ local function UpdateLayers()
 end
 UpdateLayers()
 
-Stage._ed = ed
+Stage._ed = _ed
 Stage.AddDontDestroy = ShibaInu.Stage.AddDontDestroy
 Stage.RemoveDontDestroy = ShibaInu.Stage.RemoveDontDestroy
 Stage.GetProgress = ShibaInu.Stage.GetProgress
@@ -90,12 +90,12 @@ local function DispatchSceneChangedEvent(scene)
     end
 
     scene:OnInitialize()
-    event.target = nil
-    event.isPropagationStopped = false
+    _event.target = nil
+    _event.isPropagationStopped = false
 
-    event.type = Event.SCENE_CHANGED
-    event.data = scene.moduleName
-    trycall(ed.DispatchEvent, ed, event, false, false)
+    _event.type = Event.SCENE_CHANGED
+    _event.data = scene.moduleName
+    trycall(_ed.DispatchEvent, _ed, _event, false, false)
 end
 
 
@@ -383,12 +383,12 @@ function Stage._loopHandler(type, time)
         TimeUtil.deltaTime = Time.deltaTime
     end
 
-    event.data = nil
-    event.target = nil
-    event.isPropagationStopped = false
+    _event.data = nil
+    _event.target = nil
+    _event.isPropagationStopped = false
 
-    event.type = type
-    trycall(ed.DispatchEvent, ed, event, false, false)
+    _event.type = type
+    trycall(_ed.DispatchEvent, _ed, _event, false, false)
 end
 
 

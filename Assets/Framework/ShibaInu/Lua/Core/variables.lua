@@ -15,6 +15,7 @@ EventDispatcher = require("Events.EventDispatcher")
 Res = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.ResManager }) ---@type ShibaInu.ResManager
 LuaHelper = ShibaInu.LuaHelper
 --Stage = ShibaInu.Stage -- 已整合进 Stage.lua
+--Logger = ShibaInu.Logger -- 已整合进 Logger.lua
 
 
 
@@ -66,6 +67,13 @@ DOTween.defaultEaseType = DOTween_Enum.Ease.Linear
 -- variables
 --- 是否在 LuaJIT 环境中
 isJIT = jit ~= nil
+isPlaying = Application.isPlaying
+isEditor = Application.isEditor
+isWindowEditor = Application.platform == UnityEngine.RuntimePlatform.WindowsEditor
+isMacEditor = isEditor and not isWindowEditor
+isMobile = Application.isMobilePlatform
+isAndroid = Application.platform == UnityEngine.RuntimePlatform.Android
+isIOS = isMobile and not isAndroid
 
 
 

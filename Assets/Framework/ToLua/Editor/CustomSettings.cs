@@ -136,6 +136,7 @@ public static class CustomSettings
 		_GT (typeof(GameObject)),
 		_GT (typeof(TrackedReference)),
 		_GT (typeof(Application)),
+		_GT (typeof(RuntimePlatform)),
 		_GT (typeof(Physics)),
 		_GT (typeof(Collider)),
 		_GT (typeof(Time)),        
@@ -238,6 +239,7 @@ public static class CustomSettings
 		_GT (typeof(ShibaInu.RadialBlur)),
 
 		_GT (typeof(ShibaInu.LuaProfiler)),
+		_GT (typeof(ShibaInu.Logger)),
 
 	};
 

@@ -98,8 +98,13 @@ namespace ShibaInu
 
 					// 执行回调
 					timer.currentCount++;
-					if (timer.callback != null)
-						timer.callback (timer);
+					if (timer.callback != null) {
+						try {
+							timer.callback (timer);
+						} catch (Exception e) {
+							Logger.LogException (e);
+						}
+					}
 
 					// 定时器已到达允许运行的最大次数
 					if (timer.repeatCount != 0 && timer.currentCount >= timer.repeatCount) {

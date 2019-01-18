@@ -325,7 +325,7 @@ function Joystick:SetEnabled(value)
     self._enabled = value
     if value and self.visible then
         AddEventListener(self.gameObject, PointerEvent.DOWN, self.PointerEventHandler, self)
-        if Application.isEditor then
+        if isEditor then
             AddEventListener(Stage, Event.UPDATE, self.Update_Keyboard, self)
         end
     else

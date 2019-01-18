@@ -4,82 +4,127 @@
 -- Author LOLO
 --
 
-local print = print
+
 local xpcall = xpcall
-local tostring = tostring
 local traceback = debug.traceback
-local concat = table.concat
 local unpack = unpack
 
+local isJIT = isJIT
 
+local log = ShibaInu.Logger.Log
+local logWarning = ShibaInu.Logger.LogWarning
+local logError = ShibaInu.Logger.LogError
+local logNet = ShibaInu.Logger.LogNet
+
+local TYPE_LOG = "Log" -- 普通日志
+local TYPE_NET_SUCC = "NetSucc" -- 网络日志 - 通信成功
+local TYPE_NET_FAIL = "NetFail" -- 网络日志 - 通信失败
+local TYPE_NET_PUSH = "NetPush" -- 网络日志 - 主动推送
+
+
+--
 ---@class Logger
 local Logger = {}
 
-local ed = EventDispatcher.New()
-Logger._ed = ed
 
 
+--
+--- 添加一条普通日志
+---@param msg string @ 日志内容
+---@param type string @ -可选- 日志类型。默认："Log"
+---@param isStackTrace boolean @ -可选- 是否记录堆栈信息。默认：不记录
+function Logger.Log(msg, type, isStackTrace)
+    type = type or TYPE_LOG
 
-
---- 添加一条错误日志（存入 LogInfo 列表）
---- 如果想添加一条包含调用堆栈信息的错误日志，请使用 error() 函数抛出错误
----@param message string @ 日志内容
----@return void
-function Logger.AddErrorLog(msg)
-    LuaHelper.ConsoleLogError(msg)
+    if isStackTrace then
+        -- 需要写入堆栈
+        log(msg, type, traceback("", 2))
+    else
+        log(msg, type)
+    end
 end
 
 
---=---------------------------[ error traceback ]---------------------------=--
-
-local logError = Logger.AddErrorLog
---- 错误内容和堆栈捕获
----@param msg string
----@return void
-function Logger.ErrorTraceback(msg)
-    local err = {
-        "[LUA ERROR] ",
-        tostring(msg),
-        traceback("", 2)
-    }
-    logError(concat(err, ""))
+--
+--- 添加一条警告日志
+---@param msg string @ 日志内容
+function Logger.LogWarning(msg)
+    logWarning(msg, traceback("", 2))
 end
 
 
-local isJIT = isJIT
-local traceback = Logger.ErrorTraceback
+--
+--- 添加一条错误日志
+---[Error Handler]
+---@param msg string @ 日志内容
+function Logger.LogError(msg)
+    logError(msg, traceback("", 2))
+end
+
+
+
+
+--
+--- 添加一条网络日志，通信成功
+---@param msg string @ 标题
+---@param info string @ 详情
+function Logger.LogNetSucc(msg, info)
+    logNet(msg, TYPE_NET_SUCC, info)
+end
+
+--
+--- 添加一条网络日志，通信失败
+---@param msg string @ 标题
+---@param info string @ 详情
+function Logger.LogNetFail(msg, info)
+    logNet(msg, TYPE_NET_FAIL, info)
+end
+
+--
+--- 添加一条网络日志，主动推送
+---@param msg string @ 标题
+---@param info string @ 详情
+function Logger.LogNetPush(msg, info)
+    logNet(msg, TYPE_NET_PUSH, info)
+end
+
+
+
+
+
+-- try call
+local errorHandler = Logger.LogError
+
+--
 --- 调用 fn，并捕获出现的错误（ try ... catch ）
 ---@param fn fun() @ 传入的函数
 ---@param caller any @ -可选- self 对象，默认为 nil
 ---@vararg any @ -可选- 附带的参数
----@return boolean, any
+---@return boolean @ 调用函数是否成功（是否没有报错）
 function Logger.TryCall(fn, caller, ...)
+    local status
     if isJIT then
         if caller == nil then
-            return xpcall(fn, traceback, ...)
+            status = xpcall(fn, errorHandler, ...)
         else
-            return xpcall(fn, traceback, caller, ...)
+            status = xpcall(fn, errorHandler, caller, ...)
         end
     else
         local args = { ... }
         if caller == nil then
-            return xpcall(function()
+            status = xpcall(function()
                 fn(unpack(args))
-            end, traceback)
+            end, errorHandler)
         else
-            return xpcall(function()
+            status = xpcall(function()
                 fn(caller, unpack(args))
-            end, traceback)
+            end, errorHandler)
         end
     end
+    return status
 end
 
---=-------------------------------------------------------------------------=--
 
 
-
-
-
-
-
+--
 return Logger

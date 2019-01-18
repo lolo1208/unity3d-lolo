@@ -25,6 +25,7 @@ public static class LuaBinder
 		UnityEngine_GameObjectWrap.Register(L);
 		UnityEngine_TrackedReferenceWrap.Register(L);
 		UnityEngine_ApplicationWrap.Register(L);
+		UnityEngine_RuntimePlatformWrap.Register(L);
 		UnityEngine_PhysicsWrap.Register(L);
 		UnityEngine_ColliderWrap.Register(L);
 		UnityEngine_TimeWrap.Register(L);
@@ -204,6 +205,7 @@ public static class LuaBinder
 		ShibaInu_MosaicWrap.Register(L);
 		ShibaInu_RadialBlurWrap.Register(L);
 		ShibaInu_LuaProfilerWrap.Register(L);
+		ShibaInu_LoggerWrap.Register(L);
 		L.EndModule();
 		L.EndModule();
 		L.BeginPreLoad();

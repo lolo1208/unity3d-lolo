@@ -105,14 +105,14 @@ local function UpdateTimer(event)
 
                     timer.currentCount = timer.currentCount + 1
                     if timer.timerHander ~= nil then
-                        timer.timerHander:Execute()
+                        trycall(timer.timerHander.Execute, timer.timerHander)
                     end
 
                     -- 定时器已到达允许运行的最大次数
                     if timer.repeatCount ~= 0 and timer.currentCount >= timer.repeatCount then
                         timer:Stop()
                         if timer.timerCompleteHandler ~= nil then
-                            timer.timerCompleteHandler:Execute()
+                            trycall(timer.timerCompleteHandler.Execute, timer.timerCompleteHandler)
                         end
                         break -- 可以忽略后面的计次了
                     end

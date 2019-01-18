@@ -2,13 +2,14 @@
 .idea
 .vs
 
-Library
-LuaAPI
 obj
+Library
 Packages
-PlatformProjects
-Temp
 UnityPackageManager
+Temp
+LuaAPI
+PlatformProjects
+Log
 
 Assets/StreamingAssets
 Assets/Framework/ToLua/Source/Generate/*

@@ -68,6 +68,7 @@ namespace ShibaInu
 
 			TimeUtil.Initialize ();
 			ResManager.Initialize ();
+			Logger.Initialize ();
 			Common.luaMgr.Initialize ();// start lua
 
 			Destroy (this);
