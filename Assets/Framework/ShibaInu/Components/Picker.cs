@@ -255,8 +255,7 @@ namespace ShibaInu
 		/// 拖动时，记录当前帧的位置
 		protected void SetDragPosition (PointerEventData data)
 		{
-			float scale = (float)Common.FixedWidth / (float)Screen.width;
-			m_curDragPos = (m_isVertical ? data.position.y : data.position.x) * scale;
+			m_curDragPos = (m_isVertical ? data.position.y : data.position.x) * Common.GetFixedScreenScale ();
 		}
 
 

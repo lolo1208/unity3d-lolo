@@ -10,19 +10,53 @@ namespace ShibaInu
 	/// </summary>
 	[AddComponentMenu ("ShibaInu/UI Camera", 201)]
 	[DisallowMultipleComponent]
+	[RequireComponent (typeof(UnityEngine.Camera))]
+	[RequireComponent (typeof(UnityEngine.EventSystems.PhysicsRaycaster))]
 	public class UICamera : MonoBehaviour
 	{
 
-
-		void Awake ()
+		void Start ()
 		{
-			float scale = (float)Screen.width / (float)Common.FixedWidth;
-			float size = (float)Screen.height / 100f / 2f / scale;
+			if (Common.looper == null)
+				return;
+			
+			ResizeCamera ();
+
+			#if UNITY_EDITOR
+			Common.looper.resizeHandler.Add (ResizeCamera);
+			#else
+			Destroy (this);
+			#endif
+		}
+
+
+
+		/// <summary>
+		/// 重置相机尺寸
+		/// </summary>
+		public void ResizeCamera ()
+		{
+			float scale, size;
+			if (Common.IsFixedWidth) {
+				scale = (float)Screen.width / (float)Common.FixedValue;
+				size = (float)Screen.height / 100f / 2f / scale;
+			} else {
+				scale = (float)Screen.height / (float)Common.FixedValue;
+				size = (float)Screen.width / 100f / 2f / scale;
+			}
 			Camera camera = gameObject.GetComponent<Camera> ();
 			camera.orthographicSize = size;
-
-			Destroy (this);
 		}
+
+
+
+		#if UNITY_EDITOR
+		void OnDestroy ()
+		{
+			if (Common.looper != null)
+				Common.looper.resizeHandler.Remove (ResizeCamera);
+		}
+		#endif
 
 
 		//

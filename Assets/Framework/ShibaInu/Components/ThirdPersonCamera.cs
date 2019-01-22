@@ -244,8 +244,7 @@ namespace ShibaInu
 			float yOffset = m_curDragPos.y - m_lastDragPos.y;
 			if (m_dragging && (xOffset != 0 || yOffset != 0)) {
 				m_lastDragPos = m_curDragPos;
-				float scale = (float)Common.FixedWidth / (float)Screen.width;
-				float rotRatio = scale * dragSensitivity;
+				float rotRatio = Common.GetFixedScreenScale () * dragSensitivity;
 
 				// 水平轴旋转
 				if (xOffset != 0) {

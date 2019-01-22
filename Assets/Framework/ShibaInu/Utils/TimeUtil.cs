@@ -28,7 +28,7 @@ namespace ShibaInu
 		/// <summary>
 		/// Updates the time.
 		/// </summary>
-		public static void UpdateTime ()
+		public static void Update ()
 		{
 			long value = s_stopwatch.ElapsedMilliseconds;
 			timeSec = (float)value / 1000;
@@ -39,14 +39,14 @@ namespace ShibaInu
 
 		public static float GetTimeSec ()
 		{
-			UpdateTime ();
+			Update ();
 			return timeSec;
 		}
 
 
 		public static UInt32 GetTimeMsec ()
 		{
-			UpdateTime ();
+			Update ();
 			return timeMsec;
 		}
 

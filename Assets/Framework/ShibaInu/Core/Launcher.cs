@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 
@@ -12,30 +13,15 @@ namespace ShibaInu
 		
 		void Start ()
 		{
-			
 			// 初始变量赋值
+			Common.FixedValue = 640;
+			Common.IsFixedWidth = false;
+			Common.IsOptimizeResolution = true;
 			Common.FrameRate = 60;
-			Common.FixedWidth = 1136;
-			Common.OptimizeResolution = false;
-			Common.NeverSleep = true;
-
+			Common.IsNeverSleep = true;
 			#if UNITY_EDITOR
-			Common.isDebug = !File.Exists (Application.streamingAssetsPath + "/TestModeFlag");
+			Common.IsDebug = !File.Exists (Application.streamingAssetsPath + "/TestModeFlag");
 			#endif
-			//
-
-
-			// 等比降低分辨率
-			if (Common.OptimizeResolution && Screen.width > Common.FixedWidth) {
-				float scale = (float)Common.FixedWidth / (float)Screen.width;
-				int height = Mathf.CeilToInt (Screen.height * scale);
-				Screen.SetResolution (Common.FixedWidth, height, true);
-				Debug.LogFormat ("resolution: {0} x {1},  scale: {2},  screen: {3} x {4}, {5}", Common.FixedWidth, height, scale, Screen.width, Screen.height, Screen.resolutions.Length);
-			}
-
-			if (Common.NeverSleep)
-				Screen.sleepTimeout = SleepTimeout.NeverSleep;
-			Application.targetFrameRate = Common.FrameRate;
 
 
 			// 先进入启动场景
@@ -53,21 +39,23 @@ namespace ShibaInu
 		{
 			yield return new WaitForEndOfFrame ();// 等之前场景等内容清除完毕
 
-			// UICanvas 放到 Common.go 对象下
-			Transform uiCanvasTra = GameObject.Find ("UICanvas").transform;
-			Transform eventSystem = GameObject.Find ("EventSystem").transform;
-			uiCanvasTra.SetParent (transform);
-			eventSystem.SetParent (transform);
+			// UICanvas
+			ResManager.Initialize ();
+			GameObject uiCanvas = (GameObject)Instantiate (ResManager.LoadAsset ("Prefabs/Core/UICanvas.prefab", "Core"), transform);
+			uiCanvas.name = "UICanvas";
+			Stage.uiCanvasTra = (RectTransform)uiCanvas.transform;
+			Stage.Initialize ();
+
+			// EventSystem
+			GameObject eventSystem = new GameObject ("EventSystem");
+			eventSystem.AddComponent<EventSystem> ();
+			eventSystem.AddComponent<StandaloneInputModule> ();
+			eventSystem.transform.SetParent (transform);
 
 			Common.looper = gameObject.AddComponent<Looper> ();
 			Common.luaMgr = gameObject.AddComponent<LuaManager> ();
 
-			Stage.uiCanvas = uiCanvasTra.gameObject.GetComponent<Canvas> ();
-			Stage.uiCanvasTra = (RectTransform)uiCanvasTra;
-			Stage.Initialize ();
-
 			TimeUtil.Initialize ();
-			ResManager.Initialize ();
 			Logger.Initialize ();
 			Common.luaMgr.Initialize ();// start lua
 
@@ -78,4 +66,3 @@ namespace ShibaInu
 		//
 	}
 }
-

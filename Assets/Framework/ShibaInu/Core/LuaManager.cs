@@ -6,6 +6,9 @@ using LuaInterface;
 
 namespace ShibaInu
 {
+	/// <summary>
+	/// lua 管理器
+	/// </summary>
 	public class LuaManager : MonoBehaviour
 	{
 		private LuaState m_lua;
@@ -45,7 +48,7 @@ namespace ShibaInu
 		/// </summary>
 		void InitLuaPath ()
 		{
-			if (!Common.isDebug)
+			if (!Common.IsDebug)
 				return;
 			
 			m_lua.AddSearchPath (Constants.ToLuaRootPath + "Lua");

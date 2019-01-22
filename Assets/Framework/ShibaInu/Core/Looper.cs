@@ -23,15 +23,16 @@ namespace ShibaInu
 		// - View/Stage.lua
 		private LuaFunction m_luaLoopHandler;
 		// 上次记录的屏幕宽高
-		private float m_screenWidth;
-		private float m_screenHeight;
-
+		private Vector2 m_screenSize = new Vector2 ();
 		/// 网络相关回调列表
 		private List<Action> m_netActions = new List<Action> ();
 		/// 其他需要在主线程执行的回调列表
 		private List<Action> m_threadActions = new List<Action> ();
 		/// 临时存储的回调列表
 		private List<Action> m_tempActions = new List<Action> ();
+
+		/// 场景尺寸有改变时的回调列表
+		public HashSet<Action> resizeHandler = new HashSet<Action> ();
 
 
 
@@ -63,16 +64,20 @@ namespace ShibaInu
 
 		void Start ()
 		{
-			m_screenWidth = Screen.width;
-			m_screenHeight = Screen.height;
+			m_screenSize.Set (Screen.width, Screen.height);
 			m_luaLoopHandler = Common.luaMgr.state.GetFunction ("Stage._loopHandler");
+
+			#if UNITY_EDITOR
+			if (Common.IsOptimizeResolution)
+				resizeHandler.Add (Common.OptimizeResolution);
+			#endif
 		}
 
 
 
 		void Update ()
 		{
-			TimeUtil.UpdateTime ();
+			TimeUtil.Update ();
 			Timer.Update ();
 			UdpSocket.Update ();
 
@@ -116,11 +121,22 @@ namespace ShibaInu
 
 
 			// 屏幕尺寸有改变
-			if (Screen.width != m_screenWidth || Screen.height != m_screenHeight) {
-				m_screenWidth = Screen.width;
-				m_screenHeight = Screen.height;
-				Stage.Resize ();
+			if (Screen.width != m_screenSize.x || Screen.height != m_screenSize.y) {
+				m_screenSize.Set (Screen.width, Screen.height);
+				List<Action> removes = new List<Action> ();
+				foreach (Action handler in resizeHandler) {
+					try {
+						handler ();
+					} catch (Exception e) {
+						removes.Add (handler);
+						Logger.LogException (e);
+					}
+				}
+				// 移除执行时报错的 action
+				foreach (Action handler in removes)
+					resizeHandler.Remove (handler);
 
+				// lua Resize
 				m_luaLoopHandler.BeginPCall ();
 				m_luaLoopHandler.Push (EVENT_RESIZE);
 				m_luaLoopHandler.Push (TimeUtil.timeSec);
@@ -142,7 +158,7 @@ namespace ShibaInu
 
 		void LateUpdate ()
 		{
-			TimeUtil.UpdateTime ();
+			TimeUtil.Update ();
 			m_luaLoopHandler.BeginPCall ();
 			m_luaLoopHandler.Push (EVENT_LATE_UPDATE);
 			m_luaLoopHandler.Push (TimeUtil.timeSec);
@@ -154,7 +170,7 @@ namespace ShibaInu
 
 		void FixedUpdate ()
 		{
-			TimeUtil.UpdateTime ();
+			TimeUtil.Update ();
 			m_luaLoopHandler.BeginPCall ();
 			m_luaLoopHandler.Push (EVENT_FIXED_UPDATE);
 			m_luaLoopHandler.Push (TimeUtil.timeSec);
@@ -164,7 +180,7 @@ namespace ShibaInu
 
 
 
-		void OnDestroy()
+		void OnDestroy ()
 		{
 			LogFileWriter.Destroy ();
 		}

@@ -9,17 +9,20 @@ local format = string.format
 local remove = table.remove
 local floor = math.floor
 
+local stage = ShibaInu.Stage
+local cleanUI = stage.CleanUI
+local loadScene = stage.LoadScene
+local loadSceneAsync = stage.LoadSceneAsync
+
 
 --
 ---@class Stage
----
----@field loadingSceneClass Scene @ Loading场景类
----
----@field AddDontDestroy fun(go:UnityEngine.GameObject):void @ 添加一个在清除场景时，不需被销毁的 GameObject
----@field RemoveDontDestroy fun(go:UnityEngine.GameObject):void @ 移除一个在清除场景时，不需被销毁的 GameObject
----@field GetProgress fun():number @ 获取当前异步加载进度 0~1
----
 local Stage = {}
+
+--- Loading场景类
+Stage.loadingSceneClass = ""
+--- 空场景名称
+Stage.emptySceneName = "Empty"
 
 local _event = Event.New()
 local _ed = EventDispatcher.New()
@@ -28,44 +31,25 @@ local _currentSceneClass ---@type Scene @ 当前正要进入的场景模块类
 local _prevSceneClass ---@type Scene @ 上一个场景模块类
 local _loadingScene ---@type Scene @ Loading场景实例
 local _currentScene ---@type Scene @ 当前场景模块实例
-local _windowList = {} ---@type table<number, Window> @ 当前已经显示的窗口列表
+local _windowList = {} ---@type Window[] @ 当前已经显示的窗口列表
 
-
--- layers
-local _sceneLayer, _uiLayer, _windowLayer, _uiTopLayer, _alertLayer, _guideLayer, _topLayer ---@type UnityEngine.RectTransform
----@type table<string, UnityEngine.Transform>
-local _layers = {}
-
---- 空场景名称
-Stage.emptySceneName = "Empty"
-
-
---
-local function UpdateLayers()
-    _sceneLayer = ShibaInu.Stage.sceneLayer
-    _uiLayer = ShibaInu.Stage.uiLayer
-    _windowLayer = ShibaInu.Stage.windowLayer
-    _uiTopLayer = ShibaInu.Stage.uiTopLayer
-    _alertLayer = ShibaInu.Stage.alertLayer
-    _guideLayer = ShibaInu.Stage.guideLayer
-    _topLayer = ShibaInu.Stage.topLayer
-
-    _layers[Constants.LAYER_SCENE] = _sceneLayer
-    _layers[Constants.LAYER_UI] = _uiLayer
-    _layers[Constants.LAYER_WINDOW] = _windowLayer
-    _layers[Constants.LAYER_UI_TOP] = _uiTopLayer
-    _layers[Constants.LAYER_ALERT] = _alertLayer
-    _layers[Constants.LAYER_GUIDE] = _guideLayer
-    _layers[Constants.LAYER_TOP] = _topLayer
-end
-UpdateLayers()
+---@type UnityEngine.RectTransform[]
+local _layers = {
+    [Constants.LAYER_SCENE] = stage.sceneLayer,
+    [Constants.LAYER_UI] = stage.uiLayer,
+    [Constants.LAYER_WINDOW] = stage.windowLayer,
+    [Constants.LAYER_UI_TOP] = stage.uiTopLayer,
+    [Constants.LAYER_ALERT] = stage.alertLayer,
+    [Constants.LAYER_GUIDE] = stage.guideLayer,
+    [Constants.LAYER_TOP] = stage.topLayer
+}
 
 Stage._ed = _ed
-Stage.AddDontDestroy = ShibaInu.Stage.AddDontDestroy
-Stage.RemoveDontDestroy = ShibaInu.Stage.RemoveDontDestroy
-Stage.GetProgress = ShibaInu.Stage.GetProgress
-Stage.uiCanvas = ShibaInu.Stage.uiCanvas
-Stage.uiCanvasTra = ShibaInu.Stage.uiCanvasTra
+Stage.AddDontDestroy = stage.AddDontDestroy
+Stage.RemoveDontDestroy = stage.RemoveDontDestroy
+Stage.GetProgress = stage.GetProgress
+Stage.uiCanvas = stage.uiCanvas
+Stage.uiCanvasTra = stage.uiCanvasTra
 
 
 
@@ -73,7 +57,7 @@ Stage.uiCanvasTra = ShibaInu.Stage.uiCanvasTra
 
 --
 --- 播放场景切换效果
----@param isStart boolean @ true：开始转换效果，false：结束转换效果
+---@param isStart boolean @ true：开始转场效果，false：结束转场效果
 function Stage.PlaySceneTransition(isStart)
     if isStart then
         Stage.DoShowScene()
@@ -166,16 +150,16 @@ function Stage.DoShowScene()
         if _currentScene.isAsync then
             -- 先进入 Loading 场景
             _loadingScene = Stage.loadingSceneClass.New()
-            ShibaInu.Stage.LoadScene(_loadingScene.assetName)
+            loadScene(_loadingScene.assetName)
             DelayedFrameCall(function()
                 DispatchSceneChangedEvent(_loadingScene)
 
                 -- 异步加载目标场景
                 AddEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
-                ShibaInu.Stage.LoadSceneAsync(_currentScene.assetName)
+                loadSceneAsync(_currentScene.assetName)
             end)
         else
-            ShibaInu.Stage.LoadScene(_currentScene.assetName)
+            loadScene(_currentScene.assetName)
             DelayedFrameCall(function()
                 DispatchSceneChangedEvent(_currentScene)
             end)
@@ -185,7 +169,7 @@ function Stage.DoShowScene()
     else
         -- 当前不在空场景中
         if prevScene == nil or prevScene.prefabPath == nil then
-            ShibaInu.Stage.LoadScene(Stage.emptySceneName)
+            loadScene(Stage.emptySceneName)
         end
 
         if _currentScene.isAsync then
@@ -243,9 +227,8 @@ end
 --
 --- 清空场景
 function Stage.Clean()
-    ShibaInu.Stage.Clean()
+    cleanUI()
     PrefabPool.Clean()
-    UpdateLayers()
 end
 
 
@@ -261,10 +244,9 @@ function Stage.OpenWindow(window, closeOthers)
 
     -- 窗口已打开，调整到最上层显示
     if window.visible then
-        window.transform:SetSiblingIndex(_windowLayer.childCount - 1)
+        window.transform:SetAsLastSibling()
     else
         window:Show()
-        _windowList[#_windowList] = window
     end
 
     -- 加入到 _windowList 中
@@ -339,11 +321,14 @@ end
 
 --=----------------------------[ 全屏模态 ]----------------------------=--
 
-local _modal = Stage.uiCanvasTra:Find("MODAL").gameObject
-local _modalTransform = _modal.transform
-local _modalImage = GetComponent.Image(_modal)
-Stage.AddDontDestroy(_modal)
-_modal:SetActive(false)
+local _modalGO = CreateGameObject("MODAL", Stage.uiCanvasTra).gameObject
+local _modalTra = _modalGO.transform
+local _modalImg = AddOrGetComponent(_modalGO, UnityEngine.UI.Image)
+_modalTra.anchorMin = Vector2.zero
+_modalTra.anchorMax = Vector2.one
+_modalTra.sizeDelta = Vector2.zero
+_modalGO:SetActive(false)
+Stage.AddDontDestroy(_modalGO)
 
 --- 显示全屏模态
 --- 模态对象为单例，就算调用该方法多次，也只会有一个模态实例存在
@@ -353,17 +338,17 @@ function Stage.ShowModal(layerName, color)
     layerName = layerName or Constants.LAYER_TOP
     color = color or Color.clear
 
-    _modalImage.color = color
-    SetParent(_modalTransform, _layers[layerName])
-    if not _modal.activeSelf then
-        _modal:SetActive(true)
+    _modalImg.color = color
+    SetParent(_modalTra, _layers[layerName])
+    if not _modalGO.activeSelf then
+        _modalGO:SetActive(true)
     end
 end
 
 --- 隐藏已显示的全屏模态
 function Stage.HideModal()
-    if _modal.activeSelf then
-        _modal:SetActive(false)
+    if _modalGO.activeSelf then
+        _modalGO:SetActive(false)
     end
 end
 

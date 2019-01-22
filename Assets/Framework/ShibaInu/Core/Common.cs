@@ -6,25 +6,108 @@ namespace ShibaInu
 {
 	public class Common
 	{
-		
-		/// 项目帧频
-		public static int FrameRate;
-		/// 固定宽度
-		public static int FixedWidth = 1136;
-		/// 是否按 FixedWidth 等比降低分辨率
-		public static bool OptimizeResolution;
-		/// 是否永不休眠
-		public static bool NeverSleep;
+		/// 固定 宽/高 值
+		public static int FixedValue;
+		/// 当前固定比例方式 [ true:固定宽度，false:固定高度 ]
+		public static bool IsFixedWidth;
 		/// 是否在编辑器中运行，并且在开发模式下
-		public static bool isDebug = false;
-
+		public static bool IsDebug;
 
 		/// 不会被销毁的 GameObject
 		public static GameObject go;
-
+		/// 游戏循环
 		public static Looper looper;
+		/// lua 管理器
 		public static LuaManager luaMgr;
 
+
+
+		/// <summary>
+		/// 项目帧率
+		/// </summary>
+		/// <value>The frame rate.</value>
+		public static int FrameRate {
+			set { 
+				Application.targetFrameRate = value;
+			}
+			get { return Application.targetFrameRate; }
+		}
+
+
+
+		/// <summary>
+		/// 是否永不休眠
+		/// </summary>
+		/// <param name="value">If set to <c>true</c> value.</param>
+		public static bool IsNeverSleep {
+			set {
+				if (value) {
+					Screen.sleepTimeout = SleepTimeout.NeverSleep;
+				} else {
+					Screen.sleepTimeout = SleepTimeout.SystemSetting;
+				}
+			}
+			get { return Screen.sleepTimeout == SleepTimeout.NeverSleep; }
+		}
+
+
+
+		/// <summary>
+		/// 是否按照固定值来等比缩放分辨率
+		/// </summary>
+		/// <value><c>true</c> if is optimize resolution; otherwise, <c>false</c>.</value>
+		public static bool IsOptimizeResolution {
+			set {
+				if (value != s_isOptimizeResolution) {
+					s_isOptimizeResolution = value;
+					if (value)
+						OptimizeResolution ();
+					
+					#if UNITY_EDITOR
+					if (looper != null) {
+						if (value)
+							looper.resizeHandler.Add (OptimizeResolution);
+						else
+							looper.resizeHandler.Remove (OptimizeResolution);
+					}
+					#endif
+				}
+			}
+			get { return s_isOptimizeResolution; }
+		}
+
+		private static bool s_isOptimizeResolution = false;
+
+		/// 按照固定值来等比缩放辨率
+		public static void OptimizeResolution ()
+		{
+			int screenWidth = Screen.width;
+			int screenHeight = Screen.height;
+			float scale = GetFixedScreenScale ();
+			int width, height;
+			if (IsFixedWidth) {
+				width = FixedValue;
+				height = Mathf.CeilToInt (screenHeight * scale);
+			} else {
+				width = Mathf.CeilToInt (screenWidth * scale);
+				height = FixedValue;
+			}
+			Screen.SetResolution (width, height, true);
+			Debug.LogFormat ("screen: {0}x{1},  scale: {2},  set resolution: {3}x{4}", screenWidth, screenHeight, scale, width, height);
+		}
+
+
+
+		/// <summary>
+		/// 获取 固定值 / 屏幕尺寸 的缩放比例
+		/// </summary>
+		/// <returns>The scale.</returns>
+		public static float GetFixedScreenScale ()
+		{
+			return (float)FixedValue / (float)(IsFixedWidth ? Screen.width : Screen.height);
+		}
+
+
+		//
 	}
 }
-

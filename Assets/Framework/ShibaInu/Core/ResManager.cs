@@ -42,7 +42,7 @@ namespace ShibaInu
 		[NoToLuaAttribute]
 		public static void Initialize ()
 		{
-			if (!Common.isDebug) {
+			if (!Common.IsDebug) {
 				ParseResInfo ();
 			}
 		}
@@ -168,7 +168,7 @@ namespace ShibaInu
 				groupName = Stage.currentSceneName;
 
 			#if UNITY_EDITOR
-			if (Common.isDebug) {
+			if (Common.IsDebug) {
 				if (!File.Exists (Constants.ResDirPath + path)) {
 					throw new LuaException (string.Format (Constants.E5001, path));
 				}
@@ -231,7 +231,7 @@ namespace ShibaInu
 				groupName = Stage.currentSceneName;
 			
 			#if UNITY_EDITOR
-			if (Common.isDebug) {
+			if (Common.IsDebug) {
 				if (!File.Exists (Constants.ResDirPath + path))
 					throw new LuaException (string.Format (Constants.E5001, path));
 
@@ -316,7 +316,7 @@ namespace ShibaInu
 		public static void Unload (string groupName, float delay = 0)
 		{
 			#if UNITY_EDITOR
-			if (Common.isDebug)
+			if (Common.IsDebug)
 				return;
 			#endif
 

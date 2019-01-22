@@ -15,21 +15,13 @@ namespace ShibaInu
 		private const string EVENT_START = "LoadSceneEvent_Start";
 		private const string EVENT_COMPLETE = "LoadSceneEvent_Complete";
 
-		private static readonly Vector3 s_sceneLayerPos = new Vector3 (0, 0, 2100);
-		private static readonly Vector3 s_uiLayerPos = new Vector3 (0, 0, 1800);
-		private static readonly Vector3 s_windowLayerPos = new Vector3 (0, 0, 1500);
-		private static readonly Vector3 s_uiTopLayerPos = new Vector3 (0, 0, 1200);
-		private static readonly Vector3 s_alertLayerPos = new Vector3 (0, 0, 900);
-		private static readonly Vector3 s_guideLayerPos = new Vector3 (0, 0, 600);
-		private static readonly Vector3 s_topLayerPos = new Vector3 (0, 0, 300);
-
 		/// 在 lua 层抛出 LoadSceneEvent 的方法。 - Events/LoadSceneEvent.lua
 		private static LuaFunction s_dispatchEvent;
 
 		/// UI Canvas
 		public static Canvas uiCanvas;
 		public static RectTransform uiCanvasTra;
-
+		// Layers
 		public static RectTransform sceneLayer;
 		public static RectTransform uiLayer;
 		public static RectTransform windowLayer;
@@ -38,8 +30,8 @@ namespace ShibaInu
 		public static RectTransform guideLayer;
 		public static RectTransform topLayer;
 
-		/// 不需要被销毁的对象列表 [ key = 对象本身, value = 层级列表（从对象父级[0] 到根图层） ]
-		private static readonly Dictionary<GameObject, List<string>> s_dontDestroyMap = new Dictionary<GameObject, List<string>> ();
+		/// 不需要被销毁的对象列表
+		private static HashSet<Transform> s_dontDestroyList = new HashSet<Transform> ();
 
 		/// 当前所在场景名称
 		private static string s_sceneName = Constants.LauncherSceneName;
@@ -57,7 +49,7 @@ namespace ShibaInu
 		#endif
 
 
-		#region 清空与销毁
+		#region UI初始化与清空销毁
 
 		/// <summary>
 		/// 初始化，（重新）创建所有图层
@@ -65,109 +57,73 @@ namespace ShibaInu
 		[NoToLuaAttribute]
 		public static void Initialize ()
 		{
-			sceneLayer = LuaHelper.CreateGameObject ("scene", uiCanvasTra, false).transform as RectTransform;
-			sceneLayer.localPosition = s_sceneLayerPos;
-
-			uiLayer = LuaHelper.CreateGameObject ("ui", uiCanvasTra, false).transform as RectTransform;
-			uiLayer.localPosition = s_uiLayerPos;
-
-			windowLayer = LuaHelper.CreateGameObject ("window", uiCanvasTra, false).transform as RectTransform;
-			windowLayer.localPosition = s_windowLayerPos;
-
-			uiTopLayer = LuaHelper.CreateGameObject ("uiTop", uiCanvasTra, false).transform as RectTransform;
-			uiTopLayer.localPosition = s_uiTopLayerPos;
-
-			alertLayer = LuaHelper.CreateGameObject ("alert", uiCanvasTra, false).transform as RectTransform;
-			alertLayer.localPosition = s_alertLayerPos;
-
-			guideLayer = LuaHelper.CreateGameObject ("guide", uiCanvasTra, false).transform as RectTransform;
-			guideLayer.localPosition = s_guideLayerPos;
-
-			topLayer = LuaHelper.CreateGameObject ("top", uiCanvasTra, false).transform as RectTransform;
-			topLayer.localPosition = s_topLayerPos;
-
-			Resize ();
+			uiCanvas = uiCanvasTra.gameObject.GetComponent<Canvas> ();
+			sceneLayer = (RectTransform)uiCanvasTra.Find ("scene");
+			uiLayer = (RectTransform)uiCanvasTra.Find ("ui");
+			windowLayer = (RectTransform)uiCanvasTra.Find ("window");
+			uiTopLayer = (RectTransform)uiCanvasTra.Find ("uiTop");
+			alertLayer = (RectTransform)uiCanvasTra.Find ("alert");
+			guideLayer = (RectTransform)uiCanvasTra.Find ("guide");
+			topLayer = (RectTransform)uiCanvasTra.Find ("top");
 		}
 
 
 		/// <summary>
-		/// 屏幕尺寸有改变时，重置所有图层的尺寸
+		/// 清空UI（切换场景时）
 		/// </summary>
-		[NoToLuaAttribute]
-		public static void Resize ()
+		public static void CleanUI ()
 		{
-			sceneLayer.sizeDelta = uiLayer.sizeDelta = windowLayer.sizeDelta = uiTopLayer.sizeDelta = alertLayer.sizeDelta = guideLayer.sizeDelta = topLayer.sizeDelta = uiCanvasTra.sizeDelta;
-		}
-
-
-		/// <summary>
-		/// 清空场景
-		/// </summary>
-		public static void Clean ()
-		{
-			// 保留不被销毁的对象
-			foreach (var item in s_dontDestroyMap) {
-				Transform trans = item.Key.transform;
-				// 记录层级列表
-				Transform parent = trans.parent;
-				item.Value.Clear ();
-				while (parent != uiCanvasTra) {
-					item.Value.Add (parent.name);
-					parent = parent.parent;
-				}
-				// 移到 uiCanvas 节点
-				trans.SetParent (uiCanvasTra);
-			}
-
-			// 销毁所有图层。改名是因为使用 Destroy() 不会立即销毁，接下来还是会 Find() 到该对象
-			sceneLayer.name = uiLayer.name = windowLayer.name = uiTopLayer.name = alertLayer.name = guideLayer.name = topLayer.name = "Destroying";
-			GameObject.Destroy (sceneLayer.gameObject);
-			GameObject.Destroy (uiLayer.gameObject);
-			GameObject.Destroy (windowLayer.gameObject);
-			GameObject.Destroy (uiTopLayer.gameObject);
-			GameObject.Destroy (alertLayer.gameObject);
-			GameObject.Destroy (guideLayer.gameObject);
-			GameObject.Destroy (topLayer.gameObject);
-
-			// 重新创建图层
-			Initialize ();
-
-			// 重新建立保留对象的层级列表
-			foreach (var item in s_dontDestroyMap) {
-				Transform parent = uiCanvasTra;
-				for (int i = item.Value.Count - 1; i >= 0; i--) {
-					Transform trans = parent.Find (item.Value [i]);
-					if (trans == null) {
-						trans = new GameObject (item.Value [i]).transform;
-						trans.parent = parent;
-					}
-					parent = trans;
-				}
-				item.Key.transform.SetParent (parent);
+			for (int i = 0; i < uiCanvasTra.childCount; i++) {
+				Transform layer = uiCanvasTra.GetChild (i);
+				for (int n = 0; n < layer.childCount; n++)
+					DestroyChildUI (layer.GetChild (n));
 			}
 		}
 
+		/// <summary>
+		/// 销毁子UI
+		/// </summary>
+		/// <returns><c>true</c>, if child U was destroyed, <c>false</c> otherwise.</returns>
+		/// <param name="tra">Tra.</param>
+		private static bool DestroyChildUI (Transform tra)
+		{
+			if (s_dontDestroyList.Contains (tra))
+				return false;// 本身不可销毁
+
+			bool canDestroy = true;
+			for (int i = tra.childCount - 1; i >= 0; i--) {
+				// 子节点不可销毁
+				Transform child = tra.GetChild (i);
+				if (s_dontDestroyList.Contains (child)) {
+					canDestroy = false;
+				} else {
+					if (!DestroyChildUI (child))
+						canDestroy = false;
+				}
+			}
+			if (canDestroy) {
+				GameObject.Destroy (tra.gameObject);
+			}
+			return canDestroy;
+		}
+
 
 		/// <summary>
-		/// 添加一个在清除场景时，不需被销毁的 GameObject
+		/// 添加一个在清空（切换）场景时，无需被销毁的对象（UI图层中的对象）
 		/// </summary>
 		/// <param name="go">Go.</param>
 		public static void AddDontDestroy (GameObject go)
 		{
-			if (!s_dontDestroyMap.ContainsKey (go)) {
-				s_dontDestroyMap.Add (go, new List<string> ());
-			}
+			s_dontDestroyList.Add (go.transform);
 		}
 
 		/// <summary>
-		/// 移除一个在清除场景时，不需被销毁的 GameObject
+		/// 移除一个在清空（切换）场景时，无需被销毁的对象（UI图层中的对象）
 		/// </summary>
 		/// <param name="go">Go.</param>
 		public static void RemoveDontDestroy (GameObject go)
 		{
-			if (s_dontDestroyMap.ContainsKey (go)) {
-				s_dontDestroyMap.Remove (go);
-			}
+			s_dontDestroyList.Remove (go.transform);
 		}
 
 		#endregion
@@ -183,7 +139,7 @@ namespace ShibaInu
 		public static void LoadScene (string sceneName)
 		{
 			#if UNITY_EDITOR
-			if (Common.isDebug) {
+			if (Common.IsDebug) {
 				// [ Editor Play Mode ] 请将要加载的场景（在 Assets/Res/Scene/ 目录下）加入到 [ Build Settings -> Scenes In Build ] 中
 				SceneManager.LoadScene (sceneName);
 				return;
@@ -213,7 +169,7 @@ namespace ShibaInu
 		public static void LoadSceneAsync (string sceneName)
 		{
 			#if UNITY_EDITOR
-			if (Common.isDebug) {
+			if (Common.IsDebug) {
 				DispatchLuaEvent (EVENT_START, sceneName);
 
 				if (s_dceCoroutine != null)
@@ -260,7 +216,7 @@ namespace ShibaInu
 
 		#if UNITY_EDITOR
 		/// <summary>
-		/// 在 editor play mode 状态下，延迟零点几秒后抛出场景异步加载完成事件
+		/// 在 editor play mode 状态下，延迟后抛出场景异步加载完成事件
 		/// </summary>
 		/// <returns>The all complete event.</returns>
 		private static IEnumerator DispatchCompleteEvent (string sceneName)
@@ -354,4 +310,3 @@ namespace ShibaInu
 		//
 	}
 }
-
