@@ -11,7 +11,7 @@ namespace ShibaInu
 	public class DestroyEventDispatcher : MonoBehaviour
 	{
 		/// PointerEvent.lua
-		private static readonly LuaFunction s_dispatchEvent = Common.luaMgr.state.GetFunction ("DestroyEvent.DispatchEvent");
+		private static LuaFunction s_dispatchEvent;
 
 		/// 对应 gameObject.peer._ed
 		public LuaTable ed;
@@ -20,6 +20,9 @@ namespace ShibaInu
 		void OnDestroy ()
 		{
 			try {
+				if (s_dispatchEvent == null)
+					s_dispatchEvent = Common.luaMgr.state.GetFunction ("DestroyEvent.DispatchEvent");
+				
 				s_dispatchEvent.BeginPCall ();
 				s_dispatchEvent.Push (ed);
 				s_dispatchEvent.PCall ();

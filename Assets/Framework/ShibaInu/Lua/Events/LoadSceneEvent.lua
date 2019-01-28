@@ -17,11 +17,19 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
+-- 在异步加载场景（包括 SubScene）的过程中，可以调用 Stage.GetProgress() 获取加载进度
+
 --- 异步开始加载场景。该事件只会在 Stage(ShibaInu.Stage) 上抛出
 LoadSceneEvent.START = "LoadSceneEvent_Start"
 
 --- 异步加载场景完成。该事件只会在 Stage(ShibaInu.Stage) 上抛出
 LoadSceneEvent.COMPLETE = "LoadSceneEvent_Complete"
+
+--- 异步开始加载 Sub 场景。该事件只会在 Stage(ShibaInu.Stage) 上抛出
+LoadSceneEvent.SUB_START = "LoadSceneEvent_SubStart"
+
+--- 异步加载 Sub 场景完成。该事件只会在 Stage(ShibaInu.Stage) 上抛出
+LoadSceneEvent.SUB_COMPLETE = "LoadSceneEvent_SubComplete"
 
 
 --

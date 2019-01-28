@@ -14,6 +14,8 @@ namespace ShibaInu
 		// lua 层的事件类型
 		private const string EVENT_START = "LoadSceneEvent_Start";
 		private const string EVENT_COMPLETE = "LoadSceneEvent_Complete";
+		private const string EVENT_SUB_START = "LoadSceneEvent_SubStart";
+		private const string EVENT_SUB_COMPLETE = "LoadSceneEvent_SubComplete";
 
 		/// 在 lua 层抛出 LoadSceneEvent 的方法。 - Events/LoadSceneEvent.lua
 		private static LuaFunction s_dispatchEvent;
@@ -35,6 +37,8 @@ namespace ShibaInu
 
 		/// 当前所在场景名称
 		private static string s_sceneName = Constants.LauncherSceneName;
+		/// 当前已加载的 SubScene 名称列表
+		private static HashSet<string> s_subSceneNames = new HashSet<string> ();
 
 		/// 加载场景对应 AssetBundle 的请求对象
 		private static AssetBundleCreateRequest s_abcr = null;
@@ -42,11 +46,14 @@ namespace ShibaInu
 		private static AsyncOperation s_ao = null;
 		/// 异步加载场景的协程对象
 		private static Coroutine s_alcCoroutine = null;
+		/// 异步加载 SubScene 的协程对象
+		private static Coroutine s_subCoroutine = null;
 
 		#if UNITY_EDITOR
 		/// 抛出 EVENT_COMPLETE 事件的协程对象
 		private static Coroutine s_dceCoroutine = null;
 		#endif
+
 
 
 		#region UI初始化与清空销毁
@@ -130,7 +137,7 @@ namespace ShibaInu
 
 
 
-		#region 加载场景
+		#region 加载/卸载 场景
 
 		/// <summary>
 		/// 同步加载场景
@@ -138,6 +145,8 @@ namespace ShibaInu
 		/// <param name="sceneName">Scene path.</param>
 		public static void LoadScene (string sceneName)
 		{
+			UnloadSubSceneAssetBundle ();
+
 			#if UNITY_EDITOR
 			if (Common.IsDebug) {
 				// [ Editor Play Mode ] 请将要加载的场景（在 Assets/Res/Scene/ 目录下）加入到 [ Build Settings -> Scenes In Build ] 中
@@ -161,13 +170,14 @@ namespace ShibaInu
 		}
 
 
-
 		/// <summary>
 		/// 异步加载场景
 		/// </summary>
 		/// <param name="scenePath">Scene path.</param>
 		public static void LoadSceneAsync (string sceneName)
 		{
+			UnloadSubSceneAssetBundle ();
+
 			#if UNITY_EDITOR
 			if (Common.IsDebug) {
 				DispatchLuaEvent (EVENT_START, sceneName);
@@ -209,7 +219,6 @@ namespace ShibaInu
 			yield return s_ao;
 			s_ao = null;
 			s_alcCoroutine = null;
-
 			DispatchLuaEvent (EVENT_COMPLETE, s_sceneName);
 		}
 
@@ -228,57 +237,6 @@ namespace ShibaInu
 			DispatchLuaEvent (EVENT_COMPLETE, sceneName);
 		}
 		#endif
-
-
-		/// <summary>
-		/// 在 lua 层抛出事件
-		/// </summary>
-		/// <param name="type">Type.</param>
-		/// <param name="sceneName">Scene Name.</param>
-		private static void DispatchLuaEvent (string type, string sceneName)
-		{
-			// 不能在 Initialize() 时获取该函数，因为相互依赖
-			if (s_dispatchEvent == null)
-				s_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadSceneEvent.DispatchEvent");
-
-			s_dispatchEvent.BeginPCall ();
-			s_dispatchEvent.Push (type);
-			s_dispatchEvent.Push (sceneName);
-			s_dispatchEvent.PCall ();
-			s_dispatchEvent.EndPCall ();
-		}
-
-
-		/// <summary>
-		/// 获取当前异步加载进度 0~1
-		/// </summary>
-		/// <returns>The progress.</returns>
-		public static float GetProgress ()
-		{
-			// 没有在加载场景
-			if (s_abcr == null && s_ao == null)
-				return 1;
-
-			// 正在加载场景对应的 AssetBundle
-			if (s_abcr != null)
-				return s_abcr.progress * 0.9f;
-
-			// 正在异步加载场景本身
-			return Mathf.Min (s_ao.progress + 0.1f, 1f) * 0.1f + 0.9f;
-		}
-
-		#endregion
-
-
-
-		/// <summary>
-		/// 获取当前场景的名称
-		/// </summary>
-		/// <value>The name of the current scene.</value>
-		public static string currentSceneName {
-			get { return s_sceneName; }
-		}
-
 
 
 		/// <summary>
@@ -305,6 +263,161 @@ namespace ShibaInu
 				Debug.Log ("[Unload] Scene: " + sceneName);
 			}
 		}
+
+		#endregion
+
+
+
+		#region 加载/卸载 Sub 场景
+
+		/// <summary>
+		/// 同步加载 Sub 场景
+		/// </summary>
+		/// <param name="sceneName">Scene name.</param>
+		public static void LoadSubScene (string sceneName)
+		{
+			s_subSceneNames.Add (sceneName);
+
+			#if UNITY_EDITOR
+			if (Common.IsDebug) {
+				SceneManager.LoadScene (sceneName, LoadSceneMode.Additive);
+				return;
+			}
+			#endif
+
+			// 先加载场景对应的 AssetBundle
+			ABI abi = ResManager.GetAbi (ResManager.GetPathMD5 (sceneName));
+			if (abi.ab == null) {
+				ABLoader.ParseFilePath (abi);
+				abi.ab = AssetBundle.LoadFromFile (abi.filePath);
+			}
+			// 再载入场景
+			SceneManager.LoadScene (sceneName);
+		}
+
+
+		/// <summary>
+		/// 异步加载 Sub 场景
+		/// </summary>
+		/// <param name="sceneName">Scene name.</param>
+		public static void LoadSubSceneAsync (string sceneName)
+		{
+			s_subSceneNames.Add (sceneName);
+
+			DispatchLuaEvent (EVENT_SUB_START, sceneName);
+			if (s_subCoroutine != null)
+				Common.looper.StopCoroutine (s_subCoroutine);
+			
+			s_abcr = null;
+			s_ao = null;
+			s_subCoroutine = Common.looper.StartCoroutine (DoLoadSubSceneAsync (sceneName));
+		}
+
+
+		private static IEnumerator DoLoadSubSceneAsync (string sceneName)
+		{
+			if (!Common.IsDebug) {
+				// 先异步加载场景对应的 AssetBundle
+				ABI abi = ResManager.GetAbi (ResManager.GetPathMD5 (sceneName));
+				if (abi.ab == null) {
+					ABLoader.ParseFilePath (abi);
+					s_abcr = AssetBundle.LoadFromFileAsync (abi.filePath);
+					yield return s_abcr;
+					abi.ab = s_abcr.assetBundle;
+					s_abcr = null;
+				}
+			}
+
+			// 再异步加载 SubScene
+			s_ao = SceneManager.LoadSceneAsync (sceneName, LoadSceneMode.Additive);
+			s_ao.allowSceneActivation = false;
+			while (!s_ao.isDone) {
+				if (s_ao.progress >= 0.9f)
+					s_ao.allowSceneActivation = true;
+				yield return null;
+			}
+			s_ao = null;
+			s_subCoroutine = null;
+			DispatchLuaEvent (EVENT_SUB_COMPLETE, sceneName);
+		}
+
+
+		/// <summary>
+		/// 卸载包含 Sub 场景的 AssetBundle，并取消正在异步加载的 Sub 场景。
+		/// </summary>
+		private static void UnloadSubSceneAssetBundle ()
+		{
+			if (s_subCoroutine != null) {
+				Common.looper.StopCoroutine (s_subCoroutine);
+				s_subCoroutine = null;
+			}
+
+			if (!Common.IsDebug) {
+				foreach (string sceneName in s_subSceneNames) {
+					ABI abi = ResManager.GetAbi (ResManager.GetPathMD5 (sceneName));
+					if (abi != null && abi.ab != null) {
+						abi.ab.Unload (true);
+						abi.ab = null;
+						Debug.Log ("[Unload] SubScene: " + sceneName);
+					}
+				}
+			}
+			s_subSceneNames.Clear ();
+		}
+
+		#endregion
+
+
+
+		#region 其他
+
+		/// <summary>
+		/// 获取当前异步加载进度 0~1
+		/// </summary>
+		/// <returns>The progress.</returns>
+		public static float GetProgress ()
+		{
+			// 没有在加载场景
+			if (s_abcr == null && s_ao == null)
+				return 1;
+
+			// 正在加载场景对应的 AssetBundle
+			if (s_abcr != null)
+				return s_abcr.progress * 0.9f;
+
+			// 正在异步加载场景本身
+			return Mathf.Min (s_ao.progress + 0.1f, 1f) * 0.1f + 0.9f;
+		}
+
+
+		/// <summary>
+		/// 获取当前场景的名称
+		/// </summary>
+		/// <value>The name of the current scene.</value>
+		public static string currentSceneName {
+			get { return s_sceneName; }
+		}
+
+
+		/// <summary>
+		/// 在 lua 层抛出事件
+		/// </summary>
+		/// <param name="type">Type.</param>
+		/// <param name="sceneName">Scene Name.</param>
+		private static void DispatchLuaEvent (string type, string sceneName)
+		{
+			// 不能在 Initialize() 时获取该函数，因为相互依赖
+			if (s_dispatchEvent == null)
+				s_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadSceneEvent.DispatchEvent");
+
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (type);
+			s_dispatchEvent.Push (sceneName);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
+		}
+
+		#endregion
 
 
 		//

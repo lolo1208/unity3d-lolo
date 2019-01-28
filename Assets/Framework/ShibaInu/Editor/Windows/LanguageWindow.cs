@@ -546,6 +546,7 @@ namespace ShibaInu
 		/// </summary>
 		private void SaveLanguage ()
 		{
+			m_data.Sort ();
 			StringBuilder sb = new StringBuilder ();
 			sb.Append ("return {");
 			foreach (var item in m_data) {

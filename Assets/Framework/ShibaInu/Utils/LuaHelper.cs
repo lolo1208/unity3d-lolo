@@ -38,10 +38,10 @@ namespace ShibaInu
 		/// <param name="ed">Ed.</param>
 		public static void AddPointerEvent (GameObject go, LuaTable ed)
 		{
-			PointerEventDispatcher ped = go.GetComponent<PointerEventDispatcher> ();
-			if (ped == null)
-				ped = go.AddComponent<PointerEventDispatcher> ();
-			ped.ed = ed;
+			PointerEventDispatcher dispatcher = go.GetComponent<PointerEventDispatcher> ();
+			if (dispatcher == null)
+				dispatcher = go.AddComponent<PointerEventDispatcher> ();
+			dispatcher.ed = ed;
 		}
 
 
@@ -55,6 +55,19 @@ namespace ShibaInu
 		{
 			if (go.GetComponent<DragDropEventDispatcher> () == null)
 				go.AddComponent<DragDropEventDispatcher> ().ed = ed;
+		}
+
+
+		/// <summary>
+		/// 在指定的 gameObject 上添加 AvailabilityEventDispatcher 脚本。
+		/// 当 gameObject 可用性有改变时（OnEnable() / OnDisable()），派发 AvailabilityEvent.CHANGED 事件
+		/// </summary>
+		/// <param name="go">Go.</param>
+		/// <param name="ed">Ed.</param>
+		public static void AddAvailabilityEvent (GameObject go, LuaTable ed)
+		{
+			if (go.GetComponent<AvailabilityEventDispatcher> () == null)
+				go.AddComponent<AvailabilityEventDispatcher> ().ed = ed;
 		}
 
 

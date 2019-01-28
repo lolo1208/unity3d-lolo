@@ -45,9 +45,11 @@ local _layers = {
 }
 
 Stage._ed = _ed
+Stage.LoadSubScene = stage.LoadSubScene
+Stage.LoadSubSceneAsync = stage.LoadSubSceneAsync
+Stage.GetProgress = stage.GetProgress
 Stage.AddDontDestroy = stage.AddDontDestroy
 Stage.RemoveDontDestroy = stage.RemoveDontDestroy
-Stage.GetProgress = stage.GetProgress
 Stage.uiCanvas = stage.uiCanvas
 Stage.uiCanvasTra = stage.uiCanvasTra
 
@@ -217,8 +219,16 @@ end
 
 
 --
+--- 获取当前场景类
+---@return Scene
+function Stage.GetCurrentSceneClass()
+    return _currentScene
+end
+
+
+--
 --- 获取上一个场景类
----@return string
+---@return Scene
 function Stage.GetPrevSceneClass()
     return _prevSceneClass
 end

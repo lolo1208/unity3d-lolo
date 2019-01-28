@@ -27,6 +27,8 @@ local error = error
 ---@field protected _eventMap table<string, EventListenerInfo[]>
 local EventDispatcher = class("EventDispatcher")
 
+
+--
 --- 构造函数
 ---@param go UnityEngine.GameObject @ -可选- 对应的 GameObject（用于冒泡，没有go时，可以不用传）
 function EventDispatcher:Ctor(go)
@@ -34,6 +36,8 @@ function EventDispatcher:Ctor(go)
     self.gameObject = go
 end
 
+
+--
 --- 注册事件
 ---@param type string @ 事件类型
 ---@param callback fun() @ 处理函数
@@ -79,6 +83,10 @@ function EventDispatcher:AddEventListener(type, callback, caller, priority, ...)
             -- OnDestroy() 时，self.gameObject 已经是 null（C#）了，所以不能使用 gameObject.peer._ed 来派发
             LuaHelper.AddDestroyEvent(go, self)
 
+        elseif type == AvailabilityEvent.CHANGED then
+            -- AvailabilityEvent 相关事件，由 C# AvailabilityEventDispatcher.cs 派发
+            LuaHelper.AddAvailabilityEvent(go, self)
+
         elseif type == PointerEvent.CLICK or type == PointerEvent.UP or type == PointerEvent.DOWN
                 or type == PointerEvent.ENTER or type == PointerEvent.EXIT then
             -- PointerEvent 相关事件，由 C# PointerEventDispatcher.cs 派发
@@ -92,6 +100,8 @@ function EventDispatcher:AddEventListener(type, callback, caller, priority, ...)
     end
 end
 
+
+--
 --- 移除事件侦听
 ---@param type string @ 事件类型
 ---@param callback fun() @ 处理函数
@@ -118,6 +128,8 @@ function EventDispatcher:RemoveEventListener(type, callback, caller)
     end
 end
 
+
+--
 --- 抛出事件
 ---@param event Event @ 事件对象
 ---@param bubbles boolean @ 是否冒泡 [default: false]
@@ -169,6 +181,8 @@ function EventDispatcher:DispatchEvent(event, bubbles, recycle)
     end
 end
 
+
+--
 --- 是否正在侦听指定类型的事件
 ---@param type string @ 事件类型
 ---@return boolean
@@ -180,4 +194,7 @@ function EventDispatcher:HasEventListener(type)
     return #list > 0
 end
 
+
+
+--
 return EventDispatcher

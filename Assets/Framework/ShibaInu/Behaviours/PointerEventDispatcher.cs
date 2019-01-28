@@ -26,7 +26,8 @@ namespace ShibaInu
 		public LuaTable ed;
 
 
-		private void DispatchLuaEvent (string type, PointerEventData eventData)
+
+		private static void DispatchLuaEvent (LuaTable ed, string type, PointerEventData eventData)
 		{
 			if (ed == null)
 				return;
@@ -43,29 +44,30 @@ namespace ShibaInu
 		}
 
 
+
 		public void OnPointerEnter (PointerEventData eventData)
 		{
-			DispatchLuaEvent (EVENT_ENTER, eventData);
+			DispatchLuaEvent (ed, EVENT_ENTER, eventData);
 		}
 
 		public void OnPointerExit (PointerEventData eventData)
 		{
-			DispatchLuaEvent (EVENT_EXIT, eventData);
+			DispatchLuaEvent (ed, EVENT_EXIT, eventData);
 		}
 
 		public void OnPointerDown (PointerEventData eventData)
 		{
-			DispatchLuaEvent (EVENT_DOWN, eventData);
+			DispatchLuaEvent (ed, EVENT_DOWN, eventData);
 		}
 
 		public void OnPointerUp (PointerEventData eventData)
 		{
-			DispatchLuaEvent (EVENT_UP, eventData);
+			DispatchLuaEvent (ed, EVENT_UP, eventData);
 		}
 
 		public void OnPointerClick (PointerEventData eventData)
 		{
-			DispatchLuaEvent (EVENT_CLICK, eventData);
+			DispatchLuaEvent (ed, EVENT_CLICK, eventData);
 		}
 
 
