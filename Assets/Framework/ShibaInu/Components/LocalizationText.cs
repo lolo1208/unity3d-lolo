@@ -15,7 +15,7 @@ namespace ShibaInu
 	/// <summary>
 	/// 本地化文本
 	/// </summary>
-	[AddComponentMenu ("ShibaInu/Localization Text", 105)]
+	[AddComponentMenu ("ShibaInu/Localization Text", 107)]
 	[DisallowMultipleComponent]
 	[RequireComponent (typeof(Text))]
 	public class LocalizationText : MonoBehaviour
@@ -49,8 +49,10 @@ namespace ShibaInu
 
 		void Start ()
 		{
-			if (Common.luaMgr == null)
+			#if UNITY_EDITOR
+			if (!Common.initialized)
 				return;
+			#endif
 
 			m_text = GetComponent<Text> ();
 			DisplayContent ();

@@ -107,7 +107,7 @@ namespace ShibaInu
 			s_luaBegin.PCall ();
 			s_luaBegin.EndPCall ();
 
-			Debug.Log ("Lua Profiler - Begin!");
+			Logger.Log ("Begin!", "LuaProfiler");
 		}
 
 
@@ -134,7 +134,7 @@ namespace ShibaInu
 			s_luaEnd.PCall ();
 			s_luaEnd.EndPCall ();
 
-			Debug.Log ("Lua Profiler - Stopped!");
+			Logger.Log ("Stopped!", "LuaProfiler");
 		}
 
 
@@ -163,9 +163,9 @@ namespace ShibaInu
 		private static void EventCallback (string type, System.Object data)
 		{
 			if (data != null)
-				Debug.Log ("Lua Profiler - SocketEvent [" + type + "]: " + data.ToString ());
+				Logger.Log ("SocketEvent [" + type + "]: " + data.ToString (), "LuaProfiler");
 			else
-				Debug.Log ("Lua Profiler - SocketEvent [" + type + "]");
+				Logger.Log ("SocketEvent [" + type + "]", "LuaProfiler");
 			
 			switch (type) {
 

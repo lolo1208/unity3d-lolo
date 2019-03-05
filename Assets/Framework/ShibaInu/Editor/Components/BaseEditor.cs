@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 
 
 namespace ShibaInu
@@ -39,6 +40,14 @@ namespace ShibaInu
 			m_labelWidth = GUILayout.Width (m_labelWidthValue);
 			m_width = GUILayout.Width (m_widthValue);
 			m_halfWidth = GUILayout.Width (m_halfWidthValue);
+		}
+
+
+
+		protected void MarkSceneDirty (bool isDirty = true)
+		{
+			if (!Application.isPlaying && isDirty)
+				EditorSceneManager.MarkSceneDirty (EditorSceneManager.GetActiveScene ());
 		}
 
 

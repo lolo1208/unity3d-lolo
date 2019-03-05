@@ -194,9 +194,12 @@ public static class LuaBinder
 		ShibaInu_HttpUploadWrap.Register(L);
 		ShibaInu_TcpSocketWrap.Register(L);
 		ShibaInu_UdpSocketWrap.Register(L);
+		ShibaInu_PickerWrap.Register(L);
 		ShibaInu_BaseListWrap.Register(L);
 		ShibaInu_ScrollListWrap.Register(L);
-		ShibaInu_PickerWrap.Register(L);
+		ShibaInu_PageListWrap.Register(L);
+		ShibaInu_ViewPagerWrap.Register(L);
+		ShibaInu_PageTransformerTypeWrap.Register(L);
 		ShibaInu_CircleImageWrap.Register(L);
 		ShibaInu_LocalizationTextWrap.Register(L);
 		ShibaInu_ThirdPersonCameraWrap.Register(L);

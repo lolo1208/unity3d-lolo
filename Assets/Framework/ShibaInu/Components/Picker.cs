@@ -13,9 +13,9 @@ namespace ShibaInu
 	/// <summary>
 	/// 选择器列表，需配合 Picker.lua 使用
 	/// </summary>
-	[AddComponentMenu ("ShibaInu/Picker", 104)]
+	[AddComponentMenu ("ShibaInu/Picker", 101)]
 	[DisallowMultipleComponent]
-	public class Picker : UIBehaviour
+	public class Picker : MonoBehaviour
 	{
 
 		#region lua 相关
@@ -260,10 +260,10 @@ namespace ShibaInu
 
 
 
-		protected override void Awake ()
+		void Awake ()
 		{
 			m_content = (RectTransform)LuaHelper.CreateGameObject ("Content", transform, false).transform;
-			m_content.SetSiblingIndex (0);
+			m_content.SetAsFirstSibling ();
 			ResetItemSize ();
 
 			// 响应点击区域相关事件
@@ -847,13 +847,14 @@ namespace ShibaInu
 		#region 编辑器相关
 
 		#if UNITY_EDITOR
-		protected override void OnValidate ()
+		void OnValidate ()
 		{
 			// hitArea 可在编辑器编辑
 			if (m_hitArea == null) {
 				m_hitArea = LuaHelper.CreateGameObject ("HitArea", transform, false);
 				Image img = m_hitArea.AddComponent<Image> ();
 				img.color = Color.clear;
+				m_hitArea.AddComponent<PointerEventPasser> ();
 			}
 		}
 		#endif

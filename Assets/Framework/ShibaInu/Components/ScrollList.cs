@@ -152,8 +152,15 @@ namespace ShibaInu
 
 
 
-		protected override void Awake ()
+		/// <summary>
+		/// 初始化
+		/// </summary>
+		protected override void Initialize ()
 		{
+			if (m_initialized)
+				return;
+			m_initialized = true;
+
 			GameObject viewport = LuaHelper.CreateGameObject ("Viewport", transform, false);
 			Mask mask = viewport.gameObject.AddComponent<Mask> ();
 			mask.showMaskGraphic = false;

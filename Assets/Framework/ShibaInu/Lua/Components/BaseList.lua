@@ -15,6 +15,7 @@ local floor = math.floor
 ---@class BaseList : View
 ---@field New fun(go:UnityEngine.GameObject, itemClass:any):BaseList
 ---
+---@field baseList ShibaInu.BaseList
 ---@field autoSelectItem boolean @ 在 Update()、PointerDown、PointerClick 发生时，是否自动切换子项的选中状态。默认值：true
 ---
 ---@field protected _list ShibaInu.BaseList
@@ -66,7 +67,15 @@ function BaseList:Ctor(go, itemClass)
     self._selectMode = BaseList.SELECT_MODE_INDEX
     self._curSelectedIndex = -1
 
-    local list = GetComponent.BaseList(go)
+    -- BaseList or PageList
+    local list
+    if instanceof(self, PageList) then
+        list = GetComponent.PageList(go)
+    else
+        list = GetComponent.BaseList(go) -- BaseList or ScrollList
+        self.baseList = list
+    end
+
     if list == nil then
         error(format(Constants.E2007, self.__classname, go.name))
     end
@@ -475,6 +484,12 @@ function BaseList:GetItemByKey(key)
 end
 
 --
+--- 获取列表索引（item:GetIndex()）对应的在数据中的索引
+function BaseList:GetDataIndexByListIndex(index)
+    return index
+end
+
+--
 --- 获取 Item 总数（数据的值总数）
 function BaseList:GetCount()
     if self._data == nil then
@@ -694,7 +709,8 @@ end
 
 --
 --- 移除所有子项，并回收到缓存池中
-function BaseList:RecycleAllItem()
+---@param deselectCurItem boolean @ 是否取消选中当前已选 item。默认：true
+function BaseList:RecycleAllItem(deselectCurItem)
     local itemList = self._itemList
     local itemPool = self._itemPool
     local poolCount = #itemPool
@@ -706,10 +722,12 @@ function BaseList:RecycleAllItem()
     end
     self._itemList = {}
 
-    local curItem = self._selectedItem
-    if curItem ~= nil then
-        curItem:SetSelected(false)
-        self._selectedItem = nil
+    if deselectCurItem ~= false then
+        local curItem = self._selectedItem
+        if curItem ~= nil then
+            curItem:SetSelected(false)
+            self._selectedItem = nil
+        end
     end
 end
 

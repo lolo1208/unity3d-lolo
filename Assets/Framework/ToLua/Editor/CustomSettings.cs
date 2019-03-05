@@ -225,9 +225,12 @@ public static class CustomSettings
 		_GT (typeof(ShibaInu.TcpSocket)),
 		_GT (typeof(ShibaInu.UdpSocket)),
 
+		_GT (typeof(ShibaInu.Picker)),
 		_GT (typeof(ShibaInu.BaseList)),
 		_GT (typeof(ShibaInu.ScrollList)),
-		_GT (typeof(ShibaInu.Picker)),
+		_GT (typeof(ShibaInu.PageList)),
+		_GT (typeof(ShibaInu.ViewPager)),
+		_GT (typeof(ShibaInu.PageTransformerType)),
 		_GT (typeof(ShibaInu.CircleImage)),
 		_GT (typeof(ShibaInu.LocalizationText)),
 

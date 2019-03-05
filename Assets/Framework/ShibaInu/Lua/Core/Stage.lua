@@ -222,7 +222,7 @@ end
 --- 获取当前场景类
 ---@return Scene
 function Stage.GetCurrentSceneClass()
-    return _currentScene
+    return _currentSceneClass
 end
 
 
@@ -350,6 +350,7 @@ function Stage.ShowModal(layerName, color)
 
     _modalImg.color = color
     SetParent(_modalTra, _layers[layerName])
+    _modalTra:SetAsFirstSibling()
     if not _modalGO.activeSelf then
         _modalGO:SetActive(true)
     end
@@ -360,6 +361,12 @@ function Stage.HideModal()
     if _modalGO.activeSelf then
         _modalGO:SetActive(false)
     end
+end
+
+--- 获取全屏模态对象
+---@return UnityEngine.RectTransform
+function Stage.GetModal()
+    return _modalTra
 end
 
 

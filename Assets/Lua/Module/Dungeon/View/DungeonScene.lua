@@ -33,6 +33,7 @@ local bornList = {
 
 --
 function DungeonScene:Ctor()
+    --self.asyncSubScenes = { "Sub1", "Sub2" }
     DungeonScene.super.Ctor(self, DungeonData.NAME, nil, true)
     DungeonData.scene = self
 end

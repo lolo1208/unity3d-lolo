@@ -69,16 +69,6 @@ namespace ShibaInu
 
 		void Awake ()
 		{
-			m_bg1 = new GUIStyle ();
-			m_bg1.normal.background = new Texture2D (1, 1);
-			m_bg1.normal.background.SetPixel (0, 0, new Color (0.23f, 0.23f, 0.23f));
-			m_bg1.normal.background.Apply ();
-
-			m_bg2 = new GUIStyle ();
-			m_bg2.normal.background = new Texture2D (1, 1);
-			m_bg2.normal.background.SetPixel (0, 0, new Color (0.21f, 0.21f, 0.21f));
-			m_bg2.normal.background.Apply ();
-
 			m_colorNormal = new Color (0.7f, 0.7f, 0.7f);
 			m_colorError = new Color (0.9f, 0.9f, 0.9f);
 
@@ -105,6 +95,20 @@ namespace ShibaInu
 			m_types = TYPEs;
 			m_path = Path.GetFullPath (LogFileWriter.FILE_PATH);
 			LoadLogFile ();
+		}
+
+
+		void OnFocus ()
+		{
+			m_bg1 = new GUIStyle ();
+			m_bg1.normal.background = new Texture2D (1, 1);
+			m_bg1.normal.background.SetPixel (0, 0, new Color (0.23f, 0.23f, 0.23f));
+			m_bg1.normal.background.Apply ();
+
+			m_bg2 = new GUIStyle ();
+			m_bg2.normal.background = new Texture2D (1, 1);
+			m_bg2.normal.background.SetPixel (0, 0, new Color (0.21f, 0.21f, 0.21f));
+			m_bg2.normal.background.Apply ();
 		}
 
 
@@ -431,7 +435,7 @@ namespace ShibaInu
 						sb.Length = 0;
 
 
-					} else if (line=="stack traceback:" || line.StartsWith ("info: ")) {
+					} else if (line == "stack traceback:" || line.StartsWith ("info: ")) {
 						// 开始 堆栈 或 网络日志详情
 						sb.AppendLine (line);
 

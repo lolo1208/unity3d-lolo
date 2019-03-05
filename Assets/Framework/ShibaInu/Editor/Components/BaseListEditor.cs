@@ -10,10 +10,6 @@ namespace ShibaInu
 	{
 		
 		protected SerializedProperty m_itemPrefab;
-		// protected SerializedProperty m_columnCount;
-		// protected SerializedProperty m_rowCount;
-		// protected SerializedProperty m_horizontalGap;
-		// protected SerializedProperty m_verticalGap;
 
 		protected GUIContent m_c_itemPrefab = new GUIContent ("Item Prefab", "Item 的预制对象");
 		protected GUIContent m_c_count = new GUIContent ("Count", "排列 [ 行数, 列数 ]");
@@ -31,10 +27,6 @@ namespace ShibaInu
 			m_baseList = (BaseList)target;
 
 			m_itemPrefab = serializedObject.FindProperty ("m_itemPrefab");
-			// m_columnCount = serializedObject.FindProperty ("m_columnCount");
-			// m_rowCount = serializedObject.FindProperty ("m_rowCount");
-			// m_horizontalGap = serializedObject.FindProperty ("m_horizontalGap");
-			// m_verticalGap = serializedObject.FindProperty ("m_verticalGap");
 		}
 
 
@@ -50,29 +42,32 @@ namespace ShibaInu
 			EditorGUILayout.BeginHorizontal ();
 			EditorGUILayout.LabelField (m_c_count, m_labelWidth);
 
-			EditorGUI.BeginDisabledGroup (m_rowCountDisabled);
 			int rowCount = EditorGUILayout.IntField ((int)m_baseList.rowCount, m_halfWidth);
-			m_baseList.rowCount = (rowCount < 1) ? 1 : (uint)rowCount;
-			EditorGUI.EndDisabledGroup ();
+			uint rowCountVal = (rowCount < 1) ? 1 : (uint)rowCount;
+			MarkSceneDirty (rowCountVal != m_baseList.rowCount);
+			m_baseList.rowCount = rowCountVal;
 
-			EditorGUI.BeginDisabledGroup (m_columnCountDisabled);
 			int columnCount = EditorGUILayout.IntField ((int)m_baseList.columnCount, m_halfWidth);
-			m_baseList.columnCount = (columnCount < 1) ? 1 : (uint)columnCount;
-			EditorGUI.EndDisabledGroup ();
+			uint columnCountVal = (columnCount < 1) ? 1 : (uint)columnCount;
+			MarkSceneDirty (columnCountVal != m_baseList.columnCount);
+			m_baseList.columnCount = columnCountVal;
 
 			EditorGUILayout.EndHorizontal ();
-			// EditorGUILayout.PropertyField (m_rowCount, new GUIContent ("Row", "行数"));
-			// EditorGUILayout.PropertyField (m_columnCount, new GUIContent ("Column", "列数"));
 
 
 			// gap
 			EditorGUILayout.BeginHorizontal ();
 			EditorGUILayout.LabelField (m_c_gap, m_labelWidth);
-			m_baseList.horizontalGap = EditorGUILayout.IntField (m_baseList.horizontalGap, m_halfWidth);
-			m_baseList.verticalGap = EditorGUILayout.IntField (m_baseList.verticalGap, m_halfWidth);
+
+			int hGap = EditorGUILayout.IntField (m_baseList.horizontalGap, m_halfWidth);
+			MarkSceneDirty (hGap != m_baseList.horizontalGap);
+			m_baseList.horizontalGap = hGap;
+
+			int vGap = EditorGUILayout.IntField (m_baseList.verticalGap, m_halfWidth);
+			MarkSceneDirty (vGap != m_baseList.verticalGap);
+			m_baseList.verticalGap = vGap;
+
 			EditorGUILayout.EndHorizontal ();
-			// EditorGUILayout.PropertyField (m_horizontalGap, new GUIContent ("Horizontal Gap", "Item 水平间隔"));
-			// EditorGUILayout.PropertyField (m_verticalGap, new GUIContent ("Vertical Gap", "Item 垂直间隔"));
 
 
 			serializedObject.ApplyModifiedProperties ();

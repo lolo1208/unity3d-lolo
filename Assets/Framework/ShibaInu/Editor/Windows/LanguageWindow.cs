@@ -138,6 +138,13 @@ namespace ShibaInu
 			m_h28 = GUILayout.Height (28);
 			m_h150 = GUILayout.Height (150);
 
+			m_color1 = new Color (0.7f, 0.7f, 0.7f);
+			m_color2 = Color.white;
+		}
+
+
+		void OnFocus ()
+		{
 			m_bg1 = new GUIStyle ();
 			m_bg1.normal.background = new Texture2D (1, 1);
 			m_bg1.normal.background.SetPixel (0, 0, new Color (0.23f, 0.23f, 0.23f));
@@ -152,9 +159,6 @@ namespace ShibaInu
 			m_bg3.normal.background = new Texture2D (1, 1);
 			m_bg3.normal.background.SetPixel (0, 0, new Color (0.4f, 0.4f, 0.4f));
 			m_bg3.normal.background.Apply ();
-
-			m_color1 = new Color (0.7f, 0.7f, 0.7f);
-			m_color2 = Color.white;
 		}
 
 

@@ -23,7 +23,7 @@ namespace ShibaInu
 			ResizeCamera ();
 
 			#if UNITY_EDITOR
-			Common.looper.resizeHandler.Add (ResizeCamera);
+			Common.looper.ResizeHandler.Add (ResizeCamera);
 			#else
 			Destroy (this);
 			#endif
@@ -34,7 +34,7 @@ namespace ShibaInu
 		/// <summary>
 		/// 重置相机尺寸
 		/// </summary>
-		public void ResizeCamera ()
+		public void ResizeCamera (object data = null)
 		{
 			float scale, size;
 			if (Common.IsFixedWidth) {
@@ -54,7 +54,7 @@ namespace ShibaInu
 		void OnDestroy ()
 		{
 			if (Common.looper != null)
-				Common.looper.resizeHandler.Remove (ResizeCamera);
+				Common.looper.ResizeHandler.Remove (ResizeCamera);
 		}
 		#endif
 

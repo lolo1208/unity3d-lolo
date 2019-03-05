@@ -75,8 +75,12 @@ namespace ShibaInu
 			// isVertical and isBounces
 			EditorGUILayout.BeginHorizontal ();
 			EditorGUILayout.LabelField (m_c_options, m_labelWidth);
-			m_picker.isVertical = EditorGUILayout.ToggleLeft (m_c_isVertical, m_picker.isVertical, m_halfWidth);
-			m_picker.isBounces = EditorGUILayout.ToggleLeft (m_c_isBounces, m_picker.isBounces, m_halfWidth);
+			bool isVertical = EditorGUILayout.ToggleLeft (m_c_isVertical, m_picker.isVertical, m_halfWidth);
+			MarkSceneDirty (isVertical != m_picker.isVertical);
+			m_picker.isVertical = isVertical;
+			bool isBounces = EditorGUILayout.ToggleLeft (m_c_isBounces, m_picker.isBounces, m_halfWidth);
+			MarkSceneDirty (isBounces != m_picker.isBounces);
+			m_picker.isBounces = isBounces;
 			EditorGUILayout.EndHorizontal ();
 
 

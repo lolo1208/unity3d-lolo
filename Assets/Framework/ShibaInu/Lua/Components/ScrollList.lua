@@ -11,6 +11,8 @@ local abs = math.abs
 ---@class ScrollList : BaseList
 ---@field New fun(go:UnityEngine.GameObject, itemClass:any):ScrollList
 ---
+---@field scrollList ShibaInu.ScrollList
+---
 ---@field protected _list ShibaInu.ScrollList
 ---@field protected _isVertical boolean
 ---@field protected _viewport UnityEngine.RectTransform
@@ -41,6 +43,7 @@ function ScrollList:Ctor(go, itemClass)
     self._lastUpdatePos = 0
     self._updateDirty = false
 
+    self.scrollList = self._list
     self._isVertical = self._list.isVertical
     self._viewport = self._list.viewport
     local viewportSize = self._viewport.sizeDelta
@@ -106,12 +109,12 @@ function ScrollList:UpdateNow()
 
     -- 先得到item的宽高
     if self._itemWidth == 0 or self._itemHeight == 0 then
-        item = self:GetItemByIndex(1)
+        item = self:GetItem()
         self._itemWidth = item.itemWidth
         self._itemHeight = item.itemHeight
         self._itemLayoutWidth = self._itemWidth + self._horizontalGap
         self._itemLayoutHeight = self._itemHeight + self._verticalGap
-        self:RecycleAllItem()
+        self._itemPool[#self._itemPool + 1] = item
     end
 
     -- 根据数据计算出内容的宽高
@@ -242,7 +245,6 @@ function ScrollList:GetItemByIndex(index)
 
     -- 已创建的item中，没有对应index的item（表示item在显示范围外），直接创建
     item = self:GetItem()
-    self:UpdateItem(item, data:GetValueByIndex(index), index)
     local pos = Vector3.zero
     local idx = index - 1
     if self._isVertical then
@@ -253,6 +255,8 @@ function ScrollList:GetItemByIndex(index)
         pos.y = (idx % self._rowCount) * self._itemLayoutHeight
     end
     item.transform.localPosition = pos
+    self:UpdateItem(item, data:GetValueByIndex(index), index)
+
     return item
 end
 

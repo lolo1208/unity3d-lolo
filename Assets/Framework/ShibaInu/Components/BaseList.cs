@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Serialization;
-using UnityEngine.EventSystems;
 using LuaInterface;
 
 
@@ -13,7 +12,7 @@ namespace ShibaInu
 	/// </summary>
 	[AddComponentMenu ("ShibaInu/Base List", 102)]
 	[DisallowMultipleComponent]
-	public class BaseList : UIBehaviour
+	public class BaseList : MonoBehaviour
 	{
 		
 		/// 对应的 lua BaseList 对象
@@ -21,6 +20,7 @@ namespace ShibaInu
 			set {
 				m_luaTarget = value;
 				m_luaSyncPropertys = value.GetLuaFunction ("SyncPropertys");
+				Initialize ();
 			}
 		}
 
@@ -151,7 +151,7 @@ namespace ShibaInu
 
 
 
-		/// Item 容器
+		/// 获取 item 容器
 		public RectTransform content {
 			get{ return m_content; }
 		}
@@ -160,18 +160,27 @@ namespace ShibaInu
 
 
 
-
-		protected override void Awake ()
+		/// <summary>
+		/// 初始化
+		/// </summary>
+		protected virtual void Initialize ()
 		{
+			if (m_initialized)
+				return;
+			m_initialized = true;
+			
 			m_content = (RectTransform)LuaHelper.CreateGameObject ("Content", transform, false).transform;
 			m_content.pivot = Vector2.up;
 			m_content.localPosition = Vector3.zero;
 		}
 
+		protected bool m_initialized;
+
+
 
 		#if UNITY_EDITOR
 
-		protected override void OnValidate ()
+		void OnValidate ()
 		{
 			SyncPropertysToLua ();
 		}

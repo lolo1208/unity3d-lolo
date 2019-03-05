@@ -20,6 +20,20 @@ namespace ShibaInu
 		/// lua 管理器
 		public static LuaManager luaMgr;
 
+		/// 初始化是否已经完成（项目已启动）
+		public static bool initialized {
+			set { s_initialized = value; }
+			get {
+				#if UNITY_EDITOR
+				return Application.isPlaying && s_initialized;
+				#else
+				return s_initialized;
+				#endif
+			}
+		}
+
+		private static bool s_initialized;
+
 
 
 		/// <summary>
@@ -66,9 +80,9 @@ namespace ShibaInu
 					#if UNITY_EDITOR
 					if (looper != null) {
 						if (value)
-							looper.resizeHandler.Add (OptimizeResolution);
+							looper.ResizeHandler.Add (OptimizeResolution);
 						else
-							looper.resizeHandler.Remove (OptimizeResolution);
+							looper.ResizeHandler.Remove (OptimizeResolution);
 					}
 					#endif
 				}
@@ -79,7 +93,7 @@ namespace ShibaInu
 		private static bool s_isOptimizeResolution = false;
 
 		/// 按照固定值来等比缩放辨率
-		public static void OptimizeResolution ()
+		public static void OptimizeResolution (object data = null)
 		{
 			int screenWidth = Screen.width;
 			int screenHeight = Screen.height;

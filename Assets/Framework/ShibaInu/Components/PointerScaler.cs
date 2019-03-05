@@ -54,7 +54,7 @@ namespace ShibaInu
 		}
 
 
-		[NoToLuaAttribute]
+		[NoToLua]
 		public void OnPointerEnter (PointerEventData eventData)
 		{
 			if (m_pressed)
@@ -66,7 +66,7 @@ namespace ShibaInu
 		}
 
 
-		[NoToLuaAttribute]
+		[NoToLua]
 		public void OnPointerExit (PointerEventData eventData)
 		{
 			if (m_pressed)
@@ -78,7 +78,7 @@ namespace ShibaInu
 		}
 
 
-		[NoToLuaAttribute]
+		[NoToLua]
 		public void OnPointerDown (PointerEventData eventData)
 		{
 			m_pressed = true;
@@ -89,7 +89,7 @@ namespace ShibaInu
 		}
 
 
-		[NoToLuaAttribute]
+		[NoToLua]
 		public void OnPointerUp (PointerEventData eventData)
 		{
 			m_pressed = false;
@@ -99,6 +99,17 @@ namespace ShibaInu
 
 			List<GameObject> hovered = eventData.hovered;
 			m_tweener = transform.DOScale ((hovered.Count > 0 && hovered [hovered.Count - 1] == gameObject) ? m_enterScale : normalScale, tweenDuration);
+		}
+
+
+		void OnDisable ()
+		{
+			if (m_tweener != null) {
+				m_tweener.Kill ();
+				m_tweener = null;
+			}
+			m_pressed = false;
+			transform.localScale = normalScale;
 		}
 
 		//

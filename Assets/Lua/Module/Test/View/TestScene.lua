@@ -28,7 +28,10 @@ function TestScene:OnInitialize()
 
 
     --
-    local sampleNames = { "Picker", "BaseList", "ScrollList", "CircleImage", "Network", "UIEffects" }
+    local sampleNames = {
+        "Picker", "BaseList", "ScrollList", "PageList",
+        "ViewPager", "CircleImage", "Network", "UIEffects",
+    }
     for i = 1, #sampleNames do
         local sampleName = sampleNames[i]
         local btn = samplesTra:Find(sampleName).gameObject
@@ -43,13 +46,14 @@ function TestScene:OnInitialize()
     local dungeonBtn = samplesTra:Find("dungeonBtn").gameObject
     AddEventListener(dungeonBtn, PointerEvent.CLICK, self.OnClick_dungeonBtn, self)
 
-    self.backBtn = uiCanvasTra:Find("backBtn").gameObject
-    self.backBtn.transform:SetParent(Stage.GetLayer(Constants.LAYER_UI_TOP))
+    local backBtn = uiCanvasTra:Find("backBtn")
+    local anchoredPosition = backBtn.anchoredPosition
+    SetParent(backBtn, Constants.LAYER_UI_TOP)
+    backBtn.anchoredPosition = anchoredPosition
+    self.backBtn = backBtn.gameObject
     self.backBtn:SetActive(false)
     AddEventListener(self.backBtn, PointerEvent.CLICK, self.OnClick_backBtn, self)
 end
-
-
 
 
 

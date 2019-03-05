@@ -20,10 +20,10 @@ end
 --=------------------------------[ static ]------------------------------=--
 
 --- 动画开始
-AnimationEvent.ANI_STAR = "DataEvent_AnimationStart"
+AnimationEvent.ANI_STAR = "AnimationEvent_AnimationStart"
 
 --- 动画播放完成
-AnimationEvent.ANI_COMPLETE = "DataEvent_AnimationComplete"
+AnimationEvent.ANI_COMPLETE = "AnimationEvent_AnimationComplete"
 
 
 --=----------------------------------------------------------------------=--

@@ -1,12 +1,12 @@
 --
--- 鼠标指针（touch）拖放相关事件
+-- 鼠标指针或手指拖放相关事件
 -- 可以在任何 gameObject 上抛出
 -- 2017/11/23
 -- Author LOLO
 --
 
 ---@class DragDropEvent : Event
----@field data UnityEngine.EventSystems.AxisEventData  @ 指针事件附带的数据
+---@field data UnityEngine.EventSystems.PointerEventData  @ 指针事件附带的数据
 local DragDropEvent = class("DragDropEvent", Event)
 
 function DragDropEvent:Ctor(type, data)
@@ -40,7 +40,7 @@ local event = DragDropEvent.New()
 --- 抛出拖放相关事件，由 DragDropEventDispatcher.cs 调用
 ---@param ed EventDispatcher
 ---@param type string
----@param data UnityEngine.EventSystems.AxisEventData
+---@param data UnityEngine.EventSystems.PointerEventData
 function DragDropEvent.DispatchEvent(ed, type, data)
     event.target = nil
     event.isPropagationStopped = false

@@ -23,3 +23,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Res/Scenes/Dungeon.unity
     guid: cb163b3e4da7f9f4ebe04dac57b0e968
+  - enabled: 1
+    path: Assets/Res/Scenes/LOD.unity
+    guid: 0aa2012a411a4428180e303b0ed01a0d

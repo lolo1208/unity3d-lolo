@@ -343,6 +343,13 @@ function GetComponent.ScrollList(go)
     return go:GetComponent(_typeof_class(ShibaInu.ScrollList))
 end
 
+--- 获取 gameObject 下的 ShibaInu.PageList 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.PageList
+function GetComponent.PageList(go)
+    return go:GetComponent(_typeof_class(ShibaInu.PageList))
+end
+
 --- 获取 gameObject 下的 ShibaInu.Picker 组件
 ---@param go UnityEngine.GameObject
 ---@return ShibaInu.Picker
@@ -350,11 +357,25 @@ function GetComponent.Picker(go)
     return go:GetComponent(_typeof_class(ShibaInu.Picker))
 end
 
+--- 获取 gameObject 下的 ShibaInu.ViewPager 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.ViewPager
+function GetComponent.ViewPager(go)
+    return go:GetComponent(_typeof_class(ShibaInu.ViewPager))
+end
+
 --- 获取 gameObject 下的 ShibaInu.CircleImage 组件
 ---@param go UnityEngine.GameObject
 ---@return ShibaInu.CircleImage
 function GetComponent.CircleImage(go)
     return go:GetComponent(_typeof_class(ShibaInu.CircleImage))
+end
+
+--- 获取 gameObject 下的 ShibaInu.PointerScaler 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.PointerScaler
+function GetComponent.PointerScaler(go)
+    return go:GetComponent(_typeof_class(ShibaInu.PointerScaler))
 end
 
 --- 获取 gameObject 下的 ShibaInu.ThirdPersonCamera 组件

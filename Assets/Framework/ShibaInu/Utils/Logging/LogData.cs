@@ -39,7 +39,7 @@ namespace ShibaInu
 		public string time;
 
 		/// 日志内容转换成的字符串
-		private string s_string;
+		private string m_string;
 
 
 
@@ -53,7 +53,7 @@ namespace ShibaInu
 		{
 			LogData data = new LogData ();
 			data.type = type;
-			data.msg = msg.Replace ("\n", " ");
+			data.msg = msg.Replace ("\r", "").Replace ("\n", " ");
 			data.stackTrace = stackTrace;
 			data.time = DateTime.Now.ToString ("HH:mm:ss.fff");
 
@@ -66,14 +66,13 @@ namespace ShibaInu
 
 		override public string ToString ()
 		{
-			if (s_string == null) {
+			if (m_string == null) {
 				if (stackTrace == null)
-					s_string = string.Format ("[{0}] [{1}] {2}", type, time, msg);
+					m_string = string.Format ("[{0}] [{1}] {2}", type, time, msg);
 				else
-					s_string = string.Format ("[{0}] [{1}] {2}{3}", type, time, msg, stackTrace);
+					m_string = string.Format ("[{0}] [{1}] {2}{3}", type, time, msg, stackTrace);
 			}
-
-			return s_string;
+			return m_string;
 		}
 
 

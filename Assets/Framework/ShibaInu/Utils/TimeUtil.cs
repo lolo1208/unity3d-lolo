@@ -36,7 +36,10 @@ namespace ShibaInu
 		}
 
 
-
+		/// <summary>
+		/// 更新并返回当前程序已运行时间（秒.毫秒）
+		/// </summary>
+		/// <returns>The time sec.</returns>
 		public static float GetTimeSec ()
 		{
 			Update ();
@@ -44,6 +47,10 @@ namespace ShibaInu
 		}
 
 
+		/// <summary>
+		/// 更新并返回当前程序已运行时间（毫秒）
+		/// </summary>
+		/// <returns>The time msec.</returns>
 		public static UInt32 GetTimeMsec ()
 		{
 			Update ();

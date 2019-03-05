@@ -41,11 +41,15 @@ namespace ShibaInu
 			bool isH = GUILayout.Toggle (!isVertical, m_c_horizontal, m_halfWidth);
 			bool isV = GUILayout.Toggle (isVertical, m_c_vertical, m_halfWidth);
 			if (isVertical) {
-				if (isH)
+				if (isH) {
 					m_scrollList.isVertical = false;
+					MarkSceneDirty ();
+				}
 			} else {
-				if (isV)
+				if (isV) {
 					m_scrollList.isVertical = true;
+					MarkSceneDirty ();
+				}
 			}
 			EditorGUILayout.EndHorizontal ();
 			m_rowCountDisabled = m_scrollList.isVertical;
@@ -58,6 +62,7 @@ namespace ShibaInu
 			Vector2 viewportSize = m_viewportSize.vector2Value;
 			int vpw = EditorGUILayout.IntField ((int)viewportSize.x, m_halfWidth);
 			int vph = EditorGUILayout.IntField ((int)viewportSize.y, m_halfWidth);
+			MarkSceneDirty (vpw != viewportSize.x || vph != viewportSize.y);
 			m_scrollList.SetViewportSize ((uint)(vpw < 0 ? 0 : vpw), (uint)(vph < 0 ? 0 : vph));
 			EditorGUILayout.EndHorizontal ();
 
