@@ -12,7 +12,7 @@ namespace ShibaInu
 	public class FileHelper
 	{
 		#if UNITY_ANDROID && !UNITY_EDITOR
-		private static readonly AndroidJavaClass m_androidStreamingAssetsUtil = new AndroidJavaClass ("shibaInu.utils.StreamingAssetsUtil");
+		private static readonly AndroidJavaClass m_androidStreamingAssets = new AndroidJavaClass ("shibaInu.util.StreamingAssets");
 		#endif
 
 
@@ -27,7 +27,7 @@ namespace ShibaInu
 			#if UNITY_ANDROID && !UNITY_EDITOR
 
 			if (path.StartsWith (Constants.PackageDir))
-				return m_androidStreamingAssetsUtil.CallStatic<byte[]> ("getFileBytes", path.Replace (Constants.PackageDir, ""));
+				return m_androidStreamingAssets.CallStatic<byte[]> ("getFileBytes", path.Replace (Constants.PackageDir, ""));
 			else
 				return File.ReadAllBytes (path);
 
@@ -50,7 +50,7 @@ namespace ShibaInu
 			#if UNITY_ANDROID && !UNITY_EDITOR
 
 			if(path.StartsWith(Constants.PackageDir))
-				return m_androidStreamingAssetsUtil.CallStatic<bool> ("exists", path.Replace (Constants.PackageDir, ""));
+				return m_androidStreamingAssets.CallStatic<bool> ("exists", path.Replace (Constants.PackageDir, ""));
 			else
 				return File.Exists (path);
 

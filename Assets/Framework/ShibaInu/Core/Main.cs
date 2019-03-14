@@ -9,7 +9,7 @@ namespace ShibaInu
 		private static bool s_initialized = false;
 
 
-		void Start ()
+		void Awake ()
 		{
 			if (!s_initialized) {
 				s_initialized = true;

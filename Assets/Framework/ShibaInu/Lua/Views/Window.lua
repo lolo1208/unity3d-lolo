@@ -90,6 +90,7 @@ end
 function Window:OnDestroy()
     Window.super.OnDestroy(self)
     instances[self.__classname] = nil
+    Stage.CloseWindow(self)
 end
 
 

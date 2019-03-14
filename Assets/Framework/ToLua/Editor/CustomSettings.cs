@@ -235,7 +235,9 @@ public static class CustomSettings
 		_GT (typeof(ShibaInu.LocalizationText)),
 
 		_GT (typeof(ShibaInu.ThirdPersonCamera)),
+		_GT (typeof(ShibaInu.SafeAreaLayout)),
 		_GT (typeof(ShibaInu.PointerScaler)),
+		_GT (typeof(ShibaInu.PointerEventPasser)),
 
 		_GT (typeof(ShibaInu.DoubleImageShake)),
 		_GT (typeof(ShibaInu.Mosaic)),

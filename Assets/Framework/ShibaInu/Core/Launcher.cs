@@ -16,6 +16,7 @@ namespace ShibaInu
 			// 初始变量赋值
 			Common.FixedValue = 640;
 			Common.IsFixedWidth = false;
+			DeviceHelper.SetScreenOrientation (true);
 			Common.IsOptimizeResolution = true;
 			Common.FrameRate = 60;
 			Common.IsNeverSleep = true;

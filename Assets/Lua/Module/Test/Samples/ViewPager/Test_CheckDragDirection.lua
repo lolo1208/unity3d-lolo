@@ -16,6 +16,7 @@ local abs = math.abs
 ---@field curTarget any
 ---@field startPos Vector2
 ---@field pointerId number @ 当前交互的 touch ID
+---@field passer ShibaInu.PointerEventPasser
 ---
 local Test_CheckDragDirection = class("Test.Samples.ViewPager.Test_CheckDragDirection", View)
 
@@ -35,6 +36,7 @@ end
 function Test_CheckDragDirection:OnInitialize()
     Test_CheckDragDirection.super.OnInitialize(self)
 
+    self.passer = GetComponent.PointerEventPasser(self.gameObject)
     AddEventListener(self.gameObject, DragDropEvent.INITIALIZE_POTENTIAL_DRAG, self.DragHandler, self)
     AddEventListener(self.gameObject, DragDropEvent.DRAG, self.DragHandler, self)
     AddEventListener(self.gameObject, DragDropEvent.END_DRAG, self.DragHandler, self)
@@ -66,6 +68,7 @@ function Test_CheckDragDirection:DragHandler(event)
                 self.curTarget = self.vTarget
             end
             self.curTarget:OnBeginDrag(data)
+            self.passer:ReleaseTarget()
         end
         self.curTarget:OnDrag(data)
 

@@ -1,5 +1,8 @@
 <linker>
     <assembly fullname="UnityEngine">
+        <type fullname="UnityEngine.ParticleAnimator" preserve="all"/>
+        <type fullname="UnityEngine.EllipsoidParticleEmitter" preserve="all"/>
+        <type fullname="UnityEngine.ParticleRenderer" preserve="all"/>
         <type fullname="UnityEngine.ParticleSystemRenderer" preserve="all"/>
     </assembly>
 </linker>

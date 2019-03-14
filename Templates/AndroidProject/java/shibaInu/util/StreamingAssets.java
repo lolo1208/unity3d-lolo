@@ -1,4 +1,4 @@
-package shibaInu.utils;
+package shibaInu.util;
 
 import android.content.res.AssetManager;
 import android.util.Log;
@@ -11,24 +11,25 @@ import java.util.HashSet;
 
 
 /**
+ * 解析项目包含的文件列表
+ * 读取 Unity 项目 streamingAssets 目录下的文件
+ * C#FileHelper 调用
  * Created by LOLO on 2018/6/5.
  */
-public class StreamingAssetsUtil {
+public class StreamingAssets {
 
-    private static AssetManager _assetMgr = null;
+    private static AssetManager sAssetMgr = null;
     // streamingAssets 包含的文件列表
-    private static HashSet<String> _streamingAssets = null;
+    private static HashSet<String> sStreamingAssets = null;
 
 
     /**
      * 初始化
      */
     private static void initialize() {
-        if (_streamingAssets != null) return;
-
-        _assetMgr = UnityPlayer.currentActivity.getAssets();
-        _streamingAssets = new HashSet<>();
-        _streamingAssets.add("ResInfo");// 包资源信息文件
+        sAssetMgr = UnityPlayer.currentActivity.getAssets();
+        sStreamingAssets = new HashSet<>();
+        sStreamingAssets.add("ResInfo");// 包资源信息文件
         parseDirAssets("Lua");
         parseDirAssets("Res");
         parseDirAssets("Scenes");
@@ -36,15 +37,15 @@ public class StreamingAssetsUtil {
 
 
     /**
-     * 将目录中的资源添加到 _streamingAssets 中
+     * 将目录中的资源添加到 sStreamingAssets 中
      */
     private static void parseDirAssets(String dirPath) {
         try {
-            String[] list = _assetMgr.list(dirPath);
+            String[] list = sAssetMgr.list(dirPath);
             for (String item : list) {
                 item = dirPath + "/" + item;
                 if (item.endsWith(".lua") || item.endsWith(".unity3d"))
-                    _streamingAssets.add(item);// 资源文件
+                    sStreamingAssets.add(item);// 资源文件
                 else
                     parseDirAssets(item);// 目录，继续递归
             }
@@ -62,7 +63,7 @@ public class StreamingAssetsUtil {
      * @return
      */
     public static boolean exists(String filePath) {
-        return _streamingAssets.contains(filePath);
+        return sStreamingAssets.contains(filePath);
     }
 
 
@@ -73,10 +74,11 @@ public class StreamingAssetsUtil {
      * @return
      */
     public static byte[] getFileBytes(String filePath) {
-        initialize();
+        if (sStreamingAssets == null)
+            initialize();
 
         try {
-            InputStream inputStream = _assetMgr.open(filePath);
+            InputStream inputStream = sAssetMgr.open(filePath);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             byte buf[] = new byte[4096];
             int len;

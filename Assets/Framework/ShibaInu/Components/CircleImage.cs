@@ -27,7 +27,7 @@ namespace ShibaInu
 			set {
 				if (value != m_sourceImage) {
 					m_sourceImage = value;
-					SetVerticesDirty ();
+					SetAllDirty ();
 				}
 			}
 			get { return m_sourceImage; }
@@ -94,6 +94,13 @@ namespace ShibaInu
 
 		#endregion
 
+
+
+		public Sprite sprite
+		{
+			set { sourceImage = value; }
+			get { return m_sourceImage; }
+		}
 
 
 		/// <summary>

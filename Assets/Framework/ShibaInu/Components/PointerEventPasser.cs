@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 namespace ShibaInu
 {
 	/// <summary>
-	/// 可以使 IPointerDownHandler, IPointerUpHandler, IPointerClickHandler 向上穿透一级
+	/// 可以使 IPointerDownHandler, IPointerUpHandler, IPointerClickHandler 向下穿透一级
 	/// </summary>
 	[AddComponentMenu ("ShibaInu/Pointer Event Passer", 301)]
 	[DisallowMultipleComponent]
@@ -32,7 +32,7 @@ namespace ShibaInu
 					selfFounded = true;// 先找到自己
 
 				} else if (selfFounded) {
-					// 然后向上穿透一级
+					// 然后向下穿透一级
 					m_target = ExecuteEvents.ExecuteHierarchy (result.gameObject, eventData, ExecuteEvents.pointerDownHandler);
 					if (m_target != null) {
 						return;
@@ -81,6 +81,27 @@ namespace ShibaInu
 					return;
 				}
 			}
+		}
+
+
+		/// <summary>
+		/// 主动释放当前穿透击中的目标，触发 target.OnPointerUp()
+		/// </summary>
+		public void ReleaseTarget()
+		{
+			if (m_target == null)
+				return;
+
+			PointerEventData eventData = new PointerEventData(EventSystem.current);
+			eventData.position = StageTouchEventDispatcher.GetPosition ();
+			ExecuteEvents.Execute (m_target, eventData, ExecuteEvents.pointerUpHandler);
+			m_target = null;
+		}
+
+
+		void OnDisable ()
+		{
+			ReleaseTarget ();
 		}
 
 

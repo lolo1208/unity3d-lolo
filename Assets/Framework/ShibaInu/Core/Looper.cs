@@ -33,6 +33,8 @@ namespace ShibaInu
 
 		/// 场景尺寸有改变时的回调列表
 		public MultiCall<object> ResizeHandler = new MultiCall<object> ();
+		/// 设备方向有改变时的回调列表
+		public MultiCall<object> ScreenOrientationHandler = new MultiCall<object> ();
 
 
 
@@ -119,6 +121,10 @@ namespace ShibaInu
 				m_tempActions.Clear ();
 			}
 
+			// 设备方向有变化
+			if (DeviceHelper.Update ()) {
+				ScreenOrientationHandler.Call ();
+			}
 
 			// 屏幕尺寸有改变
 			if (Screen.width != m_screenSize.x || Screen.height != m_screenSize.y) {
@@ -133,6 +139,7 @@ namespace ShibaInu
 				m_luaLoopHandler.EndPCall ();
 			}
 
+			// 全局屏幕 Touch 相关
 			StageTouchEventDispatcher.Update ();
 
 			// lua Update

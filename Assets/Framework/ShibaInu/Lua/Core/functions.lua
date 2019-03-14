@@ -378,6 +378,13 @@ function GetComponent.PointerScaler(go)
     return go:GetComponent(_typeof_class(ShibaInu.PointerScaler))
 end
 
+--- 获取 gameObject 下的 ShibaInu.PointerEventPasser 组件
+---@param go UnityEngine.GameObject
+---@return ShibaInu.PointerEventPasser
+function GetComponent.PointerEventPasser(go)
+    return go:GetComponent(_typeof_class(ShibaInu.PointerEventPasser))
+end
+
 --- 获取 gameObject 下的 ShibaInu.ThirdPersonCamera 组件
 ---@param go UnityEngine.GameObject
 ---@return ShibaInu.ThirdPersonCamera

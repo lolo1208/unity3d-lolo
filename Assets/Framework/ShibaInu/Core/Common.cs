@@ -93,7 +93,7 @@ namespace ShibaInu
 		private static bool s_isOptimizeResolution = false;
 
 		/// 按照固定值来等比缩放辨率
-		public static void OptimizeResolution (object data = null)
+		public static void OptimizeResolution (object ignored = null)
 		{
 			int screenWidth = Screen.width;
 			int screenHeight = Screen.height;
@@ -107,7 +107,7 @@ namespace ShibaInu
 				height = FixedValue;
 			}
 			Screen.SetResolution (width, height, true);
-			Debug.LogFormat ("screen: {0}x{1},  scale: {2},  set resolution: {3}x{4}", screenWidth, screenHeight, scale, width, height);
+			Debug.LogFormat ("[Device] screen: {0}x{1},  scale: {2},  set resolution: {3}x{4}", screenWidth, screenHeight, scale, width, height);
 		}
 
 

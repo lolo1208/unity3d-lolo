@@ -113,6 +113,16 @@ namespace ShibaInu
 		}
 
 
+		/// <summary>
+		/// 获取当前（上次）记录的 finger/mouse 位置
+		/// </summary>
+		/// <returns>The position.</returns>
+		public static Vector2 GetPosition ()
+		{
+			return s_pos;
+		}
+
+
 
 		private static void DispatchLuaEvent (string type)
 		{
