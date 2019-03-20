@@ -184,7 +184,6 @@ namespace ShibaInu
 		}
 
 
-
 		//
 	}
 }

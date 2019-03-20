@@ -114,7 +114,6 @@ namespace ShibaInu
 			#if UNITY_ANDROID && !UNITY_EDITOR
 
 			string androidInsets = m_androidDeviceHelper.CallStatic<string> ("getSafeInsets");
-			Debug.Log ("[DeviceHelper] androidInsets: " + androidInsets);
 			string[] insets = androidInsets.Split (',');
 			if (insets.Length == 4) {
 				safeInsets = new float[] {

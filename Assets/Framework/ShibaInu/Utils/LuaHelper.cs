@@ -219,12 +219,11 @@ namespace ShibaInu
 
 
 		/// <summary>
-		/// 在控制台打印一条错误日志
+		/// 重启项目（动更完成后）
 		/// </summary>
-		/// <param name="msg">Message.</param>
-		public static void ConsoleLogError (string msg)
+		public static void Relaunch ()
 		{
-			Debug.LogError (msg);
+			Common.go.AddComponent<Launcher> ();
 		}
 
 

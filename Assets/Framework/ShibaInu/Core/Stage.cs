@@ -59,12 +59,18 @@ namespace ShibaInu
 		#region UI初始化与清空销毁
 
 		/// <summary>
-		/// 初始化，（重新）创建所有图层
+		/// 初始化
 		/// </summary>
 		[NoToLuaAttribute]
 		public static void Initialize ()
 		{
-			uiCanvas = uiCanvasTra.gameObject.GetComponent<Canvas> ();
+			s_dontDestroyList.Clear ();
+
+			GameObject go = (GameObject)UnityEngine.Object.Instantiate (ResManager.LoadAsset ("Prefabs/Core/UICanvas.prefab", "Core"), Common.go.transform);
+			go.name = "UICanvas";
+			uiCanvasTra = (RectTransform)go.transform;
+
+			uiCanvas = go.GetComponent<Canvas> ();
 			sceneLayer = (RectTransform)uiCanvasTra.Find ("scene");
 			uiLayer = (RectTransform)uiCanvasTra.Find ("ui");
 			windowLayer = (RectTransform)uiCanvasTra.Find ("window");
@@ -262,6 +268,7 @@ namespace ShibaInu
 				abi.ab = null;
 				Debug.Log ("[Unload] Scene: " + sceneName);
 			}
+			ResManager.Unload (sceneName);
 		}
 
 		#endregion
@@ -415,6 +422,17 @@ namespace ShibaInu
 			s_dispatchEvent.Push (sceneName);
 			s_dispatchEvent.PCall ();
 			s_dispatchEvent.EndPCall ();
+		}
+
+		#endregion
+
+
+
+		#region 清空所有引用（在动更结束后重启 app 时）
+
+		public static void ClearReference ()
+		{
+			s_dispatchEvent = null;
 		}
 
 		#endregion

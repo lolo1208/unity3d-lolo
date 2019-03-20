@@ -9,8 +9,10 @@ namespace ShibaInu
 	/// </summary>
 	public class SafeAreaLayout : MonoBehaviour
 	{
-		// 安全区域容器
+		/// 安全区域容器
 		private static RectTransform s_safeArea = null;
+
+
 
 		// 原始布局信息
 		private Vector2 m_offsetMin;
@@ -112,6 +114,16 @@ namespace ShibaInu
 			if (DeviceHelper.isNotchScreen && DeviceHelper.isLandscape && DeviceHelper.isAutoRotation) {
 				Common.looper.ScreenOrientationHandler.Remove (LayoutInSafeArea);
 			}
+		}
+
+
+
+		/// <summary>
+		/// 清空所有引用（在动更结束后重启 app 时）
+		/// </summary>
+		public static void ClearReference ()
+		{
+			s_safeArea = null;
 		}
 
 

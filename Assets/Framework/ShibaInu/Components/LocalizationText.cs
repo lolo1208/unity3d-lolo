@@ -205,6 +205,19 @@ namespace ShibaInu
 		}
 
 
+
+		#region 清空所有引用（在动更结束后重启 app 时）
+
+		public static void ClearReference ()
+		{
+			langeuage = null;
+			s_getCurrentLanguage = null;
+			s_getLanguageByKey = null;
+		}
+
+		#endregion
+
+
 		//
 	}
 }

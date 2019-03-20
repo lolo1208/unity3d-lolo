@@ -15,7 +15,7 @@ namespace ShibaInu
 		private const string TOUCH_END = "TouchEvent_End";
 
 		/// PointerEvent.lua
-		private static LuaFunction s_dispatchEvent = null;
+		private static LuaFunction s_dispatchEvent;
 
 
 		/// 是否正在触摸中
@@ -138,6 +138,16 @@ namespace ShibaInu
 			s_dispatchEvent.EndPCall ();
 		}
 
+
+
+		#region 清空所有引用（在动更结束后重启 app 时）
+
+		public static void ClearReference ()
+		{
+			s_dispatchEvent = null;
+		}
+
+		#endregion
 
 
 		//

@@ -194,15 +194,15 @@ namespace ShibaInu
 		#region lua 相关
 
 		// lua PageEvent.DispatchEvent()
-		protected static LuaFunction s_luaDispatchPageEvent;
+		protected static LuaFunction s_dispatchEvent;
 
 
 		/// 对应的 lua ViewPager 对象
 		public virtual LuaTable luaTarget {
 			set {
 				m_luaTarget = value;
-				if (s_luaDispatchPageEvent == null)
-					s_luaDispatchPageEvent = Common.luaMgr.state.GetFunction ("PageEvent.DispatchEvent");
+				if (s_dispatchEvent == null)
+					s_dispatchEvent = Common.luaMgr.state.GetFunction ("PageEvent.DispatchEvent");
 			}
 		}
 
@@ -226,14 +226,14 @@ namespace ShibaInu
 			if (m_luaTarget == null)
 				return;
 
-			s_luaDispatchPageEvent.BeginPCall ();
-			s_luaDispatchPageEvent.Push (m_luaTarget);
-			s_luaDispatchPageEvent.Push (type);
-			s_luaDispatchPageEvent.Push (index);
-			s_luaDispatchPageEvent.Push (view);
-			s_luaDispatchPageEvent.Push (value);
-			s_luaDispatchPageEvent.PCall ();
-			s_luaDispatchPageEvent.EndPCall ();
+			s_dispatchEvent.BeginPCall ();
+			s_dispatchEvent.Push (m_luaTarget);
+			s_dispatchEvent.Push (type);
+			s_dispatchEvent.Push (index);
+			s_dispatchEvent.Push (view);
+			s_dispatchEvent.Push (value);
+			s_dispatchEvent.PCall ();
+			s_dispatchEvent.EndPCall ();
 		}
 
 		#endregion
@@ -774,6 +774,17 @@ namespace ShibaInu
 				SetViewVisible (0, true);
 				SetViewSelected (0, true);
 			}
+		}
+
+		#endregion
+
+
+
+		#region 清空所有引用（在动更结束后重启 app 时）
+
+		public static void ClearReference ()
+		{
+			s_dispatchEvent = null;
 		}
 
 		#endregion

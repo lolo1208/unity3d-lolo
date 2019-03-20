@@ -11,7 +11,7 @@ namespace ShibaInu
 	public class UdpSocket
 	{
 		/// SocketEvent.lua
-		private static readonly LuaFunction s_dispatchEvent = Common.luaMgr.state.GetFunction ("SocketEvent.DispatchEvent");
+		private static LuaFunction s_dispatchEvent;
 		/// 需要 UpdateKcp() 的 UdpSocket 列表
 		private static List<UdpSocket> s_updateList = new List<UdpSocket> ();
 
@@ -280,6 +280,8 @@ namespace ShibaInu
 					callback (type, data);
 
 				if (luaTarget != null) {
+					if (s_dispatchEvent == null)
+						s_dispatchEvent = Common.luaMgr.state.GetFunction ("SocketEvent.DispatchEvent");
 					s_dispatchEvent.BeginPCall ();
 					s_dispatchEvent.Push (luaTarget);
 					s_dispatchEvent.Push (type);
@@ -289,6 +291,17 @@ namespace ShibaInu
 				}
 			});
 		}
+
+
+
+		#region 清空所有引用（在动更结束后重启 app 时）
+
+		public static void ClearReference ()
+		{
+			s_dispatchEvent = null;
+		}
+
+		#endregion
 
 
 		//

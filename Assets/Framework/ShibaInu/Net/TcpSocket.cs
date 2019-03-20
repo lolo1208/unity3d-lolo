@@ -14,7 +14,7 @@ namespace ShibaInu
 		/// 读取数据的 buffer 尺寸
 		private const int BUFFER_SIZE = 8192;
 		/// SocketEvent.lua
-		private static readonly LuaFunction s_dispatchEvent = Common.luaMgr.state.GetFunction ("SocketEvent.DispatchEvent");
+		private static LuaFunction s_dispatchEvent;
 
 		/// 锁对象
 		private readonly System.Object LOCK_OBJECT = new System.Object ();
@@ -315,6 +315,8 @@ namespace ShibaInu
 					callback (type, data);
 
 				if (luaTarget != null) {
+					if (s_dispatchEvent == null)
+						s_dispatchEvent = Common.luaMgr.state.GetFunction ("SocketEvent.DispatchEvent");
 					s_dispatchEvent.BeginPCall ();
 					s_dispatchEvent.Push (luaTarget);
 					s_dispatchEvent.Push (type);
@@ -324,6 +326,17 @@ namespace ShibaInu
 				}
 			});
 		}
+
+
+
+		#region 清空所有引用（在动更结束后重启 app 时）
+
+		public static void ClearReference ()
+		{
+			s_dispatchEvent = null;
+		}
+
+		#endregion
 
 
 		//

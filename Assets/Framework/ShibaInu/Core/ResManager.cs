@@ -57,7 +57,7 @@ namespace ShibaInu
 			if (!FileHelper.Exists (resInfoFilePath))// 从未更新过
 				resInfoFilePath = Constants.PackageDir + "ResInfo";
 
-
+			s_delayedUnloadList.Clear ();
 			s_luaDic.Clear ();
 			s_abiDic.Clear ();
 			s_resDic.Clear ();
@@ -483,6 +483,27 @@ namespace ShibaInu
 				s_dispatchEvent.Push (data);
 			s_dispatchEvent.PCall ();
 			s_dispatchEvent.EndPCall ();
+		}
+
+		#endregion
+
+
+
+		#region 卸载所有资源，清空所有引用（在动更结束后重启 app 时）
+
+		public static void UnloadAll ()
+		{
+			s_dispatchEvent = null;
+
+			foreach (var item in s_abiDic) {
+				ABI abi = item.Value;
+				if (abi.ab != null) {
+					abi.ab.Unload (true);
+					abi.ab = null;
+					Debug.Log ("[Unload] " + abi.path);
+				}
+			}
+			Resources.UnloadUnusedAssets ();
 		}
 
 		#endregion

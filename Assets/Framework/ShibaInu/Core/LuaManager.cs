@@ -114,23 +114,30 @@ namespace ShibaInu
 		}
 
 
-		public void Destroy ()
-		{
-			m_looper.Destroy ();
-			m_looper = null;
-
-			m_lua.Dispose ();
-			m_lua = null;
-		}
-
-
-
 		public IEnumerator DelayToInvokeDo (Action action, float delaySeconds)
 		{
 			yield return new WaitForSeconds (delaySeconds);
 			action ();
 		}
 
+
+		/// <summary>
+		/// 销毁
+		/// </summary>
+		public void Destroy ()
+		{
+			m_looper.Destroy ();
+			Destroy (m_looper);
+			m_looper = null;
+
+			m_lua.Dispose ();
+			m_lua = null;
+
+			Destroy (this);
+		}
+
+
+		//
 	}
 }
 
