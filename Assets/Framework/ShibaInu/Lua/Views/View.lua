@@ -80,6 +80,11 @@ function View:OnInitialize()
     if self.visible then
         self:OnShow()
     end
+
+    -- 子类有重写 OnDestroy()
+    if self.gameObject ~= nil and self.OnDestroy ~= View.OnDestroy then
+        self:EnableDestroyListener()
+    end
 end
 
 
@@ -161,7 +166,7 @@ function View:EnableDestroyListener(enabled)
 end
 
 --- self.gameObject 被销毁时
---- 请通过 self:EnableDestroyListener() 来设置监听
+--- 子类重写 OnDestroy() 方法，将会自动调用 EnableDestroyListener() 设置监听
 function View:OnDestroy()
     self.destroyed = true
 end

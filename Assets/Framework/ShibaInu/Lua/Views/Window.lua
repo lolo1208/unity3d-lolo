@@ -34,7 +34,6 @@ function Window:OnInitialize()
     if closeBtn ~= nil then
         AddEventListener(closeBtn.gameObject, PointerEvent.CLICK, self.Close, self)
     end
-    self:EnableDestroyListener()
 end
 
 
