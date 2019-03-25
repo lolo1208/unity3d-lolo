@@ -30,7 +30,7 @@ end
 function Window:OnInitialize()
     Window.super.OnInitialize(self)
 
-    local closeBtn = self.gameObject.transform:Find("closeBtn")
+    local closeBtn = self.transform:Find("closeBtn")
     if closeBtn ~= nil then
         AddEventListener(closeBtn.gameObject, PointerEvent.CLICK, self.Close, self)
     end

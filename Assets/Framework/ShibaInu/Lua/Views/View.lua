@@ -76,14 +76,14 @@ function View:OnInitialize()
         if self.gameObject.activeSelf ~= self.visible then
             self.gameObject:SetActive(self.visible)
         end
+
+        -- 子类有重写 OnDestroy()
+        if self.OnDestroy ~= View.OnDestroy then
+            self:EnableDestroyListener()
+        end
     end
     if self.visible then
         self:OnShow()
-    end
-
-    -- 子类有重写 OnDestroy()
-    if self.gameObject ~= nil and self.OnDestroy ~= View.OnDestroy then
-        self:EnableDestroyListener()
     end
 end
 
