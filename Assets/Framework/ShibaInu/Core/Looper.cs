@@ -15,13 +15,15 @@ namespace ShibaInu
 		private const string EVENT_LATE_UPDATE = "Event_LateUpdate";
 		private const string EVENT_FIXED_UPDATE = "Event_FixedUpdate";
 		private const string EVENT_RESIZE = "Event_Resize";
+		private const string EVENT_ACTIVATED = "Event_Activated";
+		private const string EVENT_DEACTIVATED = "Event_Deactivated";
 
 		/// 锁对象
 		private static readonly System.Object LOCK_OBJECT = new System.Object ();
 
 
 		// - View/Stage.lua
-		private LuaFunction m_luaLoopHandler;
+		private LuaFunction m_dispatchEvent;
 		/// 网络相关回调列表
 		private List<Action> m_netActions = new List<Action> ();
 		/// 其他需要在主线程执行的回调列表
@@ -30,6 +32,8 @@ namespace ShibaInu
 		private List<Action> m_tempActions = new List<Action> ();
 		// 当前屏幕尺寸
 		private Vector2 m_screenSize = new Vector2 ();
+		// 当前程序是否已激活
+		private bool m_activated = true;
 
 		/// 场景尺寸有改变时的回调列表
 		public MultiCall<object> ResizeHandler = new MultiCall<object> ();
@@ -67,12 +71,27 @@ namespace ShibaInu
 		void Start ()
 		{
 			m_screenSize.Set (Screen.width, Screen.height);
-			m_luaLoopHandler = Common.luaMgr.state.GetFunction ("Stage._loopHandler");
+			m_dispatchEvent = Common.luaMgr.state.GetFunction ("Stage._loopHandler");
 
 			#if UNITY_EDITOR
 			if (Common.IsOptimizeResolution)
 				ResizeHandler.Add (Common.OptimizeResolution);
 			#endif
+		}
+
+
+
+		/// <summary>
+		/// 向 lua 层抛出事件
+		/// </summary>
+		/// <param name="type">Type.</param>
+		private void DispatchLuaEvent (string type)
+		{
+			m_dispatchEvent.BeginPCall ();
+			m_dispatchEvent.Push (type);
+			m_dispatchEvent.Push (TimeUtil.timeSec);
+			m_dispatchEvent.PCall ();
+			m_dispatchEvent.EndPCall ();
 		}
 
 
@@ -130,24 +149,14 @@ namespace ShibaInu
 			if (Screen.width != m_screenSize.x || Screen.height != m_screenSize.y) {
 				m_screenSize.Set (Screen.width, Screen.height);
 				ResizeHandler.Call ();
-
-				// lua Resize
-				m_luaLoopHandler.BeginPCall ();
-				m_luaLoopHandler.Push (EVENT_RESIZE);
-				m_luaLoopHandler.Push (TimeUtil.timeSec);
-				m_luaLoopHandler.PCall ();
-				m_luaLoopHandler.EndPCall ();
+				DispatchLuaEvent (EVENT_RESIZE);
 			}
 
 			// 全局屏幕 Touch 相关
 			StageTouchEventDispatcher.Update ();
 
 			// lua Update
-			m_luaLoopHandler.BeginPCall ();
-			m_luaLoopHandler.Push (EVENT_UPDATE);
-			m_luaLoopHandler.Push (TimeUtil.timeSec);
-			m_luaLoopHandler.PCall ();
-			m_luaLoopHandler.EndPCall ();
+			DispatchLuaEvent (EVENT_UPDATE);
 		}
 
 
@@ -155,11 +164,7 @@ namespace ShibaInu
 		void LateUpdate ()
 		{
 			TimeUtil.Update ();
-			m_luaLoopHandler.BeginPCall ();
-			m_luaLoopHandler.Push (EVENT_LATE_UPDATE);
-			m_luaLoopHandler.Push (TimeUtil.timeSec);
-			m_luaLoopHandler.PCall ();
-			m_luaLoopHandler.EndPCall ();
+			DispatchLuaEvent (EVENT_LATE_UPDATE);
 		}
 
 
@@ -167,11 +172,36 @@ namespace ShibaInu
 		void FixedUpdate ()
 		{
 			TimeUtil.Update ();
-			m_luaLoopHandler.BeginPCall ();
-			m_luaLoopHandler.Push (EVENT_FIXED_UPDATE);
-			m_luaLoopHandler.Push (TimeUtil.timeSec);
-			m_luaLoopHandler.PCall ();
-			m_luaLoopHandler.EndPCall ();
+			DispatchLuaEvent (EVENT_FIXED_UPDATE);
+		}
+
+
+
+		void OnApplicationFocus (bool hasFocus)
+		{
+			ActivationChanged (hasFocus);
+		}
+
+		void OnApplicationPause (bool pauseStatus)
+		{
+			ActivationChanged (!pauseStatus);
+		}
+
+		private void ActivationChanged (bool activated)
+		{
+			if (activated) {
+				if (!m_activated) {
+					m_activated = true;
+					TimeUtil.Update ();
+					DispatchLuaEvent (EVENT_ACTIVATED);
+				}
+			} else {
+				if (m_activated) {
+					m_activated = false;
+					TimeUtil.Update ();
+					DispatchLuaEvent (EVENT_DEACTIVATED);
+				}
+			}
 		}
 
 

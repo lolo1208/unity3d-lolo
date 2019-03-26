@@ -8,6 +8,7 @@ local table = table
 local remove = table.remove
 
 
+--
 ---@class Event
 ---@field New fun(type:string, data:any):Event
 ---
@@ -18,7 +19,6 @@ local remove = table.remove
 ---@field isPropagationStopped boolean @ 事件传播（冒泡）是否已停止，[default:false]
 local Event = class("Event")
 
-
 --- 构造函数
 --- 注意：请使用 Event.Get() 和 Event.Recycle() 来创建和回收事件对象
 ---@param type string
@@ -28,6 +28,7 @@ function Event:Ctor(type, data)
     self.data = data
     self.isPropagationStopped = false
 end
+
 
 
 --=------------------------------[ static ]------------------------------=--
@@ -47,9 +48,14 @@ Event.RESIZE = "Event_Resize"
 --- 当前场景有改变。该事件只会在 Stage 上抛出
 Event.SCENE_CHANGED = "Event_SceneChanged"
 
---=--
+--- 当前程序被激活（从后台切回）。该事件只会在 Stage 上抛出
+Event.ACTIVATED = "Event_Activated"
+
+--- 当前程序切入后台运行。该事件只会在 Stage 上抛出
+Event.DEACTIVATED = "Event_Deactivated"
 
 
+--
 --- 从池中获取一个事件对象
 ---@param EventClass Event @ 事件Class
 ---@param type string @ 事件类型
@@ -69,6 +75,7 @@ function Event.Get(EventClass, type, data)
 end
 
 
+--
 --- 将事件对象回收到对应的池中
 ---@param event Event
 ---@return void
@@ -87,7 +94,6 @@ function Event.Recycle(event)
 end
 
 
---=----------------------------------------------------------------------=--
 
-
+--
 return Event

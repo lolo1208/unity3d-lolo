@@ -103,8 +103,9 @@ namespace ShibaInu
 			#elif UNITY_IOS && !UNITY_EDITOR
 			return IsNotchScreenImpl ();
 
-			#endif
+			#else
 			return false;
+			#endif
 		}
 
 
