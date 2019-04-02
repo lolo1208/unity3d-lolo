@@ -6,6 +6,7 @@
 
 local error = error
 local format = string.format
+local insert = table.insert
 local remove = table.remove
 local floor = math.floor
 
@@ -75,6 +76,7 @@ local function DispatchSceneChangedEvent(scene)
         Stage.PlaySceneTransition(false)
     end
 
+    PrefabPool.Clean()
     scene:OnInitialize()
     _event.target = nil
     _event.isPropagationStopped = false
@@ -261,15 +263,14 @@ function Stage.OpenWindow(window, closeOthers)
 
     -- 加入到 _windowList 中
     local hasWindow = false
-    local windowCount = #_windowList
-    for i = 1, windowCount do
+    for i = 1, #_windowList do
         hasWindow = _windowList[i] == window
         if hasWindow then
             break
         end
     end
     if not hasWindow then
-        _windowList[windowCount + 1] = window
+        insert(_windowList, window)
     end
 
     -- 关闭其他窗口
@@ -288,19 +289,23 @@ function Stage.CloseWindow(window)
             break
         end
     end
-    View.Hide(window) -- 调用 View:Hide()
+    window:Close()
 end
 
 --- 关闭已打开的所有窗口
 ---@param excludeWindow Window @ -可选- 除了这个窗口不关闭。默认：nil
 function Stage.CloseAllWindow(excludeWindow)
-    for i = 1, #_windowList do
-        local window = _windowList[i]
+    local windowList = _windowList
+    _windowList = {}
+    for i = 1, #windowList do
+        local window = windowList[i]
         if window ~= excludeWindow then
-            View.Hide(window)
+            window:Close()
         end
     end
-    _windowList = excludeWindow == nil and {} or { excludeWindow }
+    if excludeWindow ~= nil then
+        insert(_windowList, excludeWindow)
+    end
 end
 
 

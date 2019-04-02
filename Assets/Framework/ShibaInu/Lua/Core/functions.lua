@@ -178,15 +178,16 @@ function SetParent(target, parent)
     LuaHelper.SetParent(target, parent)
 end
 
---- 销毁指定的对象（或 Component）
----@param go UnityEngine.GameObject @ 目标对象
+--- 销毁 GameObject 或 Component
+---@param obj UnityEngine.Object @ 目标对象
 ---@param delay number @ -可选- 延时删除（秒）
----@return void
-function Destroy(go, delay)
-    if delay == nil then
-        GameObject.Destroy(go)
-    else
-        GameObject.Destroy(go, delay)
+function Destroy(obj, delay)
+    if not isnull(obj) then
+        if delay == nil then
+            GameObject.Destroy(obj)
+        else
+            GameObject.Destroy(obj, delay)
+        end
     end
 end
 

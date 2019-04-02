@@ -10,6 +10,8 @@ Temp
 LuaAPI
 PlatformProjects
 Log
+Library_iOS
+Library_Android
 
 Assets/StreamingAssets
 Assets/Framework/ToLua/Source/Generate/*

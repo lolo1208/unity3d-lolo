@@ -30,7 +30,8 @@ function TestScene:OnInitialize()
     --
     local sampleNames = {
         "Picker", "BaseList", "ScrollList", "PageList",
-        "ViewPager", "CircleImage", "Network", "UIEffects", "SafeArea",
+        "ViewPager", "CircleImage", "SafeArea",
+        "Network", "UIEffects", "ViewEffects",
     }
     for i = 1, #sampleNames do
         local sampleName = sampleNames[i]
@@ -60,7 +61,8 @@ end
 
 --
 function TestScene:OnClick_ShowSample(event, sampleName)
-    self.curSample = require("Module.Test.Samples." .. sampleName .. ".Test_" .. sampleName).New(
+    local sampleClass = require("Module.Test.Samples." .. sampleName .. ".Test_" .. sampleName)
+    self.curSample = sampleClass.New(
             "Prefabs/Test/Samples/" .. sampleName .. ".prefab",
             Constants.LAYER_UI, self.moduleName
     )

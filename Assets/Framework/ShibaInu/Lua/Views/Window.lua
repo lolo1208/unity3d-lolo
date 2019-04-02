@@ -40,7 +40,10 @@ end
 --
 ---@see View#Hide
 function Window:Hide()
-    self:Close() -- Window.super.Hide(self) 在 Stage.CloseWindow() 中调用
+    if self.visible then
+        self:SetVisible(false)
+        Stage.CloseWindow(self)
+    end
 end
 
 
@@ -48,7 +51,7 @@ end
 --- 关闭窗口
 --- 也可作为关闭按钮的点击函数，例：AddEventListener(closeBtn.gameObject, PointerEvent.CLICK, self.Close, self)
 function Window:Close()
-    Stage.CloseWindow(self)
+    self:Hide()
 end
 
 

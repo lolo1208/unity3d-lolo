@@ -130,9 +130,9 @@ end
 --- 显示／隐藏 gameObject
 function View:ToggleVisibility()
     if self.visible then
-        self:SetVisible(false)
+        self:Hide()
     else
-        self:SetVisible(true)
+        self:Show()
     end
 end
 
@@ -172,20 +172,10 @@ function View:OnDestroy()
 end
 
 --- 销毁界面对应的 gameObject
----@param dispatchEvent boolean @ -可选- 是否抛出 DestroyEvent.DESTROY 事件，默认：nil(false)，不抛出事件
 ---@param delay number @ -可选- 延时销毁（秒）。默认：nil，表示立即销毁
-function View:Destroy(dispatchEvent, delay)
+function View:Destroy(delay)
     self.destroyed = true
-    local go = self.gameObject
-    if isnull(go) then
-        return
-    end
-
-    if dispatchEvent then
-        AddEventListener(go, DestroyEvent.DESTROY, self.OnDestroy, self)
-    end
-
-    Destroy(go, delay)
+    Destroy(self.gameObject, delay)
 end
 
 
