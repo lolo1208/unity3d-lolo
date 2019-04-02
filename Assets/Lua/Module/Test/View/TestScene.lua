@@ -30,7 +30,7 @@ function TestScene:OnInitialize()
     --
     local sampleNames = {
         "Picker", "BaseList", "ScrollList", "PageList",
-        "ViewPager", "CircleImage", "SafeArea",
+        "ViewPager", "CircleImage", "SafeArea", "Bezier",
         "Network", "UIEffects", "ViewEffects",
     }
     for i = 1, #sampleNames do
@@ -47,7 +47,7 @@ function TestScene:OnInitialize()
     local dungeonBtn = samplesTra:Find("dungeonBtn").gameObject
     AddEventListener(dungeonBtn, PointerEvent.CLICK, self.OnClick_dungeonBtn, self)
 
-    local backBtn = uiCanvasTra:Find("backBtn")
+    local backBtn = uiCanvasTra:Find("BackBtn")
     local anchoredPosition = backBtn.anchoredPosition
     SetParent(backBtn, Constants.LAYER_UI_TOP)
     backBtn.anchoredPosition = anchoredPosition
