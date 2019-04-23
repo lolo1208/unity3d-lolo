@@ -1,14 +1,31 @@
 fileFormatVersion: 2
 guid: 80deb80620a7dad439dc1e07f41b0087
-timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: Object18
+    100002: Object19
+    100004: //RootNode
+    400000: Object18
+    400002: Object19
+    400004: //RootNode
+    2300000: Object18
+    2300002: Object19
+    3300000: Object18
+    3300002: Object19
     4300000: Box03
     4300002: Box01
     4300004: Object18
     4300006: Object19
-  externalObjects: {}
+    6400000: Object18
+    6400002: Object19
+    11100000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 19 - Default
+    second: {fileID: 2100000, guid: 75221f623456ab04fa406eb67b29e44b, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

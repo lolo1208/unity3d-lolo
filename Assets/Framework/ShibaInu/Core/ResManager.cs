@@ -3,513 +3,495 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 using LuaInterface;
 
 
 namespace ShibaInu
 {
+    public static class ResManager
+    {
+        /// lua 列表[ key = 文件原始路径（不带框架路径和后缀），value = 资源文件名 ]
+        private static readonly Dictionary<string, string> s_luaMap = new Dictionary<string, string>();
+        /// 场景列表[ key = 场景名称（不带路径和后缀），value = AssetInfo 对象 ]
+        private static readonly Dictionary<string, AssetInfo> s_sceneMap = new Dictionary<string, AssetInfo>();
+        /// AssetInfo 列表[ key = AB文件名，value = AssetInfo 对象 ]
+        private static readonly Dictionary<string, AssetInfo> s_infoMap = new Dictionary<string, AssetInfo>();
+        /// 资源文件列表[ key = 资源路径，value = AssetInfo 对象 ]
+        private static readonly Dictionary<string, AssetInfo> s_resMap = new Dictionary<string, AssetInfo>();
+
+        /// 需要被延迟卸载到资源组列表
+        private static readonly HashSet<string> s_delayedUnloadList = new HashSet<string>();
+
+        /// 抛出 EVENT_ALL_COMPLETE 事件的协程对象
+        private static Coroutine s_coAllComplete;
+
+
+
+        #region 资源加载
+
+        /// <summary>
+        /// 同步加载资源
+        /// </summary>
+        /// <returns>The asset with type.</returns>
+        /// <param name="path">Path.</param>
+        /// <param name="groupName">Group name.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        private static T LoadAssetWithType<T>(string path, string groupName) where T : UnityEngine.Object
+        {
+            if (groupName == null) groupName = Stage.CurrentSceneName;
+
+#if UNITY_EDITOR
+            if (Common.IsDebug)
+            {
+                if (!File.Exists(Constants.ResDirPath + path))
+                    throw new Exception(string.Format(Constants.E5001, path));
+                return UnityEditor.AssetDatabase.LoadAssetAtPath<T>(Constants.ResDirPath + path);
+            }
+#endif
+
+            s_delayedUnloadList.Remove(groupName);
+
+            AssetInfo info;
+            if (s_resMap.TryGetValue(path, out info))
+            {
+                AssetLoader.Load(info, groupName);
+                return info.ab.LoadAsset<T>(Constants.ResDirPath + path);
+            }
+            throw new Exception(string.Format(Constants.E5001, path));
+        }
+
+
+
+        /// <summary>
+        /// 异步加载资源
+        /// </summary>
+        /// <param name="path">Path.</param>
+        /// <param name="groupName">Group name.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        private static void LoadAssetAsyncWithType<T>(string path, string groupName) where T : UnityEngine.Object
+        {
+            if (groupName == null) groupName = Stage.CurrentSceneName;
+
+#if UNITY_EDITOR
+            if (Common.IsDebug)
+            {
+                if (!File.Exists(Constants.ResDirPath + path))
+                    throw new Exception(string.Format(Constants.E5001, path));
+
+                DispatchEvent(EVENT_START, path);
+                Common.looper.StartCoroutine(DispatchCompleteEvent(path,
+                    UnityEditor.AssetDatabase.LoadAssetAtPath<T>(Constants.ResDirPath + path)
+                ));
+                return;
+            }
+#endif
+
+            s_delayedUnloadList.Remove(groupName);
+
+            AssetInfo info;
+            if (s_resMap.TryGetValue(path, out info))
+            {
+                info.AddAsyncAsset(path, typeof(T));
+                AssetLoader.LoadAsync(info, groupName);
+            }
+            else
+                throw new Exception(string.Format(Constants.E5001, path));
+        }
+
+
+#if UNITY_EDITOR
+
+        /// <summary>
+        /// 在 editor play mode 状态下，延迟抛出资源异步加载完成事件
+        /// </summary>
+        /// <returns>The complete event.</returns>
+        /// <param name="path">Path.</param>
+        /// <param name="data">Data.</param>
+        private static IEnumerator DispatchCompleteEvent(string path, UnityEngine.Object data)
+        {
+            if (s_coAllComplete != null)
+            {
+                Common.looper.StopCoroutine(s_coAllComplete);
+                s_coAllComplete = null;
+            }
+
+            yield return new WaitForSeconds(0.1f);
+            DispatchEvent(EVENT_COMPLETE, path, data);
+
+            if (s_coAllComplete != null) Common.looper.StopCoroutine(s_coAllComplete);
+            s_coAllComplete = Common.looper.StartCoroutine(DispatchAllCompleteEvent());
+        }
+
+
+        /// <summary>
+        /// 在 editor play mode 状态下，延迟抛出所有资源异步加载完成事件
+        /// </summary>
+        /// <returns>The all complete event.</returns>
+        private static IEnumerator DispatchAllCompleteEvent()
+        {
+            yield return new WaitForSeconds(0.1f);
+            s_coAllComplete = null;
+            DispatchEvent(EVENT_ALL_COMPLETE);
+        }
+
+#endif
+
+        #endregion
+
+
+
+        /// <summary>
+        /// 通过 AssetBundle 的文件名来获取对应的 AssetInfo
+        /// </summary>
+        /// <returns>The AssetInfo with AssetBundle file name.</returns>
+        /// <param name="fileName">File name.</param>
+        [NoToLua]
+        public static AssetInfo GetAssetInfoWithABName(string fileName)
+        {
+            AssetInfo info;
+            s_infoMap.TryGetValue(fileName, out info);
+            return info;
+        }
+
+
+        /// <summary>
+        /// 通过 资源路径 来获取对应的 AssetInfo
+        /// </summary>
+        /// <returns>The AssetInfo with asset path.</returns>
+        /// <param name="path">Path.</param>
+        [NoToLua]
+        public static AssetInfo GetAssetInfoWithAssetPath(string path)
+        {
+            AssetInfo info;
+            s_resMap.TryGetValue(path, out info);
+            return info;
+        }
+
+
+        /// <summary>
+        /// 通过 场景名称 来获取对应的 AssetInfo
+        /// </summary>
+        /// <returns>The AssetInfo with scene name.</returns>
+        /// <param name="sceneName">Scene name.</param>
+        [NoToLua]
+        public static AssetInfo GetAssetInfoWithSceneName(string sceneName)
+        {
+            AssetInfo info;
+            s_sceneMap.TryGetValue(sceneName, out info);
+            return info;
+        }
+
+
+
+        /// <summary>
+        /// 获取 Lua 文件的字节内容
+        /// </summary>
+        /// <returns>The lua file bytes.</returns>
+        /// <param name="path">lua 路径（不带后缀），如：Module/Core/launcher </param>
+        [NoToLua]
+        public static byte[] GetLuaFileBytes(string path)
+        {
+            // 不需要后缀名
+            path = path.Replace(".lua", "");
+
+            string fileName;
+            if (s_luaMap.TryGetValue(path, out fileName))
+            {
+                return FileHelper.GetBytes(AssetLoader.GetFilePath(fileName));
+            }
+
+            throw new Exception(string.Format(Constants.E1002, path));
+        }
+
+
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        [NoToLua]
+        public static void Initialize()
+        {
+            if (Common.IsDebug) return;
+
+            // 清理
+            s_luaMap.Clear();
+            s_sceneMap.Clear();
+            s_infoMap.Clear();
+            s_resMap.Clear();
+
+            // 获取版本信息文件路径
+            string VerCfgFilePath = Constants.UpdateDir + Constants.VerCfgFileName;
+            bool hasUpdate = FileHelper.Exists(VerCfgFilePath);// 是否有更新过
+            if (!hasUpdate)// 从未更新过
+                VerCfgFilePath = Constants.PackageDir + Constants.VerCfgFileName;
+
+            // 获取版本号
+            string version = FileHelper.GetText(VerCfgFilePath);
+            Debug.Log("[ResManager] Version: " + version);
+
+            // 解析资源清单文件
+            string manifestFilePath = (hasUpdate ? Constants.UpdateDir : Constants.PackageDir) + version + ".manifest";
+            using (StreamReader file = new StreamReader(new MemoryStream(FileHelper.GetBytes(manifestFilePath))))
+            {
+                string line;
+                AssetInfo info = new AssetInfo("");
+                int phase = 1, index = 0, count = 0;
+                while ((line = file.ReadLine()) != null)
+                {
+                    switch (phase)
+                    {
+                        // lua
+                        case 1:
+                            if (count == 0)
+                                count = int.Parse(line);
+                            else
+                            {
+                                s_luaMap.Add(line, file.ReadLine());
+                                if (++index == count)
+                                {
+                                    count = index = 0;
+                                    phase++;
+                                }
+                            }
+                            break;
+
+                        // scene
+                        case 2:
+                            if (count == 0)
+                                count = int.Parse(line);
+                            else
+                            {
+                                s_sceneMap.Add(line, new AssetInfo(file.ReadLine()));
+                                if (++index == count)
+                                {
+                                    count = index = 0;
+                                    phase++;
+                                }
+                            }
+                            break;
+
+                        // AssetBundle
+                        case 3:
+                            if (count == 0)
+                            {
+                                count = int.Parse(line);
+                            }
+                            else
+                            {
+                                if (index == 0)
+                                {
+                                    info = new AssetInfo(line);
+                                    s_infoMap.Add(info.name, info);
+
+                                    // 解析依赖列表
+                                    int num = int.Parse(file.ReadLine());
+                                    for (int i = 0; i < num; i++)
+                                        info.pedList.Add(file.ReadLine());
+                                }
+                                else
+                                {
+                                    s_resMap.Add(line, info);
+                                }
+
+                                if (++index == count)
+                                {
+                                    count = index = 0;
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+
+
+        #region 同步/异步 加载资源的对外实现
+
+        public static string LoadText(string path, string groupName = null)
+        {
+            TextAsset asset = LoadAssetWithType<TextAsset>(path, groupName);
+            return asset.text;
+        }
+
+
+        public static UnityEngine.Object LoadAsset(string path, string groupName = null)
+        {
+            return LoadAssetWithType<UnityEngine.Object>(path, groupName);
+        }
+        public static void LoadAssetAsync(string path, string groupName = null)
+        {
+            LoadAssetAsyncWithType<UnityEngine.Object>(path, groupName);
+        }
+
+
+        public static Sprite LoadSprite(string path, string groupName = null)
+        {
+            return LoadAssetWithType<Sprite>(path, groupName);
+        }
+        public static void LoadSpriteAsync(string path, string groupName = null)
+        {
+            LoadAssetAsyncWithType<Sprite>(path, groupName);
+        }
+
+
+        public static SpriteAtlas LoadSpriteAtlas(string path, string groupName = null)
+        {
+            return LoadAssetWithType<SpriteAtlas>(path, groupName);
+        }
+        public static void LoadSpriteAtlasAsync(string path, string groupName = null)
+        {
+            LoadAssetAsyncWithType<SpriteAtlas>(path, groupName);
+        }
+
+
+        public static AnimationClip LoadAnimationClip(string path, string groupName = null)
+        {
+            return LoadAssetWithType<AnimationClip>(path, groupName);
+        }
+        public static void LoadAnimationClipAsync(string path, string groupName = null)
+        {
+            LoadAssetAsyncWithType<AnimationClip>(path, groupName);
+        }
+
+
+        public static RuntimeAnimatorController LoadAnimatorController(string path, string groupName = null)
+        {
+            return LoadAssetWithType<RuntimeAnimatorController>(path, groupName);
+        }
+        public static void LoadAnimatorControllerAsync(string path, string groupName = null)
+        {
+            LoadAssetAsyncWithType<RuntimeAnimatorController>(path, groupName);
+        }
+
+
+        public static Shader LoadShader(string path, string groupName = null)
+        {
+            return LoadAssetWithType<Shader>(path, groupName);
+        }
+        public static void LoadShaderAsync(string path, string groupName = null)
+        {
+            LoadAssetAsyncWithType<Shader>(path, groupName);
+        }
+
+
+        public static AudioClip LoadAudioClip(string path, string groupName = null)
+        {
+            return LoadAssetWithType<AudioClip>(path, groupName);
+        }
+        public static void LoadAudioClipAsync(string path, string groupName = null)
+        {
+            LoadAssetAsyncWithType<AudioClip>(path, groupName);
+        }
+
+        #endregion
+
+
+
+        #region 卸载资源
+
+        /// <summary>
+        /// 卸载资源
+        /// </summary>
+        /// <param name="groupName">Group name.</param>
+        /// <param name="delay">Delay.</param>
+        public static void Unload(string groupName, float delay = 0)
+        {
+#if UNITY_EDITOR
+            if (Common.IsDebug) return;
+#endif
+
+            if (delay > 0)
+                Common.looper.StartCoroutine(DelayedUnload(groupName, delay));
+            else
+                AssetLoader.RemoveReference(groupName);
+        }
+
+
+        private static IEnumerator DelayedUnload(string groupName, float delay)
+        {
+            // 先添加到需要被延迟卸载到列表中，以防 delay 过程中该 groupName 又进行了加载
+            s_delayedUnloadList.Add(groupName);
+
+            yield return new WaitForSeconds(delay);
+
+            if (s_delayedUnloadList.Contains(groupName))
+            {
+                s_delayedUnloadList.Remove(groupName);
+                AssetLoader.RemoveReference(groupName);
+            }
+        }
+
+        #endregion
+
+
+
+        #region 在 lua 层抛出事件
+
+        [NoToLua]
+        public const string EVENT_START = "LoadResEvent_Start";
+        [NoToLua]
+        public const string EVENT_COMPLETE = "LoadResEvent_Complete";
+        [NoToLua]
+        public const string EVENT_ALL_COMPLETE = "LoadResEvent_All_Complete";
+
+        /// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadResEvent.lua
+        private static LuaFunction s_dispatchEvent;
+
+        /// <summary>
+        /// 在 lua 层抛出事件
+        /// </summary>
+        /// <param name="type">Type.</param>
+        /// <param name="path">Path.</param>
+        /// <param name="data">Data.</param>
+        [NoToLua]
+        public static void DispatchEvent(string type, string path = null, UnityEngine.Object data = null)
+        {
+            // 不能在 Initialize() 时获取该函数，因为相互依赖
+            if (s_dispatchEvent == null)
+                s_dispatchEvent = Common.luaMgr.state.GetFunction("LoadResEvent.DispatchEvent");
+
+            s_dispatchEvent.BeginPCall();
+            s_dispatchEvent.Push(type);
+            if (path != null)
+                s_dispatchEvent.Push(path);
+            if (data != null)
+                s_dispatchEvent.Push(data);
+            s_dispatchEvent.PCall();
+            s_dispatchEvent.EndPCall();
+        }
+
+        #endregion
+
+
+
+        #region 卸载所有资源，清空所有引用（在动更结束后重启 app 时）
+
+        public static void UnloadAll()
+        {
+            AssetLoader.Clear();
+
+            s_dispatchEvent = null;
+            s_delayedUnloadList.Clear();
+
+            foreach (var item in s_infoMap)
+            {
+                AssetInfo info = item.Value;
+                if (info.ab != null)
+                {
+                    info.ab.Unload(true);
+                    info.ab = null;
+                    // Debug.Log("[Unload] " + info.name);
+                }
+            }
+            Resources.UnloadUnusedAssets();
+        }
+
+        #endregion
+
+
+        //
+    }
 
-	/// <summary>
-	/// 资源管理器
-	/// </summary>
-	public class ResManager
-	{
-		/// lua的包文件夹列表
-		private static readonly string[] m_luaPackages = { "ToLua/", "ShibaInu/", "App/" };
-
-		/// 路径 -> 路径MD5 映射列表
-		private static Dictionary<string, string> s_pathMD5Dic = new Dictionary<string, string> ();
-		/// lua文件路径 -> 真实完整路径 映射列表
-		private static Dictionary<string, string> s_luaPathDic = new Dictionary<string, string> ();
-
-		/// lua 文件列表[ key = lua文件路径，value = 文件MD5 ]
-		private static Dictionary<string, string> s_luaDic = new Dictionary<string, string> ();
-		/// ABI 列表[ key = AB文件路径MD5，value = ABI对象 ]
-		private static Dictionary<string, ABI> s_abiDic = new Dictionary<string, ABI> ();
-		/// 资源文件列表[ key = 资源文件路径MD5，value = ABI对象 ]
-		private static Dictionary<string, ABI> s_resDic = new Dictionary<string, ABI> ();
-
-		/// 抛出 ABLoader.EVENT_ALL_COMPLETE 事件的协程对象
-		private static Coroutine s_daceCoroutine;
-
-		/// 需要被延迟卸载到资源组列表
-		private static HashSet<string> s_delayedUnloadList = new HashSet<string> ();
-
-
-
-		#region 初始化
-
-		[NoToLuaAttribute]
-		public static void Initialize ()
-		{
-			if (!Common.IsDebug) {
-				ParseResInfo ();
-			}
-		}
-
-
-		/// <summary>
-		/// 解析资源信息文件
-		/// </summary>
-		private static void ParseResInfo ()
-		{
-			string resInfoFilePath = Constants.UpdateDir + "ResInfo";
-			if (!FileHelper.Exists (resInfoFilePath))// 从未更新过
-				resInfoFilePath = Constants.PackageDir + "ResInfo";
-
-			s_delayedUnloadList.Clear ();
-			s_luaDic.Clear ();
-			s_abiDic.Clear ();
-			s_resDic.Clear ();
-			s_luaPathDic.Clear ();
-
-			// 解析资源信息文件
-			using (BinaryReader reader = new BinaryReader (new MemoryStream (FileHelper.GetBytes (resInfoFilePath)))) {
-				ushort ushort1, ushort2, i, n;
-				byte byte1, byte2, pathLen;
-				string path, md5, pathMD5;
-				ABI abi;
-
-				// 所有lua文件
-				ushort1 = reader.ReadUInt16 ();
-				for (i = 0; i < ushort1; i++) {
-					pathLen = reader.ReadByte ();
-					path = new string (reader.ReadChars (pathLen));
-					md5 = new string (reader.ReadChars (16));
-					s_luaDic.Add (path, md5);
-				}
-
-				// 所有场景文件
-				byte1 = reader.ReadByte ();
-				for (i = 0; i < byte1; i++) {
-					pathLen = reader.ReadByte ();
-					path = new string (reader.ReadChars (pathLen));// "Loading" or "SceneA"
-					md5 = new string (reader.ReadChars (16));
-
-					abi = new ABI (path, md5, "Scenes/");
-					pathMD5 = GetPathMD5 (path);
-					s_abiDic.Add (pathMD5, abi);
-				}
-
-				// 所有 AssetBundle 文件
-				ushort1 = reader.ReadUInt16 ();
-				for (i = 0; i < ushort1; i++) {
-					pathLen = reader.ReadByte ();
-					path = new string (reader.ReadChars (pathLen));// "material/test" or "prefab/test/testui" or "texture/test_bar"
-					md5 = new string (reader.ReadChars (16));
-
-					abi = new ABI (path, md5, "Res/");
-					pathMD5 = GetPathMD5 (path + Constants.AbExtName);
-					s_abiDic.Add (pathMD5, abi);
-
-					// 包含的资源文件
-					ushort2 = reader.ReadUInt16 ();
-					for (n = 0; n < ushort2; n++) {
-						pathMD5 = new string (reader.ReadChars (16));
-						s_resDic.Add (pathMD5, abi);
-					}
-
-					// 依赖的 AssetBundle
-					byte2 = reader.ReadByte ();
-					for (n = 0; n < byte2; n++) {
-						pathMD5 = new string (reader.ReadChars (16));
-						abi.pedList.Add (pathMD5);
-					}
-				}
-			}
-		}
-
-		#endregion
-
-
-
-		#region 同步加载资源
-
-		/// <summary>
-		/// 同步加载 path 对应的 AssetBundle，并返回返回 path 对应的数据
-		/// </summary>
-		/// <returns>The asset.</returns>
-		/// <param name="path">Path.</param>
-		/// <param name="path">Group Name.</param>
-		public static UnityEngine.Object LoadAsset (string path, string groupName = null)
-		{
-			return LoadAssetWithType<UnityEngine.Object> (path, groupName);
-		}
-
-		public static UnityEngine.Sprite LoadSprite (string path, string groupName = null)
-		{
-			return LoadAssetWithType<UnityEngine.Sprite> (path, groupName);
-		}
-
-		public static UnityEngine.Shader LoadShader (string path, string groupName = null)
-		{
-			return LoadAssetWithType<UnityEngine.Shader> (path, groupName);
-		}
-
-		public static UnityEngine.AudioClip LoadAudioClip (string path, string groupName = null)
-		{
-			return LoadAssetWithType<UnityEngine.AudioClip> (path, groupName);
-		}
-
-		public static UnityEngine.AnimationClip LoadAnimationClip (string path, string groupName = null)
-		{
-			return LoadAssetWithType<UnityEngine.AnimationClip> (path, groupName);
-		}
-
-		public static string LoadText (string path, string groupName = null)
-		{
-			TextAsset asset = LoadAssetWithType<UnityEngine.TextAsset> (path, groupName);
-			return asset.text;
-		}
-
-		private static T LoadAssetWithType<T> (string path, string groupName) where T : UnityEngine.Object
-		{
-			if (groupName == null)
-				groupName = Stage.currentSceneName;
-
-			#if UNITY_EDITOR
-			if (Common.IsDebug) {
-				if (!File.Exists (Constants.ResDirPath + path)) {
-					throw new LuaException (string.Format (Constants.E5001, path));
-				}
-				return UnityEditor.AssetDatabase.LoadAssetAtPath<T> (Constants.ResDirPath + path);
-			}
-
-			string pathMD5 = GetPathMD5 (path);
-			if (!s_resDic.ContainsKey (pathMD5)) {
-				throw new LuaException (string.Format (Constants.E5001, path));
-			}
-			#endif
-
-			s_delayedUnloadList.Remove (groupName);
-
-			ABI abi = GetAbiWithAssetPath (path);
-			ABLoader.Load (abi, groupName);
-			return abi.ab.LoadAsset<T> (Constants.ResDirPath + path);
-		}
-
-		#endregion
-
-
-
-		#region 异步加载资源
-
-		/// <summary>
-		/// 异步加载资源。
-		/// 在 lua 层可通过向 Res 注册 LoadEvent 相关事件来跟踪加载状态
-		/// </summary>
-		/// <param name="path">Path.</param>
-		/// <param name="path">Group Name.</param>
-		public static void LoadAssetAsync (string path, string groupName = null)
-		{
-			LoadAssetAsyncWithType<UnityEngine.Object> (path, groupName);
-		}
-
-		public static void LoadSpriteAsync (string path, string groupName = null)
-		{
-			LoadAssetAsyncWithType<UnityEngine.Sprite> (path, groupName);
-		}
-
-		public static void LoadShaderAsync (string path, string groupName = null)
-		{
-			LoadAssetAsyncWithType<UnityEngine.Shader> (path, groupName);
-		}
-
-		public static void LoadAudioClipAsync (string path, string groupName = null)
-		{
-			LoadAssetAsyncWithType<UnityEngine.AudioClip> (path, groupName);
-		}
-
-		public static void LoadAnimationClipAsync (string path, string groupName = null)
-		{
-			LoadAssetAsyncWithType<UnityEngine.AnimationClip> (path, groupName);
-		}
-
-		private static void LoadAssetAsyncWithType<T> (string path, string groupName) where T : UnityEngine.Object
-		{
-			if (groupName == null)
-				groupName = Stage.currentSceneName;
-			
-			#if UNITY_EDITOR
-			if (Common.IsDebug) {
-				if (!File.Exists (Constants.ResDirPath + path))
-					throw new LuaException (string.Format (Constants.E5001, path));
-
-				DispatchLuaEvent (EVENT_START, path);
-				Common.looper.StartCoroutine (DispatchCompleteEvent (path,
-					UnityEditor.AssetDatabase.LoadAssetAtPath<T> (Constants.ResDirPath + path)
-				));
-				return;
-			}
-
-			string pathMD5 = GetPathMD5 (path);
-			if (!s_resDic.ContainsKey (pathMD5)) {
-				throw new LuaException (string.Format (Constants.E5001, path));
-			}
-			#endif
-
-			s_delayedUnloadList.Remove (groupName);
-
-			ABI abi = GetAbiWithAssetPath (path);
-			abi.AddAssetAsync (path, typeof(T));
-			ABLoader.LoadAsync (abi, groupName);
-		}
-
-
-		#if UNITY_EDITOR
-
-		/// <summary>
-		/// 在 editor play mode 状态下，延迟抛出资源异步加载完成事件
-		/// </summary>
-		/// <returns>The complete event.</returns>
-		/// <param name="path">Path.</param>
-		/// <param name="data">Data.</param>
-		private static IEnumerator DispatchCompleteEvent (string path, UnityEngine.Object data)
-		{
-			if (s_daceCoroutine != null) {
-				Common.looper.StopCoroutine (s_daceCoroutine);
-				s_daceCoroutine = null;
-			}
-			
-			yield return new WaitForSeconds (0.1f);
-			DispatchLuaEvent (EVENT_COMPLETE, path, data);
-
-			if (s_daceCoroutine != null)
-				Common.looper.StopCoroutine (s_daceCoroutine);
-			s_daceCoroutine = Common.looper.StartCoroutine (DispatchAllCompleteEvent ());
-		}
-
-		/// <summary>
-		/// 在 editor play mode 状态下，延迟抛出所有资源异步加载完成事件
-		/// </summary>
-		/// <returns>The all complete event.</returns>
-		private static IEnumerator DispatchAllCompleteEvent ()
-		{
-			yield return new WaitForSeconds (0.1f);
-			s_daceCoroutine = null;
-			DispatchLuaEvent (EVENT_ALL_COMPLETE);
-		}
-
-		#endif
-
-
-		/// <summary>
-		/// 获取当前异步加载总进度 0~1
-		/// </summary>
-		/// <returns>The progress.</returns>
-		public static float GetProgress ()
-		{
-			return ABLoader.GetProgress ();
-		}
-
-		#endregion
-
-
-
-		#region 卸载资源
-
-		/// <summary>
-		/// 卸载资源
-		/// </summary>
-		/// <param name="groupName">Group name.</param>
-		/// <param name="delay">Delay.</param>
-		public static void Unload (string groupName, float delay = 0)
-		{
-			#if UNITY_EDITOR
-			if (Common.IsDebug)
-				return;
-			#endif
-
-			if (delay > 0)
-				Common.looper.StartCoroutine (DelayedUnload (groupName, delay));
-			else
-				ABLoader.RemoveReference (groupName);
-		}
-
-
-		private static IEnumerator DelayedUnload (string groupName, float delay)
-		{
-			// 先添加到需要被延迟卸载到列表中，以防 delay 过程中该 groupName 又进行了加载
-			s_delayedUnloadList.Add (groupName);
-
-			yield return new WaitForSeconds (delay);
-
-			if (s_delayedUnloadList.Contains (groupName)) {
-				s_delayedUnloadList.Remove (groupName);
-				ABLoader.RemoveReference (groupName);
-			}
-		}
-
-		#endregion
-
-
-
-		#region Path / MD5 / ABI 的转换和获取
-
-		/// <summary>
-		/// 获取路径对应的 MD5
-		/// </summary>
-		/// <returns>The path MD5.</returns>
-		/// <param name="path">Path.</param>
-		[NoToLuaAttribute]
-		public static string GetPathMD5 (string path)
-		{
-			string md5;
-			if (s_pathMD5Dic.ContainsKey (path)) {
-				s_pathMD5Dic.TryGetValue (path, out md5);
-			} else {
-				md5 = MD5Util.GetMD5 (path);
-				s_pathMD5Dic.Add (path, md5);
-			}
-			return md5;
-		}
-
-
-		/// <summary>
-		/// 通过 AssetBundle 的路径MD5 来获取对应的ABI（由 ABLoader 调用）
-		/// </summary>
-		/// <returns>The abi.</returns>
-		/// <param name="abPathMD5">Ab path M d5.</param>
-		[NoToLuaAttribute]
-		public static ABI GetAbi (string abPathMD5)
-		{
-			ABI abi;
-			s_abiDic.TryGetValue (abPathMD5, out abi);
-			return abi;
-		}
-
-
-		/// <summary>
-		/// 通过资源路径 来获取对应的ABI（由 ABLoader 调用）
-		/// </summary>
-		/// <returns>The abi with asset path.</returns>
-		/// <param name="path">Path.</param>
-		[NoToLuaAttribute]
-		public static ABI GetAbiWithAssetPath (string path)
-		{
-			ABI abi;
-			s_resDic.TryGetValue (GetPathMD5 (path), out abi);
-			return abi;
-		}
-
-		#endregion
-
-
-
-		#region 获取 Lua 文件的字节内容
-
-		/// <summary>
-		/// 获取 Lua 文件的字节内容
-		/// </summary>
-		/// <returns>The lua file bytes.</returns>
-		/// <param name="path">lua 路径，如：Module/Core/launcher </param>
-		[NoToLuaAttribute]
-		public static byte[] GetLuaFileBytes (string path)
-		{
-			// 不需要后缀名
-			path = path.Replace (".lua", "");
-
-			// 已经缓存过文件真实路径了，直接返回文件内容
-			if (s_luaPathDic.ContainsKey (path)) {
-				s_luaPathDic.TryGetValue (path, out path);
-				return FileHelper.GetBytes (path);
-			}
-
-			// 在 LuaPackages 中找到对应到文件
-			bool isFound = false;
-			string foundPath = string.Empty;
-			for (int i = 0; i < m_luaPackages.Length; i++) {
-				foundPath = m_luaPackages [i] + path;
-				if (s_luaDic.ContainsKey (foundPath)) {
-					isFound = true;
-					break;
-				}
-			}
-
-			if (!isFound) {
-				throw new LuaException (string.Format (Constants.E1002, path));
-			}
-
-			// 转换成真实路径，并查找文件
-			string md5;
-			s_luaDic.TryGetValue (foundPath, out md5);
-			string realPath = "Lua/" + foundPath + "_" + md5 + Constants.LuaExtName;
-
-			string filePath = Constants.PackageDir + realPath;
-			if (!FileHelper.Exists (filePath))
-				filePath = Constants.UpdateDir + realPath;
-
-			s_luaPathDic.Add (path, filePath);
-
-			// 返回文件内容
-			return FileHelper.GetBytes (filePath);
-		}
-
-		#endregion
-
-
-
-		#region 在 lua 层抛出事件
-
-		// lua 层的事件类型
-		[NoToLuaAttribute]
-		public const string EVENT_START = "LoadResEvent_Start";
-		[NoToLuaAttribute]
-		public const string EVENT_COMPLETE = "LoadResEvent_Complete";
-		[NoToLuaAttribute]
-		public const string EVENT_ALL_COMPLETE = "LoadResEvent_All_Complete";
-
-		/// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadResEvent.lua
-		private static LuaFunction s_dispatchEvent;
-
-		/// <summary>
-		/// 在 lua 层抛出事件
-		/// </summary>
-		/// <param name="type">Type.</param>
-		/// <param name="path">Path.</param>
-		/// <param name="data">Data.</param>
-		[NoToLuaAttribute]
-		public static void DispatchLuaEvent (string type, string path = null, UnityEngine.Object data = null)
-		{
-			// 不能在 Initialize() 时获取该函数，因为相互依赖
-			if (s_dispatchEvent == null)
-				s_dispatchEvent = Common.luaMgr.state.GetFunction ("LoadResEvent.DispatchEvent");
-
-			s_dispatchEvent.BeginPCall ();
-			s_dispatchEvent.Push (type);
-			if (path != null)
-				s_dispatchEvent.Push (path);
-			if (data != null)
-				s_dispatchEvent.Push (data);
-			s_dispatchEvent.PCall ();
-			s_dispatchEvent.EndPCall ();
-		}
-
-		#endregion
-
-
-
-		#region 卸载所有资源，清空所有引用（在动更结束后重启 app 时）
-
-		public static void UnloadAll ()
-		{
-			s_dispatchEvent = null;
-
-			foreach (var item in s_abiDic) {
-				ABI abi = item.Value;
-				if (abi.ab != null) {
-					abi.ab.Unload (true);
-					abi.ab = null;
-					Debug.Log ("[Unload] " + abi.path);
-				}
-			}
-			Resources.UnloadUnusedAssets ();
-		}
-
-		#endregion
-
-
-		//
-	}
 }
-

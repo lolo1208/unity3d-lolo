@@ -1,11 +1,21 @@
 fileFormatVersion: 2
 guid: e2035f7b91855a74a92661d94ae391b9
-timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: Floor_smallPart
-  externalObjects: {}
+    6400000: //RootNode
+    11100000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 07 - Default
+    second: {fileID: 2100000, guid: cd7f95d23b139424786fbabd6eb60e46, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

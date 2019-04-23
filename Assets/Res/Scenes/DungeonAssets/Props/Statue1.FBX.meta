@@ -1,11 +1,26 @@
 fileFormatVersion: 2
 guid: 4f72e967acbca5a46a9c93088349bfad
-timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: Statue1
-  externalObjects: {}
+    6400000: //RootNode
+    11100000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 13 - Default
+    second: {fileID: 2100000, guid: efe94096179379e4c83dadea88686489, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 14 - Default
+    second: {fileID: 2100000, guid: 6a86bab5f1fd4f745a6e0d2e5a23fdd6, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

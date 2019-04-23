@@ -1,12 +1,27 @@
 fileFormatVersion: 2
 guid: 461d81ba67c8edf43913393247788be2
-timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: Plane04
     4300002: Roof_2
-  externalObjects: {}
+    6400000: //RootNode
+    11100000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 03 - Default
+    second: {fileID: 2100000, guid: bbb24d460be61ac469261c636234e194, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 18 - Default
+    second: {fileID: 2100000, guid: 6b90525d3821fc64f8b7595d1343bb35, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

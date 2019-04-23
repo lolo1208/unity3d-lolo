@@ -1,42 +1,43 @@
 ﻿using System;
 using System.IO;
 using UnityEditor;
-using UnityEngine;
+
 
 namespace ShibaInu
 {
-	public class ImportAsetAutoSetting:AssetPostprocessor
-	{
+    public class ImportAsetAutoSetting : AssetPostprocessor
+    {
+        private const string ROOT_DIR = "Assets/Res/Textures/";
 
 
-		/// <summary>
-		/// Raises the preprocess texture event.
-		/// </summary>
-		void OnPreprocessTexture ()
-		{
-			// 只修改 Assets/Res/Textures/UI 文件夹下的纹理
-			if (!assetPath.StartsWith ("Assets/Res/Textures/UI"))
-				return;
-			
-			TextureImporter textureImporter = (TextureImporter)assetImporter;
+        /// <summary>
+        /// Raises the preprocess texture event.
+        /// </summary>
+        void OnPreprocessTexture()
+        {
+            if (!assetPath.StartsWith(ROOT_DIR, StringComparison.Ordinal))
+                return;
 
-			// 只修改没有 PackingTag 的图片
-			if (!string.IsNullOrEmpty (textureImporter.spritePackingTag))
-				return;
+            TextureImporter textureImporter = (TextureImporter)assetImporter;
 
-			// 类型
-			textureImporter.textureType = TextureImporterType.Sprite;
+            // 修改类型
+            textureImporter.textureType = TextureImporterType.Sprite;
 
-			// 打包 tag，最多两级："Assets/Res/Textures/UI/xxx/yyy/zzz.png"
-			string[] dirs = assetPath.Split ('/');
-			string tag = dirs [4];
-			if (dirs.Length > 6)
-				tag += "_" + dirs [5]; // xxx_yyy
-			textureImporter.spritePackingTag = tag;
-		}
+            // 根据目录来设置 spritePackingTag
+            string fileName = Path.GetFileName(assetPath);
+            string tag = assetPath
+                .Replace(ROOT_DIR, "")
+                .Replace("/" + fileName, "")
+                .Replace("/", "_");
+
+            if (tag == fileName)
+                tag = "texture";
+
+            textureImporter.spritePackingTag = tag;
+            UnityEngine.Debug.Log("[" + assetPath + "] set spritePackingTag: [" + tag + "]");
+        }
 
 
-		//
-	}
+        //
+    }
 }
-

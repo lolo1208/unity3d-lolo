@@ -1,11 +1,21 @@
 fileFormatVersion: 2
 guid: 4b7d1a49779f24549aaea8e83fb24dbb
-timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: Casket Stand
-  externalObjects: {}
+    6400000: //RootNode
+    11100000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 03 - Default
+    second: {fileID: 2100000, guid: 62410088ba4528d4585844880004fad0, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

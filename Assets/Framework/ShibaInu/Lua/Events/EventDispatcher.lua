@@ -78,24 +78,28 @@ function EventDispatcher:AddEventListener(type, callback, caller, priority, ...)
 
     local go = self.gameObject
     if go ~= nil then
-        if type == DestroyEvent.DESTROY then
-            -- Destroy 事件，由 C# DestroyEventDispatcher.cs 派发
-            -- OnDestroy() 时，self.gameObject 已经是 null（C#）了，所以不能使用 gameObject.peer._ed 来派发
-            LuaHelper.AddDestroyEvent(go, self)
-
-        elseif type == AvailabilityEvent.CHANGED then
-            -- AvailabilityEvent 相关事件，由 C# AvailabilityEventDispatcher.cs 派发
-            LuaHelper.AddAvailabilityEvent(go, self)
-
-        elseif type == PointerEvent.CLICK or type == PointerEvent.UP or type == PointerEvent.DOWN
+        if type == PointerEvent.CLICK or type == PointerEvent.UP or type == PointerEvent.DOWN
                 or type == PointerEvent.ENTER or type == PointerEvent.EXIT then
             -- PointerEvent 相关事件，由 C# PointerEventDispatcher.cs 派发
             LuaHelper.AddPointerEvent(go, self)
+
+        elseif type == DestroyEvent.DESTROY then
+            -- Destroy 事件，由 C# DestroyEventDispatcher.cs 派发
+            -- OnDestroy() 时，self.gameObject 已经是 null（C#）了，所以不能使用 gameObject.peer._ed 来派发
+            LuaHelper.AddDestroyEvent(go, self)
 
         elseif type == DragDropEvent.BEGIN_DRAG or type == DragDropEvent.DRAG or type == DragDropEvent.END_DRAG
                 or type == DragDropEvent.INITIALIZE_POTENTIAL_DRAG or type == DragDropEvent.DROP then
             -- DragDropEvent 事件，由 C# DragDropEventDispatcher.cs 派发
             LuaHelper.AddDragDropEvent(go, self)
+
+        elseif type == TriggerEvent.ENTER or type == TriggerEvent.STAY or type == TriggerEvent.EXIT then
+            -- TriggerEvent 事件，由 C# TriggerEventDispatcher.cs 派发
+            LuaHelper.AddTriggerEvent(go, self)
+
+        elseif type == AvailabilityEvent.CHANGED then
+            -- AvailabilityEvent 相关事件，由 C# AvailabilityEventDispatcher.cs 派发
+            LuaHelper.AddAvailabilityEvent(go, self)
         end
     end
 end

@@ -1,10 +1,6 @@
 ﻿using System;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 
 namespace ShibaInu
 {
@@ -97,24 +93,6 @@ namespace ShibaInu
 			if (GUI.Button (m_p7, "x", m_btnStyle))
 				this.enabled = false;
 		}
-
-
-
-		#if UNITY_EDITOR
-
-		[MenuItem ("ShibaInu/Lua Profiler", false, 202)]
-		private static void ShowConsole ()
-		{
-			LuaProfiler.Console (true);
-		}
-
-		[MenuItem ("ShibaInu/Lua Profiler", true)]
-		private static bool ShowConsoleValidation ()
-		{
-			return Application.isPlaying;
-		}
-
-		#endif
 
 
 		//

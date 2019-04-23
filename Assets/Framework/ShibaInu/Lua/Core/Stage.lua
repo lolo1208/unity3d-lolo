@@ -48,6 +48,7 @@ local _layers = {
 Stage._ed = _ed
 Stage.LoadSubScene = stage.LoadSubScene
 Stage.LoadSubSceneAsync = stage.LoadSubSceneAsync
+Stage.SetDontUnloadScene = stage.SetDontUnloadScene
 Stage.GetProgress = stage.GetProgress
 Stage.AddDontDestroy = stage.AddDontDestroy
 Stage.RemoveDontDestroy = stage.RemoveDontDestroy
@@ -254,12 +255,11 @@ function Stage.OpenWindow(window, closeOthers)
         closeOthers = true
     end
 
-    -- 窗口已打开，调整到最上层显示
-    if window.visible then
-        window.transform:SetAsLastSibling()
-    else
+    -- 打开窗口，调整到最上层显示
+    if not window.visible then
         window:Show()
     end
+    window.transform:SetAsLastSibling()
 
     -- 加入到 _windowList 中
     local hasWindow = false

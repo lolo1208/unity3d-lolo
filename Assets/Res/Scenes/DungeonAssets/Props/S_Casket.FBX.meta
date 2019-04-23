@@ -1,12 +1,34 @@
 fileFormatVersion: 2
 guid: aa5f87674ba414046b6fc1f00c9e5768
-timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: //RootNode
+    100002: StoneCasket1
+    100004: StoneCasket1_cover
+    400000: //RootNode
+    400002: StoneCasket1
+    400004: StoneCasket1_cover
+    2300000: StoneCasket1
+    2300002: StoneCasket1_cover
+    3300000: StoneCasket1
+    3300002: StoneCasket1_cover
     4300000: StoneCasket1
     4300002: StoneCasket1_cover
-  externalObjects: {}
+    6400000: StoneCasket1
+    6400002: StoneCasket1_cover
+    11100000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 09 - Default
+    second: {fileID: 2100000, guid: 27b8bff76f4824141ac7c5923513ece7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 10 - Default
+    second: {fileID: 2100000, guid: 7f95e414491663d47b13eb02b6090321, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

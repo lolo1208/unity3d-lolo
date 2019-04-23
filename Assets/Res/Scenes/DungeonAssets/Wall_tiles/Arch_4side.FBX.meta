@@ -1,12 +1,32 @@
 fileFormatVersion: 2
 guid: 76fb1e5aff7a2164abbd7d5de029a0ca
-timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: Arch_3side01
     4300002: Arch_4side
-  externalObjects: {}
+    6400000: //RootNode
+    11100000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 02 - Default
+    second: {fileID: 2100000, guid: a1124581f7a28ef438308c82b9eb4060, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 03 - Default
+    second: {fileID: 2100000, guid: 0b2da772ae2596b458a05e02e50bf461, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 18 - Default
+    second: {fileID: 2100000, guid: 027061cbc81d8794b8c11db567aab0a6, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

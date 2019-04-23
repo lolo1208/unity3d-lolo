@@ -7,58 +7,63 @@ using UnityEngine.EventSystems;
 
 namespace ShibaInu
 {
-	/// <summary>
-	/// 可以使 IPointerDownHandler, IPointerUpHandler, IPointerClickHandler 向下穿透一级
-	/// </summary>
-	[AddComponentMenu ("ShibaInu/Pointer Event Passer", 301)]
-	[DisallowMultipleComponent]
-	[RequireComponent (typeof(PointerEventDispatcher))]// PointerEventDispatcher 脚本必须在之前添加好，保证在穿透前自身先抛出事件
-	public class PointerEventPasser : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
-	{
+    /// <summary>
+    /// 可以使 IPointerDownHandler, IPointerUpHandler, IPointerClickHandler 向下穿透一级
+    /// </summary>
+    [AddComponentMenu("ShibaInu/Pointer Event Passer", 301)]
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(PointerEventDispatcher))]// PointerEventDispatcher 脚本必须在之前添加好，保证在穿透前自身先抛出事件
+    public class PointerEventPasser : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+    {
 
-		/// OnPointerDown 时，穿透击中的目标
-		private GameObject m_target;
-
-
-
-		public void OnPointerDown (PointerEventData eventData)
-		{
-			List<RaycastResult> results = new List<RaycastResult> ();
-			EventSystem.current.RaycastAll (eventData, results);
-
-			bool selfFounded = false;
-			foreach (RaycastResult result in results) {
-				if (result.gameObject == gameObject) {
-					selfFounded = true;// 先找到自己
-
-				} else if (selfFounded) {
-					// 然后向下穿透一级
-					m_target = ExecuteEvents.ExecuteHierarchy (result.gameObject, eventData, ExecuteEvents.pointerDownHandler);
-					if (m_target != null) {
-						return;
-					}
-				}
-			}
-		}
+        /// OnPointerDown 时，穿透击中的目标
+        private GameObject m_target;
 
 
-		public void OnPointerUp (PointerEventData eventData)
-		{
-			if (m_target == null)
-				return;
-			GameObject target = m_target;
-			m_target = null;
 
-			// 触发 target.OnPointerUp()
-			ExecuteEvents.Execute (target, eventData, ExecuteEvents.pointerUpHandler);
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
 
-			// ScrollRect 触发拖动时，就算鼠标或手指还未释放，也会触发 OnPointerUp()
-			#if UNITY_EDITOR
+            bool selfFounded = false;
+            foreach (RaycastResult result in results)
+            {
+                if (result.gameObject == gameObject)
+                {
+                    selfFounded = true;// 先找到自己
 
-			if (!Input.GetMouseButtonUp (0))
-				return;// 鼠标左键还未释放
-			
-			#else
+                }
+                else if (selfFounded)
+                {
+                    // 然后向下穿透一级
+                    m_target = ExecuteEvents.ExecuteHierarchy(result.gameObject, eventData, ExecuteEvents.pointerDownHandler);
+                    if (m_target != null)
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            if (m_target == null)
+                return;
+            GameObject target = m_target;
+            m_target = null;
+
+            // 触发 target.OnPointerUp()
+            ExecuteEvents.Execute(target, eventData, ExecuteEvents.pointerUpHandler);
+
+            // ScrollRect 触发拖动时，就算鼠标或手指还未释放，也会触发 OnPointerUp()
+#if UNITY_EDITOR
+
+            if (!Input.GetMouseButtonUp(0))
+                return;// 鼠标左键还未释放
+
+#else
 
 			Touch[] touches = Input.touches;
 			foreach (Touch touch in touches) {
@@ -69,43 +74,47 @@ namespace ShibaInu
 				}
 			}
 
-			#endif
+#endif
 
-			// 检测是否可以触发 target.OnPointerClick()
-			List<RaycastResult> results = new List<RaycastResult> ();
-			EventSystem.current.RaycastAll (eventData, results);
-			foreach (RaycastResult result in results) {
-				GameObject go = ExecuteEvents.GetEventHandler<IPointerClickHandler> (result.gameObject);
-				if (go == target) {
-					ExecuteEvents.Execute (target, eventData, ExecuteEvents.pointerClickHandler);// 触发 click
-					return;
-				}
-			}
-		}
-
-
-		/// <summary>
-		/// 主动释放当前穿透击中的目标，触发 target.OnPointerUp()
-		/// </summary>
-		public void ReleaseTarget()
-		{
-			if (m_target == null)
-				return;
-
-			PointerEventData eventData = new PointerEventData(EventSystem.current);
-			eventData.position = StageTouchEventDispatcher.GetPosition ();
-			ExecuteEvents.Execute (m_target, eventData, ExecuteEvents.pointerUpHandler);
-			m_target = null;
-		}
+            // 检测是否可以触发 target.OnPointerClick()
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+            foreach (RaycastResult result in results)
+            {
+                GameObject go = ExecuteEvents.GetEventHandler<IPointerClickHandler>(result.gameObject);
+                if (go == target)
+                {
+                    ExecuteEvents.Execute(target, eventData, ExecuteEvents.pointerClickHandler);// 触发 click
+                    return;
+                }
+            }
+        }
 
 
-		void OnDisable ()
-		{
-			ReleaseTarget ();
-		}
+        /// <summary>
+        /// 主动释放当前穿透击中的目标，触发 target.OnPointerUp()
+        /// </summary>
+        public void ReleaseTarget()
+        {
+            if (m_target == null)
+                return;
+
+            PointerEventData eventData = new PointerEventData(EventSystem.current)
+            {
+                position = StageTouchEventDispatcher.GetPosition()
+            };
+            ExecuteEvents.Execute(m_target, eventData, ExecuteEvents.pointerUpHandler);
+            m_target = null;
+        }
 
 
-		//
-	}
+        void OnDisable()
+        {
+            ReleaseTarget();
+        }
+
+
+        //
+    }
 }
 

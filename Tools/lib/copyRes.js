@@ -1,129 +1,236 @@
-//
+/**
+ * 拷贝资源（命名成 md5.后缀 移动到 common.resDir），生成资源清单
+ * Created by LOLO on 2019/4/11.
+ */
+
 
 const fs = require('fs');
-const args = require('../node_modules/commander');
+const path = require('path');
+const common = require('./common');
+const logger = require('./logger');
+const manifest = require('./manifest');
+const progress = require('./progress');
+
+const copyRes = module.exports = {};
+
+// 资源后缀名
+const EXT_LUA = '.lua';
+const EXT_SCENE = '.scene';
+const EXT_AB = '.ab';
 
 
-args.android = false;
-args
-    .version('0.1.0')
-    .option('-a, --android', 'true：将资源拷贝到Android Studio项目资源目录，false[默认]：将资源拷贝到Xcode项目资源目录')
-    .parse(process.argv);
-
-const ANDROID = args.android;
-const RES_DIR = __dirname + '/../../Assets/StreamingAssets/';
-const TAR_DIR = __dirname + '/../../PlatformProjects/' + (ANDROID
-            ? 'AndroidStudio/src/main/assets/'
-            : 'Xcode/Data/Raw/'
-    );
-
-
-//
-
-
-//
-// copy res
-//
-let [binDir, pbinDir] = [`${TAR_DIR}bin/`, `${TAR_DIR}../bin/`];
-if (ANDROID) copyDir(binDir, pbinDir);// 先把bin目录拷贝至上层
-removeDir(TAR_DIR);
-copyDir(RES_DIR, TAR_DIR);
-if (ANDROID) {
-    copyDir(pbinDir, binDir);// 拷回bin目录
-    removeDir(pbinDir);
-    console.log('Copy Res to Android Studio Project Completed!');
-} else {
-    console.log('Copy Res to Xcode Project Completed!');
-}
-
-
-//
-
-
-//
+let resIndex = 0;// 当前已拷贝完成资源数
+let resManifest = [];// resManifestFile 文件内容
+let resList = copyRes.resList = [];// 包含的资源列表
+let resMap = {};// 资源路径 -> 资源文件名 映射表
+let newResList = [];// 新增资源（路径）列表
+let callback;// 拷贝完成时的回调
 
 
 /**
- * 拷贝一个文件夹，包括子文件和子目录
- * @param oldDir
- * @param newDir
+ * 开始
+ * @param cb
  */
-function copyDir(oldDir, newDir) {
-    oldDir = formatDirPath(oldDir);
-    newDir = formatDirPath(newDir);
-    let files = fs.readdirSync(oldDir);
-    if (files.length === 0) return;
-    createDir(newDir);
-    for (let i = 0; i < files.length; i++) {
-        let oldFile = oldDir + files[i];
-        let newFile = newDir + files[i];
-        if (fs.statSync(oldFile).isDirectory())
-            copyDir(oldFile, newFile);
-        else
-            copyFile(oldFile, newFile);
-    }
-}
+copyRes.start = function (cb) {
+    // 创建文件夹
+    common.createDir(common.resDir + 'o.o');
+    common.createDir(common.resManifestFile);
+
+    callback = cb;
+    progress.setTiming(progress.TT_COPY_RES, true);
+    logger.append('- 开始拷贝资源');
+    copyLua();
+};
+
 
 /**
- * 拷贝一个文件
- * @param oldFile
- * @param newFile
+ * 拷贝 Lua
  */
-function copyFile(oldFile, newFile) {
-    if (oldFile.endsWith('.meta') || oldFile.endsWith('.manifest')
-        || oldFile.endsWith('.DS_Store') || oldFile.endsWith('TestModeFlag')
-    ) return;
+let copyLua = function () {
+    let list = manifest.data.lua;
+    let count = list.length;
+    let index = -1;
+    let src, dest, isNew;
+    resManifest.push(count);
 
-    let buffer = fs.readFileSync(oldFile);
-    fs.writeFileSync(newFile, buffer);
-}
-
-/**
- * 创建文件夹，包括父目录
- * @param path
- */
-function createDir(path) {
-    path = path.replace(/\\/g, '/');
-    let arr = path.split('/');
-    path = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] === '') continue;
-        path += '/' + arr[i];
-        if (!fs.existsSync(path)) {
-            fs.mkdirSync(path);
+    // 拷贝下一个 lua 文件
+    let next = () => {
+        if (++index === count) {
+            copyScene();
+            return;
         }
-    }
-}
 
-/**
- * 删除一个目录下的所有文件和子文件夹
- * @param path
- */
-function removeDir(path) {
-    let files = [];
-    if (fs.existsSync(path)) {
-        files = fs.readdirSync(path);
-        files.forEach(function (file, index) {
-            let curPath = path + '/' + file;
-            if (fs.statSync(curPath).isDirectory()) {
-                removeDir(curPath);
-            } else {
-                fs.unlinkSync(curPath);
-            }
+        src = common.luaCacheDir + list[index];
+        common.getFileMD5(src, (md5) => {
+            dest = common.resDir + md5 + EXT_LUA;
+            isNew = !fs.existsSync(dest);
+            if (isNew)
+                fs.renameSync(src, dest);// lua 文件无需拷贝，可以直接移动
+            copyComplete();
         });
-        fs.rmdirSync(path);
-    }
-}
+    };
+
+    // 拷贝 lua 文件完成
+    let copyComplete = () => {
+        src = src.replace(common.luaCacheDir, '')
+            .replace('Assets/Framework/ShibaInu/Lua/', '')
+            .replace('Assets/Framework/ToLua/Lua/', '')
+            .replace('Assets/Lua/', '')
+            .replace('.lua', '');
+        dest = dest.replace(common.resDir, '');
+        resMap[src] = dest;
+        if (isNew) newResList.push(src);
+        resManifest.push(src, dest);
+        resList.push(dest);
+        progress.copyRes(++resIndex);
+        next();
+    };
+    next();
+};
+
 
 /**
- * 格式化文件夹路径
- * @param dirPath
+ * 拷贝场景
  */
-function formatDirPath(dirPath) {
-    if (dirPath === null) return null;
-    dirPath = dirPath.replace(/\\/g, '/');
-    if (dirPath.substring(dirPath.length - 1) !== '/') dirPath += '/';
-    return dirPath;
-}
+let copyScene = function () {
+    let list = manifest.data.scene;
+    let count = list.length;
+    let index = -1;
+    let src, dest, isNew;
+    resManifest.push(count);
 
+    // 拷贝下一个场景
+    let next = () => {
+        if (++index === count) {
+            copyAssetBundle();
+            return;
+        }
+
+        src = common.sceneCacheDir + path.basename(list[index]);
+        common.getFileMD5AndData(src, (md5, data) => {
+            dest = common.resDir + md5 + EXT_SCENE;
+            isNew = !fs.existsSync(dest);
+            if (isNew)
+                fs.writeFile(dest, data, (err) => {
+                    if (err) throw err;
+                    copyComplete();
+                });
+            else
+                copyComplete();
+        });
+    };
+
+    // 拷贝场景完成
+    let copyComplete = () => {
+        src = path.basename(src, '.unity');
+        dest = dest.replace(common.resDir, '');
+        resMap[src] = dest;
+        if (isNew) newResList.push(src);
+        resManifest.push(src, dest);
+        resList.push(dest);
+        progress.copyRes(++resIndex);
+        next();
+    };
+    next();
+};
+
+
+/**
+ * 拷贝 AssetBundle
+ */
+let copyAssetBundle = function () {
+    let list = manifest.data.ab;
+    let count = list.length;
+    let index = -1;
+    let src, dest, isNew;
+
+    // 拷贝下一个 AssetBundle
+    let next = () => {
+        if (++index === count) {
+            writeAssetBundleInfo();
+            return;
+        }
+
+        let abInfo = list[index];
+        src = common.abCacheDir + abInfo.name;
+        common.getFileMD5AndData(src, (md5, data) => {
+            dest = common.resDir + md5 + EXT_AB;
+            isNew = !fs.existsSync(dest);
+            if (isNew)
+                fs.writeFile(dest, data, (err) => {
+                    if (err) throw err;
+                    copyComplete();
+                });
+            else
+                copyComplete();
+        });
+    };
+
+    // 拷贝 AssetBundle 完成
+    let copyComplete = () => {
+        src = src.replace(common.abCacheDir, '');
+        dest = dest.replace(common.resDir, '');
+        resMap[src] = dest;
+        if (isNew) newResList.push(src);
+        resList.push(dest);
+        progress.copyRes(++resIndex);
+        next();
+    };
+    next();
+};
+
+
+/**
+ * 写入 AssetBundle 信息，包括包含的文件，以及依赖的 AssetBundle
+ */
+let writeAssetBundleInfo = function () {
+    // 读取 AssetBundle 依赖信息临时文件
+    let depMap = JSON.parse(fs.readFileSync(common.abDependenciesFile));
+
+    // resManifest 写入 AssetBundle 信息
+    let list = manifest.data.ab;
+    for (let i = 0; i < list.length; i++) {
+        let abInfo = list[i];
+        let assets = abInfo.assets;
+
+        resManifest.push(assets.length + 1);// 数据总数
+        resManifest.push(resMap[abInfo.name]);// 资源名称
+        let depList = depMap[abInfo.name];
+        if (depList === undefined)
+            resManifest.push(0);
+        else {
+            resManifest.push(depList.length);// 依赖的资源总数
+            for (let i = 0; i < depList.length; i++)
+                resManifest.push(resMap[depList[i]]);// 依赖的资源
+        }
+
+        for (let i = 0; i < assets.length; i++)
+            resManifest.push(assets[i].replace('Assets/Res/', ''));// 包含的资源
+    }
+
+    allComplete();
+};
+
+
+/**
+ * 资源全部拷贝完成
+ */
+let allComplete = function () {
+    // 本次打包生成的资源清单
+    common.writeFileSync(common.resManifestFile, resManifest.join('\n'));
+
+    // 资源映射表
+    common.writeFileSync(common.resLogFile, JSON.stringify(resMap, null, 2));
+
+    // 新增资源
+    logger.append(`- 共有 ${newResList.length} 个新增资源`);
+    for (let i = 0; i < newResList.length; i++) {
+        let src = newResList[i];
+        logger.append(`* ${src} -> ${resMap[src]}`);
+    }
+
+    logger.append('- 拷贝资源完成');
+    progress.setTiming(progress.TT_COPY_RES, false);
+    callback();
+};
 

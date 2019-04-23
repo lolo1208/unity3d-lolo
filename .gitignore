@@ -22,5 +22,6 @@ Assets/Framework/ToLua/Source/Generate/*
 *.sln
 *.userprefs
 
+Tools/build
 Tools/node_modules
 Tools/package-lock.json

@@ -1,11 +1,26 @@
 fileFormatVersion: 2
 guid: 9c3158748049a53479bc79a054e2af0f
-timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: FireHolder
-  externalObjects: {}
+    6400000: //RootNode
+    11100000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 05 - Default
+    second: {fileID: 2100000, guid: 7cdfd2cd359a2524b87d194bf641fd1f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: x
+    second: {fileID: 2100000, guid: 8737f1fcf4614d14e9276a7ff5401479, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

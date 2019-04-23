@@ -1,14 +1,36 @@
 fileFormatVersion: 2
 guid: eb953f6120259594cb646679760e45f2
-timeCreated: 18446744011573954816
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: //RootNode
+    100002: Gargoyle01
+    100004: Object17
+    400000: //RootNode
+    400002: Gargoyle01
+    400004: Object17
+    2300000: Gargoyle01
+    2300002: Object17
+    3300000: Gargoyle01
+    3300002: Object17
     4300000: Gargoyle
     4300002: GargoyleStand
     4300004: Object17
     4300006: Gargoyle01
-  externalObjects: {}
+    6400000: Gargoyle01
+    6400002: Object17
+    11100000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 06 - Default
+    second: {fileID: 2100000, guid: cb6e395cf915ee24aa003a1053d17be2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 19 - Default
+    second: {fileID: 2100000, guid: 75221f623456ab04fa406eb67b29e44b, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
