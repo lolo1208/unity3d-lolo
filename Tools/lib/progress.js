@@ -6,20 +6,20 @@
 
 const fs = require('fs');
 const common = require('./common');
-const logger = require('./logger');
 
 const progress = module.exports = {};
 
 
 // [0]:当前，[1]:总数, [2]:耗时
 let data = {
-    status: 1,// 整体状态。0:成功，1:正在进行中，其他:退出状态码
+    status: 1,// 整体状态。0:打包成功，1:正在进行中，2:打包出错
     totalTime: 0,// 总耗时
+    svn: [0, 0, 0],// 项目检出或更新，SVN / Git
     manifest: [0, 2, 0],// 0:未创建，1:已创建，2:已读取
-    lua: [0, 0, 0],
-    scene: [0, 0, 0],
-    ab: [0, 0, 0],
-    copyRes: [0, 0, 0],
+    lua: [0, 1, 0],
+    scene: [0, 1, 0],
+    ab: [0, 1, 0],
+    copyRes: [0, 1, 0],
     gpp: [0, 0, 0],// 0:未开始，1:已生成，2:已更新
     daz: [0, 2, 0],// 0:未开始，1:dest complete，2:pack zip complete
 };
@@ -30,7 +30,7 @@ let handle = null;
 // total:总耗时，manifest:生成和读取打包清单耗时，lua:lua编译耗时，scene:打包场景耗时，ab:打包AssetBundle耗时
 let startTime = {total: Date.now()};
 
-progress.TT_TOTAL = 'total';
+progress.TT_SVN = 'svn';
 progress.TT_MANIFEST = 'manifest';
 progress.TT_LUA = 'lua';
 progress.TT_SCENE = 'scene';
@@ -62,7 +62,7 @@ let updateTime = function () {
     let now = Date.now();
     data.totalTime = now - startTime.total;
     let list = [
-        progress.TT_MANIFEST, progress.TT_LUA, progress.TT_SCENE, progress.TT_AB,
+        progress.TT_SVN, progress.TT_MANIFEST, progress.TT_LUA, progress.TT_SCENE, progress.TT_AB,
         progress.TT_COPY_RES, progress.TT_GPP, progress.TT_DAZ
     ];
     for (let i = 0; i < list.length; i++) {
@@ -174,12 +174,8 @@ let update = function () {
 
 let doUpdate = function () {
     fs.writeFile(common.progressLogFile, progress.getData(), (err) => {
-        if (err) {
-            logger.append('[error]', err.stack);
-            console.error(err.stack);
-            common.exit(common.EXIT_CODE_2);
-        }
-        handle = null;
+        if (err) throw err;
+        handle = setTimeout(doUpdate, 1000);
     });
 };
 
@@ -195,3 +191,4 @@ progress.getData = function () {
 
 // 先创建文件，写入默认进度
 common.writeFileSync(common.progressLogFile, progress.getData());
+update();

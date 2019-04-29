@@ -4,14 +4,139 @@
 -- Author LOLO
 --
 
+local _typeof_class = typeof
 
--- ShibaInu
+
+-- [ functions ]
+
+--- 获取 gameObject 下的 UnityEngine.Animation 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.Animation
+function GetComponent.Animation(go)
+    return go:GetComponent(_typeof_class(UnityEngine.Animation))
+end
+
+--- 获取 gameObject 下的 UnityEngine.Animator 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.Animator
+function GetComponent.Animator(go)
+    return go:GetComponent(_typeof_class(UnityEngine.Animator))
+end
+
+--- 获取 gameObject 下的 UnityEngine.CharacterController 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.CharacterController
+function GetComponent.CharacterController(go)
+    return go:GetComponent(_typeof_class(UnityEngine.CharacterController))
+end
+
+--- 获取 gameObject 下的 UnityEngine.Camera 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.Camera
+function GetComponent.Camera(go)
+    return go:GetComponent(_typeof_class(UnityEngine.Camera))
+end
+
+--- 获取 gameObject 下的 UnityEngine.MeshRenderer 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.MeshRenderer
+function GetComponent.MeshRenderer(go)
+    return go:GetComponent(_typeof_class(UnityEngine.MeshRenderer))
+end
+
+--- 获取 gameObject 下的 UnityEngine.SkinnedMeshRenderer 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.SkinnedMeshRenderer
+function GetComponent.SkinnedMeshRenderer(go)
+    return go:GetComponent(_typeof_class(UnityEngine.SkinnedMeshRenderer))
+end
+
+--- 获取 gameObject 下的 UnityEngine.TextMesh 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.TextMesh
+function GetComponent.TextMesh(go)
+    return go:GetComponent(_typeof_class(UnityEngine.TextMesh))
+end
+
+--- 获取 gameObject 下的 UnityEngine.BoxCollider 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.BoxCollider
+function GetComponent.BoxCollider(go)
+    return go:GetComponent(_typeof_class(UnityEngine.BoxCollider))
+end
+
+--- 获取 gameObject 下的 UnityEngine.ParticleSystem 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.ParticleSystem
+function GetComponent.ParticleSystem(go)
+    return go:GetComponent(_typeof_class(UnityEngine.ParticleSystem))
+end
+
+--
+
+--- 获取 gameObject 下的 UnityEngine.UI.Image 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.Image
+function GetComponent.Image(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.Image))
+end
+
+--- 获取 gameObject 下的 UnityEngine.UI.Text 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.Text
+function GetComponent.Text(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.Text))
+end
+
+--- 获取 gameObject 下的 UnityEngine.UI.InputField 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.InputField
+function GetComponent.InputField(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.InputField))
+end
+
+--- 获取 gameObject 下的 UnityEngine.UI.Button 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.Button
+function GetComponent.Button(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.Button))
+end
+
+--- 获取 gameObject 下的 UnityEngine.UI.Toggle 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.Toggle
+function GetComponent.Toggle(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.Toggle))
+end
+
+--- 获取 gameObject 下的 UnityEngine.UI.ScrollRect 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.ScrollRect
+function GetComponent.ScrollRect(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.ScrollRect))
+end
+
+--
+
+
+-- [ variables ]
+
+FadeView = require("Effects.View.FadeView")
+FadeWindow = require("Effects.View.FadeWindow")
+ScaleView = require("Effects.View.ScaleView")
+ScaleWindow = require("Effects.View.ScaleWindow")
+MoveView = require("Effects.View.MoveView")
+MoveWindow = require("Effects.View.MoveWindow")
+
+
+
+
+-- [ Core ]
 Config = require("Data.Config")
 Language = require("Data.Languages." .. Config.language)
 Stage.loadingSceneClass = require("Module.Loading.View.LoadingScene")
 --
 
 
-
-
 Stats.Show()
+

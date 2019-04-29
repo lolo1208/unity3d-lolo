@@ -12,4 +12,4 @@ path_proj=${path_sh}../../
 
 cd ${path_sh}../lib
 
-node build.js -i 0 -v 1.2.3 -p ShibaInu -t ios -F ${path_proj} -g
+node build.js -i 0 -v 1.2.3 -p ShibaInu -t ios -f ${path_proj} -g

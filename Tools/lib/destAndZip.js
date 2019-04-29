@@ -45,14 +45,14 @@ destAndZip.dest = function (callback) {
  * @param callback
  */
 destAndZip.zip = function (callback) {
-    if (common.zipDir === undefined) {
+    if (!common.packZip) {
         complete(callback);
         return;
     }
 
     // zip 文件完整路径
     let zipFile = common.zipDir + common.version4 + '.zip';
-    logger.append('- 开始生成 zip: ' + zipFile);
+    logger.append('- 开始生成 zip: ' + zipFile.replace(common.buildDir, ''));
     common.createDir(zipFile);
     let output = fs.createWriteStream(zipFile);
     let archive = archiver('zip');

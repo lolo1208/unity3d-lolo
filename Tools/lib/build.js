@@ -18,9 +18,9 @@ const destAndZip = require('./destAndZip');
  * 捕获全局异常
  */
 process.on('uncaughtException', function (err) {
-    logger.append('[error]', err.stack);
+    logger.append('\n[ERROR]:', err.stack.replace(/\n\n/g, '\n'), '');
     console.error(err.stack);
-    common.exit(common.EXIT_CODE_E);
+    common.exit(2);
 });
 
 
@@ -86,7 +86,7 @@ function main() {
 
     let all_complete = () => {
         console.log('all complete!');
-        common.exit(common.EXIT_CODE_0);
+        common.exit(0);
     };
 
 

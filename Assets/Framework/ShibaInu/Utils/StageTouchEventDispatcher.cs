@@ -72,7 +72,7 @@ namespace ShibaInu
 				if (s_touching) {
 					s_touching = false;
 					s_deltaPos.Set (0, 0);
-					DispatchLuaEvent (TOUCH_END);
+					DispatchEvent (TOUCH_END);
 				}
 				return;
 			}
@@ -91,10 +91,10 @@ namespace ShibaInu
 						if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) {
 							s_touching = false;
 							s_pos.Set (p.x, p.y);
-							DispatchLuaEvent (TOUCH_END);
+							DispatchEvent (TOUCH_END);
 						} else if (s_deltaPos.x != 0 || s_deltaPos.y != 0) {
 							s_pos.Set (p.x, p.y);
-							DispatchLuaEvent (TOUCH_MOVE);
+							DispatchEvent (TOUCH_MOVE);
 						}
 						break;
 					}
@@ -110,7 +110,7 @@ namespace ShibaInu
 						p = touch.position;
 						s_pos.Set (p.x, p.y);
 						s_deltaPos.Set (0, 0);
-						DispatchLuaEvent (TOUCH_BEGIN);
+						DispatchEvent (TOUCH_BEGIN);
 						break;
 					}
 				}

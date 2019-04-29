@@ -57,11 +57,7 @@ platform.start = function (cb) {
     cmd += ` -targetPlatform ${common.targetPlatform}`;
     cmd += ` -outputDir ${common.tmpPlatformDir}`;
     child_process.exec(cmd, (err, stdout, stderr) => {
-        if (err) {
-            logger.append('[error]', err.stack);
-            console.error(err.stack);
-            common.exit(common.EXIT_CODE_7);
-        }
+        if (err) throw err;
         logger.append(`- 生成 ${ppName} 项目完成`);
         progress.gpp(1);
         generateComplete();

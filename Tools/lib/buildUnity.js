@@ -62,7 +62,6 @@ buildUnity.start = function (cb) {
  * 启动 Unity 进程，开始打包
  */
 let build = function () {
-    let isBuildScene = true;
     let sceneIndex = manifest.data.scene.length - buildScenes.length;
     progress.scene(sceneIndex);
     if (buildScenes.length === 0)
@@ -76,11 +75,7 @@ let build = function () {
     cmd += ` -outputDir ${common.cacheDir}`;
     cmd += ` -scenes ${buildScenes.join(',')}`;
     let cp = child_process.exec(cmd, (err, stdout, stderr) => {
-        if (err) {
-            logger.append('[error]', err.stack);
-            console.error(err.stack);
-            common.exit(isBuildScene ? common.EXIT_CODE_5 : common.EXIT_CODE_6);
-        }
+        if (err) throw err;
         callback();
     });
 
@@ -97,7 +92,6 @@ let build = function () {
 
                 case '[build scene all complete]':
                     progress.setTiming(progress.TT_SCENE, false);
-                    isBuildScene = false;
                     logger.append('- 打包场景已全部完成');
                     // 记录场景缓存信息
                     common.writeFileSync(common.sceneMD5File, JSON.stringify(sceneCache, null, 2));

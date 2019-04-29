@@ -453,6 +453,14 @@ namespace ShibaInu
         }
 
 
+
+        //[MenuItem("ShibaInu/Test Build", false, 1)]
+        //private static void Test()
+        //{
+        //    GeneratePlatformProject();
+        //}
+
+
         //
     }
 }

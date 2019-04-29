@@ -9,6 +9,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 const child_process = require('child_process');
 const args = require('commander');
+const config = require('./config');
 
 const common = module.exports = {};
 
@@ -22,22 +23,27 @@ args
     .option('-t, --targetPlatform <value>', '目标平台，可接受值: ios, android, macos, windows')
     .option('-n, --notEncode', '是否不需要编码 lua 文件')
     .option('-g, --generatePlatformProject', '是否生成目标平台项目，只支持: ios, android')
-    .option('-F, --projectPath <value>', '项目路径。如果传入了该参数，将会忽略版本检出和更新')
-    .option('-P, --platformProject <value>', '目标平台项目路径。如果传入了该参数，-g 参数将为 true')
-    .option('-D, --destDir <value>', '将生成的资源拷贝至该目录')
-    .option('-Z, --zipDir <value>', '将生成的资源打包成 zip，并拷贝至该目录')
+    .option('-u, --unityVersion <value>', '使用的 unity 版本号，默认值为: config.unityVersion')
+    .option('-f, --projectPath <value>', '项目路径。如果传入了该参数，将会忽略版本检出和更新')
+    .option('-c, --platformProject <value>', '目标平台项目路径。如果传入了该参数，-g 参数将为 true')
+    .option('-d, --destDir <value>', '将生成的资源拷贝至该目录')
+    .option('-z, --packZip', '是否需要生成 zip 包')
     .parse(process.argv);
 
 common.id = args.id;                                            // -i
 common.projectName = args.projectName;                          // -p
-common.version3 = args.version3;                                // -b
+common.version3 = args.version3;                                // -v
 common.targetPlatform = args.targetPlatform;                    // -t
 common.notEncode = args.notEncode;                              // -n
 common.generatePlatformProject = args.generatePlatformProject;  // -g
-common.projectPath = args.projectPath;                          // -F
-common.platformProject = args.platformProject;                  // -P
-common.destDir = args.destDir;                                  // -D
-common.zipDir = args.zipDir;                                    // -Z
+common.unityVersion = args.unityVersion;                        // -u
+common.projectPath = args.projectPath;                          // -f
+common.platformProject = args.platformProject;                  // -c
+common.destDir = args.destDir;                                  // -d
+common.packZip = args.packZip;                                  // -z
+
+if (common.unityVersion === undefined)
+    common.unityVersion = config.unityVersion;
 
 if (common.platformProject !== undefined) {
     common.platformProject = path.normalize(common.platformProject + '/');
@@ -48,7 +54,6 @@ if (common.generatePlatformProject === true)
 
 if (common.projectPath !== undefined) common.projectPath = path.normalize(common.projectPath + '/');
 if (common.destDir !== undefined) common.destDir = path.normalize(common.destDir + '/');
-if (common.zipDir !== undefined) common.zipDir = path.normalize(common.zipDir + '/');
 
 
 // 程序是否运行在 windows 平台
@@ -64,9 +69,11 @@ common.toolsDir = `${common.rootDir}tools/`;
 // 项目编译打包目录
 common.projectBuildDir = `${common.buildDir}${common.projectName}/`;
 // 日志目录
-common.logDir = `${common.projectBuildDir}log/${common.id}/`;
+common.logDir = `${common.buildDir}log/${common.id}/`;
 // 资源产出目录
 common.resDir = `${common.projectBuildDir}res/${common.targetPlatform}/`;
+// zip产出目录
+common.zipDir = `${common.projectBuildDir}zip/${common.targetPlatform}/`;
 // 版本资源清单目录
 common.resManifestDir = `${common.resDir}manifest/`;
 // 缓存目录
@@ -133,12 +140,8 @@ common.resLogFile = `${common.logDir}res.log`;
 
 
 // Unity 程序路径
-if (common.isWindows) {
-    let output = child_process.execSync('REG QUERY "HKEY_CLASSES_ROOT\\Unity package file\\DefaultIcon" /ve');
-    common.unityPath = output.toString().match(/"(.*)"/)[1];
-}
-else
-    common.unityPath = "/Applications/Unity/Hub/Editor/2017.4.25f1/Unity.app/Contents/MacOS/Unity";
+common.unityPath = (common.isWindows ? config.winUnityPath : config.macUnityPath)
+    .replace('[UnityVersion]', common.unityVersion);
 
 
 // 生成4位版本号
@@ -172,18 +175,6 @@ common.libraryCacheDir = `${common.cacheDir}library/${common.targetPlatform}/`;
 common.libraryNativeDir = `${common.cacheDir}library/${common.isWindows ? 'windows' : 'macos'}/`;
 
 
-// 退出结束码
-common.EXIT_CODE_0 = 0;// 正常结束
-common.EXIT_CODE_E = 100;// 全局异常
-common.EXIT_CODE_1 = 101;// 写日志文件报错
-common.EXIT_CODE_2 = 102;// 写进度日志文件报错
-common.EXIT_CODE_3 = 103;// 生成打包清单报错
-common.EXIT_CODE_4 = 104;// 编码 lua 文件报错
-common.EXIT_CODE_5 = 105;// 打包场景报错
-common.EXIT_CODE_6 = 106;// 打包 AssetBundle 报错
-common.EXIT_CODE_7 = 107;// 生成目标平台项目报错
-
-
 //
 
 
@@ -198,15 +189,13 @@ common.exit = function (code) {
     let buildUnity = require('./buildUnity');
     buildUnity.cacheLibrary();
 
-    if (code !== common.EXIT_CODE_1) {
-        let logger = require('./logger');
-        let progress = require('./progress');
-        logger.append('[progress]', progress.getData());
-        logger.append('[exit code]', code);
-        logger.updateNow();
-        if (code !== common.EXIT_CODE_2)
-            progress.status(code);
-    }
+    let logger = require('./logger');
+    let progress = require('./progress');
+    logger.append('\n[PROGRESS]:', progress.getData());
+    logger.append('\n[EXIT CODE]:', code);
+    logger.updateNow();
+    progress.status(code);
+
     process.exit(code);
     throw Error("Exit");// 需要抛错才能结束代码运行？
 };

@@ -38,11 +38,10 @@ let encodeNext = function () {
     // 不需要编码，直接拷贝
     if (common.notEncode) {
         fs.readFile(inFile, (err, data) => {
-            if (err) encodeError(err);
-
+            if (err) throw err;
             common.createDir(outFile);
             fs.writeFile(outFile, data, (err) => {
-                if (err) encodeError(err);
+                if (err) throw err;
                 encodeComplete();
             });
         });
@@ -56,7 +55,7 @@ let encodeNext = function () {
 
     common.createDir(outFile);
     child_process.exec(cmd, {cwd: common.luaEndcoderDir}, (err, stdout, stderr) => {
-        if (err) encodeError(err);
+        if (err) throw err;
         encodeComplete();
     });
 };
@@ -76,9 +75,3 @@ let encodeComplete = function () {
         encodeNext();
 };
 
-
-let encodeError = function (err) {
-    logger.append('[error]', err.stack);
-    console.error(err.stack);
-    common.exit(common.EXIT_CODE_4);
-};

@@ -27,11 +27,7 @@ let generate = function (callback) {
     cmd += ' -executeMethod ShibaInu.Builder.GenerateBuildManifest';
     cmd += ` -manifestPath ${common.manifestFile}`;
     child_process.exec(cmd, (err, stdout, stderr) => {
-        if (err) {
-            logger.append('[error]', err.stack);
-            console.error(err.stack);
-            common.exit(common.EXIT_CODE_3);
-        }
+        if (err) throw err;
         progress.manifest(1);
         logger.append("- 生成打包清单完成");
         callback();

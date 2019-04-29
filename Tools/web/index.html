@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang=zh-CN>
+<head>
+    <meta charset="UTF-8">
+    <title>打包详情</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+
+<div class="left">
+    <p class="log-title">打包详情</p>
+    <p id="packid" class="log-title2">pack id: 0<br/>version: 1.2.3.4</p>
+    <a id="build" onclick="showLog(this)" href="#" class="log-item log-item-selected">打包日志</a>
+    <a id="manifest" onclick="showLog(this)" href="#" class="log-item">打包清单</a>
+    <a id="res" onclick="showLog(this)" href="#" class="log-item">资源对照表</a>
+    <a id="unity" onclick="showLog(this)" href="#" class="log-item">Unity 运行日志</a>
+</div>
+
+
+<div class="center">
+
+    <div class="content-container">
+        <div class="content-title">
+            <p id="logTitle">打包日志</p>
+            <a id="downloadBtn" class="blue-btn" href="#" onclick="downloadZip()">Download ZIP</a>
+        </div>
+        <div id="logContent" class="content-text">
+        </div>
+        <div id="autoScrollDiv" class="autoScroll">
+            <label>
+                <input type="checkbox" id="autoScroll" checked onclick="scrollToBottom()">
+                Scroll To Bottom
+            </label>
+        </div>
+    </div>
+</div>
+
+
+<div class="right">
+    <div id="pTotal" class="progress-item progress-item-disabled">
+        <p id="pTotalTitle" class="progress-item-title">打包进度</p>
+        <p id="pTotalInfo" class="progress-item-intro"></p>
+        <p id="pTotalBar" class="progress-item-bar bar-running"></p>
+    </div>
+    <div id="pSvn" class="progress-item progress-item-disabled">
+        <p class="progress-item-title">更新 SVN / Git</p>
+        <p id="pSvnInfo" class="progress-item-intro"></p>
+        <p id="pSvnBar" class="progress-item-bar"></p>
+    </div>
+    <div id="pManifest" class="progress-item progress-item-disabled">
+        <p class="progress-item-title">生成和读取打包清单</p>
+        <p id="pManifestInfo" class="progress-item-intro"></p>
+        <p id="pManifestBar" class="progress-item-bar"></p>
+    </div>
+    <div id="pLua" class="progress-item progress-item-disabled">
+        <p class="progress-item-title">编码 Lua 文件</p>
+        <p id="pLuaInfo" class="progress-item-intro"></p>
+        <p id="pLuaBar" class="progress-item-bar"></p>
+    </div>
+    <div id="pScene" class="progress-item progress-item-disabled">
+        <p class="progress-item-title">打包 Unity 场景</p>
+        <p id="pSceneInfo" class="progress-item-intro"></p>
+        <p id="pSceneBar" class="progress-item-bar"></p>
+    </div>
+    <div id="pAb" class="progress-item progress-item-disabled">
+        <p class="progress-item-title">打包 AssetBundle</p>
+        <p id="pAbInfo" class="progress-item-intro"></p>
+        <p id="pAbBar" class="progress-item-bar"></p>
+    </div>
+    <div id="pRes" class="progress-item progress-item-disabled">
+        <p class="progress-item-title">拷贝资源（MD5）</p>
+        <p id="pResInfo" class="progress-item-intro"></p>
+        <p id="pResBar" class="progress-item-bar"></p>
+    </div>
+    <div id="pGpp" class="progress-item progress-item-disabled">
+        <p class="progress-item-title">生成 / 更新 目标平台项目</p>
+        <p id="pGppInfo" class="progress-item-intro"></p>
+        <p id="pGppBar" class="progress-item-bar"></p>
+    </div>
+    <div id="pDaz" class="progress-item progress-item-disabled">
+        <p class="progress-item-title">替换资源 / 生成 ZIP</p>
+        <p id="pDazInfo" class="progress-item-intro"></p>
+        <p id="pDazBar" class="progress-item-bar"></p>
+    </div>
+</div>
+
+
+<script src="web.js"></script>
+</body>
+</html>

@@ -16,8 +16,9 @@ let list = [];
 
 // 先创建文件，写入环境和命令行信息
 common.writeFileSync(common.logFile,
-    ['[command line args]'].concat(process.argv).concat(
-        '[environment]',
+    ['[COMMAND LINE ARGUMENTS]:'].concat(process.argv).concat(
+        '',
+        '[ENVIRONMENTS]:',
         'id = ' + common.id,
         'projectName = ' + common.projectName,
         'targetPlatform = ' + common.targetPlatform,
@@ -28,9 +29,11 @@ common.writeFileSync(common.logFile,
         'projectDir = ' + common.projectDir,
         'platformProjectDir = ' + common.targetPlatformDir,
         'destDir = ' + common.destDir,
-        'zipDir = ' + common.zipDir,
+        'packZip = ' + common.packZip,
         'projectBuildDir = ' + common.projectBuildDir,
         'unityPath = ' + common.unityPath,
+        '',
+        '[LOGGING]:'
     ).join('\n')
 );
 
@@ -47,10 +50,7 @@ logger.append = function (...args) {
 
 let doAppend = function () {
     fs.appendFile(common.logFile, getData(), (err) => {
-        if (err) {
-            console.error(err.stack);
-            common.exit(common.EXIT_CODE_1);
-        }
+        if (err) throw err;
         handle = null;
     });
 };
