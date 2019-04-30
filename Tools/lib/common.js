@@ -212,7 +212,8 @@ common.exit = function (code) {
  * @param filePath
  */
 common.createDir = function (filePath) {
-    let sep = path.sep;
+    let sep = '/';
+	filePath = filePath.replace(/\\/g, sep);
     let dirs = path.dirname(filePath).split(sep);
     let p = '';
     while (dirs.length) {
