@@ -59,34 +59,26 @@ const server = http.createServer((request, response) => {
         response.writeHead(500, {'Content-Type': MIME.txt});
         response.end(err.toString());
     };
-    fs.open(filePath, 'r', (err, fd) => {
+    fs.stat(filePath, (err, stats) => {
         if (err) {
             errHandler(err);
             return;
         }
 
-        fs.stat(filePath, (err, stats) => {
-            if (err) {
-                errHandler(err);
-                return;
-            }
+        response.writeHead(200, {
+            'Content-Type': MIME[ext] || MIME.binary,
+            'Content-Length': stats.size
+        });
 
-            response.writeHead(200, {
-                'Content-Type': MIME[ext] || MIME.binary,
-                'Content-Length': stats.size
-            });
-
-            let rs = fs.createReadStream(filePath);
-            rs.on('error', (err) => {
-                errHandler(err);
-            });
-            rs.on('data', (data) => {
-                response.write(data, 'binary');
-            });
-            rs.on('end', () => {
-                response.end();
-            });
-
+        let rs = fs.createReadStream(filePath);
+        rs.on('error', (err) => {
+            errHandler(err);
+        });
+        rs.on('data', (data) => {
+            response.write(data, 'binary');
+        });
+        rs.on('end', () => {
+            response.end();
         });
     });
 });

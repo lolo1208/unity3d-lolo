@@ -171,8 +171,9 @@ common.unityCmd = `${common.unityPath} -batchmode -nographics -quit -projectPath
 
 // Unity Library 目录，和 Library 缓存目录
 common.libraryDir = `${common.projectDir}Library/`;
-common.libraryCacheDir = `${common.cacheDir}library/${common.targetPlatform}/`;
-common.libraryNativeDir = `${common.cacheDir}library/${common.isWindows ? 'windows' : 'macos'}/`;
+common.libraryCaheRootDir = `${common.cacheDir}library/`;
+common.libraryCacheDir = `${common.libraryCaheRootDir}${common.targetPlatform}/`;
+common.libraryNativeDir = `${common.libraryCaheRootDir}${common.isWindows ? 'windows' : 'macos'}/`;
 
 
 //

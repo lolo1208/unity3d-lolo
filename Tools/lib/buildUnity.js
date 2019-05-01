@@ -124,7 +124,7 @@ let build = function () {
  * 使用 Unity Library 缓存目录
  */
 buildUnity.useLibraryCache = function () {
-	common.createDir(common.libraryNativeDir + 'o.o');
+	common.createDir(common.libraryCaheRootDir + 'o.o');
     // 处理已存在的 [Priject]/Library 目录
     if (fs.existsSync(common.libraryDir)) {
         if (!fs.existsSync(common.libraryNativeDir))

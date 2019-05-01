@@ -77,18 +77,19 @@ namespace ShibaInu
                         string[] files = Directory.GetFiles(typeDir);
                         foreach (string file in files)
                         {
-                            if (file.EndsWith(".unity", StringComparison.Ordinal))
+                            string scenePath = file.Replace("\\", "/");
+                            if (scenePath.EndsWith(".unity", StringComparison.Ordinal))
                             {
                                 bool isCoreScene = false;// 是否属于核心场景
                                 foreach (string coreScene in coreScenes)
                                 {
-                                    if (file == coreScene)
+                                    if (scenePath == coreScene)
                                     {
                                         isCoreScene = true;
                                         break;
                                     }
                                 }
-                                if (!isCoreScene) sceneList.Add(file);
+                                if (!isCoreScene) sceneList.Add(scenePath);
                             }
                         }
                         break;
@@ -108,20 +109,20 @@ namespace ShibaInu
                 // 写入 lua 信息
                 writer.WriteLine(luaList.Count);// [W] lua 数量
                 foreach (string luaPath in luaList)
-                    writer.WriteLine(luaPath);// [W] lua 文件路径
+                    writer.WriteLine(luaPath.Replace("\\", "/"));// [W] lua 文件路径
 
                 // 写入场景信息
                 writer.WriteLine(sceneList.Count);// [W] 场景数量
                 foreach (string scenePath in sceneList)
-                    writer.WriteLine(scenePath);// [W] 场景文件路径
+                    writer.WriteLine(scenePath.Replace("\\", "/"));// [W] 场景文件路径
 
                 // 写入 AssetBundle 信息
                 foreach (AssetBundleInfo abi in abiList)
                 {
                     writer.WriteLine(abi.assets.Count + 1);// [W] AssetBundle 包含的文件数量 + 别名
-                    writer.WriteLine(abi.name);// [W] AssetBundle 文件别名
+                    writer.WriteLine(abi.name.Replace("\\", "/"));// [W] AssetBundle 文件别名
                     foreach (string asset in abi.assets)
-                        writer.WriteLine(asset);// [W] AssetBundle 包含的文件路径
+                        writer.WriteLine(asset.Replace("\\", "/"));// [W] AssetBundle 包含的文件路径
                 }
             }
         }
@@ -184,7 +185,7 @@ namespace ShibaInu
             foreach (string file in files)
             {
                 if (file.EndsWith(".lua", StringComparison.Ordinal))
-                    list.Add(file.Replace("\\", "/"));
+                    list.Add(file);
             }
 
             string[] dirs = Directory.GetDirectories(dirPath);
@@ -372,7 +373,7 @@ namespace ShibaInu
                         for (int i = 0; i < depList.Length; i++)
                         {
                             if (i != 0) writer.Write(", ");
-                            writer.Write("\"" + depList[i] + "\"");
+                            writer.Write("\"" + depList[i].Replace("\\", "/") + "\"");
                         }
                         writer.Write("]");
                     }
