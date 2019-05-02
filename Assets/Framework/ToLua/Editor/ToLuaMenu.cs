@@ -1042,7 +1042,7 @@ public static class ToLuaMenu
 #if UNITY_5 || UNITY_2017
         else if (EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS)
 #else
-        else if (EditorUserBuildSettings.activeBuildTarget == BuildTarget.iPhone)
+        else if (EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS)
 #endif
         {
             //Debug.Log("iOS默认用64位，32位自行考虑");
