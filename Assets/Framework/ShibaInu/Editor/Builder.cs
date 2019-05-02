@@ -46,7 +46,7 @@ namespace ShibaInu
         private static void GenerateBuildManifest()
         {
             string manifestPath = GetCmdLineArg("-manifestPath");
-            //string manifestPath = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/ShibaInu/log/7.manifest";
+            //string manifestPath = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/log/0/manifest.log";
 
             ClearAllAssetBundleNames();
 
@@ -219,11 +219,13 @@ namespace ShibaInu
             string manifestPath = GetCmdLineArg("-manifestPath");
             string outputDir = GetCmdLineArg("-outputDir");
             string scenes = GetCmdLineArg("-scenes");
+            string outFilePath = GetCmdLineArg("-logFile").Replace("unity.log", "unity.out");
 
             //string targetPlatform = "android";
-            //string manifestPath = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/ShibaInu/log/7/manifest.log";
+            //string manifestPath = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/log/0/manifest.log";
             //string outputDir = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/ShibaInu/cache/";
             //string scenes = "2,3";
+            //string outFilePath = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/log/0/unity.out";
 
             // 需要打包的场景索引列表
             string[] buildScenes = scenes.Split(',');
@@ -322,25 +324,27 @@ namespace ShibaInu
             // 打包场景
             if (buildScenes.Length > 0 && buildScenes[0] != "")
             {
-                Console.Error.WriteLine("[build scene start]");
+                DateTime timeScene = DateTime.Now;
+                WriteOut(outFilePath, "build scene start");
                 string outputScene = outputDir + "scene/" + targetPlatform + "/";
                 if (!Directory.Exists(outputScene))
                     Directory.CreateDirectory(outputScene);
                 foreach (string index in buildScenes)
                 {
-                    DateTime startTime = DateTime.Now;
+                    DateTime time = DateTime.Now;
                     string scene = sceneList[int.Parse(index)];
                     string[] levels = { scene };
                     string outputPath = outputScene + Path.GetFileName(scene);
                     BuildPipeline.BuildPlayer(levels, outputPath, buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
-                    Console.Error.WriteLine("[build scene complete]," + scene + "," + DateTime.Now.Subtract(startTime).TotalMilliseconds);
+                    WriteOut(outFilePath, "build scene complete," + scene + "," + DateTime.Now.Subtract(time).TotalMilliseconds);
                 }
-                Console.Error.WriteLine("[build scene all complete]");
+                WriteOut(outFilePath, "build scene all complete," + DateTime.Now.Subtract(timeScene).TotalMilliseconds);
             }
 
 
             // 打包 AssetBundle
-            Console.Error.WriteLine("[build assetbundle start]");
+            DateTime timeAB = DateTime.Now;
+            WriteOut(outFilePath, "build assetbundle start");
             string outputAB = outputDir + "assetbundle/" + targetPlatform + "/";
             if (!Directory.Exists(outputAB))
                 Directory.CreateDirectory(outputAB);
@@ -348,7 +352,7 @@ namespace ShibaInu
                 BuildAssetBundleOptions.DeterministicAssetBundle | BuildAssetBundleOptions.ChunkBasedCompression,
                 buildTarget
             );
-            Console.Error.WriteLine("[build assetbundle complete]");
+            WriteOut(outFilePath, "build assetbundle complete," + DateTime.Now.Subtract(timeAB).TotalMilliseconds);
 
 
             // 写入 AssetBundle 依赖信息文件
@@ -423,10 +427,24 @@ namespace ShibaInu
         /// 如果传入的 filePath 所在的目录不存在，将会创建该目录
         /// </summary>
         /// <param name="filePath">File path.</param>
-        public static void CreateDirectory(string filePath)
+        private static void CreateDirectory(string filePath)
         {
             string dir = Path.GetDirectoryName(filePath);
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+        }
+
+
+        /// <summary>
+        /// 添加一行内容到输出文件中
+        /// </summary>
+        /// <param name="filePath">File path.</param>
+        /// <param name="line">Line.</param>
+        private static void WriteOut(string filePath, string line)
+        {
+            using (StreamWriter sw = File.AppendText(filePath))
+            {
+                sw.WriteLine(line);
+            }
         }
 
 

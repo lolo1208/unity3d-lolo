@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 
 namespace ShibaInu
@@ -10,6 +11,37 @@ namespace ShibaInu
     /// </summary>
     public static class ShibaInuMenu
     {
+
+
+        [MenuItem("ShibaInu/Run the Application", false, 101)]
+        private static void RunTheApplication()
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            GameObject[] list = scene.GetRootGameObjects();
+            bool hasMain = false;
+            foreach (GameObject go in list)
+            {
+                hasMain = go.GetComponent<Main>() != null;
+                if (hasMain)
+                {
+                    go.SetActive(true);
+                    break;
+                }
+            }
+
+            if (!hasMain)
+                new GameObject("Main").AddComponent<Main>();
+
+            EditorApplication.ExecuteMenuItem("Edit/Play");
+        }
+
+        [MenuItem("ShibaInu/Run the Application", true)]
+        private static bool RunTheApplicationValidation()
+        {
+            return !Application.isPlaying;
+        }
+
+
 
 
         [MenuItem("ShibaInu/Language Window", false, 701)]
@@ -37,6 +69,7 @@ namespace ShibaInu
         {
             return Application.isPlaying;
         }
+
 
 
 

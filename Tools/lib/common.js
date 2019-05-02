@@ -135,6 +135,8 @@ common.manifestFile = `${common.logDir}manifest.log`;
 common.progressLogFile = `${common.logDir}progress.log`;
 // unity 运行日志文件路径
 common.unityLogFile = `${common.logDir}unity.log`;
+// unity 输出文件路径（stdout 在 windows 下无法使用）
+common.unityOutFile = `${common.logDir}unity.out`;
 // 资源映射日志文件路径
 common.resLogFile = `${common.logDir}res.log`;
 

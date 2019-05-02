@@ -48,7 +48,7 @@ public static class CustomSettings
 
     //在这里添加你要导出注册到lua的类型列表
     public static BindType[] customTypeList = {
-        _GT(typeof(DG.Tweening.Core.Debugger)).SetNameSpace (null),
+        _GT(typeof(Debugger)).SetNameSpace (null),
 
 
         // DoTween
@@ -172,39 +172,39 @@ public static class CustomSettings
 
 
         // .Net
-        _GT(typeof(System.DateTime)),
+        _GT(typeof(DateTime)),
 
 
         // ShibaInu
-        _GT(typeof(ShibaInu.LuaHelper)),
-        _GT(typeof(ShibaInu.ResManager)),
-        _GT(typeof(ShibaInu.Stage)),
+        _GT(typeof(LuaHelper)),
+        _GT(typeof(ResManager)),
+        _GT(typeof(Stage)),
 
-        _GT(typeof(ShibaInu.HttpRequest)),
-        _GT(typeof(ShibaInu.HttpDownload)),
-        _GT(typeof(ShibaInu.HttpUpload)),
-        _GT(typeof(ShibaInu.TcpSocket)),
-        _GT(typeof(ShibaInu.UdpSocket)),
+        _GT(typeof(HttpRequest)),
+        _GT(typeof(HttpDownload)),
+        _GT(typeof(HttpUpload)),
+        _GT(typeof(TcpSocket)),
+        _GT(typeof(UdpSocket)),
 
-        _GT(typeof(ShibaInu.Picker)),
-        _GT(typeof(ShibaInu.BaseList)),
-        _GT(typeof(ShibaInu.ScrollList)),
-        _GT(typeof(ShibaInu.PageList)),
-        _GT(typeof(ShibaInu.ViewPager)),
-        _GT(typeof(ShibaInu.PageTransformerType)),
-        _GT(typeof(ShibaInu.CircleImage)),
-        _GT(typeof(ShibaInu.LocalizationText)),
+        _GT(typeof(Picker)),
+        _GT(typeof(BaseList)),
+        _GT(typeof(ScrollList)),
+        _GT(typeof(PageList)),
+        _GT(typeof(ViewPager)),
+        _GT(typeof(PageTransformerType)),
+        _GT(typeof(CircleImage)),
+        _GT(typeof(LocalizationText)),
 
-        _GT(typeof(ShibaInu.ThirdPersonCamera)),
-        _GT(typeof(ShibaInu.SafeAreaLayout)),
-        _GT(typeof(ShibaInu.PointerScaler)),
-        _GT(typeof(ShibaInu.PointerEventPasser)),
+        _GT(typeof(ThirdPersonCamera)),
+        _GT(typeof(SafeAreaLayout)),
+        _GT(typeof(PointerScaler)),
+        _GT(typeof(PointerEventPasser)),
 
-        _GT(typeof(ShibaInu.DoubleImageShake)),
-        _GT(typeof(ShibaInu.Mosaic)),
-        _GT(typeof(ShibaInu.RadialBlur)),
+        _GT(typeof(DoubleImageShake)),
+        _GT(typeof(Mosaic)),
+        _GT(typeof(RadialBlur)),
 
-        _GT(typeof(ShibaInu.LuaProfiler)),
+        _GT(typeof(LuaProfiler)),
         _GT(typeof(ShibaInu.Logger)),
     };
 

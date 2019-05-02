@@ -18,6 +18,7 @@ const buildUnity = module.exports = {};
 let sceneCache = {};
 let buildScenes = [];
 let callback;// 打包完成时的回调
+let sceneIndex;
 
 
 /**
@@ -62,7 +63,7 @@ buildUnity.start = function (cb) {
  * 启动 Unity 进程，开始打包
  */
 let build = function () {
-    let sceneIndex = manifest.data.scene.length - buildScenes.length;
+    sceneIndex = manifest.data.scene.length - buildScenes.length;
     progress.scene(sceneIndex);
     if (buildScenes.length === 0)
         logger.append('- 没有需要打包的场景');
@@ -74,49 +75,75 @@ let build = function () {
     cmd += ` -manifestPath ${common.manifestFile}`;
     cmd += ` -outputDir ${common.cacheDir}`;
     cmd += ` -scenes ${buildScenes.join(',')}`;
-    let cp = child_process.exec(cmd, (err, stdout, stderr) => {
+    child_process.exec(cmd, (err, stdout, stderr) => {
         if (err) throw err;
+        if (readUnityOutHandle !== null)
+            clearTimeout(readUnityOutHandle);
         callback();
     });
+    delayReadUnityOut();
+};
 
-    // 用 stderr 输出的进度信息
-    cp.stderr.on('data', (data) => {
-        let list = data.trim().split('\n');
-        for (let i = 0; i < list.length; i++) {
-            let line = list[i].trim();
-            switch (line) {
-                case '[build scene start]':
-                    progress.setTiming(progress.TT_SCENE, true);
-                    logger.append('- 开始打包场景');
-                    break;
 
-                case '[build scene all complete]':
-                    progress.setTiming(progress.TT_SCENE, false);
-                    logger.append('- 打包场景已全部完成');
-                    // 记录场景缓存信息
-                    common.writeFileSync(common.sceneMD5File, JSON.stringify(sceneCache, null, 2));
-                    break;
+/**
+ * 读取 Unity out 文件
+ */
+let readUnityOut = function () {
+    if (fs.existsSync(common.unityOutFile)) {
+        fs.readFile(common.unityOutFile, 'utf8', (err, data) => {
+            readUnityOutHandle = null;
+            if (!err && data !== '') {
+                let list = data.split('\n');
+                for (let i = 0; i < list.length; i++) {
+                    let args = list[i].split(',');
+                    switch (args[0]) {
+                        case 'build scene start':
+                            progress.setTiming(progress.TT_SCENE, true);
+                            logger.append('- 开始打包场景');
+                            break;
 
-                case '[build assetbundle start]':
-                    progress.setTiming(progress.TT_AB, true);
-                    logger.append('- 开始打包 AssetBundle');
-                    break;
+                        case 'build scene complete':
+                            progress.scene(++sceneIndex);
+                            logger.append(`* 打包场景完成：${args[1]} 耗时：${parseInt(args[2]) / 1000}s`);
+                            break;
 
-                case '[build assetbundle complete]':
-                    progress.setTiming(progress.TT_AB, false);
-                    progress.ab();
-                    logger.append('- 打包 AssetBundle 已全部完成');
-                    break;
+                        case 'build scene all complete':
+                            progress.setTiming(progress.TT_SCENE, false);
+                            progress.data.scene[2] = parseInt(args[1]);
+                            logger.append('- 打包场景已全部完成');
+                            // 记录场景缓存信息
+                            common.writeFileSync(common.sceneMD5File, JSON.stringify(sceneCache, null, 2));
+                            break;
 
-                default:
-                    if (line.startsWith('[build scene complete]')) {
-                        progress.scene(++sceneIndex);
-                        let arr = line.split(',');
-                        logger.append(`* 打包场景完成：${arr[1]} 耗时：${parseInt(arr[2]) / 1000}s`);
+                        //
+
+                        case 'build assetbundle start':
+                            progress.setTiming(progress.TT_AB, true);
+                            logger.append('- 开始打包 AssetBundle');
+                            break;
+
+                        case 'build assetbundle complete':
+                            progress.setTiming(progress.TT_AB, false);
+                            progress.data.ab[2] = parseInt(args[1]);
+                            progress.ab();
+                            logger.append('- 打包 AssetBundle 已全部完成');
+                            break;
                     }
+                }
             }
-        }
-    });
+            fs.writeFileSync(common.unityOutFile, '');
+            delayReadUnityOut();
+        });
+    } else {
+        readUnityOutHandle = null;
+        delayReadUnityOut();
+    }
+};
+
+let readUnityOutHandle = null;
+let delayReadUnityOut = function () {
+    if (readUnityOutHandle === null)
+        readUnityOutHandle = setTimeout(readUnityOut, 500);
 };
 
 
@@ -124,7 +151,7 @@ let build = function () {
  * 使用 Unity Library 缓存目录
  */
 buildUnity.useLibraryCache = function () {
-	common.createDir(common.libraryCaheRootDir + 'o.o');
+    common.createDir(common.libraryCaheRootDir + 'o.o');
     // 处理已存在的 [Priject]/Library 目录
     if (fs.existsSync(common.libraryDir)) {
         if (!fs.existsSync(common.libraryNativeDir))

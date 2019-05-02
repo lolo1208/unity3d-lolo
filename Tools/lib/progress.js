@@ -11,7 +11,7 @@ const progress = module.exports = {};
 
 
 // [0]:当前，[1]:总数, [2]:耗时
-let data = {
+let data = progress.data = {
     status: 1,// 整体状态。0:打包成功，1:正在进行中，2:打包出错
     totalTime: 0,// 总耗时
     svn: [0, 0, 0],// 项目检出或更新，SVN / Git
