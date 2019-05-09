@@ -12,7 +12,7 @@ local format = string.format
 ---@field New fun(prefab:UnityEngine.GameObject | string, parent:string | UnityEngine.Transform, groupName:string, isAsync:boolean):View
 ---
 ---@field gameObject UnityEngine.GameObject
----@field transform UnityEngine.Transform
+---@field transform UnityEngine.Transform | UnityEngine.RectTransform
 ---@field initShow boolean @ 初始化时是否直接显示（默认是否显示）。默认值：true
 ---@field visible boolean @ 是否已经显示
 ---@field destroyed boolean @ 是否已经被销毁

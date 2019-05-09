@@ -30,7 +30,7 @@ function TestScene:OnInitialize()
     --
     local sampleNames = {
         "Picker", "BaseList", "ScrollList", "PageList",
-        "ViewPager", "CircleImage", "SafeArea", "Bezier",
+        "ViewPager", "CircleImage", "SafeArea", "Bezier", "Misc",
         "Network", "UIEffects", "ViewEffects",
     }
     for i = 1, #sampleNames do

@@ -132,6 +132,7 @@ ViewPager = require("Components.ViewPager")
 ItemRenderer = require("Components.ItemRenderer")
 Animation = require("Components.Animation")
 TabNavigator = require("Components.TabNavigator")
+NumberText = require("Components.NumberText")
 
 Stats = require("UI.Stats")
 Profiler = require("Utils.Optimize.Profiler")

@@ -41,8 +41,8 @@ namespace LuaInterface
         public delegate object LuaTableToVar(IntPtr L, int pos);
         public delegate void LuaPushVarObject(IntPtr L, object o);
         static Type monoType = typeof(Type).GetType();
-        static public LuaTableToVar[] ToVarMap = new LuaTableToVar[LuaValueType.Max];        
-        static public Dictionary<Type, LuaPushVarObject> VarPushMap  = new Dictionary<Type, LuaPushVarObject>();
+        static public LuaTableToVar[] ToVarMap = new LuaTableToVar[LuaValueType.Max];
+        static public Dictionary<Type, LuaPushVarObject> VarPushMap = new Dictionary<Type, LuaPushVarObject>();
 
 #if UNITY_EDITOR
         static int _instanceID = -1;
@@ -146,8 +146,8 @@ namespace LuaInterface
         {
             try
             {
-                int n = LuaDLL.lua_gettop(L);   
-                             
+                int n = LuaDLL.lua_gettop(L);
+
                 using (CString.Block())
                 {
                     CString sb = CString.Alloc(256);
@@ -363,7 +363,7 @@ namespace LuaInterface
             catch (Exception e)
             {
                 return LuaDLL.toluaL_exception(L, e);
-            }            
+            }
         }
 
         [MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -387,7 +387,7 @@ namespace LuaInterface
                 }
                 else
                 {
-					// Debugger.LogError("type not register to lua");// lua instanceof() 需要忽略这条错误 
+                    // Debugger.LogError("type not register to lua");// lua instanceof() 需要忽略这条错误 
                     LuaDLL.lua_pushnil(L);
                 }
             }
@@ -412,10 +412,10 @@ namespace LuaInterface
                 ToLua.Push(L, ret);
                 return 1;
             }
-            catch(LuaException e)
+            catch (LuaException e)
             {
                 return LuaDLL.toluaL_exception(L, e);
-            }            
+            }
         }
 
         [MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -454,15 +454,11 @@ namespace LuaInterface
                 FieldInfo listViewFieldInfo = consoleWindowType.GetField("m_ListView", BindingFlags.Instance | BindingFlags.NonPublic);
                 logListView = listViewFieldInfo.GetValue(consoleWindow);
                 logListViewCurrentRow = listViewFieldInfo.FieldType.GetField("row", BindingFlags.Instance | BindingFlags.Public);
-#if UNITY_2017
+
                 Type logEntriesType = unityEditorAssembly.GetType("UnityEditor.LogEntries");
                 LogEntriesGetEntry = logEntriesType.GetMethod("GetEntryInternal", BindingFlags.Static | BindingFlags.Public);
-                Type logEntryType = unityEditorAssembly.GetType("UnityEditor.LogEntry");                
-#else
-                Type logEntriesType = unityEditorAssembly.GetType("UnityEditorInternal.LogEntries");                
-                LogEntriesGetEntry = logEntriesType.GetMethod("GetEntryInternal", BindingFlags.Static | BindingFlags.Public);
-                Type logEntryType = unityEditorAssembly.GetType("UnityEditorInternal.LogEntry");
-#endif
+                Type logEntryType = unityEditorAssembly.GetType("UnityEditor.LogEntry");
+
                 logEntry = Activator.CreateInstance(logEntryType);
                 logEntryCondition = logEntryType.GetField("condition", BindingFlags.Instance | BindingFlags.Public);
             }
@@ -579,8 +575,8 @@ namespace LuaInterface
             return false;
         }
 #endif
-#endregion
-                /*-------------------------------------------------------------------------------------------*/
+        #endregion
+        /*-------------------------------------------------------------------------------------------*/
 
         public static string ToString(IntPtr L, int stackPos)
         {
@@ -698,7 +694,7 @@ namespace LuaInterface
             LuaDLL.lua_pushvalue(L, stackPos);
 
             if (LuaDLL.lua_pcall(L, 1, 6, 0) == 0)
-            {            
+            {
                 float ox = (float)LuaDLL.lua_tonumber(L, top + 1);
                 float oy = (float)LuaDLL.lua_tonumber(L, top + 2);
                 float oz = (float)LuaDLL.lua_tonumber(L, top + 3);
@@ -749,13 +745,13 @@ namespace LuaInterface
 
             switch (type)
             {
-                case LuaTypes.LUA_TNUMBER:                    
+                case LuaTypes.LUA_TNUMBER:
                     return LuaDLL.lua_tonumber(L, stackPos);
                 case LuaTypes.LUA_TSTRING:
                     return LuaDLL.lua_tostring(L, stackPos);
-                case LuaTypes.LUA_TUSERDATA:                    
-                    switch(LuaDLL.tolua_getvaluetype(L, stackPos))
-                    {                                                    
+                case LuaTypes.LUA_TUSERDATA:
+                    switch (LuaDLL.tolua_getvaluetype(L, stackPos))
+                    {
                         case LuaValueType.Int64:
                             return LuaDLL.tolua_toint64(L, stackPos);
                         case LuaValueType.UInt64:
@@ -962,7 +958,7 @@ namespace LuaInterface
                 case LuaTypes.LUA_TSTRING:
                     return LuaDLL.lua_tostring(L, stackPos);
                 case LuaTypes.LUA_TUSERDATA:
-                    int udata = LuaDLL.tolua_rawnetobj(L, stackPos);                    
+                    int udata = LuaDLL.tolua_rawnetobj(L, stackPos);
 
                     if (udata != -1)
                     {
@@ -970,7 +966,7 @@ namespace LuaInterface
                         object obj = translator.GetObject(udata);
 
                         if (obj != null)
-                        {                            
+                        {
                             if (obj is string)
                             {
                                 return (string)obj;
@@ -1045,7 +1041,7 @@ namespace LuaInterface
                 object obj = translator.GetObject(udata);
 
                 if (obj != null)
-                {                    
+                {
                     if (obj is IEnumerator)
                     {
                         return (IEnumerator)obj;
@@ -1223,7 +1219,7 @@ namespace LuaInterface
         }
 
         static public Ray CheckRay(IntPtr L, int stackPos)
-        {            
+        {
             int type = LuaDLL.tolua_getvaluetype(L, stackPos);
 
             if (type != LuaValueType.Ray)
@@ -1278,7 +1274,7 @@ namespace LuaInterface
 
         public static object CheckVarObject(IntPtr L, int stackPos, Type t)
         {
-            bool beValue = TypeChecker.IsValueType(t);            
+            bool beValue = TypeChecker.IsValueType(t);
             LuaTypes luaType = LuaDLL.lua_type(L, stackPos);
 
             if (!beValue && luaType == LuaTypes.LUA_TNIL)
@@ -1379,7 +1375,7 @@ namespace LuaInterface
                 {
                     return ToLua.CheckObject(L, stackPos, t);
                 }
-                else if ( t == typeof(string))
+                else if (t == typeof(string))
                 {
                     return CheckString(L, stackPos);
                 }
@@ -1443,7 +1439,7 @@ namespace LuaInterface
                 obj = translator.GetObject(udata);
 
                 if (obj != null)
-                {                    
+                {
                     UnityEngine.TrackedReference uObj = (UnityEngine.TrackedReference)obj;
 
                     if (uObj == null)
@@ -1506,7 +1502,7 @@ namespace LuaInterface
         {
             LuaTypes luatype = LuaDLL.lua_type(L, stackPos);
 
-            switch(luatype)
+            switch (luatype)
             {
                 case LuaTypes.LUA_TNIL:
                     return null;
@@ -1544,14 +1540,14 @@ namespace LuaInterface
 
             switch (luatype)
             {
-                case LuaTypes.LUA_TTABLE:                    
+                case LuaTypes.LUA_TTABLE:
                     int len = LuaDLL.lua_objlen(L, stackPos);
                     T[] list = new T[len];
                     int pos = LuaDLL.lua_gettop(L) + 1;
 
                     for (int i = 1; i <= len; i++)
                     {
-                        LuaDLL.lua_rawgeti(L, stackPos, i);                        
+                        LuaDLL.lua_rawgeti(L, stackPos, i);
 
                         if (!TypeTraits<T>.Check(L, pos))
                         {
@@ -1559,11 +1555,11 @@ namespace LuaInterface
                             LuaDLL.luaL_typerror(L, stackPos, typeof(T[]).FullName);
                             return list;
                         }
-                        
-                        list[i-1] = StackTraits<T>.To(L, pos);
-                        LuaDLL.lua_pop(L, 1);                        
+
+                        list[i - 1] = StackTraits<T>.To(L, pos);
+                        LuaDLL.lua_pop(L, 1);
                     }
-                    return list;       
+                    return list;
                 case LuaTypes.LUA_TUSERDATA:
                     return (T[])CheckObject(L, stackPos, typeof(T[]));
                 default:
@@ -1574,7 +1570,7 @@ namespace LuaInterface
 
         public static char[] CheckCharBuffer(IntPtr L, int stackPos)
         {
-            LuaTypes luaType = LuaDLL.lua_type(L, stackPos);            
+            LuaTypes luaType = LuaDLL.lua_type(L, stackPos);
 
             switch (luaType)
             {
@@ -1617,18 +1613,18 @@ namespace LuaInterface
         {
             LuaTypes luatype = LuaDLL.lua_type(L, stackPos);
 
-            switch(luatype)
+            switch (luatype)
             {
                 case LuaTypes.LUA_TNIL:
                     return null;
-                case LuaTypes.LUA_TTABLE:                    
+                case LuaTypes.LUA_TTABLE:
                     int len = LuaDLL.lua_objlen(L, stackPos);
                     T[] list = new T[len];
                     int pos = LuaDLL.lua_gettop(L) + 1;
 
                     for (int i = 1; i <= len; i++)
                     {
-                        LuaDLL.lua_rawgeti(L, stackPos, i);                        
+                        LuaDLL.lua_rawgeti(L, stackPos, i);
 
                         if (LuaDLL.lua_type(L, pos) != LuaTypes.LUA_TNUMBER)
                         {
@@ -1649,13 +1645,13 @@ namespace LuaInterface
                     return null;
             }
         }
-        
+
 
         public static bool[] CheckBoolArray(IntPtr L, int stackPos)
         {
             LuaTypes luatype = LuaDLL.lua_type(L, stackPos);
 
-            switch(luatype)
+            switch (luatype)
             {
                 case LuaTypes.LUA_TNIL:
                     return null;
@@ -1685,14 +1681,14 @@ namespace LuaInterface
                 default:
                     LuaDLL.luaL_typerror(L, stackPos, "bool[]");
                     return null;
-            }                 
+            }
         }
 
         public static string[] CheckStringArray(IntPtr L, int stackPos)
         {
             LuaTypes luatype = LuaDLL.lua_type(L, stackPos);
 
-            switch(luatype)
+            switch (luatype)
             {
                 case LuaTypes.LUA_TNIL:
                     return null;
@@ -1786,7 +1782,7 @@ namespace LuaInterface
 
             while (pos < count)
             {
-                list[pos++] = ToVarObject(L, stackPos++);                                                
+                list[pos++] = ToVarObject(L, stackPos++);
             }
 
             return list;
@@ -1799,12 +1795,12 @@ namespace LuaInterface
                 return null;
             }
 
-            T[] list = new T[count];            
-            int pos = 0; 
+            T[] list = new T[count];
+            int pos = 0;
 
             while (pos < count)
             {
-                list[pos++] = StackTraits<T>.To(L, stackPos++);                 
+                list[pos++] = StackTraits<T>.To(L, stackPos++);
             }
 
             return list;
@@ -1818,11 +1814,11 @@ namespace LuaInterface
             }
 
             string[] list = new string[count];
-            int pos = 0;   
+            int pos = 0;
 
             while (pos < count)
             {
-                list[pos++] = ToString(L, stackPos++);                       
+                list[pos++] = ToString(L, stackPos++);
             }
 
             return list;
@@ -1835,11 +1831,11 @@ namespace LuaInterface
                 return null;
             }
 
-            T[] list = new T[count];            
-            int pos = 0;       
+            T[] list = new T[count];
+            int pos = 0;
 
             while (pos < count)
-            {                                
+            {
                 list[pos++] = StackTraits<T>.To(L, stackPos++);
             }
 
@@ -1858,7 +1854,7 @@ namespace LuaInterface
 
             while (pos < count)
             {
-                list[pos++] = (char)LuaDLL.lua_tointeger(L, stackPos++);                                 
+                list[pos++] = (char)LuaDLL.lua_tointeger(L, stackPos++);
             }
 
             return list;
@@ -1876,7 +1872,7 @@ namespace LuaInterface
 
             while (pos < count)
             {
-                list[pos++] = LuaDLL.luaL_checkboolean(L, stackPos++);                
+                list[pos++] = LuaDLL.luaL_checkboolean(L, stackPos++);
             }
 
             return list;
@@ -1889,11 +1885,11 @@ namespace LuaInterface
                 return null;
             }
 
-            T[] list = new T[count];                                    
+            T[] list = new T[count];
             int pos = 0;
 
             while (pos < count)
-            {                                
+            {
                 list[pos++] = StackTraits<T>.Check(L, stackPos++);
             }
 
@@ -1912,7 +1908,7 @@ namespace LuaInterface
 
             while (pos < count)
             {
-                list[pos++] = (char)LuaDLL.luaL_checkinteger(L, stackPos++);                
+                list[pos++] = (char)LuaDLL.luaL_checkinteger(L, stackPos++);
             }
 
             return list;
@@ -1925,12 +1921,12 @@ namespace LuaInterface
                 return null;
             }
 
-            string[] list = new string[count];                        
+            string[] list = new string[count];
             int pos = 0;
 
             while (pos < count)
             {
-                list[pos++] = CheckString(L, stackPos++);                                                
+                list[pos++] = CheckString(L, stackPos++);
             }
 
             return list;
@@ -1943,11 +1939,11 @@ namespace LuaInterface
                 return null;
             }
 
-            T[] list = new T[count];            
+            T[] list = new T[count];
             int pos = 0;
 
             while (pos < count)
-            {                
+            {
                 list[pos++] = StackTraits<T>.Check(L, stackPos++);
             }
 
@@ -1967,7 +1963,7 @@ namespace LuaInterface
                     return str.ToCharArray();
                 case LuaTypes.LUA_TUSERDATA:
                     return (char[])ToObject(L, stackPos);
-                default:                    
+                default:
                     return null;
             }
         }
@@ -1988,7 +1984,7 @@ namespace LuaInterface
                     return buffer;
                 case LuaTypes.LUA_TUSERDATA:
                     return (byte[])ToObject(L, stackPos);
-                default:                    
+                default:
                     return null;
             }
         }
@@ -2070,7 +2066,7 @@ namespace LuaInterface
         {
             LuaTypes luatype = LuaDLL.lua_type(L, stackPos);
 
-            switch(luatype)
+            switch (luatype)
             {
                 case LuaTypes.LUA_TNIL:
                     return null;
@@ -2098,14 +2094,14 @@ namespace LuaInterface
                     return (string[])ToObject(L, stackPos);
                 default:
                     return null;
-            }                    
+            }
         }
 
         public static object[] ToObjectArray(IntPtr L, int stackPos)
         {
             LuaTypes luatype = LuaDLL.lua_type(L, stackPos);
 
-            switch(luatype)
+            switch (luatype)
             {
                 case LuaTypes.LUA_TNIL:
                     return null;
@@ -2207,22 +2203,22 @@ namespace LuaInterface
         }
 
         public static void Push(IntPtr L, Vector2 v2)
-        {            
+        {
             LuaDLL.tolua_pushvec2(L, v2.x, v2.y);
         }
 
         public static void Push(IntPtr L, Vector4 v4)
-        {            
+        {
             LuaDLL.tolua_pushvec4(L, v4.x, v4.y, v4.z, v4.w);
         }
 
         public static void Push(IntPtr L, Quaternion q)
-        {            
+        {
             LuaDLL.tolua_pushquat(L, q.x, q.y, q.z, q.w);
         }
 
         public static void Push(IntPtr L, Color clr)
-        {            
+        {
             LuaDLL.tolua_pushclr(L, clr.r, clr.g, clr.b, clr.a);
         }
 
@@ -2240,7 +2236,7 @@ namespace LuaInterface
         }
 
         public static void Push(IntPtr L, Bounds bound)
-        {                        
+        {
             LuaStatic.GetPackBounds(L);
             Push(L, bound.center);
             Push(L, bound.size);
@@ -2253,7 +2249,7 @@ namespace LuaInterface
         }
 
         public static void Push(IntPtr L, RaycastHit hit)
-        {            
+        {
             LuaStatic.GetPackRaycastHit(L);
             Push(L, hit.collider);
             LuaDLL.lua_pushnumber(L, hit.distance);
@@ -2270,7 +2266,7 @@ namespace LuaInterface
         }
 
         public static void Push(IntPtr L, RaycastHit hit, int flag)
-        {                        
+        {
             LuaStatic.GetPackRaycastHit(L);
 
             if ((flag & RaycastBits.Collider) != 0)
@@ -2303,7 +2299,7 @@ namespace LuaInterface
             }
 
             if ((flag & RaycastBits.Rigidbody) != 0)
-            {            
+            {
                 Push(L, hit.rigidbody);
             }
             else
@@ -2333,7 +2329,7 @@ namespace LuaInterface
         }
 
         public static void Push(IntPtr L, Touch t, int flag)
-        {                                    
+        {
             LuaStatic.GetPackTouch(L);
             LuaDLL.lua_pushinteger(L, t.fingerId);
 
@@ -2381,7 +2377,7 @@ namespace LuaInterface
         }
 
         public static void Push(IntPtr L, LuaByteBuffer bb)
-        {            
+        {
             LuaDLL.lua_pushlstring(L, bb.buffer, bb.buffer.Length);
         }
 
@@ -2397,7 +2393,7 @@ namespace LuaInterface
                 LuaDLL.lua_pushnil(L);
             }
             else
-            {                
+            {
                 int arrayMetaTable = LuaStatic.GetArrayMetatable(L);
                 PushUserData(L, array, arrayMetaTable);
             }
@@ -2410,7 +2406,7 @@ namespace LuaInterface
                 LuaDLL.lua_pushnil(L);
             }
             else
-            {                
+            {
                 LuaDLL.lua_getref(L, lbr.GetReference());
             }
         }
@@ -2429,13 +2425,13 @@ namespace LuaInterface
         }
 
         public static void Push(IntPtr L, Delegate ev)
-        {            
+        {
             if (ev == null)
             {
                 LuaDLL.lua_pushnil(L);
             }
             else
-            {                
+            {
                 int delegateMetatable = LuaStatic.GetDelegateMetatable(L);
                 PushUserData(L, ev, delegateMetatable);
             }
@@ -2449,7 +2445,7 @@ namespace LuaInterface
             }
             else
             {
-                int eventMetatable = LuaStatic.GetEventMetatable(L);                
+                int eventMetatable = LuaStatic.GetEventMetatable(L);
                 PushUserData(L, ev, eventMetatable);
             }
         }
@@ -2461,7 +2457,7 @@ namespace LuaInterface
                 LuaDLL.lua_pushnil(L);
             }
             else
-            {                
+            {
                 int reference = LuaStatic.GetMetaReference(L, iter.GetType());
 
                 if (reference > 0)
@@ -2472,7 +2468,7 @@ namespace LuaInterface
                 {
                     int iterMetatable = LuaStatic.GetIterMetatable(L);
                     PushUserData(L, iter, iterMetatable);
-                }            
+                }
             }
         }
 
@@ -2506,7 +2502,7 @@ namespace LuaInterface
             }
 
             Type type = o.GetType();
-            int reference = LuaStatic.GetMetaReference(L, type);            
+            int reference = LuaStatic.GetMetaReference(L, type);
 
             if (reference <= 0)
             {
@@ -2565,7 +2561,7 @@ namespace LuaInterface
                 throw new LuaException(error, LuaException.GetLastError());
             }
 
-            int reference = LuaDLL.tolua_getclassref(L, -1);              
+            int reference = LuaDLL.tolua_getclassref(L, -1);
             LuaDLL.lua_settop(L, top);
             return reference;
         }
@@ -2580,17 +2576,17 @@ namespace LuaInterface
 #if UNITY_EDITOR
                 Debugger.LogWarning("register PreLoad type {0} to lua", LuaMisc.GetTypeName(type));
 #endif
-                reference = LuaPCall(L, LuaOpenLib);                
+                reference = LuaPCall(L, LuaOpenLib);
             }
             else
             {
                 //类型未Wrap                            
-                reference = LuaStatic.GetMissMetaReference(L, type);                
+                reference = LuaStatic.GetMissMetaReference(L, type);
             }
-                        
+
             return reference;
         }
-        
+
         //o 不为 null
         static void PushUserObject(IntPtr L, object o)
         {
@@ -2601,7 +2597,7 @@ namespace LuaInterface
             {
                 reference = LoadPreType(L, type);
             }
-                        
+
             PushUserData(L, o, reference);
         }
 
@@ -2783,7 +2779,7 @@ namespace LuaInterface
                 {
                     Push(L, (Array)obj);
                 }
-                else if(t == typeof(string))
+                else if (t == typeof(string))
                 {
                     LuaDLL.lua_pushstring(L, (string)obj);
                 }
@@ -2817,7 +2813,7 @@ namespace LuaInterface
                 }
                 else
                 {
-                    PushObject(L, obj);                    
+                    PushObject(L, obj);
                 }
             }
         }
@@ -2859,10 +2855,10 @@ namespace LuaInterface
             {
                 throw new LuaException(string.Format("no overload for method takes '{0}' arguments", c));
             }
-        }  
+        }
 
         public static Delegate CheckDelegate(Type t, IntPtr L, int stackPos)
-        {                        
+        {
             LuaTypes luatype = LuaDLL.lua_type(L, stackPos);
 
             switch (luatype)
@@ -2876,7 +2872,7 @@ namespace LuaInterface
                     return (Delegate)ToLua.CheckObject(L, stackPos, t);
                 default:
                     LuaDLL.luaL_typerror(L, stackPos, LuaMisc.GetTypeName(t));
-                    return null;                    
+                    return null;
             }
         }
 

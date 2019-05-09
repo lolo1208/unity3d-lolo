@@ -10,7 +10,7 @@ module.exports = {
     winUnityPath: '"C:/Program Files/Unity/Hub/Editor/[UnityVersion]/Editor/Unity.exe"',
 
     // 默认的 Unity 版本（也可以使用 -U 参数传入）
-    unityVersion: '2017.4.25f1',
+    unityVersion: '2018.3.14f1',
 
     // svn 账号
     svnUsername: '',

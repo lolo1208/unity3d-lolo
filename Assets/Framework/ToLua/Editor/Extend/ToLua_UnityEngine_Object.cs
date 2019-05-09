@@ -2,8 +2,8 @@
 using System.Collections;
 using LuaInterface;
 
-public class ToLua_UnityEngine_Object     
-{        
+public class ToLua_UnityEngine_Object
+{
     public static string DestroyDefined =
 @"        try
         {
@@ -33,7 +33,7 @@ public class ToLua_UnityEngine_Object
         {
             return LuaDLL.toluaL_exception(L, e);
         }";
-    
+
     public static string DestroyImmediateDefined =
 @"        try
         {
@@ -93,7 +93,7 @@ public class ToLua_UnityEngine_Object
                 --LuaException.InstantiateCount;
                 return 1;
             }
-#if UNITY_5_4_OR_NEWER
+
             else if (count == 2)
             {
                 UnityEngine.Object arg0 = (UnityEngine.Object)ToLua.CheckObject<UnityEngine.Object>(L, 1);
@@ -115,7 +115,7 @@ public class ToLua_UnityEngine_Object
                 --LuaException.InstantiateCount;
                 return 1;
             }
-#endif
+
             else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Vector3, UnityEngine.Quaternion>(L, 2))
             {
                 UnityEngine.Object arg0 = (UnityEngine.Object)ToLua.CheckObject<UnityEngine.Object>(L, 1);
@@ -138,7 +138,7 @@ public class ToLua_UnityEngine_Object
                 --LuaException.InstantiateCount;
                 return 1;
             }
-#if UNITY_5_4_OR_NEWER
+
             else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Transform, bool>(L, 2))
             {
                 UnityEngine.Object arg0 = (UnityEngine.Object)ToLua.CheckObject<UnityEngine.Object>(L, 1);
@@ -184,7 +184,7 @@ public class ToLua_UnityEngine_Object
                 --LuaException.InstantiateCount;
                 return 1;
             }
-#endif
+
             else
             {
                 LuaException.L = L0;
@@ -203,7 +203,7 @@ public class ToLua_UnityEngine_Object
     [UseDefinedAttribute]
     public static void Destroy(Object obj)
     {
-        
+
     }
 
     [UseDefinedAttribute]

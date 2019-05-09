@@ -15,9 +15,9 @@ namespace ShibaInu
     {
 
 #if UNITY_EDITOR
-        public static readonly string FILE_PATH = Application.dataPath + "/../Log/running.log";
+        public static readonly string FILE_PATH = Application.dataPath + "/../Log/Running.log";
 #else
-		public static readonly string FILE_PATH = Application.persistentDataPath + "/Log/running.log";
+		public static readonly string FILE_PATH = Application.persistentDataPath + "/Log/Running.log";
 #endif
 
         public static readonly string DIR_PATH = Path.GetDirectoryName(FILE_PATH);
