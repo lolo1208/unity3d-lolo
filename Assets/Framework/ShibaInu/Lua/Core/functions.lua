@@ -182,12 +182,10 @@ end
 ---@param obj UnityEngine.Object @ 目标对象
 ---@param delay number @ -可选- 延时删除（秒）
 function Destroy(obj, delay)
-    if not isnull(obj) then
-        if delay == nil then
-            GameObject.Destroy(obj)
-        else
-            GameObject.Destroy(obj, delay)
-        end
+    if delay == nil then
+        GameObject.Destroy(obj)
+    else
+        GameObject.Destroy(obj, delay)
     end
 end
 

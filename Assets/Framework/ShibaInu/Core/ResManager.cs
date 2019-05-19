@@ -9,6 +9,22 @@ using LuaInterface;
 
 namespace ShibaInu
 {
+
+    /// <summary>
+    /// C# 层的加载资源事件对象
+    /// </summary>
+    public struct LoadResEvent
+    {
+        /// 事件类型
+        public string type;
+        /// 资源路径
+        public string path;
+        /// 资源数据
+        public UnityEngine.Object data;
+    }
+
+
+
     public static class ResManager
     {
         /// lua 列表[ key = 文件原始路径（不带框架路径和后缀），value = 资源文件名 ]
@@ -25,6 +41,11 @@ namespace ShibaInu
 
         /// 抛出 EVENT_ALL_COMPLETE 事件的协程对象
         private static Coroutine s_coAllComplete;
+
+        /// 异步加载资源完成时的回调列表
+        [NoToLua]
+        public static readonly MultiCall<LoadResEvent> LoadCompleteHandler = new MultiCall<LoadResEvent>();
+        private static LoadResEvent s_loadCompleteEvent = new LoadResEvent { type = EVENT_COMPLETE };
 
 
 
@@ -448,7 +469,14 @@ namespace ShibaInu
         [NoToLua]
         public static void DispatchEvent(string type, string path = null, UnityEngine.Object data = null)
         {
-            // 不能在 Initialize() 时获取该函数，因为相互依赖
+            // C# 层的回调
+            if (type == EVENT_COMPLETE)
+            {
+                s_loadCompleteEvent.path = path;
+                s_loadCompleteEvent.data = data;
+                LoadCompleteHandler.Call(s_loadCompleteEvent);
+            }
+
             if (s_dispatchEvent == null)
                 s_dispatchEvent = Common.luaMgr.state.GetFunction("LoadResEvent.DispatchEvent");
 
@@ -468,6 +496,7 @@ namespace ShibaInu
 
         #region 卸载所有资源，清空所有引用（在动更结束后重启 app 时）
 
+        [NoToLua]
         public static void UnloadAll()
         {
             AssetLoader.Clear();

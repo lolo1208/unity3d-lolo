@@ -190,9 +190,10 @@ public static class LuaBinder
 		L.RegFunction("Action_string_object", System_Action_string_object);
 		L.EndModule();
 		L.BeginModule("ShibaInu");
+		ShibaInu_StageWrap.Register(L);
 		ShibaInu_LuaHelperWrap.Register(L);
 		ShibaInu_ResManagerWrap.Register(L);
-		ShibaInu_StageWrap.Register(L);
+		ShibaInu_AudioManagerWrap.Register(L);
 		ShibaInu_HttpRequestWrap.Register(L);
 		ShibaInu_HttpDownloadWrap.Register(L);
 		ShibaInu_HttpUploadWrap.Register(L);

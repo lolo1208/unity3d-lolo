@@ -1,5 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using LuaInterface;
 
 
 namespace ShibaInu
@@ -124,13 +124,15 @@ namespace ShibaInu
 
 
 
-        /// <summary>
-        /// 清空所有引用（在动更结束后重启 app 时）
-        /// </summary>
+        #region 清空所有引用（在动更结束后重启 app 时）
+
+        [NoToLua]
         public static void ClearReference()
         {
             s_safeArea = null;
         }
+
+        #endregion
 
 
         //

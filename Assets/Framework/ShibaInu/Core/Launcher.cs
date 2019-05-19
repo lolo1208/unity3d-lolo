@@ -59,6 +59,7 @@ namespace ShibaInu
                 Common.Initialized = true;
                 TimeUtil.Initialize();
                 Logger.Initialize();
+                AudioManager.Initialize();
 
                 // EventSystem
                 GameObject eventSystem = new GameObject("EventSystem");
@@ -91,6 +92,7 @@ namespace ShibaInu
 
             // clear reference
             Stage.ClearReference();
+            AudioManager.ClearReference();
             SafeAreaLayout.ClearReference();
             LocalizationText.ClearReference();
             ViewPager.ClearReference();

@@ -175,9 +175,10 @@ public static class CustomSettings
 
 
         // ShibaInu
+        _GT(typeof(Stage)),
         _GT(typeof(LuaHelper)),
         _GT(typeof(ResManager)),
-        _GT(typeof(Stage)),
+        _GT(typeof(AudioManager)),
 
         _GT(typeof(HttpRequest)),
         _GT(typeof(HttpDownload)),

@@ -33,6 +33,7 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
+
 --- 帧更新事件。该事件只会在 Stage 上抛出
 Event.UPDATE = "Event_Update"
 
@@ -53,6 +54,11 @@ Event.ACTIVATED = "Event_Activated"
 
 --- 当前程序切入后台运行。该事件只会在 Stage 上抛出
 Event.DEACTIVATED = "Event_Deactivated"
+
+--- 音频播放完毕，event.data = "audio path"。该事件只会在 Audio 上抛出
+Event.AUDIO_COMPLETE = "Event_AudioComplete"
+
+
 
 
 --
@@ -92,6 +98,22 @@ function Event.Recycle(event)
     end
     pool[#pool + 1] = event
 end
+
+
+
+
+--
+local acEvent = Event.New(Event.AUDIO_COMPLETE)
+
+--- 抛出 AUDIO_COMPLETE 事件，由 C# AudioManager.cs 调用
+---@param path string
+function Event.DispatchAudioCompleteEvent(path)
+    acEvent.target = nil
+    acEvent.isPropagationStopped = false
+    acEvent.data = path
+    trycall(DispatchEvent, nil, Audio, acEvent, false, false)
+end
+
 
 
 

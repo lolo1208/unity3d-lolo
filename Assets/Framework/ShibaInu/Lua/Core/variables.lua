@@ -12,7 +12,10 @@ EventDispatcher = require("Events.EventDispatcher")
 
 
 -- C# Class
-Res = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.ResManager }) ---@type ShibaInu.ResManager
+---@type ShibaInu.ResManager
+Res = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.ResManager, __newindex = ShibaInu.ResManager })
+---@type ShibaInu.AudioManager
+Audio = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.AudioManager, __newindex = ShibaInu.AudioManager })
 LuaHelper = ShibaInu.LuaHelper
 --Stage = ShibaInu.Stage -- 已整合进 Stage.lua
 --Logger = ShibaInu.Logger -- 已整合进 Logger.lua

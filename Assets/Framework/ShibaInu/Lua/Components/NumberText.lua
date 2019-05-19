@@ -5,12 +5,12 @@
 -- Author LOLO
 --
 
-local floor = math.floor
+local round = MathUtil.Round
 
 
 --
 ---@class NumberText
----@field New fun(text:UnityEngine.UI.Text, defaultValue:number, upColor:Color, downColor:Color):NumberText
+---@field New fun(text:UnityEngine.UI.Text, defaultValue:number):NumberText
 ---
 ---@field text UnityEngine.UI.Text @ 对应的 Text 组件
 ---@field normalColor Color @ 正常颜色
@@ -37,15 +37,6 @@ local upColor = Color.New(0.411, 0.819, 0.462)
 local downColor = Color.New(0.917, 0.38, 0.321)
 
 
---
---- 默认格式化值的函数
----@param value number
----@return string
-local function FormatText(value)
-    return floor(value + 0.5)
-end
-
-
 
 --
 function NumberText:Ctor(text, defaultValue)
@@ -59,7 +50,7 @@ function NumberText:Ctor(text, defaultValue)
     self.isRoll = true
     self.upColor = upColor
     self.downColor = downColor
-    self.formatText = FormatText
+    self.formatText = round
 
     self:ShowText(self.value)
     AddEventListener(text.gameObject, DestroyEvent.DESTROY, self.OnTextDestroy, self)
