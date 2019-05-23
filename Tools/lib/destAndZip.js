@@ -100,10 +100,17 @@ let complete = function (callback) {
 destAndZip.destRes = function (destDir, callback) {
     // 清空目录
     common.removeDir(destDir);
+
     // 写入版本信息文件
     common.writeFileSync(destDir + versionFile, common.version4);
     // 拷贝资源清单文件
     fs.copyFileSync(common.resManifestFile, destDir + path.basename(common.resManifestFile));
+
+    // 创建进入 AssetBundle 模式的标志文件
+    if (common.abModeFlag) {
+        common.writeFileSync(common.abModeFlagFile, '');
+        logger.append('- 已创建进入 AssetBundle 模式的标志文件');
+    }
 
     // 拷贝资源文件
     let list = copyRes.resList;

@@ -22,21 +22,40 @@ namespace ShibaInu
 
     public static class Builder
     {
+
+        /// 资源根目录
+        private const string ResDir = "Assets/Res/";
+        /// AssetBundle 文件后缀
+        private const string ABExtName = ".ab";
+
+        /// 打包规则文件路径
+        private static readonly string RulesFilePath = ResDir + "BuildRules.txt";
+
+        /// 核心场景列表
+        private static readonly string[] CoreScenes = {
+            ResDir + "Scenes/" + Constants.LauncherSceneName + ".unity",
+            ResDir + "Scenes/" + Constants.EmptySceneName + ".unity"
+        };
+
         /// Lua 文件根目录
-        private static readonly string[] dirLuas = {
+        private static readonly string[] LuaDirs = {
             "Assets/Framework/ShibaInu/Lua/",
             "Assets/Framework/ToLua/Lua/",
             "Assets/Lua/"
         };
 
-        /// 核心场景列表
-        private static readonly string[] coreScenes = {
-            "Assets/Res/Scenes/" + Constants.LauncherSceneName + ".unity",
-            "Assets/Res/Scenes/" + Constants.EmptySceneName + ".unity"
-        };
 
-        /// 资源根目录
-        private const string dirRes = "Assets/Res/";
+        /// 需要打包的 AssetBundle 信息列表
+        private static readonly List<AssetBundleInfo> s_abiList = new List<AssetBundleInfo>();
+        /// abi 映射，路径（资源目录路径，不是 ab 文件路径）为 key
+        private static readonly Dictionary<string, AssetBundleInfo> s_abiMap = new Dictionary<string, AssetBundleInfo>();
+        /// 打包规则 - 需要被忽略的目录列表
+        private static readonly HashSet<string> s_ignoreRules = new HashSet<string>();
+        /// 打包规则 - 子目录需要被合并打包的目录列表
+        private static readonly HashSet<string> s_combineRules = new HashSet<string>();
+        /// 打包规则 - 所有文件需要被单独打包的目录列表
+        private static readonly HashSet<string> s_singleRules = new HashSet<string>();
+
 
 
 
@@ -50,54 +69,52 @@ namespace ShibaInu
 
             ClearAllAssetBundleNames();
 
+            s_abiList.Clear();
+            s_abiMap.Clear();
+            s_ignoreRules.Clear();
+            s_combineRules.Clear();
+            s_singleRules.Clear();
+
+            ParseBuildRules();
+
+
             // lua 列表
             List<string> luaList = new List<string>();
-            foreach (string luaDir in dirLuas)
+            foreach (string luaDir in LuaDirs)
                 AppendLuaFiles(luaDir, luaList);
 
             // 场景列表
             List<string> sceneList = new List<string>();
 
-            // AssetBundleInfo 列表
-            List<AssetBundleInfo> abiList = new List<AssetBundleInfo>();
-
             // 解析项目资源目录结构
-            string[] typeDirs = Directory.GetDirectories(dirRes);
+            string[] typeDirs = Directory.GetDirectories(ResDir);
             foreach (string typeDir in typeDirs)
             {
-                switch (Path.GetFileName(typeDir))
+                // 场景资源
+                if (Path.GetFileName(typeDir) == "Scenes")
                 {
-                    // 忽略的目录
-                    case ".svn":
-                    case "Ignore":
-                        break;
-
-                    // 场景资源
-                    case "Scenes":
-                        string[] files = Directory.GetFiles(typeDir);
-                        foreach (string file in files)
+                    string[] files = Directory.GetFiles(typeDir);
+                    foreach (string file in files)
+                    {
+                        if (file.EndsWith(".unity", StringComparison.Ordinal))
                         {
                             string scenePath = file.Replace("\\", "/");
-                            if (scenePath.EndsWith(".unity", StringComparison.Ordinal))
+                            bool isCoreScene = false;// 是否属于核心场景
+                            foreach (string coreScene in CoreScenes)
                             {
-                                bool isCoreScene = false;// 是否属于核心场景
-                                foreach (string coreScene in coreScenes)
+                                if (scenePath == coreScene)
                                 {
-                                    if (scenePath == coreScene)
-                                    {
-                                        isCoreScene = true;
-                                        break;
-                                    }
+                                    isCoreScene = true;
+                                    break;
                                 }
-                                if (!isCoreScene) sceneList.Add(scenePath);
                             }
+                            if (!isCoreScene) sceneList.Add(scenePath);
                         }
-                        break;
-
-                    // Asset Bundle
-                    default:
-                        GenerateAssetBundleInfo(typeDir, abiList);
-                        break;
+                    }
+                }
+                else
+                {
+                    ParseResDir(typeDir);
                 }
             }
 
@@ -109,68 +126,98 @@ namespace ShibaInu
                 // 写入 lua 信息
                 writer.WriteLine(luaList.Count);// [W] lua 数量
                 foreach (string luaPath in luaList)
-                    writer.WriteLine(luaPath.Replace("\\", "/"));// [W] lua 文件路径
+                    writer.WriteLine(luaPath);// [W] lua 文件路径
 
                 // 写入场景信息
                 writer.WriteLine(sceneList.Count);// [W] 场景数量
                 foreach (string scenePath in sceneList)
-                    writer.WriteLine(scenePath.Replace("\\", "/"));// [W] 场景文件路径
+                    writer.WriteLine(scenePath);// [W] 场景文件路径
 
                 // 写入 AssetBundle 信息
-                foreach (AssetBundleInfo abi in abiList)
+                foreach (AssetBundleInfo abi in s_abiList)
                 {
+                    if (abi.assets.Count == 0) continue;
                     writer.WriteLine(abi.assets.Count + 1);// [W] AssetBundle 包含的文件数量 + 别名
-                    writer.WriteLine(abi.name.Replace("\\", "/"));// [W] AssetBundle 文件别名
+                    writer.WriteLine(abi.name);// [W] AssetBundle 文件别名
                     foreach (string asset in abi.assets)
-                        writer.WriteLine(asset.Replace("\\", "/"));// [W] AssetBundle 包含的文件路径
+                        writer.WriteLine(asset);// [W] AssetBundle 包含的文件路径
                 }
             }
         }
 
 
         /// <summary>
-        /// 根据 目录 或 prefab 来创建 AssetBundleInfo，然后存入 list 中
+        /// 解析资源文件夹
         /// </summary>
-        /// <param name="path">Path.</param>
-        /// <param name="list">List.</param>
-        private static void GenerateAssetBundleInfo(string path, List<AssetBundleInfo> list)
+        /// <param name="dir">Dir.</param>
+        private static void ParseResDir(string dir)
         {
-            // 固定小写名和 ".ab" 后缀
-            AssetBundleInfo abi = new AssetBundleInfo { name = path.ToLower() + ".ab" };
+            string rulePath = dir.Replace(ResDir, "");
+            if (!rulePath.EndsWith("/", StringComparison.Ordinal)) rulePath += "/";
 
-            // prefab 文件单独打包成 AssetBundle
-            if (path.EndsWith(".prefab", StringComparison.Ordinal))
-            {
-                abi.assets.Add(path);
-            }
-            else
-            {
-                // 每个目录都打成一个 AssetBundle，包含该目录下的所有文件（不含子目录和 prefab 文件）
-                string[] files = Directory.GetFiles(path);
-                foreach (string file in files)
-                {
-                    if (file.EndsWith(".prefab", StringComparison.Ordinal))
-                        GenerateAssetBundleInfo(file, list);// prefab 文件
-                    else
-                    {
-                        if (!file.EndsWith(".meta", StringComparison.Ordinal)
-                            && !file.EndsWith(".DS_Store", StringComparison.Ordinal)
-                        )
-                            abi.assets.Add(file);
-                    }
-                }
+            // 是被忽略的目录
+            foreach (string d in s_ignoreRules)
+                if (rulePath.StartsWith(d, StringComparison.Ordinal))
+                    return;
 
-                // 递归子目录
-                string[] dirs = Directory.GetDirectories(path);
-                foreach (string dir in dirs)
-                {
-                    if (!dir.EndsWith(".svn", StringComparison.Ordinal))
-                        GenerateAssetBundleInfo(dir, list);
-                }
+            // 遍历目录下的文件
+            string[] files = Directory.GetFiles(dir);
+            foreach (string file in files)
+            {
+                if (file.EndsWith(".meta", StringComparison.Ordinal) || file.EndsWith(".DS_Store", StringComparison.Ordinal))
+                    continue;
+                AppendFile(file.Replace("\\", "/"), dir);
             }
 
-            // 有包含资源（不是空目录）
-            if (abi.assets.Count > 0) list.Add(abi);
+            // 递归子目录
+            string[] dirs = Directory.GetDirectories(dir);
+            foreach (string d in dirs)
+            {
+                if (dir.EndsWith(".svn", StringComparison.Ordinal))
+                    continue;
+                ParseResDir(d);
+            }
+        }
+
+
+        /// <summary>
+        /// 将文件添加到 AssetBundleInfo 中
+        /// </summary>
+        /// <param name="file">File.</param>
+        /// <param name="abDir">Ab dir.</param>
+        private static void AppendFile(string file, string abDir)
+        {
+            string rulePath = file.Replace(ResDir, "");
+
+            // 文件在需要被合并的目录下
+            foreach (string d in s_combineRules)
+            {
+                if (rulePath.StartsWith(d, StringComparison.Ordinal))
+                {
+                    abDir = ResDir + d.Substring(0, d.Length - 1);
+                    break;
+                }
+            }
+
+            // 文件在 single 规则目录下
+            foreach (string d in s_singleRules)
+            {
+                if (rulePath.StartsWith(d, StringComparison.Ordinal))
+                {
+                    abDir = file;
+                    break;
+                }
+            }
+
+            // 根据 abiDir 路径，创建或获取 abi 对象
+            AssetBundleInfo abi;
+            if (!s_abiMap.TryGetValue(abDir, out abi))
+            {
+                abi = new AssetBundleInfo { name = abDir.ToLower() + ABExtName };
+                s_abiMap.Add(abDir, abi);
+                s_abiList.Add(abi);
+            }
+            abi.assets.Add(file);
         }
 
 
@@ -185,7 +232,7 @@ namespace ShibaInu
             foreach (string file in files)
             {
                 if (file.EndsWith(".lua", StringComparison.Ordinal))
-                    list.Add(file);
+                    list.Add(file.Replace("\\", "/"));
             }
 
             string[] dirs = Directory.GetDirectories(dirPath);
@@ -193,6 +240,44 @@ namespace ShibaInu
             {
                 if (!dir.EndsWith(".svn", StringComparison.Ordinal))
                     AppendLuaFiles(dir, list);
+            }
+        }
+
+
+        /// <summary>
+        /// 解析打包规则
+        /// </summary>
+        private static void ParseBuildRules()
+        {
+            using (StreamReader file = new StreamReader(RulesFilePath))
+            {
+                string line;
+                HashSet<string> rules = null;
+                while ((line = file.ReadLine()) != null)
+                {
+                    if (line == "") continue;
+                    if (line.StartsWith("//", StringComparison.Ordinal)) continue;
+
+                    if (line.StartsWith("-ignore", StringComparison.Ordinal))
+                    {
+                        rules = s_ignoreRules;
+                        continue;
+                    }
+                    if (line.StartsWith("-combine", StringComparison.Ordinal))
+                    {
+                        rules = s_combineRules;
+                        continue;
+                    }
+                    if (line.StartsWith("-single", StringComparison.Ordinal))
+                    {
+                        rules = s_singleRules;
+                        continue;
+                    }
+
+                    line = line.Replace("\\", "/");
+                    if (!line.EndsWith("/", StringComparison.Ordinal)) line += "/";
+                    rules.Add(line);
+                }
             }
         }
 
@@ -398,6 +483,7 @@ namespace ShibaInu
         {
             string targetPlatform = GetCmdLineArg("-targetPlatform");
             string outputDir = GetCmdLineArg("-outputDir");
+            string development = GetCmdLineArg("-development");
 
             //string targetPlatform = "android";
             //string outputDir = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/ShibaInu/platform/tmp/";
@@ -417,7 +503,11 @@ namespace ShibaInu
 
             if (Directory.Exists(outputDir))
                 Directory.Delete(outputDir, true);
-            BuildPipeline.BuildPlayer(coreScenes, outputDir, buildTarget, BuildOptions.AcceptExternalModificationsToPlayer);
+
+            BuildOptions options = development == "true"
+                ? BuildOptions.AcceptExternalModificationsToPlayer | BuildOptions.Development | BuildOptions.ConnectWithProfiler
+                : BuildOptions.AcceptExternalModificationsToPlayer;
+            BuildPipeline.BuildPlayer(CoreScenes, outputDir, buildTarget, options);
         }
 
 
@@ -476,7 +566,7 @@ namespace ShibaInu
         //[MenuItem("ShibaInu/Test Build", false, 1)]
         //private static void Test()
         //{
-        //    GeneratePlatformProject();
+        //    GenerateBuildManifest();
         //}
 
 

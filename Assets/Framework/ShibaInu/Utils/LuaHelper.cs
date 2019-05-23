@@ -254,8 +254,22 @@ namespace ShibaInu
 
 
 
-        #region 后处理效果
+        /// <summary>
+        /// 通过名称获取 Shader(Always Included Shaders)，或通过路径加载 Shader(AssetBundle)
+        /// </summary>
+        /// <returns>The shader.</returns>
+        /// <param name="nameOrPath">Name or path.</param>
+        public static Shader GetShader(string nameOrPath)
+        {
+            Shader shader = Shader.Find(nameOrPath);
+            if (shader == null)
+                shader = ResManager.LoadShader(nameOrPath, Constants.CoreAssetGroup);
+            return shader;
+        }
 
+
+
+        #region 后处理效果
 
         /// <summary>
         /// 播放叠影抖动效果
@@ -274,7 +288,7 @@ namespace ShibaInu
 
             DoubleImageShake dis = (DoubleImageShake)AddOrGetComponent(cam.gameObject, typeof(DoubleImageShake));
             if (dis.shader == null)
-                dis.shader = (Shader)ResManager.LoadAsset("Shaders/PostEffect/DoubleImageShake.shader", Stage.CurrentSceneName);
+                dis.shader = GetShader("Shaders/PostEffect/DoubleImageShake.shader");
 
             Action action = null;
             if (callback != null)
@@ -304,7 +318,7 @@ namespace ShibaInu
 
             Mosaic mosaic = (Mosaic)AddOrGetComponent(cam.gameObject, typeof(Mosaic));
             if (mosaic.shader == null)
-                mosaic.shader = (Shader)ResManager.LoadAsset("Shaders/PostEffect/Mosaic.shader", Stage.CurrentSceneName);
+                mosaic.shader = GetShader("Shaders/PostEffect/Mosaic.shader");
 
             Action action = null;
             if (callback != null)
@@ -334,7 +348,7 @@ namespace ShibaInu
 
             RadialBlur radialBlur = (RadialBlur)AddOrGetComponent(cam.gameObject, typeof(RadialBlur));
             if (radialBlur.shader == null)
-                radialBlur.shader = (Shader)ResManager.LoadAsset("Shaders/PostEffect/RadialBlur.shader", Stage.CurrentSceneName);
+                radialBlur.shader = GetShader("Shaders/PostEffect/RadialBlur.shader");
 
             Action action = null;
             if (callback != null)
@@ -371,7 +385,7 @@ namespace ShibaInu
                 if (gaussianBlur == null)
                 {
                     gaussianBlur = camGO.AddComponent<GaussianBlur>();
-                    gaussianBlur.shader = (Shader)ResManager.LoadAsset("Shaders/PostEffect/GaussianBlur.shader", Stage.CurrentSceneName);
+                    gaussianBlur.shader = GetShader("Shaders/PostEffect/GaussianBlur.shader");
                 }
                 else
                     gaussianBlur.enabled = true;

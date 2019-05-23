@@ -235,12 +235,6 @@ namespace ShibaInu
         {
             if (Common.IsDebug) return;
 
-            // 清理
-            s_luaMap.Clear();
-            s_sceneMap.Clear();
-            s_infoMap.Clear();
-            s_resMap.Clear();
-
             // 获取版本信息文件路径
             string VerCfgFilePath = Constants.UpdateDir + Constants.VerCfgFileName;
             bool hasUpdate = FileHelper.Exists(VerCfgFilePath);// 是否有更新过
@@ -324,6 +318,26 @@ namespace ShibaInu
                     }
                 }
             }
+
+            PreloadShaders();
+        }
+
+
+        /// <summary>
+        /// 预加载所有 Shader
+        /// </summary>
+        public static void PreloadShaders()
+        {
+            if (Common.IsDebug) return;
+
+            DateTime dateTime = DateTime.Now;
+            string svcPath = "Shaders/Shaders.shadervariants";
+            AssetInfo info = GetAssetInfoWithAssetPath(svcPath);
+            AssetLoader.Load(info, Constants.CoreAssetGroup);
+            info.ab.LoadAllAssets();
+            ShaderVariantCollection svc = info.ab.LoadAsset<ShaderVariantCollection>(Constants.ResDirPath + svcPath);
+            svc.WarmUp();
+            Debug.Log("[ResManager] Shaders Preload and WarmUp: " + (DateTime.Now - dateTime).Milliseconds / 1000f);
         }
 
 
@@ -499,22 +513,31 @@ namespace ShibaInu
         [NoToLua]
         public static void UnloadAll()
         {
-            AssetLoader.Clear();
-
-            s_dispatchEvent = null;
-            s_delayedUnloadList.Clear();
-
+            // 卸载资源 AssetBundle
             foreach (var item in s_infoMap)
             {
                 AssetInfo info = item.Value;
-                if (info.ab != null)
-                {
-                    info.ab.Unload(true);
-                    info.ab = null;
-                    // Debug.Log("[Unload] " + info.name);
-                }
+                if (info.ab != null) info.ab.Unload(true);
             }
+
+            // 卸载场景 AssetBundle
+            foreach (var item in s_sceneMap)
+            {
+                AssetInfo info = item.Value;
+                if (info.ab != null) info.ab.Unload(true);
+            }
+
+            // 卸载 Resources 资源
             Resources.UnloadUnusedAssets();
+
+            s_dispatchEvent = null;
+            s_delayedUnloadList.Clear();
+            s_luaMap.Clear();
+            s_sceneMap.Clear();
+            s_infoMap.Clear();
+            s_resMap.Clear();
+
+            AssetLoader.Clear();
         }
 
         #endregion

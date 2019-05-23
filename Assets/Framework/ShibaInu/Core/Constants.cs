@@ -25,7 +25,7 @@ namespace ShibaInu
         /// ShibaInu 框架根目录
         public static readonly string ShibaInuRootPath = Application.dataPath + "/Framework/ShibaInu/";
 
-        /// 进入 AssetBundle 模式的临时文件
+        /// 进入 AssetBundle 模式的标志文件
         public static readonly string ABModeFilePath = Application.streamingAssetsPath + "/AssetBundleMode.tmp";
 #endif
 
@@ -41,6 +41,8 @@ namespace ShibaInu
         public const string VerCfgFileName = "version.cfg";
         /// 资源文件夹路径
         public const string ResDirPath = "Assets/Res/";
+        /// 核心资源组名称（不会被销毁）
+        public const string CoreAssetGroup = "Core";
 
 
 

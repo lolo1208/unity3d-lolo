@@ -28,6 +28,8 @@ args
     .option('-c, --platformProject <value>', '目标平台项目路径。如果传入了该参数，-g 参数将为 true')
     .option('-d, --destDir <value>', '将生成的资源拷贝至该目录')
     .option('-z, --packZip', '是否需要生成 zip 包')
+    .option('-y, --abModeFlag', '是否需要创建进入 AssetBundle 模式的标志文件')
+    .option('-x, --development', '是否生成开发版本的目标平台项目')
     .parse(process.argv);
 
 common.id = args.id;                                            // -i
@@ -41,6 +43,8 @@ common.projectPath = args.projectPath;                          // -f
 common.platformProject = args.platformProject;                  // -c
 common.destDir = args.destDir;                                  // -d
 common.packZip = args.packZip;                                  // -z
+common.abModeFlag = args.abModeFlag;                            // -y
+common.development = args.development;                          // -x
 
 if (common.unityVersion === undefined)
     common.unityVersion = config.unityVersion;
@@ -53,7 +57,11 @@ if (common.generatePlatformProject === true)
     common.generatePlatformProject = common.targetPlatform === 'ios' || common.targetPlatform === 'android';
 
 if (common.projectPath !== undefined) common.projectPath = path.normalize(common.projectPath + '/');
-if (common.destDir !== undefined) common.destDir = path.normalize(common.destDir + '/');
+if (common.destDir !== undefined) {
+    common.destDir = path.normalize(common.destDir + '/');
+    if (common.abModeFlag)
+        common.abModeFlagFile = common.destDir + 'AssetBundleMode.tmp';
+}
 
 
 // 程序是否运行在 windows 平台
@@ -216,7 +224,7 @@ common.exit = function (code) {
  */
 common.createDir = function (filePath) {
     let sep = '/';
-	filePath = filePath.replace(/\\/g, sep);
+    filePath = filePath.replace(/\\/g, sep);
     let dirs = path.dirname(filePath).split(sep);
     let p = '';
     while (dirs.length) {

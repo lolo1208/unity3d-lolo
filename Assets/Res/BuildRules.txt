@@ -1,0 +1,18 @@
+
+
+// 无需打包 AssetBundle 的目录，包括子目录的内容
+-ignore
+Ignores
+
+
+// 目录下的的所有文件将会打包成一个 AssetBundle，包括子目录的内容
+-combine
+Shaders
+
+
+// 目录下的每个文件单独打成 AssetBundle，包括子目录的内容
+// 推荐将半身像等大图资源单独打包，例如路径："Textures/UI/HalfPic"
+-single
+Fonts
+Audios
+Prefabs

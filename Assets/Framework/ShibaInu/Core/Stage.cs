@@ -62,7 +62,7 @@ namespace ShibaInu
             s_dontUnloadSceneNames.Add(Constants.LauncherSceneName);
             s_dontUnloadSceneNames.Add(Constants.EmptySceneName);
 
-            GameObject go = (GameObject)UnityEngine.Object.Instantiate(ResManager.LoadAsset("Prefabs/Core/UICanvas.prefab", "Core"), Common.go.transform);
+            GameObject go = (GameObject)UnityEngine.Object.Instantiate(ResManager.LoadAsset("Prefabs/Core/UICanvas.prefab", Constants.CoreAssetGroup), Common.go.transform);
             go.name = "UICanvas";
             uiCanvasTra = (RectTransform)go.transform;
 

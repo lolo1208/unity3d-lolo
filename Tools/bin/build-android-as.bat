@@ -9,3 +9,5 @@ set path_proj=%path_sh%../../
 cd %path_sh%../lib
 
 node build.js -i 0 -v 1.2.3 -p ShibaInu -t android -f %path_proj% -g
+
+pause

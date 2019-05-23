@@ -78,24 +78,8 @@ function DungeonScene:OnInitialize()
     AddEventListener(doubleImageShakeBtn, PointerEvent.CLICK, function()
         LuaHelper.PlayDoubleImageShake(1.5)
     end)
-
-    --[[
-    local text = GameObject.Find("Text").transform
-    local cam = Camera.main.transform
-    AddEventListener(Stage, Event.UPDATE, function()
-        local cameraDirection = cam.forward
-        cameraDirection.y = 0
-        text.rotation = Quaternion.LookRotation(cameraDirection)
-
-        --local objectNormal = text.rotation * Vector3.forward
-        --local cameraToText = text.position - cam.position
-        --local f = Vector3.Dot(objectNormal, cameraToText)
-        --if f < 0 then
-        --    text:Rotate(0, 180, 0)
-        --end
-    end)
-    --]]
 end
+
 
 --
 function DungeonScene:Click_BackBtn(event)

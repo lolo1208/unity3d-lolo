@@ -120,6 +120,8 @@ end
 --
 
 
+
+
 -- [ variables ]
 
 FadeView = require("Effects.View.FadeView")
@@ -139,5 +141,14 @@ Stage.loadingSceneClass = require("Module.Loading.View.LoadingScene")
 --
 
 
-Stats.Show()
 
+
+--
+--- 重启游戏
+function Relaunch()
+    LuaHelper.Relaunch()
+end
+
+
+--
+Stats.Show()

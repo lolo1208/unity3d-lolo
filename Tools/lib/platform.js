@@ -44,7 +44,9 @@ platform.start = function (cb) {
     }
 
     progress.setTiming(progress.TT_GPP, true);
-    logger.append(`- 开始生成 ${ppName} 项目`);
+    let logstr = `- 开始生成 ${ppName} 项目`;
+    if (common.development) logstr += '（Development）';
+    logger.append(logstr);
 
     // 清空 StreamingAssets 文件夹
     let saDir = common.projectDir + 'Assets/StreamingAssets/';
@@ -56,6 +58,7 @@ platform.start = function (cb) {
     cmd += ' -executeMethod ShibaInu.Builder.GeneratePlatformProject';
     cmd += ` -targetPlatform ${common.targetPlatform}`;
     cmd += ` -outputDir ${common.tmpPlatformDir}`;
+    cmd += ` -development ${common.development}`;
     child_process.exec(cmd, (err, stdout, stderr) => {
         if (err) throw err;
         logger.append(`- 生成 ${ppName} 项目完成`);

@@ -101,46 +101,33 @@ namespace ShibaInu
 
         void Update()
         {
+#if UNITY_EDITOR
+            // Unity2018 FrameDebugger 窗口会更新内容，导致无法查看数据
+            if (UnityEditor.EditorApplication.isPaused) return;
+#endif
+
             TimeUtil.Update();
             Timer.Update();
             UdpSocket.Update();
 
 
-            // 执行需要在主线程运行的 Action
             lock (LOCK_OBJECT)
             {
+                // 需要在主线程运行的 Action
                 if (m_threadActions.Count > 0)
                 {
                     m_tempActions.AddRange(m_threadActions);
                     m_threadActions.Clear();
                 }
-            }
-            if (m_tempActions.Count > 0)
-            {
-                foreach (Action action in m_tempActions)
-                {
-                    try
-                    {
-                        action();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.LogException(e);
-                    }
-                }
-                m_tempActions.Clear();
-            }
 
-
-            // 执行网络相关回调
-            lock (LOCK_OBJECT)
-            {
+                // 网络相关回调
                 if (m_netActions.Count > 0)
                 {
                     m_tempActions.AddRange(m_netActions);
                     m_netActions.Clear();
                 }
             }
+
             if (m_tempActions.Count > 0)
             {
                 foreach (Action action in m_tempActions)
@@ -156,6 +143,7 @@ namespace ShibaInu
                 }
                 m_tempActions.Clear();
             }
+
 
             // 设备方向有变化
             if (DeviceHelper.Update())
@@ -182,6 +170,10 @@ namespace ShibaInu
 
         void LateUpdate()
         {
+#if UNITY_EDITOR
+            if (UnityEditor.EditorApplication.isPaused) return;
+#endif
+
             TimeUtil.Update();
             DispatchLuaEvent(EVENT_LATE_UPDATE);
         }
@@ -190,6 +182,10 @@ namespace ShibaInu
 
         void FixedUpdate()
         {
+#if UNITY_EDITOR
+            if (UnityEditor.EditorApplication.isPaused) return;
+#endif
+
             TimeUtil.Update();
             DispatchLuaEvent(EVENT_FIXED_UPDATE);
         }
@@ -208,6 +204,10 @@ namespace ShibaInu
 
         private void ActivationChanged(bool activated)
         {
+#if UNITY_EDITOR
+            if (UnityEditor.EditorApplication.isPaused) return;
+#endif
+
             if (activated)
             {
                 if (!m_activated)

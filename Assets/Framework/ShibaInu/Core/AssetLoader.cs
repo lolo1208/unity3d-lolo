@@ -331,6 +331,7 @@ namespace ShibaInu
 
         public static void Clear()
         {
+            s_groupMap.Clear();
             s_unloadList.Clear();
             s_loadInfoList.Clear();
             s_loadAssetList.Clear();
