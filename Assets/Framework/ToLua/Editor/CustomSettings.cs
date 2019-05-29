@@ -124,6 +124,7 @@ public static class CustomSettings
         _GT(typeof(SleepTimeout)),
         _GT(typeof(Animator)),
         _GT(typeof(AnimatorStateInfo)),
+        _GT(typeof(AnimatorCullingMode)),
         _GT(typeof(RuntimeAnimatorController)),
         _GT(typeof(Input)),
         _GT(typeof(KeyCode)),

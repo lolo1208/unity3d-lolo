@@ -101,6 +101,8 @@ else
     common.targetPlatformDir = `${common.platformDir}${common.targetPlatform}/`;
 // 临时产出的平台项目目录
 common.tmpPlatformDir = `${common.platformDir}tmp/`;
+
+
 // Android 平台的 Java 代码目录
 common.androidJavaDir = `${common.rootDir}templates/java/`;
 
