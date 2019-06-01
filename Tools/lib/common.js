@@ -27,7 +27,7 @@ args
     .option('-f, --projectPath <value>', '项目路径。如果传入了该参数，将会忽略版本检出和更新')
     .option('-c, --platformProject <value>', '目标平台项目路径。如果传入了该参数，-g 参数将为 true')
     .option('-d, --destDir <value>', '将生成的资源拷贝至该目录')
-    .option('-z, --packZip', '是否需要生成 zip 包')
+    .option('-z, --packZip <value>', '传入值为 true，表示生成 zip 文件，并放在缓存目录中。也可以传入完整 zip 路径，将按该路径生成')
     .option('-y, --abModeFlag', '是否需要创建进入 AssetBundle 模式的标志文件')
     .option('-x, --development', '是否生成开发版本的目标平台项目')
     .parse(process.argv);
@@ -71,7 +71,7 @@ common.isWindows = process.platform === 'win32';
 // 工具箱根目录
 common.rootDir = path.normalize(`${__dirname}/../`);
 // 编译打包目录
-common.buildDir = `${common.rootDir}build/`;
+common.buildDir = config.buildDir !== '' ? config.buildDir : `${common.rootDir}build/`;
 // 其他工具目录
 common.toolsDir = `${common.rootDir}tools/`;
 // 项目编译打包目录
@@ -80,7 +80,7 @@ common.projectBuildDir = `${common.buildDir}${common.projectName}/`;
 common.logDir = `${common.buildDir}log/${common.id}/`;
 // 资源产出目录
 common.resDir = `${common.projectBuildDir}res/${common.targetPlatform}/`;
-// zip产出目录
+// 默认 zip 产出目录
 common.zipDir = `${common.projectBuildDir}zip/${common.targetPlatform}/`;
 // 版本资源清单目录
 common.resManifestDir = `${common.resDir}manifest/`;

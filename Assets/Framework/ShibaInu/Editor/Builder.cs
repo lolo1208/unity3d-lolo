@@ -56,6 +56,13 @@ namespace ShibaInu
         /// 打包规则 - 所有文件需要被单独打包的目录列表
         private static readonly HashSet<string> s_singleRules = new HashSet<string>();
 
+        /// 打包规则 - 需要被忽略的后缀名列表
+        private static readonly HashSet<string> s_ignoreExtNames = new HashSet<string>();
+        /// 打包规则 - 需要被合并的后缀名列表
+        private static readonly HashSet<string> s_combineExtNames = new HashSet<string>();
+        /// 打包规则 - 需要单独打包的后缀名列表
+        private static readonly HashSet<string> s_singleExtNames = new HashSet<string>();
+
 
 
 
@@ -74,6 +81,9 @@ namespace ShibaInu
             s_ignoreRules.Clear();
             s_combineRules.Clear();
             s_singleRules.Clear();
+            s_ignoreExtNames.Clear();
+            s_combineExtNames.Clear();
+            s_singleExtNames.Clear();
 
             ParseBuildRules();
 
@@ -90,6 +100,9 @@ namespace ShibaInu
             string[] typeDirs = Directory.GetDirectories(ResDir);
             foreach (string typeDir in typeDirs)
             {
+                if (typeDir.EndsWith(".svn", StringComparison.Ordinal))
+                    continue;
+
                 // 场景资源
                 if (Path.GetFileName(typeDir) == "Scenes")
                 {
@@ -152,6 +165,8 @@ namespace ShibaInu
         /// <param name="dir">Dir.</param>
         private static void ParseResDir(string dir)
         {
+            dir = dir.Replace("\\", "/");
+
             string rulePath = dir.Replace(ResDir, "");
             if (!rulePath.EndsWith("/", StringComparison.Ordinal)) rulePath += "/";
 
@@ -173,7 +188,7 @@ namespace ShibaInu
             string[] dirs = Directory.GetDirectories(dir);
             foreach (string d in dirs)
             {
-                if (dir.EndsWith(".svn", StringComparison.Ordinal))
+                if (d.EndsWith(".svn", StringComparison.Ordinal))
                     continue;
                 ParseResDir(d);
             }
@@ -187,6 +202,21 @@ namespace ShibaInu
         /// <param name="abDir">Ab dir.</param>
         private static void AppendFile(string file, string abDir)
         {
+            string extName = Path.GetExtension(file);
+
+            // 是要被忽略的文件
+            if (s_ignoreExtNames.Contains(extName))
+                return;
+
+            // 是要合并的文件
+            if (s_combineExtNames.Contains(extName))
+                abDir = "combine_extname" + extName;
+
+            // 是要单独打包的文件
+            if (s_singleExtNames.Contains(extName))
+                abDir = file;
+
+
             string rulePath = file.Replace(ResDir, "");
 
             // 文件在需要被合并的目录下
@@ -253,6 +283,7 @@ namespace ShibaInu
             {
                 string line;
                 HashSet<string> rules = null;
+                HashSet<string> extNames = null;
                 while ((line = file.ReadLine()) != null)
                 {
                     if (line == "") continue;
@@ -261,22 +292,33 @@ namespace ShibaInu
                     if (line.StartsWith("-ignore", StringComparison.Ordinal))
                     {
                         rules = s_ignoreRules;
+                        extNames = s_ignoreExtNames;
                         continue;
                     }
                     if (line.StartsWith("-combine", StringComparison.Ordinal))
                     {
                         rules = s_combineRules;
+                        extNames = s_combineExtNames;
                         continue;
                     }
                     if (line.StartsWith("-single", StringComparison.Ordinal))
                     {
                         rules = s_singleRules;
+                        extNames = s_singleExtNames;
                         continue;
                     }
 
                     line = line.Replace("\\", "/");
-                    if (!line.EndsWith("/", StringComparison.Ordinal)) line += "/";
-                    rules.Add(line);
+                    if (line.StartsWith("*.", StringComparison.Ordinal))
+                    {
+                        extNames.Add(line.Substring(1));
+                    }
+                    else
+                    {
+                        if (!line.EndsWith("/", StringComparison.Ordinal)) line += "/";
+                        rules.Add(line);
+                    }
+
                 }
             }
         }

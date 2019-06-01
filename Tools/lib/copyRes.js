@@ -168,7 +168,7 @@ let copyAssetBundle = function () {
 
     // 拷贝 AssetBundle 完成
     let copyComplete = () => {
-        src = src.replace(common.abCacheDir, '');
+        src = src.replace(common.abCacheDir, '').replace(/\\/g, '/');
         dest = dest.replace(common.resDir, '');
         resMap[src] = dest;
         if (isNew) newResList.push(src);

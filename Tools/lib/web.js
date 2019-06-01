@@ -9,6 +9,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const args = require('commander');
+const config = require('./config');
 
 
 // 解析命令行参数
@@ -21,7 +22,7 @@ args
 const PORT = args.port === undefined ? 1208 : args.port;
 const ROOT_DIR = path.normalize(`${__dirname}/../`);
 const WEB_DIR = path.normalize(`${ROOT_DIR}web/`);
-const BUILD_DIR = path.normalize(`${ROOT_DIR}build/`);
+const BUILD_DIR = path.normalize(config.buildDir !== '' ? config.buildDir : ROOT_DIR + 'build/');
 const LOG_DIR = path.normalize(`${BUILD_DIR}log/`);
 
 
@@ -59,15 +60,32 @@ const server = http.createServer((request, response) => {
         response.writeHead(500, {'Content-Type': MIME.txt});
         response.end(err.toString());
     };
+    let size = 0;
     fs.stat(filePath, (err, stats) => {
         if (err) {
-            errHandler(err);
-            return;
+            // 可能是 zip 包的绝对路径
+            if (ext === 'zip') {
+                try {
+                    filePath = pathName;
+                    stats = fs.statSync(filePath);
+                    size = stats.size;
+                } catch (err) {
+                    errHandler(err);
+                    return;
+                }
+            }
+            else {
+                errHandler(err);
+                return;
+            }
+        }
+        else {
+            size = stats.size;
         }
 
         response.writeHead(200, {
             'Content-Type': MIME[ext] || MIME.binary,
-            'Content-Length': stats.size
+            'Content-Length': size
         });
 
         let rs = fs.createReadStream(filePath);

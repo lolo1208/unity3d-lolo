@@ -12,6 +12,9 @@ module.exports = {
     // 默认的 Unity 版本（也可以使用 -U 参数传入）
     unityVersion: '2018.3.14f1',
 
+    // Build（缓存）目录
+    buildDir: '',
+
     // svn 账号
     svnUsername: '',
     // svn 密码
