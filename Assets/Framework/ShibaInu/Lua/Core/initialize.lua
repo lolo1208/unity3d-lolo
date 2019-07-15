@@ -7,6 +7,7 @@
 
 require("Core.functions")
 require("Core.variables")
+SetRandomseedWithNowTime()
 
 
 -- 全局函数和全局变量定义完成后，才能定义的内容 --

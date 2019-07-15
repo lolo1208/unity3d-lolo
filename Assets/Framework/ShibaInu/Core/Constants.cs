@@ -48,6 +48,7 @@ namespace ShibaInu
 
         // -- runtime errors --
         public const string E1002 = "[C# ERROR] lua 文件不存在: {0}";
+        public const string E1003 = "[C# ERROR] 动画不存在，id: {0}";
 
         // -- editor play mode errors --
         public const string E5001 = "[C# ERROR] 资源文件不存在: {0}";

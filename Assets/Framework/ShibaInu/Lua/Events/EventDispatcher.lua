@@ -154,7 +154,7 @@ function EventDispatcher:DispatchEvent(event, bubbles, recycle)
         -- 当前节点有侦听该事件
         local len = #list
         if len > 0 then
-            list = ObjectUtil.copy(list)
+            list = ObjectUtil.Copy(list)
             for i = 1, len do
                 ---@type EventListenerInfo
                 local info = list[i]

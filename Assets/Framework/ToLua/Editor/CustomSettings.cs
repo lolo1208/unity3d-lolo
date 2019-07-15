@@ -160,6 +160,9 @@ public static class CustomSettings
         _GT(typeof(Rect)),
         _GT(typeof(LayerMask)),
         _GT(typeof(TextMesh)),
+        _GT(typeof(MaterialPropertyBlock)),
+        _GT(typeof(MeshFilter)),
+        _GT(typeof(Mesh)),
 
         _GT(typeof(PointerEventData)),
 
@@ -196,17 +199,19 @@ public static class CustomSettings
         _GT(typeof(CircleImage)),
         _GT(typeof(LocalizationText)),
 
-        _GT(typeof(ThirdPersonCamera)),
         _GT(typeof(SafeAreaLayout)),
         _GT(typeof(PointerScaler)),
         _GT(typeof(PointerEventPasser)),
+        _GT(typeof(FrameAnimationController)),
+        _GT(typeof(ThirdPersonCamera)),
 
         _GT(typeof(DoubleImageShake)),
         _GT(typeof(Mosaic)),
         _GT(typeof(RadialBlur)),
 
+        _GT(typeof(ShibaInu.Random)),
         _GT(typeof(LuaProfiler)),
-        _GT(typeof(ShibaInu.Logger)),
+        _GT(typeof(ShibaInu.Logger))
     };
 
 

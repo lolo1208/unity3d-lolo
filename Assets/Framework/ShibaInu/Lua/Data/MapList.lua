@@ -335,7 +335,7 @@ end
 --- 克隆
 ---@return MapList
 function MapList:Clone()
-    return MapList.New(ObjectUtil.copy(self._values), ObjectUtil.copy(self._keys))
+    return MapList.New(ObjectUtil.Copy(self._values), ObjectUtil.Copy(self._keys))
 end
 
 --- 清空

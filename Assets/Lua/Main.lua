@@ -6,12 +6,6 @@
 
 
 
--- 设置当前时间为随机种子
-local now = System.DateTime.Now
-math.randomseed(now.Minute * 60 * 1000 + now.Second * 1000 + now.Millisecond)
-
-
-
 -- 启动函数
 local function Main()
     require("Core.initialize")

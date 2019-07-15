@@ -54,6 +54,22 @@ function TestScene:OnInitialize()
     self.backBtn = backBtn.gameObject
     self.backBtn:SetActive(false)
     AddEventListener(self.backBtn, PointerEvent.CLICK, self.OnClick_backBtn, self)
+
+    --local aniList = { "Attack", "Damage", "Death", "Idle", "Knockback", "Run", "Skill", "Stand", "Walk" }
+    --local fac = ShibaInu.FrameAnimationController.New()
+    --for i = 1, 999 do
+    --    local aniName = aniList[math.random(#aniList)]
+    --    local go = GameObject.New("ani_" .. i)
+    --    go.transform.position = Vector3.New(math.random() * 11, 0, math.random() * 11)
+    --    local aId = fac:AddAnimation(go, "Test/Test/")
+    --    fac:PlayAnimation(aId, aniName, true)
+    --end
+    --AddEventListener(Stage, Event.UPDATE, function()
+    --    fac:Update(1)
+    --end)
+    --
+    --Stage.uiCanvas.worldCamera.enabled = false
+    --uiCanvasTra.gameObject:SetActive(false)
 end
 
 

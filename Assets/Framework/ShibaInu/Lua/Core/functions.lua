@@ -416,15 +416,14 @@ local function UpdateDelayedCall(event)
 
     local time = TimeUtil.time
     local frameCount = TimeUtil.frameCount
-    local needClearRemoveList = false
     for i = num, 1, -1 do
         local handler = _dc_list[i]
 
         -- handler 在 remove 列表中
         if _dc_removeList[handler] then
+            _dc_removeList[handler] = nil
             remove(_dc_list, i)
             handler:Recycle()
-            needClearRemoveList = true
 
         elseif handler.delayedFrame ~= nil then
             if frameCount - handler.delayedStartFrame > handler.delayedFrame then
@@ -438,11 +437,6 @@ local function UpdateDelayedCall(event)
             remove(_dc_list, i)
             trycall(handler.Execute, handler)
         end
-    end
-
-    -- 清空 remove 列表
-    if needClearRemoveList then
-        _dc_removeList = {}
     end
 end
 
@@ -487,6 +481,7 @@ function CancelDelayedCall(handler)
     handler.delayedFrame = nil
     handler.delayedStartFrame = nil
     handler.once = false -- 避免立即回收到池，由 UpdateDelayedCall() 来调用 Recycle() 回收
+    --handler.inPool = true -- 不再回到池中，容易出现引用问题
 
     -- handler 在 add 列表中
     for i = 1, #_dc_addList do
@@ -514,4 +509,18 @@ function handler(callback, caller, once, ...)
     handler.once = once
     handler.args = { ... }
     return handler
+end
+
+
+--
+
+
+--
+--- 使用当前时间来设置随机种子，并返回该种子值
+---@return number
+function SetRandomseedWithNowTime()
+    local now = System.DateTime.Now
+    local val = (now.Minute * 60 + now.Second) * 1000 + now.Millisecond
+    math.randomseed(val)
+    return val
 end

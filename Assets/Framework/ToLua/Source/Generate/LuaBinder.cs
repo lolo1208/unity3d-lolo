@@ -45,6 +45,7 @@ public static class LuaBinder
 		UnityEngine_SleepTimeoutWrap.Register(L);
 		UnityEngine_AnimatorWrap.Register(L);
 		UnityEngine_AnimatorStateInfoWrap.Register(L);
+		UnityEngine_AnimatorCullingModeWrap.Register(L);
 		UnityEngine_RuntimeAnimatorControllerWrap.Register(L);
 		UnityEngine_InputWrap.Register(L);
 		UnityEngine_KeyCodeWrap.Register(L);
@@ -63,6 +64,9 @@ public static class LuaBinder
 		UnityEngine_FontWrap.Register(L);
 		UnityEngine_RectWrap.Register(L);
 		UnityEngine_TextMeshWrap.Register(L);
+		UnityEngine_MaterialPropertyBlockWrap.Register(L);
+		UnityEngine_MeshFilterWrap.Register(L);
+		UnityEngine_MeshWrap.Register(L);
 		UnityEngine_AudioBehaviourWrap.Register(L);
 		L.BeginModule("UI");
 		UnityEngine_UI_GraphicWrap.Register(L);
@@ -207,13 +211,15 @@ public static class LuaBinder
 		ShibaInu_PageTransformerTypeWrap.Register(L);
 		ShibaInu_CircleImageWrap.Register(L);
 		ShibaInu_LocalizationTextWrap.Register(L);
-		ShibaInu_ThirdPersonCameraWrap.Register(L);
 		ShibaInu_SafeAreaLayoutWrap.Register(L);
 		ShibaInu_PointerScalerWrap.Register(L);
 		ShibaInu_PointerEventPasserWrap.Register(L);
+		ShibaInu_FrameAnimationControllerWrap.Register(L);
+		ShibaInu_ThirdPersonCameraWrap.Register(L);
 		ShibaInu_DoubleImageShakeWrap.Register(L);
 		ShibaInu_MosaicWrap.Register(L);
 		ShibaInu_RadialBlurWrap.Register(L);
+		ShibaInu_RandomWrap.Register(L);
 		ShibaInu_LuaProfilerWrap.Register(L);
 		ShibaInu_LoggerWrap.Register(L);
 		L.EndModule();

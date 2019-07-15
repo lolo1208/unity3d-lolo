@@ -5,15 +5,30 @@
 --
 
 local atan2 = math.atan2
-local pi = math.pi
-local sqrt = math.sqrt
 local floor = math.floor
 local random = math.random
+local pi = math.pi
+local sqrt = math.sqrt
+local cos = math.cos
+local sin = math.sin
+
+local RADIAN = 2 * math.pi / 360 -- 弧度实数
+
 
 
 --
 ---@class MathUtil
 local MathUtil = {}
+
+
+
+--
+--- 四舍五入取整
+---@param num number
+---@return number
+function MathUtil.Round(num)
+    return floor(num + 0.5)
+end
 
 
 
@@ -109,24 +124,52 @@ end
 ---@param y2 number @ - 可选 -
 ---@return number
 function MathUtil.AngleY(p1_x1, p2_y1, x2, y2)
+    -- 四个参数
     if x2 ~= nil then
         return atan2(y2 - p2_y1, -(x2 - p1_x1)) * 180 / pi
     end
-
+    -- 两个 Vector3 参数
     if p1_x1.z ~= nil then
         return atan2(p2_y1.z - p1_x1.z, -(p2_y1.x - p1_x1.x)) * 180 / pi
     end
-
+    -- 两个 Vector2 参数
     return atan2(p2_y1.y - p1_x1.y, -(p2_y1.x - p1_x1.x)) * 180 / pi
 end
 
 
 --
---- 四舍五入取整
----@param num number
----@return number
-function MathUtil.Round(num)
-    return floor(num + 0.5)
+--- 获取两个指定点之间的点（只计算两个轴）
+--- 参数 f 的值越接近 1.0，则内插点就越接近 p1。参数 f 的值越接近 0，则内插点就越接近p2
+---@param p1 Vector2 | Vector3
+---@param p2 Vector2 | Vector3
+---@param f number
+---@return number, number
+function MathUtil.Lerp(p1, p2, f)
+    local x1 = p1.x
+    local x2 = p2.x
+    local y1 = p1.z or p1.y
+    local y2 = p2.z or p2.y
+    local f1 = 1 - f
+    return x1 * f + x2 * f1, y1 * f + y2 * f1
+end
+
+
+
+--
+--- 根据角度，偏移指定距离（只计算 x 和 z）
+---@param pos Vector3 @ 位置
+---@param angle number @ 角度
+---@param distance number @ 距离
+---@param resultPos Vector3 @ -可选- 如果传入该值，偏移后的结果将会修改到该值，否则结果修改到参数 pos
+---@return Vector3
+function MathUtil.OffsetByAngle(pos, angle, distance, resultPos)
+    resultPos = resultPos or pos
+    local radian = RADIAN * angle
+    local x = cos(radian) * distance
+    local z = sin(radian) * distance
+    resultPos.x = pos.x + x
+    resultPos.z = pos.z - z
+    return resultPos
 end
 
 

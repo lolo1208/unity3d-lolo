@@ -7,4 +7,3 @@
 
 Stage.ShowScene(require("Module.Test.View.TestScene"))
 --Stage.ShowScene(require("Module.IOGame.View.IOGameScene"))
-

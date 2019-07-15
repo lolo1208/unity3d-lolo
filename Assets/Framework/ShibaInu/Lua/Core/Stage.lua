@@ -10,7 +10,9 @@ local insert = table.insert
 local remove = table.remove
 local floor = math.floor
 
+local Time = Time.uTime
 local stage = ShibaInu.Stage
+
 local cleanUI = stage.CleanUI
 local loadScene = stage.LoadScene
 local loadSceneAsync = stage.LoadSceneAsync
@@ -242,6 +244,7 @@ end
 function Stage.Clean()
     cleanUI()
     PrefabPool.Clean()
+    GpuAnimation.Clean()
 end
 
 
@@ -388,6 +391,7 @@ function Stage._loopHandler(type, time)
     if type == Event.UPDATE then
         TimeUtil.frameCount = Time.frameCount
         TimeUtil.deltaTime = Time.deltaTime
+        TimeUtil.timeSinceLevelLoad = Time.timeSinceLevelLoad
     end
 
     _event.data = nil

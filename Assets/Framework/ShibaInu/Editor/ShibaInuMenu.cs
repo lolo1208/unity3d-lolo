@@ -11,6 +11,11 @@ namespace ShibaInu
     /// </summary>
     public static class ShibaInuMenu
     {
+        //[MenuItem("ShibaInu/TEST", false, 1)]
+        //private static void Test()
+        //{
+        //    GpuAnimationWindow.Test();
+        //}
 
 
         [MenuItem("ShibaInu/Run the Application", false, 101)]
@@ -55,6 +60,13 @@ namespace ShibaInu
         private static void OpenLogWindow()
         {
             LogWindow.Open();
+        }
+
+
+        [MenuItem("ShibaInu/Gpu Animation Window", false, 702)]
+        private static void OpenGpuAnimationWindow()
+        {
+            GpuAnimationWindow.Open();
         }
 
 

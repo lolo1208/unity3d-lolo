@@ -30,6 +30,8 @@ TimeUtil.timeMsec = 0
 TimeUtil.frameCount = UnityEngine.Time.frameCount
 --- 距离上一帧的时间（秒.毫秒）
 TimeUtil.deltaTime = 0
+--- 自场景加载以来的时间（秒.毫秒）= Shader _Time.y
+TimeUtil.timeSinceLevelLoad = 0
 
 
 

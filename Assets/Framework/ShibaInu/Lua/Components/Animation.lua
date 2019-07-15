@@ -76,7 +76,7 @@ function Animation:Play(aniName, restart)
     self.completeTimer:Start()
 
     if self.isDispatchEvent then
-        DispatchAnimationEvent(self, AnimationEvent.ANI_STAR)
+        DispatchAnimationEvent(self, AnimationEvent.ANI_START)
     end
 end
 
@@ -98,7 +98,7 @@ function Animation:TransitionTo(aniName, duration)
     self.completeTimer:Start()
 
     if self.isDispatchEvent then
-        DispatchAnimationEvent(self, AnimationEvent.ANI_STAR)
+        DispatchAnimationEvent(self, AnimationEvent.ANI_START)
     end
 end
 

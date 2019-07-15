@@ -13,6 +13,7 @@ local format = string.format
 ---
 ---@field gameObject UnityEngine.GameObject
 ---@field transform UnityEngine.Transform | UnityEngine.RectTransform
+---@field asyncHandler Handler @ 异步初始化时，创建的回调
 ---@field initShow boolean @ 初始化时是否直接显示（默认是否显示）。默认值：true
 ---@field visible boolean @ 是否已经显示
 ---@field destroyed boolean @ 是否已经被销毁
@@ -26,10 +27,8 @@ View.initShow = true
 --
 --- 异步资源加载完成时，初始化
 local function InitializeAsync(view, go)
-    if not view.destroyed then
-        view.gameObject = go
-        view:OnInitialize()
-    end
+    view.gameObject = go
+    view:OnInitialize()
 end
 
 
@@ -53,7 +52,8 @@ function View:Ctor(prefab, parent, groupName, isAsync)
     end
 
     if isAsync then
-        InstantiateAsync(prefab, groupName, handler(InitializeAsync, self), parent)
+        self.asyncHandler = handler(InitializeAsync, self)
+        InstantiateAsync(prefab, groupName, self.asyncHandler, parent)
     else
         self.gameObject = Instantiate(prefab, parent, groupName)
         self:OnInitialize()
@@ -69,17 +69,18 @@ function View:OnInitialize()
         error(format(Constants.E2004, self.__classname))
     end
     self._initialized = true
+    self.asyncHandler = nil
 
     self.visible = self.initShow
     if self.gameObject ~= nil then
+        -- 子类有重写 OnDestroy()
+        if self.OnDestroy ~= View.OnDestroy then
+            self:EnableDestroyListener() -- 当 initShow=false，让 DestroyEventDispatcher.cs 先触发 Awake()，再 go.SetActive(false)
+        end
+
         self.transform = self.gameObject.transform
         if self.gameObject.activeSelf ~= self.visible then
             self.gameObject:SetActive(self.visible)
-        end
-
-        -- 子类有重写 OnDestroy()
-        if self.OnDestroy ~= View.OnDestroy then
-            self:EnableDestroyListener()
         end
     end
     if self.visible then
@@ -91,7 +92,6 @@ end
 -- visibility
 
 --- 设置是否可见
----@param self View
 ---@param value boolean
 function View:SetVisible(value)
     if not self._initialized then
@@ -169,12 +169,15 @@ end
 --- 子类重写 OnDestroy() 方法，将会自动调用 EnableDestroyListener() 设置监听
 function View:OnDestroy()
     self.destroyed = true
+    if self.asyncHandler ~= nil then
+        self.asyncHandler:Clean()
+        self.asyncHandler = nil
+    end
 end
 
 --- 销毁界面对应的 gameObject
 ---@param delay number @ -可选- 延时销毁（秒）。默认：nil，表示立即销毁
 function View:Destroy(delay)
-    self.destroyed = true
     Destroy(self.gameObject, delay)
 end
 
