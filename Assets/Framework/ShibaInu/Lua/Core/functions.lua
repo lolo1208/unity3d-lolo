@@ -435,6 +435,7 @@ local function UpdateDelayedCall(event)
         elseif time - handler.delayedStartTime >= handler.delayedTime then
             -- 时间已满足，执行回调
             remove(_dc_list, i)
+            handler.delayedTime = nil
             trycall(handler.Execute, handler)
         end
     end

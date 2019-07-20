@@ -48,14 +48,14 @@ local fixVal = Fixed3.FixVal
 --
 ---@return Fixed3
 function Fixed3.New(x, y, z)
-    local obj
+    local val3
     if x == nil or type(x) == "number" then
-        obj = { x = x or 0, y = y or 0, z = z or 0 }
+        val3 = { x = x or 0, y = y or 0, z = z or 0 }
     else
-        obj = { x = x.x, y = x.y, z = x.z }
+        val3 = { x = x.x, y = x.y, z = x.z }
     end
-    setmetatable(fix3(obj), Fixed3)
-    return obj
+    setmetatable(fix3(val3), Fixed3)
+    return val3
 end
 local new = Fixed3.New
 
