@@ -46,11 +46,20 @@ namespace ShibaInu
         protected void MarkSceneDirty(bool isDirty = true)
         {
             if (!Application.isPlaying && isDirty)
+            {
+#if UNITY_2018_3_OR_NEWER
+                var prefabStage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+                if (prefabStage != null)
+                {
+                    EditorSceneManager.MarkSceneDirty(prefabStage.scene);
+                    return;
+                }
+#endif
                 EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
         }
 
 
         //
     }
 }
-

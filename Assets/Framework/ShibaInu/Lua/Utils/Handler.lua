@@ -63,7 +63,7 @@ end
 --- 执行回调
 ---@vararg any @ 附带的参数。在执行回调时，args 的值会添加到创建时传入的 args 之前。args.concat(self.args)
 function Handler:Execute(...)
-    if self.delayedTime ~= nil then
+    if self.delayedTime ~= nil or self.delayedFrame ~= nil then
         CancelDelayedCall(self)
     end
 
@@ -107,7 +107,7 @@ end
 --- 清除引用（不再执行 callback）
 ---@return void
 function Handler:Clean()
-    if self.delayedTime ~= nil then
+    if self.delayedTime ~= nil or self.delayedFrame ~= nil then
         CancelDelayedCall(self)
     end
     self.callback = nil

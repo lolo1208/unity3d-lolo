@@ -427,8 +427,9 @@ local function UpdateDelayedCall(event)
 
         elseif handler.delayedFrame ~= nil then
             if frameCount - handler.delayedStartFrame > handler.delayedFrame then
-                -- 帧数已满足，执行回调（ 不使用 >= 运算符，多延迟一帧）
+                -- 帧数已满足，执行回调（不使用 >= 运算符，多延迟一帧）
                 remove(_dc_list, i)
+                handler.delayedFrame = nil
                 trycall(handler.Execute, handler)
             end
 
@@ -474,7 +475,7 @@ end
 ---@param handler Handler
 ---@return void
 function CancelDelayedCall(handler)
-    if handler == nil or handler.delayedTime == nil then
+    if handler == nil or (handler.delayedTime == nil and handler.delayedFrame == nil) then
         return
     end
     handler.delayedTime = nil
@@ -482,7 +483,6 @@ function CancelDelayedCall(handler)
     handler.delayedFrame = nil
     handler.delayedStartFrame = nil
     handler.once = false -- 避免立即回收到池，由 UpdateDelayedCall() 来调用 Recycle() 回收
-    --handler.inPool = true -- 不再回到池中，容易出现引用问题
 
     -- handler 在 add 列表中
     for i = 1, #_dc_addList do
