@@ -34,17 +34,17 @@ namespace ShibaInu
         public static readonly HashSet<string> s_dontUnloadSceneNames = new HashSet<string>();
 
         /// 加载场景对应 AssetBundle 的请求对象
-        private static AssetBundleCreateRequest s_abcr = null;
+        private static AssetBundleCreateRequest s_abcr;
         /// 载入场景的异步操作对象
-        private static AsyncOperation s_ao = null;
+        private static AsyncOperation s_ao;
         /// 异步加载场景的协程对象
-        private static Coroutine s_coAlc = null;
+        private static Coroutine s_coAlc;
         /// 异步加载 SubScene 的协程对象
-        private static Coroutine s_coSub = null;
+        private static Coroutine s_coSub;
 
 #if UNITY_EDITOR
         /// 抛出 EVENT_COMPLETE 事件的协程对象
-        private static Coroutine s_coDce = null;
+        private static Coroutine s_coDce;
 #endif
 
 

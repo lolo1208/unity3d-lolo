@@ -163,11 +163,15 @@ end
 
 
 --
+function Fixed3:FixSelf()
+    fix3(self)
+end
+
+
+--
 function Fixed3:Clone()
     return setmetatable({ x = self.x, y = self.y, z = self.z }, Fixed3)
 end
-
---
 
 
 
