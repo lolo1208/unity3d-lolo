@@ -24,7 +24,7 @@ let callback = null;// 全部编码完成时的回调
 encodeLua.start = function (cb) {
     callback = cb;
     progress.setTiming(progress.TT_LUA, true);
-    logger.append("- 开始编码lua文件");
+    logger.append("- 开始编码 lua 文件");
     encodeNext();
 };
 
