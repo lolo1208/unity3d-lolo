@@ -217,6 +217,6 @@ QualitySettings:
     resolutionScalingFixedDPIFactor: 1
     excludedTargetPlatforms: []
   m_PerPlatformDefaultQuality:
-    Android: 0
-    Standalone: 0
-    iPhone: 0
+    Android: 3
+    Standalone: 3
+    iPhone: 3

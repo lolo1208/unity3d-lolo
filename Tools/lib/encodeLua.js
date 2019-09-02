@@ -35,8 +35,11 @@ let encodeNext = function () {
     let inFile = common.projectDir + luaFile;
     let outFile = common.luaCacheDir + luaFile;
 
+    // jit 目录下的 lua 文件，不使用 jit 模式
+    let inJitDir = !common.luajit && inFile.indexOf('ToLua/Lua/jit/') !== -1;
+
     // 不需要编码，直接拷贝
-    if (common.notEncode) {
+    if (common.notEncode || inJitDir) {
         fs.readFile(inFile, (err, data) => {
             if (err) throw err;
             common.createDir(outFile);

@@ -111,13 +111,11 @@ common.androidJavaDir = `${common.rootDir}templates/java/`;
 switch (common.targetPlatform) {
     case 'ios':
     case 'windows':
+    case 'android':
         common.luajit = true;// jit
         common.luaEndcoder = common.isWindows
             ? `${common.toolsDir}luaEncoder/luajit/luajit.exe`
             : `${common.toolsDir}luaEncoder/luajit_mac/luajit`;
-        break;
-    case 'android':
-        common.notEncode = true;// 目标 android lua jit 支持有问题
         break;
     case 'macos':
         common.luajit = false;// lua vm

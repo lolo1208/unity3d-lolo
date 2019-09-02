@@ -52,8 +52,8 @@ namespace ShibaInu
         void OpenLibs()
         {
             m_lua.OpenLibs(LuaDLL.luaopen_pb);
-            m_lua.OpenLibs(LuaDLL.luaopen_sproto_core);
-            m_lua.OpenLibs(LuaDLL.luaopen_protobuf_c);
+            //m_lua.OpenLibs(LuaDLL.luaopen_sproto_core);
+            //m_lua.OpenLibs(LuaDLL.luaopen_protobuf_c);
             m_lua.OpenLibs(LuaDLL.luaopen_lpeg);
             m_lua.OpenLibs(LuaDLL.luaopen_bit);
             m_lua.OpenLibs(LuaDLL.luaopen_socket_core);
@@ -89,6 +89,7 @@ namespace ShibaInu
 
 
         // Update is called once per frame
+        [Obsolete]
         public object[] CallFunction(string funcName, params object[] args)
         {
             LuaFunction func = m_lua.GetFunction(funcName);

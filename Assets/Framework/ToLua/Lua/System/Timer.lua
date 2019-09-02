@@ -13,11 +13,11 @@ Timer = {}
 local Timer = Timer
 local mt = {__index = Timer}
 
---scale false 采用deltaTime计时，true 采用 unscaledDeltaTime计时
-function Timer.New(func, duration, loop, scale)
-	scale = scale or false and true	
+--unscaled false 采用deltaTime计时，true 采用 unscaledDeltaTime计时
+function Timer.New(func, duration, loop, unscaled)
+	unscaled = unscaled or false and true	
 	loop = loop or 1
-	return setmetatable({func = func, duration = duration, time = duration, loop = loop, scale = scale, running = false}, mt)	
+	return setmetatable({func = func, duration = duration, time = duration, loop = loop, unscaled = unscaled, running = false}, mt)	
 end
 
 function Timer:Start()
@@ -30,10 +30,10 @@ function Timer:Start()
 	UpdateBeat:AddListener(self.handle)	
 end
 
-function Timer:Reset(func, duration, loop, scale)
+function Timer:Reset(func, duration, loop, unscaled)
 	self.duration 	= duration
 	self.loop		= loop or 1
-	self.scale		= scale
+	self.unscaled	= unscaled
 	self.func		= func
 	self.time		= duration		
 end
@@ -47,7 +47,11 @@ function Timer:Stop()
 end
 
 function Timer:Update()
-	local delta = self.scale and Time.deltaTime or Time.unscaledDeltaTime	
+	if not self.running then
+		return
+	end
+
+	local delta = self.unscaled and Time.unscaledDeltaTime or Time.deltaTime	
 	self.time = self.time - delta
 	
 	if self.time <= 0 then
@@ -103,6 +107,10 @@ function FrameTimer:Stop()
 end
 
 function FrameTimer:Update()	
+	if not self.running then
+		return
+	end
+
 	if Time.frameCount >= self.count then
 		self.func()	
 		
@@ -153,6 +161,10 @@ function CoTimer:Stop()
 end
 
 function CoTimer:Update()	
+	if not self.running then
+		return
+	end
+
 	if self.time <= 0 then
 		self.func()		
 		

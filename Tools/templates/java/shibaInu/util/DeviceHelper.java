@@ -59,8 +59,7 @@ public class DeviceHelper {
      * 启用绘制刘海区（API 28 才起效）
      */
     public static void displayNotch() {
-        // Build.VERSION_CODES.P
-        if (Build.VERSION.SDK_INT >= 28) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Window wnd = UnityPlayer.currentActivity.getWindow();
             WindowManager.LayoutParams lp = wnd.getAttributes();
             lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
@@ -77,7 +76,7 @@ public class DeviceHelper {
      */
     public static boolean isNotchScreen() {
         try {
-            if (Build.VERSION.SDK_INT >= 28)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
                 return isNotchScreen_androidP();
 
             switch (getDeviceType()) {
@@ -98,7 +97,7 @@ public class DeviceHelper {
 
     // Android P（API 28）
     private static boolean isNotchScreen_androidP() {
-        if (Build.VERSION.SDK_INT >= 28) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Activity activity = UnityPlayer.currentActivity;
             View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
             DisplayCutout dc = view.getRootWindowInsets().getDisplayCutout();
@@ -164,7 +163,8 @@ public class DeviceHelper {
             if (!isNotchScreen())
                 return NONE_SAFE_INSETS;
 
-            if (Build.VERSION.SDK_INT >= 28)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                )
                 return getSafeInsets_androidP();
 
             switch (getDeviceType()) {
@@ -183,7 +183,7 @@ public class DeviceHelper {
 
     // Android P（API 28）
     private static String getSafeInsets_androidP() {
-        if (Build.VERSION.SDK_INT >= 28) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Activity activity = UnityPlayer.currentActivity;
             View view = activity.getWindow().getDecorView().findViewById(android.R.id.content);
             DisplayCutout dc = view.getRootWindowInsets().getDisplayCutout();

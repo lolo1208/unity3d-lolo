@@ -9,18 +9,19 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using ShibaInu;
 using BindType = ToLuaMenu.BindType;
-
+using LuaInterface;
 
 public static class CustomSettings
 {
-    public static string toLuaPath = Constants.ToLuaRootPath;
-    public static string saveDir = toLuaPath + "Source/Generate/";
-    public static string toluaBaseType = toLuaPath + "BaseType/";
+    public static string saveDir = Constants.ToLuaRootPath + "Source/Generate/";
+    public static string toluaBaseType = Constants.ToLuaRootPath + "BaseType/";
+    public static string injectionFilesPath = Constants.ToLuaRootPath + "Injection/";
 
 
     //导出时强制做为静态类的类型(注意customTypeList 还要添加这个类型才能导出)
     //unity 有些类作为sealed class, 其实完全等价于静态类
-    public static List<Type> staticClassTypes = new List<Type> {
+    public static List<Type> staticClassTypes = new List<Type>
+    {
         typeof(Application),
         typeof(Time),
         typeof(Screen),
@@ -36,7 +37,8 @@ public static class CustomSettings
 
 
     //附加导出委托类型(在导出委托时, customTypeList 中牵扯的委托类型都会导出， 无需写在这里)
-    public static DelegateType[] customDelegateList = {
+    public static DelegateType[] customDelegateList =
+    {
         _DT(typeof(Action)),
         _DT(typeof(UnityAction)),
         _DT(typeof(Predicate<int>)),
@@ -47,9 +49,12 @@ public static class CustomSettings
 
 
     //在这里添加你要导出注册到lua的类型列表
-    public static BindType[] customTypeList = {
-        _GT(typeof(Debugger)).SetNameSpace (null),
-
+    public static BindType[] customTypeList =
+    {
+        _GT(typeof(LuaInjectionStation)),
+        _GT(typeof(InjectType)),
+        _GT(typeof(LuaInterface.Debugger)).SetNameSpace(null),
+        
 
         // DoTween
         _GT(typeof(Component)).AddExtendType (typeof(ShortcutExtensions)),
@@ -210,7 +215,7 @@ public static class CustomSettings
         _GT(typeof(RadialBlur)),
 
         _GT(typeof(ShibaInu.Random)),
-        _GT(typeof(LuaProfiler)),
+        _GT(typeof(ShibaInu.LuaProfiler)),
         _GT(typeof(ShibaInu.Logger))
     };
 
@@ -240,10 +245,12 @@ public static class CustomSettings
     {
     };
 
+
     //ngui优化，下面的类没有派生类，可以作为sealed class
     public static List<Type> sealedList = new List<Type>()
     {
     };
+
 
     public static BindType _GT(Type t)
     {
