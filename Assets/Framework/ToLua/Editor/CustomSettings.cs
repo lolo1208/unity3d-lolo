@@ -103,7 +103,6 @@ public static class CustomSettings
         _GT(typeof(TweenerCore<Quaternion, Vector3, QuaternionOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Quaternion").SetLibName ("DG_Tweening_Plugins_Options_Quaternion"),
         _GT(typeof(TweenerCore<Color, Color, ColorOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Color").SetLibName ("DG_Tweening_Plugins_Options_Color"),
 
-
       
         // UnityEngine
         _GT(typeof(Behaviour)),
@@ -176,7 +175,6 @@ public static class CustomSettings
         _GT(typeof(Button)),
         _GT(typeof(Toggle)),
         _GT(typeof(Shadow)),
-
 
 
         // .Net
