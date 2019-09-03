@@ -11,24 +11,20 @@ namespace ShibaInu
     /// </summary>
     public class LuaManager : MonoBehaviour
     {
-        private LuaState m_lua;
-        private LuaLooper m_looper = null;
+        private LuaLooper m_looper;
 
-        public LuaState state
-        {
-            get { return m_lua; }
-        }
+        public LuaState state { get; private set; }
 
 
         void Awake()
         {
-            m_lua = new LuaState();
-            this.OpenLibs();
-            m_lua.LuaSetTop(0);
+            state = new LuaState();
+            OpenLibs();
+            state.LuaSetTop(0);
 
-            LuaBinder.Bind(m_lua);
+            LuaBinder.Bind(state);
             DelegateFactory.Init();
-            LuaCoroutine.Register(m_lua, this);
+            LuaCoroutine.Register(state, this);
         }
 
 
@@ -39,77 +35,53 @@ namespace ShibaInu
         {
 #if UNITY_EDITOR
             // 这里只用添加 ShibaInu/Lua。ToLua/Lua 和 Assets/Lua 在 LuaState 里添加了
-            m_lua.AddSearchPath(Constants.ShibaInuRootPath + "Lua");
+            state.AddSearchPath(Constants.ShibaInuRootPath + "Lua");
 #endif
-            m_lua.Start();// 启动LuaVM
-            StartMain();
+
+            // 启动 LuaVM
+            state.Start();
+            state.DoFile("Main.lua");
             StartLooper();
         }
+
 
         /// <summary>
         /// 初始化加载第三方库
         /// </summary>
         void OpenLibs()
         {
-            m_lua.OpenLibs(LuaDLL.luaopen_pb);
+            state.OpenLibs(LuaDLL.luaopen_pb);
             //m_lua.OpenLibs(LuaDLL.luaopen_sproto_core);
             //m_lua.OpenLibs(LuaDLL.luaopen_protobuf_c);
-            m_lua.OpenLibs(LuaDLL.luaopen_lpeg);
-            m_lua.OpenLibs(LuaDLL.luaopen_bit);
-            m_lua.OpenLibs(LuaDLL.luaopen_socket_core);
+            state.OpenLibs(LuaDLL.luaopen_lpeg);
+            state.OpenLibs(LuaDLL.luaopen_bit);
+            state.OpenLibs(LuaDLL.luaopen_socket_core);
 
             // cjson 比较特殊，只new了一个table，没有注册库，这里注册一下
-            m_lua.LuaGetField(LuaIndexes.LUA_REGISTRYINDEX, "_LOADED");
-            m_lua.OpenLibs(LuaDLL.luaopen_cjson);
-            m_lua.LuaSetField(-2, "cjson");
-            m_lua.OpenLibs(LuaDLL.luaopen_cjson_safe);
-            m_lua.LuaSetField(-2, "cjson.safe");
+            state.LuaGetField(LuaIndexes.LUA_REGISTRYINDEX, "_LOADED");
+            state.OpenLibs(LuaDLL.luaopen_cjson);
+            state.LuaSetField(-2, "cjson");
+            state.OpenLibs(LuaDLL.luaopen_cjson_safe);
+            state.LuaSetField(-2, "cjson.safe");
         }
+
 
         void StartLooper()
         {
             m_looper = Common.go.AddComponent<LuaLooper>();
-            m_looper.luaState = m_lua;
-        }
-
-
-        /// <summary>
-        /// lua入口
-        /// </summary>
-        void StartMain()
-        {
-            m_lua.DoFile("Main.lua");
+            m_looper.luaState = state;
         }
 
 
         public void DoFile(string filename)
         {
-            m_lua.DoFile(filename);
+            state.DoFile(filename);
         }
 
-
-        // Update is called once per frame
-        [Obsolete]
-        public object[] CallFunction(string funcName, params object[] args)
-        {
-            LuaFunction func = m_lua.GetFunction(funcName);
-            if (func != null)
-            {
-                return func.LazyCall(args);
-            }
-            return null;
-        }
 
         public void LuaGC()
         {
-            m_lua.LuaGC(LuaGCOptions.LUA_GCCOLLECT);
-        }
-
-
-        public IEnumerator DelayToInvokeDo(Action action, float delaySeconds)
-        {
-            yield return new WaitForSeconds(delaySeconds);
-            action();
+            state.LuaGC(LuaGCOptions.LUA_GCCOLLECT);
         }
 
 
@@ -122,10 +94,23 @@ namespace ShibaInu
             Destroy(m_looper);
             m_looper = null;
 
-            m_lua.Dispose();
-            m_lua = null;
+            state.Dispose();
+            state = null;
 
             Destroy(this);
+        }
+
+
+        // Update is called once per frame
+        [Obsolete]
+        public object[] CallFunction(string funcName, params object[] args)
+        {
+            LuaFunction func = state.GetFunction(funcName);
+            if (func != null)
+            {
+                return func.LazyCall(args);
+            }
+            return null;
         }
 
 
