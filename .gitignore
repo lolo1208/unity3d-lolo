@@ -15,11 +15,11 @@ Library_iOS
 Library_Android
 
 Assets/StreamingAssets
-Assets/Framework/ToLua/Source/Generate/*
-!Assets/Framework/ToLua/Source/Generate/DelegateFactory.cs
-!Assets/Framework/ToLua/Source/Generate/LuaBinder.cs
 Assets/Framework/3rdParty/StompyRobot
 Assets/Framework/3rdParty/StompyRobot.meta
+--Assets/Framework/ToLua/Source/Generate/*
+--!Assets/Framework/ToLua/Source/Generate/DelegateFactory.cs
+--!Assets/Framework/ToLua/Source/Generate/LuaBinder.cs
 
 *.csproj
 *.sln

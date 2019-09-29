@@ -137,11 +137,11 @@ end
 --- 显示当前场景（在切换效果完全遮盖住镜头时调用）
 function Stage.DoShowScene()
     -- 清理当前场景
-    Stage.Clean()
     if _currentScene ~= nil then
         _prevSceneClass = _currentScene.__class
         _currentScene:OnDestroy()
     end
+    Stage.Clean()
 
     RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
     RemoveEventListener(Res, LoadResEvent.COMPLETE, LoadResCompleteHandler)

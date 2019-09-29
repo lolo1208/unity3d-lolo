@@ -244,7 +244,7 @@ namespace ShibaInu
         /// <param name="path">音频路径</param>
         /// <param name="count">播放次数，0 表示无限循环</param>
         /// <param name="replay">如果正在播放该音频，true: 重新播放，false: 叠加播放</param>
-        public static void PlayEffect(string path, uint count = 1, bool replay = true)
+        public static void PlayEffect(string path, uint count = 1, bool replay = false)
         {
             if (replay) Stop(path);
             s_effList.Add(path);
@@ -308,8 +308,8 @@ namespace ShibaInu
             // 加载或播放
             if (info.clip == null)
             {
-                ResManager.LoadAudioClipAsync(path, path);
                 ResManager.LoadCompleteHandler.Add(info.LoadClipComplete);
+                ResManager.LoadAudioClipAsync(path, path);
             }
             else
                 info.Play();
