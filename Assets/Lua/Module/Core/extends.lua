@@ -1,5 +1,5 @@
 --
--- 扩展框架底层（Manager）相关功能
+-- 在项目中扩展框架底层（全局）相关功能
 -- 2017/10/16
 -- Author LOLO
 --
@@ -8,7 +8,9 @@ local _typeof_class = typeof
 
 
 
--- [ functions ]
+--[ functions ]--
+
+-- UnityEngine.*
 
 --- 获取 gameObject 下的 UnityEngine.Animation 组件
 ---@param go UnityEngine.GameObject
@@ -73,7 +75,8 @@ function GetComponent.ParticleSystem(go)
     return go:GetComponent(_typeof_class(UnityEngine.ParticleSystem))
 end
 
---
+
+-- UnityEngine.UI.*
 
 --- 获取 gameObject 下的 UnityEngine.UI.Image 组件
 ---@param go UnityEngine.GameObject
@@ -121,8 +124,7 @@ end
 
 
 
-
--- [ variables ]
+--[ variables ]--
 
 FadeView = require("Effects.View.FadeView")
 FadeWindow = require("Effects.View.FadeWindow")
@@ -131,17 +133,21 @@ ScaleWindow = require("Effects.View.ScaleWindow")
 MoveView = require("Effects.View.MoveView")
 MoveWindow = require("Effects.View.MoveWindow")
 
-
-
-
--- [ Core ]
-Config = require("Data.Config")
-Language = require("Data.Languages." .. Config.language)
-Stage.loadingSceneClass = require("Module.Loading.View.LoadingScene")
 --
 
 
 
+--[ core ]--
+
+Config = require("Data.Config")
+Language = require("Data.Languages." .. Config.language)
+Stage.loadingSceneClass = require("Module.Loading.View.LoadingScene")
+
+--
+
+
+
+--[ project ]--
 
 --
 --- 重启游戏
@@ -152,3 +158,4 @@ end
 
 --
 Stats.Show()
+

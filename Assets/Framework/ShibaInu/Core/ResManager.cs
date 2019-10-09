@@ -1,10 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using LuaInterface;
 using UnityEngine;
 using UnityEngine.U2D;
-using LuaInterface;
 
 
 namespace ShibaInu
@@ -73,8 +73,7 @@ namespace ShibaInu
 
             s_delayedUnloadList.Remove(groupName);
 
-            AssetInfo info;
-            if (s_resMap.TryGetValue(path, out info))
+            if (s_resMap.TryGetValue(path, out AssetInfo info))
             {
                 AssetLoader.Load(info, groupName);
                 return info.ab.LoadAsset<T>(Constants.ResDirPath + path);
@@ -110,8 +109,7 @@ namespace ShibaInu
 
             s_delayedUnloadList.Remove(groupName);
 
-            AssetInfo info;
-            if (s_resMap.TryGetValue(path, out info))
+            if (s_resMap.TryGetValue(path, out AssetInfo info))
             {
                 info.AddAsyncAsset(path, typeof(T));
                 AssetLoader.LoadAsync(info, groupName);
@@ -170,8 +168,7 @@ namespace ShibaInu
         [NoToLua]
         public static AssetInfo GetAssetInfoWithABName(string fileName)
         {
-            AssetInfo info;
-            s_infoMap.TryGetValue(fileName, out info);
+            s_infoMap.TryGetValue(fileName, out AssetInfo info);
             return info;
         }
 
@@ -184,8 +181,7 @@ namespace ShibaInu
         [NoToLua]
         public static AssetInfo GetAssetInfoWithAssetPath(string path)
         {
-            AssetInfo info;
-            s_resMap.TryGetValue(path, out info);
+            s_resMap.TryGetValue(path, out AssetInfo info);
             return info;
         }
 
@@ -198,8 +194,7 @@ namespace ShibaInu
         [NoToLua]
         public static AssetInfo GetAssetInfoWithSceneName(string sceneName)
         {
-            AssetInfo info;
-            s_sceneMap.TryGetValue(sceneName, out info);
+            s_sceneMap.TryGetValue(sceneName, out AssetInfo info);
             return info;
         }
 
@@ -216,8 +211,7 @@ namespace ShibaInu
             // 不需要后缀名
             path = path.Replace(".lua", "");
 
-            string fileName;
-            if (s_luaMap.TryGetValue(path, out fileName))
+            if (s_luaMap.TryGetValue(path, out string fileName))
             {
                 return FileHelper.GetBytes(AssetLoader.GetFilePath(fileName));
             }

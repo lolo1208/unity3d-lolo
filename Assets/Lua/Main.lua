@@ -1,6 +1,6 @@
 --
 -- Lua 入口
--- 2017/9/26
+-- 2017/09/26
 -- Author LOLO
 --
 
@@ -11,7 +11,6 @@ local function Main()
     require("Core.initialize")
     require("Module.Core.extends")
 
-
     -- 禁止创建全局变量或全局函数
     setmetatable(_G, {
         __newindex = function(_, name, value)
@@ -20,7 +19,7 @@ local function Main()
     })
 
     -- 启动游戏
-    collectgarbage("collect")
+    --collectgarbage("collect")
     require("Module.Core.launcher")
 end
 

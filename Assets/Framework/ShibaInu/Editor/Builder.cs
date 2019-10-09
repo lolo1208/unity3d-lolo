@@ -1,8 +1,8 @@
-﻿using System.IO;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.IO;
 using UnityEditor;
-using System;
+using UnityEngine;
 
 
 namespace ShibaInu
@@ -150,7 +150,7 @@ namespace ShibaInu
                 foreach (AssetBundleInfo abi in s_abiList)
                 {
                     if (abi.assets.Count == 0) continue;
-                    writer.WriteLine(abi.assets.Count + 1);// [W] AssetBundle 包含的文件数量 + 别名
+                    writer.WriteLine(abi.assets.Count + 1);// [W] AssetBundle 包含的文件数量 + 1（别名）
                     writer.WriteLine(abi.name);// [W] AssetBundle 文件别名
                     foreach (string asset in abi.assets)
                         writer.WriteLine(asset);// [W] AssetBundle 包含的文件路径
@@ -240,8 +240,7 @@ namespace ShibaInu
             }
 
             // 根据 abiDir 路径，创建或获取 abi 对象
-            AssetBundleInfo abi;
-            if (!s_abiMap.TryGetValue(abDir, out abi))
+            if (!s_abiMap.TryGetValue(abDir, out AssetBundleInfo abi))
             {
                 abi = new AssetBundleInfo { name = abDir.ToLower() + ABExtName };
                 s_abiMap.Add(abDir, abi);
@@ -358,7 +357,7 @@ namespace ShibaInu
             string[] buildScenes = scenes.Split(',');
 
             // 目标平台
-            BuildTarget buildTarget = default(BuildTarget);
+            BuildTarget buildTarget = default;
             switch (targetPlatform)
             {
                 case "ios":
@@ -382,7 +381,7 @@ namespace ShibaInu
             {
                 string line;
                 int phase = 1, index = 0, count = 0;
-                AssetBundleBuild abb = default(AssetBundleBuild);
+                AssetBundleBuild abb = default;
                 List<string> assets = new List<string>();
                 while ((line = file.ReadLine()) != null)
                 {

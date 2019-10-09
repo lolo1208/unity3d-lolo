@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
-using LuaInterface;
 using DG.Tweening;
+using LuaInterface;
+using UnityEngine;
 
 
 namespace ShibaInu
@@ -138,8 +138,7 @@ namespace ShibaInu
                 s_bgmVolume = value;
                 foreach (string path in s_bgmList)
                 {
-                    AudioInfo info;
-                    if (s_infoMap.TryGetValue(path, out info))
+                    if (s_infoMap.TryGetValue(path, out AudioInfo info))
                         info.src.volume = value;
                 }
             }
@@ -157,8 +156,7 @@ namespace ShibaInu
                 s_effectVolume = value;
                 foreach (string path in s_effList)
                 {
-                    AudioInfo info;
-                    if (s_infoMap.TryGetValue(path, out info))
+                    if (s_infoMap.TryGetValue(path, out AudioInfo info))
                         info.src.volume = value;
                 }
             }
@@ -183,15 +181,14 @@ namespace ShibaInu
                 s_bgmMute = value;
                 foreach (string path in s_bgmList)
                 {
-                    AudioInfo info;
-                    if (s_infoMap.TryGetValue(path, out info))
+                    if (s_infoMap.TryGetValue(path, out AudioInfo info))
                         info.src.mute = value;
                 }
             }
 
             get { return s_bgmMute; }
         }
-        private static bool s_bgmMute = false;
+        private static bool s_bgmMute;
 
 
         /// 音效是否静音
@@ -202,22 +199,18 @@ namespace ShibaInu
                 s_effectMute = value;
                 foreach (string path in s_effList)
                 {
-                    AudioInfo info;
-                    if (s_infoMap.TryGetValue(path, out info))
+                    if (s_infoMap.TryGetValue(path, out AudioInfo info))
                         info.src.mute = value;
                 }
             }
 
             get { return s_effectMute; }
         }
-        private static bool s_effectMute = false;
+        private static bool s_effectMute;
 
 
         /// 设置是否静音
-        public static void SetMute(bool mute)
-        {
-            BgmMute = EffectMute = mute;
-        }
+        public static void SetMute(bool mute) => BgmMute = EffectMute = mute;
 
 
 
@@ -276,8 +269,7 @@ namespace ShibaInu
         /// <param name="go">Go.</param>
         private static void Play(string path, int type, uint count, GameObject go = null)
         {
-            AudioInfo info;
-            if (!s_infoMap.TryGetValue(path, out info))
+            if (!s_infoMap.TryGetValue(path, out AudioInfo info))
             {
                 info = new AudioInfo { path = path };
                 info.src = GetAudioSource(go ?? s_go);
@@ -346,8 +338,7 @@ namespace ShibaInu
         /// <param name="fadeOut">是否淡出</param>
         public static void Stop(string path, bool fadeOut = false)
         {
-            AudioInfo info;
-            if (s_infoMap.TryGetValue(path, out info))
+            if (s_infoMap.TryGetValue(path, out AudioInfo info))
             {
                 MarkStop(path);
                 info.Stop(fadeOut);
@@ -363,8 +354,7 @@ namespace ShibaInu
         {
             foreach (string path in s_bgmList)
             {
-                AudioInfo info;
-                if (s_infoMap.TryGetValue(path, out info))
+                if (s_infoMap.TryGetValue(path, out AudioInfo info))
                     info.Stop(fadeOut);
             }
             s_bgmList.Clear();
@@ -379,8 +369,7 @@ namespace ShibaInu
         {
             foreach (string path in s_effList)
             {
-                AudioInfo info;
-                if (s_infoMap.TryGetValue(path, out info))
+                if (s_infoMap.TryGetValue(path, out AudioInfo info))
                     info.Stop(fadeOut);
             }
             s_effList.Clear();
@@ -420,8 +409,7 @@ namespace ShibaInu
         /// <param name="isDispatch">If set to <c>true</c> is dispatch.</param>
         public static void SetDispatchCompleteEvent(string path, bool isDispatch)
         {
-            AudioInfo info;
-            if (s_infoMap.TryGetValue(path, out info))
+            if (s_infoMap.TryGetValue(path, out AudioInfo info))
                 info.dispatchCompleteEvent = isDispatch;
         }
 

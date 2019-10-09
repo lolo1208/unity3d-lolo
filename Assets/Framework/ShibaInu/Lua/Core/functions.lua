@@ -4,7 +4,6 @@
 -- Author LOLO
 --
 
-
 local type = type
 local setmetatable = setmetatable
 local remove = table.remove
@@ -16,8 +15,8 @@ local _typeof = tolua.typeof
 local _typeof_class = typeof
 
 
---
 
+--[ Lua Class ]--
 
 --- 实现 lua class
 --- 调用父类方法 Class.super.Fn(self, ...)
@@ -84,6 +83,12 @@ end
 function isNaN(value)
     return value ~= value
 end
+
+--
+
+
+
+--[ Prefab Instantiate/Destroy ]--
 
 --- 创建并返回一个预设的实例
 --- 使用范例：
@@ -189,14 +194,26 @@ function Destroy(obj, delay)
     end
 end
 
-
-
---=-----------------------------[ Component ]-----------------------------=--
-
--- 获取 gameObject 下的组件
-GetComponent = {}
-
 --
+
+
+
+--[ Add/Get Component ]--
+
+--- 添加或获取 GameObject 下的组件
+---@param go UnityEngine.GameObject
+---@param ComponentClass any @ 组件的类，如：UnityEngine.UI.Text
+---@return any
+function AddOrGetComponent(go, ComponentClass)
+    local cType = _typeof_class(ComponentClass)
+    local c = go:GetComponent(cType)
+    if c == nil then
+        c = go:AddComponent(cType)
+    end
+    return c
+end
+
+GetComponent = {}
 
 --- 获取 gameObject 下的 UnityEngine.RectTransform 组件
 ---@param go UnityEngine.GameObject
@@ -284,25 +301,11 @@ function GetComponent.ThirdPersonCamera(go)
     return go:GetComponent(_typeof_class(ShibaInu.ThirdPersonCamera))
 end
 
-
 --
 
 
---- 添加或获取 GameObject 下的组件
----@param go UnityEngine.GameObject
----@param ComponentClass any @ 组件的类，如：UnityEngine.UI.Text
----@return any
-function AddOrGetComponent(go, ComponentClass)
-    local cType = _typeof_class(ComponentClass)
-    local c = go:GetComponent(cType)
-    if c == nil then
-        c = go:AddComponent(cType)
-    end
-    return c
-end
 
-
---=-----------------------------[ EventDispatcher ]-----------------------------=--
+--[ EventDispatcher ]--
 
 --- 获取 target 对应的 EventDispatcher 对象
 ---@param target table | UnityEngine.GameObject
@@ -378,9 +381,11 @@ function HasEventListener(target, type)
     return GetEventDispatcher(target):HasEventListener(type)
 end
 
+--
 
 
---=---------------------[ DelayedCall / CancelDelayedCall ]---------------------=--
+
+--[ DelayedCall / CancelDelayedCall ]--
 
 local _dc_list = {} ---@type table<number, Handler>
 local _dc_addList = {} ---@type table<number, Handler>
@@ -512,8 +517,8 @@ function handler(callback, caller, once, ...)
     return handler
 end
 
-
 --
+
 
 
 --

@@ -11,7 +11,8 @@ EventDispatcher = require("Events.EventDispatcher")
 
 
 
--- C# Class
+--[ C# Class ]--
+
 ---@type ShibaInu.ResManager
 Res = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.ResManager, __newindex = ShibaInu.ResManager })
 ---@type ShibaInu.AudioManager
@@ -20,9 +21,12 @@ LuaHelper = ShibaInu.LuaHelper
 --Stage = ShibaInu.Stage -- 已整合进 Stage.lua
 --Logger = ShibaInu.Logger -- 已整合进 Logger.lua
 
+--
 
 
--- UnityEngine
+
+--[ UnityEngine ]--
+
 GameObject = UnityEngine.GameObject
 Transform = UnityEngine.Transform
 Camera = UnityEngine.Camera
@@ -35,8 +39,12 @@ PlayerPrefs = UnityEngine.PlayerPrefs
 Shader = UnityEngine.Shader
 Material = UnityEngine.Material
 
+--
 
--- DOTween
+
+
+--[ DOTween ]--
+
 DOTween = DG.Tweening.DOTween ---@type DG.Tweening.DOTween
 DOTween_Enum = {
     ---@type DG.Tweening.AutoPlay
@@ -65,11 +73,13 @@ DOTween_Enum = {
 TweenParams = DG.Tweening.TweenParams ---@type DG.Tweening.TweenParams
 DOTween.defaultEaseType = DOTween_Enum.Ease.Linear
 
+--
 
 
--- variables
---- 是否在 LuaJIT 环境中
-isJIT = jit ~= nil
+
+--[ variables ]--
+
+isJIT = jit ~= nil -- 是否在 Lua JIT 环境中
 isPlaying = Application.isPlaying
 isEditor = Application.isEditor
 isWindowEditor = Application.platform == UnityEngine.RuntimePlatform.WindowsEditor
@@ -78,9 +88,12 @@ isMobile = Application.isMobilePlatform
 isAndroid = Application.platform == UnityEngine.RuntimePlatform.Android
 isIOS = isMobile and not isAndroid
 
+--
 
 
--- Lua Class
+
+--[ Lua Class ]--
+
 Constants = require("Core.Constants")
 Event = require("Events.Event")
 LoadResEvent = require("Events.LoadResEvent")
@@ -141,3 +154,6 @@ NumberText = require("Components.NumberText")
 
 Stats = require("UI.Stats")
 Profiler = require("Utils.Optimize.Profiler")
+
+--
+

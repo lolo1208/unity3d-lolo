@@ -5,50 +5,68 @@
 --
 
 local floor = math.floor
-local tostring = tostring
 
+
+--
 ---@class Loading.LoadingScene : Scene
 ---@field New fun():Loading.LoadingScene
+---
+---@field progressText UnityEngine.UI.Text
+---@field barRect UnityEngine.RectTransform
+---
 local LoadingScene = class("Loading.LoadingScene", Scene)
+LoadingScene.NAME = "Loading"
 
-local progressText ---@type UnityEngine.UI.Text
-local barRect ---@type UnityEngine.RectTransform
 
+--
 function LoadingScene:Ctor()
-    LoadingScene.super.Ctor(self, "Loading")
+    LoadingScene.super.Ctor(self, self.NAME)
 end
 
+
+--
 function LoadingScene:OnInitialize()
     LoadingScene.super.OnInitialize(self)
+    Stage.SetDontUnloadScene(self.assetName, true)
 
     local transform = GameObject.Find("SceneUICanvas").transform
-    progressText = GetComponent.Text(transform:Find("progressText").gameObject)
-    barRect = GetComponent.RectTransform(transform:Find("bar").gameObject)
+    self.progressText = GetComponent.Text(transform:Find("ProgressText").gameObject)
+    self.barRect = GetComponent.RectTransform(transform:Find("Bar").gameObject)
 
     AddEventListener(Stage, Event.UPDATE, self.UpdateHandler, self)
     AddEventListener(Stage, LoadSceneEvent.COMPLETE, self.LoadSceneCompleteHandler, self)
 end
 
+
+--
 --- 进度更新
 function LoadingScene:UpdateHandler(event)
     local p = Stage.GetProgress()
 
-    local size = barRect.sizeDelta
+    local size = self.barRect.sizeDelta
     size.x = 800 * p + 120
-    barRect.sizeDelta = size
+    self.barRect.sizeDelta = size
 
-    progressText.text = tostring(floor(p * 100)) .. "%"
+    self.progressText.text = floor(p * 100) .. "%"
 end
 
+
+--
 --- 加载完成
 function LoadingScene:LoadSceneCompleteHandler(event)
     self:OnDestroy()
 end
 
+
+
+--
 function LoadingScene:OnDestroy()
     LoadingScene.super.OnDestroy(self)
     RemoveEventListener(Stage, Event.UPDATE, self.UpdateHandler, self)
     RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, self.LoadSceneCompleteHandler, self)
 end
 
+
+
+--
 return LoadingScene
