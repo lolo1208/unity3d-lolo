@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "archiver": "^3.0.0",
-    "commander": "^2.19.0"
+    "commander": "^2.19.0",
+    "zip-local": "^0.3.4"
   }
 }

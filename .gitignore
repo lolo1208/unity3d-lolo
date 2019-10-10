@@ -25,6 +25,7 @@ Assets/Framework/3rdParty/StompyRobot.meta
 *.sln
 *.userprefs
 
+Tools/tmp
 Tools/build
 Tools/node_modules
 Tools/package-lock.json

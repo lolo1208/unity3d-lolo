@@ -9,14 +9,14 @@ const fs = require('fs');
 const crypto = require('crypto');
 const child_process = require('child_process');
 const args = require('commander');
-const config = require('./config');
+const config = require('./config/config');
 
 const common = module.exports = {};
 
 
 // 解析命令行参数
 args
-    .version('0.1.0')
+    .version('1.0.0')
     .option('-i, --id <value>', '本次打包唯一标识符')
     .option('-p, --projectName <value>', '项目名称')
     .option('-v, --version3 <value>', '3位版本号')

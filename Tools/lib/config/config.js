@@ -14,10 +14,4 @@ module.exports = {
 
     // Build（缓存）目录
     buildDir: '',
-
-    // svn 账号
-    svnUsername: '',
-    // svn 密码
-    svnPassword: '',
-
 };
