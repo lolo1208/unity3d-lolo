@@ -172,13 +172,14 @@ buildUnity.useLibraryCache = function () {
 
 /**
  * 将 Unity Library 目录缓存起来
+ * @param useNativeLibrary
  */
-buildUnity.cacheLibrary = function () {
+buildUnity.cacheLibrary = function (useNativeLibrary) {
     if (fs.existsSync(common.libraryDir) && !fs.existsSync(common.libraryCacheDir)) {
         fs.renameSync(common.libraryDir, common.libraryCacheDir);
         logger.append('- 已缓存 Unity Library 目录');
 
-        if (fs.existsSync(common.libraryNativeDir))
+        if (useNativeLibrary !== false && fs.existsSync(common.libraryNativeDir))
             fs.renameSync(common.libraryNativeDir, common.libraryDir);
     }
 };

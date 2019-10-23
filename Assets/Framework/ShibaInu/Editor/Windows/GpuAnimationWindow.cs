@@ -411,11 +411,10 @@ namespace ShibaInu
                         "动画名称:{0}, 时长:{1:N3}s, 采样帧频:{2}, 总帧数:{3}, 纹理尺寸:{4}x{5}",
                         aniName, aniLen, fps, frameNum, width, height
                     ));
-
-
-                    // 继续导出
-                    ExportNext();
                 }
+
+                // 继续导出
+                ExportNext();
             }
             catch (Exception e)
             {

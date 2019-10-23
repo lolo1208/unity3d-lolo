@@ -9,7 +9,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const args = require('commander');
-const config = require('./config');
+const config = require('./config/config');
 
 
 // 解析命令行参数

@@ -6,6 +6,8 @@
 
 const fs = require('fs');
 const common = require('./common');
+const versionControl = require('./versionControl');
+
 
 const progress = module.exports = {};
 
@@ -14,7 +16,7 @@ const progress = module.exports = {};
 let data = progress.data = {
     status: 1,// 整体状态。0:打包成功，1:正在进行中，2:打包出错
     totalTime: 0,// 总耗时
-    svn: [0, 0, 0],// 项目检出或更新，SVN / Git
+    svn: [0, 0, 0],// 项目检出或更新，svn / git
     manifest: [0, 2, 0],// 0:未创建，1:已创建，2:已读取
     lua: [0, 1, 0],
     scene: [0, 1, 0],
@@ -84,6 +86,16 @@ let updateTime = function () {
 progress.status = function (status) {
     data.status = status;
     fs.writeFileSync(common.progressLogFile, progress.getData());
+};
+
+
+/**
+ * 更新已完成 svn/git 项目更新或检出数量
+ * @param count
+ */
+progress.versionControl = function (count) {
+    data.svn[0] = count;
+    update();
 };
 
 

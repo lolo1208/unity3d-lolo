@@ -4,42 +4,171 @@
  */
 
 
-// const common = require('./common');
-// const logger = require('./logger');
-// const progress = require('./progress');
-// const config = require('./config/config');
-
-const svnCfg = require('./config/test.svn');
+const fs = require('fs');
+const path = require('path');
+const child_process = require('child_process');
+const common = require('./common');
+const logger = require('./logger');
+const progress = require('./progress');
+const buildUnity = require('./buildUnity')
+const versionControl = require('./versionControl');
+const svnCfg = require('./config/' + common.svnOrGitConfigName);
 
 
 const svn = module.exports = {};
 
+const cmdTypes = {checkout: 'ckeckout', update: 'update', revert: 'revert'};
+
+let workError = null;// 更新或检出项目时出现的错误
+let completeCount = 0;// SVN 检出或更新已完成项目数
 let callback = null;// 全部完成时的回调
-let completeCount = 0;// SVN 检出或更新已完成数
 
 
 svn.start = function (cb) {
+    buildUnity.cacheLibrary(false);
     callback = cb;
-    // progress.setTiming(progress.TT_SVN, true);
+    progress.data.svn[1] = svnCfg.list.length;
+    progress.versionControl(completeCount);
+    progress.setTiming(progress.TT_SVN, true);
+    logger.append('- 开始检出或更新 SVN 项目');
 
-    completeCount = 0;
-    for (let i = 0; i < svnCfg.list.length; i++)
-        createWork(svnCfg.list[i]);
+    for (let i = svnCfg.list.length - 1; i >= 0; i--)
+        createWork(svnCfg.list[i], `work${i + 1}/`);
 };
 
 
 /**
- * 创建一个 svn 进程，检出或更新
+ * 创建一个 svn 工作进程
  * @param data
+ * @param workDirPath
  */
-let createWork = function (data) {
-    console.log(data.dest);
+let createWork = function (data, workDirPath) {
+    let args = {
+        url: data.url,
+        dir: common.sourceDir + workDirPath,
+        username: data.username !== undefined ? data.username : svnCfg.username,
+        password: data.password !== undefined ? data.password : svnCfg.password,
+    };
+    let destDir = path.normalize(common.sourceProjectDir + data.dest + '/');
 
-    // common.projectBuildDir
+    // 临时目录存在，直接删除
+    if (fs.existsSync(args.dir))
+        common.removeDir(args.dir);
+
+
+    // 更新项目
+    if (fs.existsSync(destDir)) {
+        fs.renameSync(destDir, args.dir);// 先移动到工作目录
+
+        logger.append(`* 开始更新 ${args.url}`);
+        // 先做还原操作
+        execSvnCmd(cmdTypes.revert, args, (err) => {
+            if (err) {
+                workError = err;
+                logger.append(`* 还原 ${args.url} 失败`);
+                endWork();
+            }
+            else {
+                // 再做更新操作
+                execSvnCmd(cmdTypes.update, args, (err) => {
+                    if (err) {
+                        workError = err;
+                        logger.append(`* 更新 ${args.url} 失败`);
+                    } else {
+                        logger.append(`* 更新 ${args.url} 完成`);
+                    }
+                    endWork();
+                });
+            }
+        });
+    }
+
+
+    // 检出项目
+    else {
+        logger.append(`* 开始检出 ${args.url}`);
+        execSvnCmd(cmdTypes.checkout, args, (err) => {
+            if (err) {
+                workError = err;
+                logger.append(`* 检出 ${args.url} 失败`);
+            } else {
+                logger.append(`* 检出 ${args.url} 完成`);
+            }
+            endWork();
+        });
+    }
 };
 
 
-svn.start(() => {
-    console.log("OK!!!")
-});
+let execSvnCmd = function (type, args, callback) {
+    let cmd;
+    let [url, dir, username, password] = [args.url, args.dir, args.username, args.password];
+    switch (type) {
+        case cmdTypes.checkout:
+            cmd = `svn checkout ${url} ${dir} --username ${username} --password ${password}`;
+            break;
+        case cmdTypes.update:
+            cmd = `svn update ${dir} --username ${username} --password ${password}`;
+            break;
+        case cmdTypes.revert:
+            cmd = `svn revert -R ${dir}`;
+    }
+
+    child_process.exec(cmd, {maxBuffer: 1024 * 1024}, (err, stdout, stderr) => {
+        // 添加 svn 日志
+        versionControl.appendLog(`<b>##[ ${url} ]##</b>`);
+        versionControl.appendLog(`<b>${cmd.slice(0, cmd.lastIndexOf(' --password'))}</b>`);
+        versionControl.appendLog('<p class="content-text-small">');
+
+        versionControl.appendLog('<b>[stdout]:</b>');
+        if (stdout === '')
+            versionControl.appendLog('none');
+        else
+            versionControl.appendLog(stdout.replace(new RegExp(dir, 'g'), '| '));
+
+        versionControl.appendLog('<b>[stderr]:</b>');
+        if (stderr === '')
+            versionControl.appendLog('none');
+        else
+            versionControl.appendLog(`<p class="content-text-error">${stderr}</p>`);
+
+        versionControl.appendLog('</p>', ' ');
+
+        callback(err);
+    });
+};
+
+
+/**
+ * 项目检出或更新结束
+ */
+let endWork = function () {
+    progress.versionControl(++completeCount);
+
+    // all complete
+    if (completeCount === svnCfg.list.length) {
+        logger.append('- 检出或更新 SVN 项目已全部完成');
+        progress.setTiming(progress.TT_SVN, false);
+
+        for (let i = 0; i < svnCfg.list.length; i++) {
+            // 将 work 目录改名为 dest 目录
+            try {
+                let workDir = `${common.sourceDir}work${i + 1}/`;
+                let destDir = path.normalize(common.sourceProjectDir + svnCfg.list[i].dest + '/');
+                fs.renameSync(workDir, destDir);
+            } catch (err) {
+                workError = err;
+            }
+        }
+
+        // 抛出错误
+        if (workError !== null) {
+            logger.append('- 检出或更新 SVN 过程中有错误产生');
+            throw workError;
+
+        } else {
+            callback();
+        }
+    }
+};
 

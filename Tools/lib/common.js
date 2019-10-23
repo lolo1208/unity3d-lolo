@@ -24,7 +24,8 @@ args
     .option('-n, --notEncode', '是否不需要编码 lua 文件')
     .option('-g, --generatePlatformProject', '是否生成目标平台项目，只支持: ios, android')
     .option('-u, --unityVersion <value>', '使用的 unity 版本号，默认值为: config.unityVersion')
-    .option('-f, --projectPath <value>', '项目路径。如果传入了该参数，将会忽略版本检出和更新')
+    .option('-f, --projectPath <value>', '项目路径。如果传入了该参数，将会忽略版本检出和更新（-s 参数）')
+    .option('-s, --svnOrGitConfigName <value>', 'svn 或 git 配置名称')
     .option('-c, --platformProject <value>', '目标平台项目路径。如果传入了该参数，-g 参数将为 true')
     .option('-d, --destDir <value>', '将生成的资源拷贝至该目录')
     .option('-z, --packZip <value>', '传入值为 true，表示生成 zip 文件，并放在缓存目录中。也可以传入完整 zip 路径，将按该路径生成')
@@ -40,6 +41,7 @@ common.notEncode = args.notEncode;                              // -n
 common.generatePlatformProject = args.generatePlatformProject;  // -g
 common.unityVersion = args.unityVersion;                        // -u
 common.projectPath = args.projectPath;                          // -f
+common.svnOrGitConfigName = args.svnOrGitConfigName;            // -s
 common.platformProject = args.platformProject;                  // -c
 common.destDir = args.destDir;                                  // -d
 common.packZip = args.packZip;                                  // -z
@@ -84,6 +86,10 @@ common.resDir = `${common.projectBuildDir}res/${common.targetPlatform}/`;
 common.zipDir = `${common.projectBuildDir}zip/${common.targetPlatform}/`;
 // 版本资源清单目录
 common.resManifestDir = `${common.resDir}manifest/`;
+// 检出 svn/git 的本地目录
+common.sourceDir = `${common.projectBuildDir}source/`;
+// 检出 svn/git 后的项目目录
+common.sourceProjectDir = `${common.sourceDir}project/`;
 // 缓存目录
 common.cacheDir = `${common.projectBuildDir}cache/`;
 // lua 缓存目录
@@ -137,6 +143,8 @@ common.sceneMD5File = `${common.cacheDir}sceneMD5.json`;
 common.abDependenciesFile = `${common.cacheDir}dependencies.json`;
 // 日志文件路径
 common.logFile = `${common.logDir}build.log`;
+// svn/git 更新内容日志文件路径
+common.versionLogFile = `${common.logDir}version.log`;
 // 打包清单文件路径
 common.manifestFile = `${common.logDir}manifest.log`;
 // 打包进度文件路径
@@ -171,8 +179,9 @@ common.resManifestFile = `${common.resManifestDir}${common.version4}.manifest`;
 // unity 项目路径
 if (common.projectPath !== undefined)
     common.projectDir = common.projectPath;
-// else
-//     common.projectDir = '/Users/limylee/LOLO/unity/projects/ShibaInu/';
+else {
+    common.projectDir = common.sourceProjectDir;
+}
 
 
 // 调用 Unity 程序命令行模版

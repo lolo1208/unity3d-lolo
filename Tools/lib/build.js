@@ -6,6 +6,7 @@
 
 const common = require('./common');
 const logger = require('./logger');
+const versionControl = require('./versionControl');
 const manifest = require('./manifest');
 const encodeLua = require('./encodeLua');
 const buildUnity = require('./buildUnity');
@@ -28,6 +29,14 @@ process.on('uncaughtException', function (err) {
  * 入口，流程
  */
 function main() {
+
+    let svn_git = () => {
+        versionControl.start(() => {
+            buildUnity.useLibraryCache();
+            get_manifest();
+            // common.exit(1);
+        });
+    };
 
     let get_manifest = () => {
         manifest.start(() => {
@@ -89,9 +98,7 @@ function main() {
         common.exit(0);
     };
 
-
-    buildUnity.useLibraryCache();
-    get_manifest();
+    svn_git();
 }
 
 main();

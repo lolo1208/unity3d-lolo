@@ -105,6 +105,15 @@ html, body {
     overflow-y: auto;
 }
 
+.content-text-small {
+    font-size: 12px;
+    line-height: 20px;
+}
+
+.content-text-error {
+    color: rgb(202, 60, 60);
+}
+
 #downloadBtn {
     display: inline-block;
     visibility: hidden;

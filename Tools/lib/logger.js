@@ -16,9 +16,9 @@ let list = [];
 
 // 先创建文件，写入环境和命令行信息
 common.writeFileSync(common.logFile,
-    ['[COMMAND LINE ARGUMENTS]:'].concat(process.argv).concat(
+    ['<b>[COMMAND LINE ARGUMENTS]:</b>'].concat(process.argv).concat(
         '',
-        '[ENVIRONMENTS]:',
+        '<b>[ENVIRONMENTS]:</b>',
         'id = ' + common.id,
         'projectName = ' + common.projectName,
         'targetPlatform = ' + common.targetPlatform,
@@ -34,7 +34,7 @@ common.writeFileSync(common.logFile,
         'projectBuildDir = ' + common.projectBuildDir,
         'unityPath = ' + common.unityPath,
         '',
-        '[LOGGING]:'
+        '<b>[LOGGING]:</b>'
     ).join('\n')
 );
 

@@ -111,8 +111,10 @@ function showLog(element) {
             scrollToBottom();
             delayRefreshLog();
         }
-        else
+        else {
             autoScrollDiv.style.visibility = "hidden";
+            logContent.scrollTop = 0;
+        }
 
     });
 }

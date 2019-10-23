@@ -6,31 +6,31 @@
 
 module.exports = {
 
-    // 默认 SVN 账号
+    // 默认 svn 账号
     username: 'lolo',
-    // 默认 SVN 密码
+    // 默认 svn 密码
     password: 'lolo',
 
     list: [
 
-        // 主项目
+        // 主工程项目（列表第一条必须为主工程）
         {
-            url: 'http://dr-js-luozc:8080/svn/zzsf/code/trunk/zzsf/',
-            dest: '${PROJECT}',
-            username: '', // 也可以单独指定 SVN 账号密码
-            password: '',
+            url: 'http://dr-js-luozc:8080/svn/zzsf/test/main',
+            dest: '',
+            username: undefined, // 也可以单独指定 svn 账号密码
+            password: undefined,
         },
 
-        // lua 代码
+        // lua 代码项目
         {
-            url: 'http://dr-js-luozc:8080/svn/zzsf/code/trunk/zzsf/',
-            dest: '${PROJECT}/Assets/Lua',
+            url: 'http://dr-js-luozc:8080/svn/zzsf/test/lua',
+            dest: 'Assets/Lua/',
         },
 
-        // 资源
+        // 资源项目
         {
-            url: 'http://dr-js-luozc:8080/svn/zzsf/code/trunk/zzsf/',
-            dest: '${PROJECT}/Assets/Res',
+            url: 'http://dr-js-luozc:8080/svn/zzsf/test/res',
+            dest: 'Assets/Res',
         },
 
     ],
