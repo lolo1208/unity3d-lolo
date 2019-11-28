@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,12 +12,6 @@ namespace ShibaInu
     /// </summary>
     public static class ShibaInuMenu
     {
-        //[MenuItem("ShibaInu/TEST", false, 1)]
-        //private static void Test()
-        //{
-        //    GpuAnimationWindow.Test();
-        //}
-
 
         [MenuItem("ShibaInu/Run the Application", false, 101)]
         private static void RunTheApplication()
@@ -126,6 +121,49 @@ namespace ShibaInu
         {
             return File.Exists(Constants.ABModeFilePath);
         }
+
+
+
+
+        #region Re-import Assets With Default Setting
+
+        [MenuItem("Assets/Reimport With Default Setting", false, 40)]
+        private static void ReimportAsset()
+        {
+            string assetPath = AssetDatabase.GetAssetPath(Selection.activeObject);
+            if (Directory.Exists(assetPath))
+                ReimportAssetDir(assetPath);
+            else
+                ReimportAssetFile(assetPath);
+        }
+
+        private static void ReimportAssetDir(string dirPath)
+        {
+            DirectoryInfo info = new DirectoryInfo(dirPath);
+
+            FileInfo[] files = info.GetFiles();
+            foreach (FileInfo fi in files)
+                ReimportAssetFile(fi.FullName);
+
+            DirectoryInfo[] dirs = info.GetDirectories();
+            foreach (DirectoryInfo di in dirs)
+                ReimportAssetDir(di.FullName);
+        }
+
+        private static void ReimportAssetFile(string path)
+        {
+            path = path.Replace(Directory.GetCurrentDirectory(), "");
+            if (path.StartsWith("/", StringComparison.Ordinal) || path.StartsWith("\\", StringComparison.Ordinal))
+                path = path.Substring(1);
+            AssetImporter importer = AssetImporter.GetAtPath(path);
+            if (importer != null)
+            {
+                importer.userData = "";
+                importer.SaveAndReimport();
+            }
+        }
+
+        #endregion
 
 
         //

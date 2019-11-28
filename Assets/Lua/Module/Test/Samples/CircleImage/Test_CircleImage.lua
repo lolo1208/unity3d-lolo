@@ -24,7 +24,7 @@ function Test_CircleImage:OnInitialize()
     self.cdImg = GetComponent.CircleImage(transform:Find("circleImg4").gameObject)
     self.colorImg = GetComponent.CircleImage(transform:Find("circleImg6").gameObject)
 
-    self.colorImg:DOColor(Color.red, 1.5):SetLoops(-1, DOTween_Enum.LoopType.Yoyo)
+    self.colTweener = self.colorImg:DOColor(Color.red, 1.5):SetLoops(-1, DOTween_Enum.LoopType.Yoyo)
 
     self:EnableDestroyListener()
     AddEventListener(Stage, Event.UPDATE, self.OnUpdate_Stage, self)
@@ -51,6 +51,7 @@ end
 
 function Test_CircleImage:OnDestroy()
     RemoveEventListener(Stage, Event.UPDATE, self.OnUpdate_Stage, self)
+    self.colTweener:Kill()
 end
 
 return Test_CircleImage

@@ -211,8 +211,8 @@ common.exit = function (code) {
 
     let logger = require('./logger');
     let progress = require('./progress');
-    logger.append('\n[PROGRESS]:', progress.getData());
-    logger.append('\n[EXIT CODE]:', code);
+    logger.append('\n<b>[PROGRESS]:</b>', progress.getData());
+    logger.append('\n<b>[EXIT CODE]:</b>', code);
     logger.updateNow();
     progress.status(code);
 
