@@ -109,6 +109,7 @@ namespace ShibaInu
             TimeUtil.Update();
             Timer.Update();
             UdpSocket.Update();
+            NetHelper.Update();
 
 
             lock (LOCK_OBJECT)

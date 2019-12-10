@@ -223,6 +223,7 @@ namespace ShibaInu
         /// <summary>
         /// Update KCP
         /// </summary>
+        [NoToLua]
         public void UpdateKcp()
         {
             if (m_kcp == null)
@@ -248,6 +249,7 @@ namespace ShibaInu
         /// <summary>
         /// 更新所有活跃的 UdpSocket
         /// </summary>
+        [NoToLua]
         public static void Update()
         {
             for (int i = s_updateList.Count - 1; i >= 0; i--)

@@ -192,7 +192,7 @@ namespace ShibaInu
             if (IsImported()) return;
 
             ModelImporter importer = assetImporter as ModelImporter;
-            //importer.animationCompression = ModelImporterAnimationCompression.Optimal;
+            importer.animationCompression = ModelImporterAnimationCompression.Optimal;
             importer.meshCompression = ModelImporterMeshCompression.Medium;
             //importer.importNormals = ModelImporterNormals.None;
             //importer.importMaterials = false;

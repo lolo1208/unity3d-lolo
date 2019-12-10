@@ -69,7 +69,7 @@ namespace ShibaInu
             }
             s_changedTimers.Clear();
 
-            UInt32 curTime = TimeUtil.timeMsec;
+            uint curTime = TimeUtil.timeMsec;
             bool ignorable;
             int delay;
             foreach (Timer timer in s_runningTimers)

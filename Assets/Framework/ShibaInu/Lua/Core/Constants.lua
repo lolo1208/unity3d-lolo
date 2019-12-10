@@ -22,7 +22,6 @@ local Constants = {
     LAYER_TOP = "topLayer", -- 顶级层
 
 
-
     -- HTTP 相关常量
     HTTP_EXCEPTION_CREATE_THREAD = -1, -- HTTP 异常状态码：创建线程时发生异常
     HTTP_EXCEPTION_SEND_REQUEST = -2, -- HTTP 异常状态码：发送请求时发生异常
@@ -35,6 +34,11 @@ local Constants = {
     HTTP_METHOD_GET = "GET", -- 请求方式：GET
     HTTP_METHOD_HEAD = "HEAD", -- 请求方式：只获取 response handers (content length)
 
+
+    -- 网络类型
+    NET_TYPE_NOT = 0, -- 无网络
+    NET_TYPE_WIFI = 1, -- WiFi
+    NET_TYPE_MOBILE = 2, -- 4G
 
 
     -- 错误信息

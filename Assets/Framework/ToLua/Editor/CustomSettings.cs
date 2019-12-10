@@ -103,7 +103,7 @@ public static class CustomSettings
         _GT(typeof(TweenerCore<Quaternion, Vector3, QuaternionOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Quaternion").SetLibName ("DG_Tweening_Plugins_Options_Quaternion"),
         _GT(typeof(TweenerCore<Color, Color, ColorOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Color").SetLibName ("DG_Tweening_Plugins_Options_Color"),
 
-      
+
         // UnityEngine
         _GT(typeof(Behaviour)),
         _GT(typeof(MonoBehaviour)),
@@ -183,9 +183,10 @@ public static class CustomSettings
 
         // ShibaInu
         _GT(typeof(Stage)),
-        _GT(typeof(LuaHelper)),
         _GT(typeof(ResManager)),
         _GT(typeof(AudioManager)),
+        _GT(typeof(LuaHelper)),
+        _GT(typeof(NetHelper)),
 
         _GT(typeof(HttpRequest)),
         _GT(typeof(HttpDownload)),

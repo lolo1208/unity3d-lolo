@@ -17,6 +17,9 @@ EventDispatcher = require("Events.EventDispatcher")
 Res = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.ResManager, __newindex = ShibaInu.ResManager })
 ---@type ShibaInu.AudioManager
 Audio = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.AudioManager, __newindex = ShibaInu.AudioManager })
+---@type ShibaInu.NetHelper
+NetHelper = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.NetHelper, __newindex = ShibaInu.NetHelper })
+
 LuaHelper = ShibaInu.LuaHelper
 --Stage = ShibaInu.Stage -- 已整合进 Stage.lua
 --Logger = ShibaInu.Logger -- 已整合进 Logger.lua
@@ -107,6 +110,7 @@ TouchEvent = require("Events.TouchEvent")
 DataEvent = require("Events.DataEvent")
 ListEvent = require("Events.ListEvent")
 PageEvent = require("Events.PageEvent")
+NetEvent = require("Events.NetEvent")
 HttpEvent = require("Events.HttpEvent")
 SocketEvent = require("Events.SocketEvent")
 AnimationEvent = require("Events.AnimationEvent")

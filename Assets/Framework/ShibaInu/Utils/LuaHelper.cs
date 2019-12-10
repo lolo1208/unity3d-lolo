@@ -130,7 +130,7 @@ namespace ShibaInu
         /// <param name="parent">Parent.</param>
         public static void SetParent(Transform target, Transform parent)
         {
-            SetLayerRecursively(target, parent.gameObject.layer);
+            //SetLayerRecursively(target, parent.gameObject.layer);
             target.SetParent(parent, true);
             target.localScale = Vector3.one;
             target.localPosition = Vector3.zero;

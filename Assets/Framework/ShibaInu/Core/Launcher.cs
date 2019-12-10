@@ -98,6 +98,7 @@ namespace ShibaInu
             ViewPager.ClearReference();
             TcpSocket.ClearReference();
             UdpSocket.ClearReference();
+            NetHelper.ClearReference();
             DestroyEventDispatcher.ClearReference();
             PointerEventDispatcher.ClearReference();
             TriggerEventDispatcher.ClearReference();

@@ -12,7 +12,7 @@ local FpsSampler = require("Utils.Optimize.FpsSampler")
 ---@class Stats
 local Stats = {}
 
-Stats.netDelay = 0 --- 网络延时（毫秒）
+Stats.netDelay = "N/A" --- 网络延时（毫秒）
 
 local _go ---@type UnityEngine.GameObject @ 创建的 GameObject（值为 nil 表示还未显示）
 local _text ---@type UnityEngine.UI.Text

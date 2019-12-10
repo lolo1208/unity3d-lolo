@@ -54,7 +54,7 @@ namespace ShibaInu
         /// <summary>
         /// 初始化
         /// </summary>
-        [NoToLuaAttribute]
+        [NoToLua]
         public static void Initialize()
         {
             s_dontDestroyList.Clear();

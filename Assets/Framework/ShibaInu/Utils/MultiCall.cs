@@ -51,7 +51,7 @@ namespace ShibaInu
         /// 执行调用
         /// </summary>
         /// <param name="data">[可选] 附带的数据</param>
-        public void Call(T data = default(T))
+        public void Call(T data = default)
         {
             // 先移除
             foreach (var observer in m_removeList)

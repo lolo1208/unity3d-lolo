@@ -203,7 +203,7 @@ namespace ShibaInu
 
                     // 接收数据，清空 buffer，继续等待异步 OnRead
                     m_msgProtocol.Receive(m_readBuffer, bytesRead);
-                    //					Array.Clear (m_readBuffer, 0, BUFFER_SIZE);
+                    //Array.Clear (m_readBuffer, 0, BUFFER_SIZE);
                     m_stream.BeginRead(m_readBuffer, 0, BUFFER_SIZE, new AsyncCallback(OnRead), client);
 
                 }
