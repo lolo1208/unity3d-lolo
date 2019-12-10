@@ -222,8 +222,7 @@ namespace ShibaInu
             {
                 if (e is WebException)
                 {
-                    HttpWebResponse response = (e as WebException).Response as HttpWebResponse;
-                    if (response != null)
+                    if ((e as WebException).Response is HttpWebResponse response)
                         InvokeCallback((int)response.StatusCode, e.Message);
                     else
                         InvokeCallback(HttpExceptionStatusCode.GET_RESPONSE, e.Message);
@@ -263,9 +262,12 @@ namespace ShibaInu
         /// <summary>
         /// 取消正在发送的请求
         /// </summary>
-        public void Abort()
+        /// <param name="cancelCallBack">是否注销已注册的回调</param>
+        public void Abort(bool cancelCallBack = true)
         {
             requeting = false;
+            if (cancelCallBack)
+                callback = null;
             if (m_request != null)
                 m_request.Abort();
         }

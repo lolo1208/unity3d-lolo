@@ -138,10 +138,25 @@ public class ShibaInu_HttpRequestWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
-			ShibaInu.HttpRequest obj = (ShibaInu.HttpRequest)ToLua.CheckObject<ShibaInu.HttpRequest>(L, 1);
-			obj.Abort();
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				ShibaInu.HttpRequest obj = (ShibaInu.HttpRequest)ToLua.CheckObject<ShibaInu.HttpRequest>(L, 1);
+				obj.Abort();
+				return 0;
+			}
+			else if (count == 2)
+			{
+				ShibaInu.HttpRequest obj = (ShibaInu.HttpRequest)ToLua.CheckObject<ShibaInu.HttpRequest>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				obj.Abort(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.HttpRequest.Abort");
+			}
 		}
 		catch (Exception e)
 		{
