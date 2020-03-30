@@ -312,8 +312,7 @@ namespace ShibaInu
             {
                 if (e is WebException)
                 {
-                    HttpWebResponse response = (e as WebException).Response as HttpWebResponse;
-                    if (response != null)
+                    if ((e as WebException).Response is HttpWebResponse response)
                         InvokeCallback((int)response.StatusCode, e.Message);
                     else
                         InvokeCallback(HttpExceptionStatusCode.GET_RESPONSE, e.Message);

@@ -1,4 +1,7 @@
-﻿using System;
+﻿//#define REINPORT_LUA_ON_PLAYING
+
+
+using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -201,6 +204,44 @@ namespace ShibaInu
             importer.isReadable = false;
             MarkImported();
         }
+
+
+
+        #region 在运行时动态更新（re-require）lua 文件
+#if REINPORT_LUA_ON_PLAYING
+
+        /// 动态更新的 lua 代码
+        private const string UPDATE_LUA = @"
+            local oldtable = package.loaded[{0}] or package.preload[{0}]
+            if oldtable ~= nil then
+                for k, v in pairs(oldtable) do
+                    oldtable[k] = nil
+                end
+                package.loaded[{0}] = nil
+                package.preload[{0}] = nil
+                local newtable = require({0})
+                setmetatable(oldtable, newtable)
+                oldtable.__index = newtable
+            end
+        ";
+
+        static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
+        {
+            if (!Application.isPlaying) return;
+
+            foreach (string assetPath in importedAssets)
+            {
+                if (!assetPath.EndsWith(".lua", StringComparison.Ordinal)) continue;
+                string luaPath = assetPath.Replace("\\", ".").Replace("/", ".");
+                if (!luaPath.StartsWith("Assets.Lua", StringComparison.Ordinal)) continue;
+                luaPath = luaPath.Substring(11, luaPath.Length - 15);// 去掉前面 "Assets.Lua." 和后面 ".lua"
+                luaPath = "\"" + luaPath + "\"";
+                Common.luaMgr.state.DoString(string.Format(UPDATE_LUA, luaPath));
+            }
+        }
+
+#endif
+        #endregion
 
 
         //

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 
@@ -49,6 +50,7 @@ namespace ShibaInu
         private static readonly List<AssetBundleInfo> s_abiList = new List<AssetBundleInfo>();
         /// abi 映射，路径（资源目录路径，不是 ab 文件路径）为 key
         private static readonly Dictionary<string, AssetBundleInfo> s_abiMap = new Dictionary<string, AssetBundleInfo>();
+
         /// 打包规则 - 需要被忽略的目录列表
         private static readonly HashSet<string> s_ignoreRules = new HashSet<string>();
         /// 打包规则 - 子目录需要被合并打包的目录列表
@@ -461,8 +463,15 @@ namespace ShibaInu
                     string scene = sceneList[int.Parse(index)];
                     string[] levels = { scene };
                     string outputPath = outputScene + Path.GetFileName(scene);
-                    BuildPipeline.BuildPlayer(levels, outputPath, buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
-                    WriteOut(outFilePath, "build scene complete," + scene + "," + DateTime.Now.Subtract(time).TotalMilliseconds);
+                    BuildReport report = BuildPipeline.BuildPlayer(levels, outputPath, buildTarget, BuildOptions.BuildAdditionalStreamedScenes);
+                    if (report.summary.result == BuildResult.Succeeded)
+                        WriteOut(outFilePath, "build scene complete," + scene + "," + DateTime.Now.Subtract(time).TotalMilliseconds);
+                    else
+                    {
+                        WriteOut(outFilePath, "build scene error," + scene + "," + report.summary.result);
+                        EditorApplication.Exit(1);
+                        return;
+                    }
                 }
                 WriteOut(outFilePath, "build scene all complete," + DateTime.Now.Subtract(timeScene).TotalMilliseconds);
             }

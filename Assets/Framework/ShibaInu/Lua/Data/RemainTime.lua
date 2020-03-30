@@ -23,7 +23,7 @@ end
 --
 --- 设置剩余时间
 ---@param time number @ 时间值
----@param type string @ 时间类型，默认：TimeUtil.TYPE_MS
+---@param type string @ 时间类型，默认：毫秒
 ---@return void
 function RemainTime:SetTime(time, type)
     time = time or 0
@@ -36,7 +36,7 @@ end
 
 --
 --- 获取剩余时间，返回的最小值为 0
----@param type string @ 时间类型，默认：TimeUtil.TYPE_MS
+---@param type string @ 时间类型，默认：毫秒
 ---@return number
 function RemainTime:GetTime(type)
     type = type or TimeUtil.TYPE_MS

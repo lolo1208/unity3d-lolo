@@ -4,13 +4,13 @@
 -- Author LOLO
 --
 
+
+--
 ---@class TimeUtil
 local TimeUtil = {}
 
 
-
---=------------------------------[ static ]------------------------------=--
-
+--
 --- 时间类型：毫秒
 TimeUtil.TYPE_MS = "ms"
 --- 时间类型：秒
@@ -21,11 +21,13 @@ TimeUtil.TYPE_M = "m"
 TimeUtil.TYPE_H = "h"
 
 
+--
 --- 当前程序已运行精确时间（秒.毫秒），不会受到 Time.timeScale 影响。由 Update / LateUpdate / FixedUpdate 事件更新
 TimeUtil.time = 0
 --- 当前程序已运行时间（毫秒）
 TimeUtil.timeMsec = 0
 
+--
 --- 当前程序已运行帧数（ value = UnityEngine.Time.frameCount ）
 TimeUtil.frameCount = UnityEngine.Time.frameCount
 --- 距离上一帧的时间（秒.毫秒）
@@ -35,6 +37,7 @@ TimeUtil.timeSinceLevelLoad = 0
 
 
 
+--
 --- 转换时间类型
 ---@param typeFrom string
 ---@param typeTo string
@@ -58,16 +61,15 @@ function TimeUtil.Convert(typeFrom, typeTo, time)
     if typeTo == TimeUtil.TYPE_S then
         return time / 1000
     elseif typeTo == TimeUtil.TYPE_M then
-        return time / 60000;
+        return time / 60000
     elseif typeTo == TimeUtil.TYPE_H then
-        return time / 3600000;
+        return time / 3600000
     end
 
     return time
 end
 
---=----------------------------------------------------------------------=--
 
 
-
+--
 return TimeUtil

@@ -107,6 +107,10 @@ let readUnityOut = function () {
                             logger.append(`* 打包场景完成：${args[1]} 耗时：${parseInt(args[2]) / 1000}s`);
                             break;
 
+                        case 'build scene error':
+                            logger.append(`* 打包场景失败：${args[1]} -Result: ${args[2]}`);
+                            break;
+
                         case 'build scene all complete':
                             progress.setTiming(progress.TT_SCENE, false);
                             progress.data.scene[2] = parseInt(args[1]);
@@ -115,7 +119,6 @@ let readUnityOut = function () {
                             common.writeFileSync(common.sceneMD5File, JSON.stringify(sceneCache, null, 2));
                             break;
 
-                        //
 
                         case 'build assetbundle start':
                             progress.setTiming(progress.TT_AB, true);

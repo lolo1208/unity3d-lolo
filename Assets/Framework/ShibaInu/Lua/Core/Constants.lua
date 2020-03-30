@@ -41,6 +41,13 @@ local Constants = {
     NET_TYPE_MOBILE = 2, -- 4G
 
 
+    -- 框架中用到到语言包 key
+    LKEY_SFU_BYTE = "string.format.unit.byte",
+    LKEY_SFU_KG = "string.format.unit.kb",
+    LKEY_SFU_MB = "string.format.unit.mb",
+    LKEY_SFU_GB = "string.format.unit.gb",
+
+
     -- 错误信息
     E1001 = "请勿创建全局变量或全局函数！",
 

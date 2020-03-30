@@ -10,7 +10,6 @@ namespace ShibaInu
     [AddComponentMenu("ShibaInu/UI Camera", 201)]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Camera))]
-    [RequireComponent(typeof(UnityEngine.EventSystems.PhysicsRaycaster))]
     public class UICamera : MonoBehaviour
     {
 

@@ -70,6 +70,7 @@ function TestScene:OnInitialize()
     --
     --Stage.uiCanvas.worldCamera.enabled = false
     --uiCanvasTra.gameObject:SetActive(false)
+
 end
 
 

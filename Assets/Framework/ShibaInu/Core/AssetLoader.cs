@@ -18,7 +18,7 @@ namespace ShibaInu
         private static Coroutine s_coUnload;
 
         /// 需加载 AssetBundle 的 AssetInfo 列表
-        private static readonly Queue<AssetInfo> s_loadInfoList = new Queue<AssetInfo>();
+        private static readonly List<AssetInfo> s_loadInfoList = new List<AssetInfo>();
         /// 需加载的资源路径列表
         private static readonly Queue<string> s_loadAssetList = new Queue<string>();
         /// s_loadAssetList 对应的类型列表
@@ -40,8 +40,14 @@ namespace ShibaInu
         /// </summary>
         /// <param name="info">Info.</param>
         /// <param name="groupName">Group name.</param>
-        public static void Load(AssetInfo info, string groupName = null)
+        /// <param name="infos">Infos.</param>
+        public static void Load(AssetInfo info, string groupName = null, HashSet<AssetInfo> infos = null)
         {
+            // 建立 infos，防止循环依赖导致无限递归
+            if (infos == null) infos = new HashSet<AssetInfo>();
+            else if (infos.Contains(info)) return;
+            infos.Add(info);
+
             // 添加引用关系
             if (groupName != null)
             {
@@ -56,7 +62,7 @@ namespace ShibaInu
             foreach (string pedFileName in info.pedList)
             {
                 AssetInfo pedInfo = ResManager.GetAssetInfoWithABName(pedFileName);
-                if (pedInfo.ab == null) Load(pedInfo);
+                if (pedInfo.ab == null) Load(pedInfo, groupName, infos);
             }
 
             GetFilePath(info);
@@ -70,7 +76,8 @@ namespace ShibaInu
         /// </summary>
         /// <param name="info">Info.</param>
         /// <param name="groupName">Group name.</param>
-        public static void LoadAsync(AssetInfo info, string groupName = null)
+        /// <param name="startCoroutine">If set to <c>true</c> start coroutine.</param>
+        public static void LoadAsync(AssetInfo info, string groupName = null, bool startCoroutine = true)
         {
             // 添加引用关系
             if (groupName != null)
@@ -83,24 +90,29 @@ namespace ShibaInu
             if (s_loadInfoList.Contains(info))
                 return;
 
-            // AssetBundle 文件已加载
+            // AssetBundle 文件已加载，可以异步加载资源了
             if (info.ab != null)
             {
                 LoadAssetAsync(info);
                 return;
             }
 
-            // 先加载依赖的 AssetBundle
+            // 先加入队列，用于判重
+            s_loadInfoList.Add(info);
+            // 加载依赖的 AssetBundle
             foreach (string pedFileName in info.pedList)
             {
                 AssetInfo pedInfo = ResManager.GetAssetInfoWithABName(pedFileName);
                 // 还没加载，并且不在加载队列中
                 if (pedInfo.ab == null && !s_loadInfoList.Contains(pedInfo))
-                    LoadAsync(pedInfo);
+                    LoadAsync(pedInfo, groupName, false);
             }
-            s_loadInfoList.Enqueue(info);
+            // 将 info 移至末尾，先加载依赖
+            s_loadInfoList.Remove(info);
+            s_loadInfoList.Add(info);
 
-            if (s_info == null)
+            // 启动加载 AB 协程
+            if (s_info == null && startCoroutine)
                 Common.looper.StartCoroutine(LoadNextAsync());
         }
 
@@ -111,7 +123,9 @@ namespace ShibaInu
         /// <returns>The next async.</returns>
         private static IEnumerator LoadNextAsync()
         {
-            s_info = s_loadInfoList.Dequeue();
+            s_info = s_loadInfoList[0];
+            s_loadInfoList.RemoveAt(0);
+
             if (s_info.ab == null)
             {
                 GetFilePath(s_info);
@@ -258,14 +272,19 @@ namespace ShibaInu
         /// </summary>
         /// <param name="info">Info.</param>
         /// <param name="groupName">Group name.</param>
-        private static void AddReference(AssetInfo info, string groupName)
+        /// <param name="infos">Infos.</param>
+        private static void AddReference(AssetInfo info, string groupName, HashSet<AssetInfo> infos = null)
         {
+            // 建立 infos，防止循环依赖导致无限递归
+            if (infos == null) infos = new HashSet<AssetInfo>();
+            else if (infos.Contains(info)) return;
+            infos.Add(info);
+
             // 标记 info 被 groupName 引用
             info.groupList.Add(groupName);
 
             // 标记 groupName 引用了 info
-            HashSet<AssetInfo> infoList;
-            if (!s_groupMap.TryGetValue(groupName, out infoList))
+            if (!s_groupMap.TryGetValue(groupName, out HashSet<AssetInfo> infoList))
             {
                 s_groupMap.Add(groupName, new HashSet<AssetInfo>());
                 infoList = s_groupMap[groupName];
@@ -274,7 +293,7 @@ namespace ShibaInu
 
             // info 依赖的其他 info 也要标记被该 groupName 引用
             foreach (string pedFileName in info.pedList)
-                AddReference(ResManager.GetAssetInfoWithABName(pedFileName), groupName);
+                AddReference(ResManager.GetAssetInfoWithABName(pedFileName), groupName, infos);
         }
 
 
@@ -301,8 +320,7 @@ namespace ShibaInu
 
             foreach (string groupName in s_unloadList)
             {
-                HashSet<AssetInfo> infoList;
-                if (!s_groupMap.TryGetValue(groupName, out infoList))
+                if (!s_groupMap.TryGetValue(groupName, out HashSet<AssetInfo> infoList))
                     continue;
 
                 s_groupMap.Remove(groupName);

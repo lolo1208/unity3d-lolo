@@ -19,13 +19,14 @@ local remove = table.remove
 ---@field lastUpdateTime number @ 定时器上次触发时间
 ---@field timerHander Handler @ 每次达到间隔时的回调
 ---@field timerCompleteHandler Handler @ 定时器达到总运行次数时的回调
+---@field ignoreCount number @ 当某帧执行次数超过（>=）该数量时，将会被标记为只执行一次
 ---
 ---@field protected _key number @ 在列表中的key（ _list[delay].list[_key] = self ）
----@field protected _delay number @ 定时器间隔（单位：秒）
+---@field protected _delay number @ 定时器间隔（秒）
 local Timer = class("Timer")
 
 --- Ctor
----@param delay number @ 定时器间隔（单位：秒）
+---@param delay number @ 定时器间隔（秒）
 ---@param timerHander Handler @ 每次达到间隔时的回调
 ---@param repeatCount number @ 定时器的总运行次数，默认值0，表示无限运行
 ---@param timerCompleteHandler Handler @ 定时器达到总运行次数时的回调
@@ -38,6 +39,7 @@ function Timer:Ctor(delay, timerHander, repeatCount, timerCompleteHandler)
     self.repeatCount = repeatCount or 0
     self.timerHander = timerHander
     self.timerCompleteHandler = timerCompleteHandler
+    self.ignoreCount = 999
 
     self._delay = 0
     self:SetDelay(delay or 1)
@@ -84,7 +86,7 @@ local function UpdateTimer(event)
             if timer.running then
                 local count = floor((time - timer.lastUpdateTime) / timer._delay) -- 计算次数用以解决丢帧和加速
                 -- 次数过多，忽略掉（可能是系统休眠后恢复）
-                if count > 999 then
+                if count >= timer.ignoreCount then
                     ignorable = true
                     count = 1
                 else
@@ -191,7 +193,7 @@ local function ChangeTimerState(timer)
     addList[addListNum + 1] = timer
 end
 
---- 设置定时器间隔（单位：秒）
+--- 设置定时器间隔（秒）
 ---@param value number
 ---@return void
 function Timer:SetDelay(value)
@@ -215,7 +217,7 @@ function Timer:SetDelay(value)
     end
 end
 
---- 获取定时器间隔（单位：秒）
+--- 获取定时器间隔（秒）
 ---@return number
 function Timer:GetDelay()
     return self._delay

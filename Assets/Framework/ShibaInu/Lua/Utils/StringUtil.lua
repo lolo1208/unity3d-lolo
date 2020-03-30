@@ -4,6 +4,8 @@
 -- Author LOLO
 --
 
+local ceil = math.ceil
+local floor = math.floor
 local sub = string.sub
 local gsub = string.gsub
 local byte = string.byte
@@ -14,30 +16,6 @@ local format = string.format
 ---@class StringUtil
 local StringUtil = {}
 
-
-
---
---- 返回 str 对应的 URL 编码字符串
----@param str string
----@return string
-function StringUtil.EncodeURI(str)
-    -- Ensure all newlines are in CRLF form
-    str = gsub(str, "\r?\n", "\r\n")
-
-    -- Percent-encode all non-unreserved characters
-    -- as per RFC 3986, Section 2.3
-    -- (except for space, which gets plus-encoded)
-    str = gsub(str, "([^%w%-%.%_%~ ])",
-            function(c)
-                return format("%%%02X", byte(c))
-            end
-    )
-
-    -- Convert spaces to plus signs
-    str = gsub(str, " ", "+")
-
-    return str
-end
 
 
 --
@@ -56,6 +34,18 @@ function StringUtil.Substitute(str, ...)
     end
     return str
 end
+
+
+--
+--- 当 number 取整转为字符串后，长度少于 length，将会在前面拼接 "0" 凑够长度
+--- 默认返回值：string.format("%02d", nunber)
+---@param number number @ 数字
+---@param length number @ -可选- 长度，默认：2
+function StringUtil.LeadingZeros(number, length)
+    length = length or 2
+    return format("%0" .. length .. "d", number)
+end
+
 
 
 --
@@ -94,6 +84,113 @@ end
 ---@return boolean
 function StringUtil.IsEmpty(str)
     return str == nil or str == ""
+end
+
+
+
+--
+--- 格式化的时间的默认函数，返回值示例：
+--- "7d 01:23:45" / "01:23:45" / "00:01:00" / "01:23" / "00:01"
+---@return string
+function StringUtil.FormatTime_Default(d, h, m, s)
+    local str
+    if d > 0 then
+        str = format("%sd ", d)
+    else
+        str = ""
+    end
+    if h > 0 or d > 0 then
+        str = str .. format("%02d:", h % 24)
+    end
+    str = str .. format("%02d:%02d", m, s)
+    return str
+end
+local FormatTime_Default = StringUtil.FormatTime_Default
+
+
+--
+--- 保留两位时间单位的格式化函数，返回值示例：
+--- "123h 45m" / "12h 34m" / "01h 23m"
+--- "12m 34s" / "01m 23s" / "00m 01s"
+---@return string
+function StringUtil.FormatTime_2Units(d, h, m, s)
+    if h > 0 or d > 0 then
+        return format("%02dh %02dm", d * 24 + h, m)
+    else
+        return format("%02dm %02ds", m, s)
+    end
+end
+
+
+--
+--- 返回格式化的时间
+---@param time number @ 时间值
+---@param formatting fun(d, h, m, s):string @ -可选- 格式化函数，默认：StringUtil.FormatTime_Default
+---@param timeType string @ -可选- time 的类型，默认：毫秒
+---@return string
+function StringUtil.FormatTime(time, formatting, timeType)
+    -- 转换为毫秒
+    if timeType ~= nil and timeType ~= TimeUtil.TYPE_MS then
+        time = TimeUtil.Convert(timeType, TimeUtil.TYPE_MS, time)
+    end
+    -- 计算各单位的值
+    local h = floor(time / 3600000)
+    local m = floor(time % 3600000 / 60000)
+    local s = ceil(time % 3600000 % 60000 / 1000)
+    local d = floor(h / 24)
+    if s == 60 then
+        s = 0
+        m = m + 1
+    end
+    if m == 60 then
+        m = 0
+        h = h + 1
+    end
+    return (formatting or FormatTime_Default)(d, h % 24, m, s)
+end
+
+
+
+--
+--- 返回格式化字节数
+--- 例如 StringUtil.FormatBytes(1234)，返回："1.21 KB"
+---@param size string @ 字节大小
+---@param formatstring string @ -可选- 格式化字符串，默认："%.2f %s"
+---@return string
+function StringUtil.FormatBytes(size, formatstring)
+    formatstring = formatstring or "%.2f %s"
+    local idx = 1
+    while size > 1024 do
+        size = size / 1024
+        idx = idx + 1
+    end
+    local units = { "byte", "kb", "mb", "gb" }
+    return format(formatstring, size, Language["string.format.unit." .. units[idx]])
+end
+
+
+
+--
+--- 返回 str 对应的 URL 编码字符串
+---@param str string
+---@return string
+function StringUtil.EncodeURI(str)
+    -- Ensure all newlines are in CRLF form
+    str = gsub(str, "\r?\n", "\r\n")
+
+    -- Percent-encode all non-unreserved characters
+    -- as per RFC 3986, Section 2.3
+    -- (except for space, which gets plus-encoded)
+    str = gsub(str, "([^%w%-%.%_%~ ])",
+            function(c)
+                return format("%%%02X", byte(c))
+            end
+    )
+
+    -- Convert spaces to plus signs
+    str = gsub(str, " ", "+")
+
+    return str
 end
 
 

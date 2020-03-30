@@ -82,7 +82,6 @@ GameObject:
   - component: {fileID: 20356974015647862}
   - component: {fileID: 124067160298485582}
   - component: {fileID: 92976367058674412}
-  - component: {fileID: 114988984563396280}
   - component: {fileID: 114155502660398276}
   m_Layer: 5
   m_Name: UICamera
@@ -163,22 +162,6 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1182386580569400}
   m_Enabled: 1
---- !u!114 &114988984563396280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1182386580569400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -768656878, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EventMask:
-    serializedVersion: 2
-    m_Bits: 32
-  m_MaxRayIntersections: 0
 --- !u!114 &114155502660398276
 MonoBehaviour:
   m_ObjectHideFlags: 0

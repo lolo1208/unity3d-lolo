@@ -21,7 +21,7 @@ const destAndZip = require('./destAndZip');
 process.on('uncaughtException', function (err) {
     logger.append('\n[ERROR]:', err.stack.replace(/\n\n/g, '\n'), '');
     console.error(err.stack);
-    common.exit(1);
+    common.exit(2);
 });
 
 

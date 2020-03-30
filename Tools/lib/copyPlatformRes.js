@@ -43,7 +43,7 @@ let isRenameBin = false;
 process.on('uncaughtException', function (err) {
     restore();
     console.error(err.stack);
-    process.exit(1);
+    process.exit(2);
     throw Error("Exit");
 });
 

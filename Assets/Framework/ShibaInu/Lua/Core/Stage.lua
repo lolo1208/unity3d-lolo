@@ -32,6 +32,7 @@ local _ed = EventDispatcher.New()
 
 local _currentSceneClass ---@type Scene @ 当前正要进入的场景模块类
 local _prevSceneClass ---@type Scene @ 上一个场景模块类
+local _prevSceneName ---@type string @ 上一个场景模块名称
 local _loadingScene ---@type Scene @ Loading场景实例
 local _currentScene ---@type Scene @ 当前场景模块实例
 local _windowList = {} ---@type Window[] @ 当前已经显示的窗口列表
@@ -139,6 +140,7 @@ function Stage.DoShowScene()
     -- 清理当前场景
     if _currentScene ~= nil then
         _prevSceneClass = _currentScene.__class
+        _prevSceneName = _currentScene.moduleName
         _currentScene:OnDestroy()
     end
     Stage.Clean()
@@ -236,6 +238,14 @@ end
 ---@return Scene
 function Stage.GetPrevSceneClass()
     return _prevSceneClass
+end
+
+
+--
+--- 获取上一个场景模块名称
+---@return string
+function Stage.GetPrevSceneName()
+    return _prevSceneName
 end
 
 
