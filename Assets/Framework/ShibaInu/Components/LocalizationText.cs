@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -181,7 +182,7 @@ namespace ShibaInu
                         line = line.Trim();
                         if (line.StartsWith("[\"", StringComparison.Ordinal))
                         {
-                            string[] arr = line.Split('=');
+                            string[] arr = Regex.Split(line, "] =");
 
                             string key = arr[0];
                             int start = key.IndexOf('"');

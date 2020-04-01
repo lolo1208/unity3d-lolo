@@ -29,6 +29,7 @@ namespace ShibaInu
         private string m_log = "";
         private readonly List<string> m_fbxList = new List<string>();
 
+        private GUILayoutOption m_initialized;
         private GUILayoutOption m_w50;
         private GUILayoutOption m_w60;
         private GUILayoutOption m_w73;
@@ -48,8 +49,11 @@ namespace ShibaInu
         }
 
 
-        void Awake()
+        private void Initialize()
         {
+            if (m_initialized != null) return;
+            m_initialized = GUILayout.Width(0);
+
             m_w50 = GUILayout.Width(50);
             m_w60 = GUILayout.Width(60);
             m_w73 = GUILayout.Width(73);
@@ -73,6 +77,8 @@ namespace ShibaInu
 
         void OnGUI()
         {
+            Initialize();
+
             TextAnchor alignment;
             GUILayout.BeginArea(new Rect(20, 20, WND_RECT.width - 40, WND_RECT.height - 40));
 

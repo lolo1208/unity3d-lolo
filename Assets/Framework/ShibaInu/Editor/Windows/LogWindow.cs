@@ -41,6 +41,7 @@ namespace ShibaInu
         private Texture2D m_warnTex;
         private Texture2D m_errorTex;
 
+        private GUILayoutOption m_initialized;
         private GUILayoutOption m_w20;
         private GUILayoutOption m_w30;
         private GUILayoutOption m_w45;
@@ -54,8 +55,8 @@ namespace ShibaInu
         private GUILayoutOption m_w100;
         private GUILayoutOption m_w120;
         private GUILayoutOption m_w390;
-
         private GUILayoutOption m_h504;
+        private bool m_refresh;
 
 
 
@@ -66,8 +67,11 @@ namespace ShibaInu
 
 
 
-        void Awake()
+        private void Initialize()
         {
+            if (m_initialized != null) return;
+            m_initialized = GUILayout.Width(0);
+
             m_colorNormal = new Color(0.7f, 0.7f, 0.7f);
             m_colorError = new Color(0.9f, 0.9f, 0.9f);
 
@@ -113,6 +117,8 @@ namespace ShibaInu
 
         void OnGUI()
         {
+            Initialize();
+
             GUILayout.Space(15);
             GUILayout.BeginHorizontal();
 
@@ -198,7 +204,7 @@ namespace ShibaInu
             }
 
             // 类型筛选有改变
-            if (m_typeIndex != typeIndex)
+            if (m_typeIndex != typeIndex || m_refresh)
             {
                 HashSet<string> typeList = new HashSet<string>();
                 string typeName = m_types[m_typeIndex];
@@ -274,7 +280,7 @@ namespace ShibaInu
             }
             else
             {
-                if (GUILayout.Button("查询"))
+                if (GUILayout.Button("查询") || m_refresh)
                 {
                     m_typeIndex = 0;
                     m_result.Clear();
@@ -427,6 +433,7 @@ namespace ShibaInu
             EditorGUI.EndDisabledGroup();
 
             GUILayout.EndHorizontal();
+            m_refresh = false;
         }
 
 
@@ -504,8 +511,8 @@ namespace ShibaInu
                     }
                 }
             }
+            m_refresh = true;
             m_result.Clear();
-            m_typeIndex = 0;
             ScrollToLastItem();
         }
 

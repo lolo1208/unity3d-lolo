@@ -38,6 +38,7 @@ namespace ShibaInu
         private string m_selectedKey;
         private int m_selectCount;
 
+        private GUILayoutOption m_initialized;
         private GUILayoutOption m_w30;
         private GUILayoutOption m_w50;
         private GUILayoutOption m_w60;
@@ -75,8 +76,11 @@ namespace ShibaInu
 
 
 
-        void Awake()
+        private void Initialize()
         {
+            if (m_initialized != null) return;
+            m_initialized = GUILayout.Width(0);
+
             // 获取当前使用的语种地区代码
             string path = "Assets/Lua/Data/Config.lua";
             if (!File.Exists(path))
@@ -171,6 +175,8 @@ namespace ShibaInu
 
         void OnGUI()
         {
+            Initialize();
+
             if (m_language == string.Empty)
             {
                 ShowErrorMessage("无法获取当前使用的语种地区代码！\n请检查：Assets/Lua/Data/Config.lua 文件，是否包含 Config.language 变量！");
@@ -225,7 +231,6 @@ namespace ShibaInu
                 if (isClearQuery)
                 {
                     ChangeState(LanguageWindowState.Normal);
-
                 }
                 else
                 {
@@ -578,7 +583,7 @@ namespace ShibaInu
                     line = line.Trim();
                     if (line.StartsWith("[\"", StringComparison.Ordinal))
                     {
-                        string[] arr = line.Split('=');
+                        string[] arr = Regex.Split(line, "] =");
 
                         string key = arr[0];
                         int start = key.IndexOf('"');
