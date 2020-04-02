@@ -97,7 +97,6 @@ end
 
 --
 function TestScene:OnClick_ioGameBtn(event)
-    Stage.ShowScene(require("Module.IOGame.View.IOGameScene"))
 end
 
 
