@@ -420,6 +420,7 @@ local function UpdateDelayedCall(event)
     end
 
     local time = TimeUtil.time
+    local totalDeltaTime = TimeUtil.totalDeltaTime
     local frameCount = TimeUtil.frameCount
     for i = num, 1, -1 do
         local handler = _dc_list[i]
@@ -431,18 +432,29 @@ local function UpdateDelayedCall(event)
             handler:Recycle()
 
         elseif handler.delayedFrame ~= nil then
-            if frameCount - handler.delayedStartFrame > handler.delayedFrame then
-                -- 帧数已满足，执行回调（不使用 >= 运算符，多延迟一帧）
+            -- 帧数已满足，执行回调
+            if frameCount - handler.delayedStartFrame >= handler.delayedFrame then
                 remove(_dc_list, i)
                 handler.delayedFrame = nil
                 trycall(handler.Execute, handler)
             end
 
-        elseif time - handler.delayedStartTime >= handler.delayedTime then
-            -- 时间已满足，执行回调
-            remove(_dc_list, i)
-            handler.delayedTime = nil
-            trycall(handler.Execute, handler)
+        else
+            if handler.useDeltaTime then
+                -- deltaTime 已满足，执行回调
+                if totalDeltaTime - handler.delayedStartTime >= handler.delayedTime then
+                    remove(_dc_list, i)
+                    handler.delayedTime = nil
+                    trycall(handler.Execute, handler)
+                end
+            else
+                -- 时间已满足，执行回调
+                if time - handler.delayedStartTime >= handler.delayedTime then
+                    remove(_dc_list, i)
+                    handler.delayedTime = nil
+                    trycall(handler.Execute, handler)
+                end
+            end
         end
     end
 end
@@ -458,6 +470,7 @@ function DelayedCall(delay, callback, caller, ...)
     handler.args = { ... }
     handler.delayedTime = delay
     handler.delayedStartTime = TimeUtil.time
+    handler.useDeltaTime = false
     _dc_addList[#_dc_addList + 1] = handler
     AddEventListener(Stage, Event.UPDATE, UpdateDelayedCall)
     return handler
@@ -471,8 +484,46 @@ end
 ---@return Handler
 function DelayedFrameCall(callback, caller, frameCount, ...)
     local handler = DelayedCall(0, callback, caller, ...)
-    handler.delayedStartFrame = TimeUtil.frameCount
     handler.delayedFrame = frameCount or 1
+    handler.delayedStartFrame = TimeUtil.frameCount
+    return handler
+end
+
+--- 延迟指定 deltaTime 后，执行一次回调。该时间会受到 timeScale，暂停，卡顿，切入后台 等因素等影响
+---@param delay number @ 延迟时间，秒
+---@param callback fun() @ 回调函数
+---@param caller any @ -可选- 执行域（self）
+---@vararg any @ -可选- 附带的参数
+---@return Handler
+function DelayedDeltaTimeCall(delay, callback, caller, ...)
+    local handler = DelayedCall(delay, callback, caller, ...)
+    handler.delayedStartTime = TimeUtil.totalDeltaTime
+    handler.useDeltaTime = true
+    return handler
+end
+
+--- 延迟指定 时间 或 deltaTime 后，如果 target 不为 null，执行一次回调（如果 target 为 null，将不会执行回调）
+---@param delay number @ 延迟时间，秒
+---@param callback fun() @ 回调函数
+---@param target any @ C# 对象
+---@param caller any @ -可选- 执行域（self）
+---@param useDeltaTime boolean @ -可选- 是否使用 deltaTime 来计算延时，默认：false
+---@vararg any @ -可选- 附带的参数
+---@return Handler
+function DelayedCallWithTarget(delay, callback, target, caller, useDeltaTime, ...)
+    local oHandler = Handler.Once(callback, caller)
+    oHandler.args = { ... }
+    local checker = function()
+        if not isnull(target) then
+            trycall(oHandler.Execute, oHandler)
+        end
+    end
+
+    local handler = DelayedCall(delay, checker)
+    if useDeltaTime then
+        handler.delayedStartTime = TimeUtil.totalDeltaTime
+        handler.useDeltaTime = true
+    end
     return handler
 end
 

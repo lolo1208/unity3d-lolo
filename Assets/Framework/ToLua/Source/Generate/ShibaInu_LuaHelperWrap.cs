@@ -21,6 +21,7 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("AddOrGetComponent", AddOrGetComponent);
 		L.RegFunction("GetMarkPointGameObject", GetMarkPointGameObject);
 		L.RegFunction("Relaunch", Relaunch);
+		L.RegFunction("IsDebug", IsDebug);
 		L.RegFunction("GetShader", GetShader);
 		L.RegFunction("PlayDoubleImageShake", PlayDoubleImageShake);
 		L.RegFunction("PlayMosaic", PlayMosaic);
@@ -280,6 +281,22 @@ public class ShibaInu_LuaHelperWrap
 			ToLua.CheckArgsCount(L, 0);
 			ShibaInu.LuaHelper.Relaunch();
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int IsDebug(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			bool o = ShibaInu.LuaHelper.IsDebug();
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

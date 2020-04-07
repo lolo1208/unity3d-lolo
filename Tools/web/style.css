@@ -114,6 +114,12 @@ html, body {
     color: rgb(202, 60, 60);
 }
 
+.content-title-error {
+    display: inline;
+    font-weight: bold;
+    color: rgb(202, 60, 60);
+}
+
 #downloadBtn {
     display: inline-block;
     visibility: hidden;

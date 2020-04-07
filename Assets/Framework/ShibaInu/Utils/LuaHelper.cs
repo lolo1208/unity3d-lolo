@@ -255,6 +255,17 @@ namespace ShibaInu
 
 
         /// <summary>
+        /// 是否在编辑器中运行，并且在开发模式下
+        /// </summary>
+        /// <returns><c>true</c>, if debug was ised, <c>false</c> otherwise.</returns>
+        public static bool IsDebug()
+        {
+            return Common.IsDebug;
+        }
+
+
+
+        /// <summary>
         /// 通过名称获取 Shader(Always Included Shaders)，或通过路径加载 Shader(AssetBundle)
         /// </summary>
         /// <returns>The shader.</returns>

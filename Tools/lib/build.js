@@ -19,7 +19,15 @@ const destAndZip = require('./destAndZip');
  * 捕获全局异常
  */
 process.on('uncaughtException', function (err) {
-    logger.append('\n[ERROR]:', err.stack.replace(/\n\n/g, '\n'), '');
+    logger.append(
+        '\n<p class="content-title-error">[ERROR]:</p>',
+        `<p class="content-text-error">${
+            err.stack.replace(/\n\n/g, '\n')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+            }</p>`
+    );
     console.error(err.stack);
     common.exit(2);
 });

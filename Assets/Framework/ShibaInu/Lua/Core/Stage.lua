@@ -99,9 +99,13 @@ local function LoadSceneCompleteHandler(event)
     _loadingScene:OnDestroy()
     _loadingScene = nil
 
-    DelayedFrameCall(function()
+    if isDebug then
+        DelayedFrameCall(function()
+            DispatchSceneChangedEvent(_currentScene)
+        end)
+    else
         DispatchSceneChangedEvent(_currentScene)
-    end)
+    end
 end
 
 
@@ -166,12 +170,12 @@ function Stage.DoShowScene()
                 -- 异步加载目标场景
                 AddEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
                 loadSceneAsync(_currentScene.assetName)
-            end)
+            end, nil, 2)
         else
             loadScene(_currentScene.assetName)
             DelayedFrameCall(function()
                 DispatchSceneChangedEvent(_currentScene)
-            end)
+            end, nil, 2)
         end
 
         -- 预设场景（UICanvas）
@@ -401,6 +405,7 @@ function Stage._loopHandler(type, time)
     if type == Event.UPDATE then
         TimeUtil.frameCount = Time.frameCount
         TimeUtil.deltaTime = Time.deltaTime
+        TimeUtil.totalDeltaTime = TimeUtil.totalDeltaTime + TimeUtil.deltaTime
         TimeUtil.timeSinceLevelLoad = Time.timeSinceLevelLoad
     end
 

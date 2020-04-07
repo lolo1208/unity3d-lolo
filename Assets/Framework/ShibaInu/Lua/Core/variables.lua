@@ -80,9 +80,10 @@ DOTween.defaultEaseType = DOTween_Enum.Ease.Linear
 
 
 
---[ variables ]--
+--[ Variables ]--
 
 isJIT = jit ~= nil -- 是否在 Lua JIT 环境中
+isDebug = LuaHelper.IsDebug() -- 是否在编辑器中运行，并且在开发模式下（非 AB 模式）
 isPlaying = Application.isPlaying
 isEditor = Application.isEditor
 isWindowEditor = Application.platform == UnityEngine.RuntimePlatform.WindowsEditor

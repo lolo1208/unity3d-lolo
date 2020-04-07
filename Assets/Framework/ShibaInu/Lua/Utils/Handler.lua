@@ -21,6 +21,7 @@ local remove = table.remove
 ---
 ---@field delayedTime number @ 延迟设定时间。使用 delayedCall() 创建时，才会存在该属性
 ---@field delayedStartTime number @ 延迟开始时间。使用 delayedCall() 创建时，才会存在该属性
+---@field useDeltaTime boolean @ 是否使用 deltaTime 来计算延时
 ---
 ---@field delayedFrame number @ 延迟帧数。使用 delayedCall() 创建（指定延迟帧数的回调）时，才会存在该属性
 ---@field delayedStartFrame number @ 延迟开始帧号。使用 delayedCall() 创建（指定延迟帧数的回调）时，才会存在该属性
