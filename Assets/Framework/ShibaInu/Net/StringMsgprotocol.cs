@@ -15,11 +15,11 @@ namespace ShibaInu
         /// 未解析的数据缓冲
         private readonly byte[] m_buffer = new byte[10240];
         /// 数据缓冲长度
-        private int m_length = 0;
+        private int m_length;
         /// 当前已解析位置
-        private int m_position = 0;
+        private int m_position;
         /// 当前正在解析的消息长度
-        private int m_msgLength = 0;
+        private int m_msgLength;
 
 
 
@@ -57,7 +57,7 @@ namespace ShibaInu
         }
 
 
-        public byte[] Encode(System.Object data)
+        public byte[] Encode(object data)
         {
             byte[] buf = Encoding.UTF8.GetBytes((string)data);
             byte[] len = BitConverter.GetBytes((uint)buf.Length);

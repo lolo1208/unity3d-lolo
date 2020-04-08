@@ -70,21 +70,6 @@ function TestScene:OnInitialize()
     --
     --Stage.uiCanvas.worldCamera.enabled = false
     --uiCanvasTra.gameObject:SetActive(false)
-
-    DelayedCall(5, function()
-        print("DelayedCall", TimeUtil.frameCount)
-    end)
-
-    DelayedDeltaTimeCall(5, function()
-        print("DelayedDeltaTimeCall", TimeUtil.frameCount)
-    end)
-
-    local go = GameObject.New("AAAA")
-    DelayedCallWithTarget(5, function(a, b, c)
-        print(go, isnull(go), TimeUtil.frameCount, a, b, c)
-    end, go, self, false, 111, "bbb", 456)
-
-    UnityEngine.Time.timeScale = 5
 end
 
 
