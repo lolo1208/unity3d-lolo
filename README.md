@@ -8,8 +8,7 @@
   - [IntelliJ IDEA CE 2018.1.8](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
   - [EmmyLua 1.2.6](https://emmylua.github.io) 该插件安装包放在 Templates/EmmyLua-1.2.6-IDEA172-181.zip
   - Visual Studio Community 2019 / 8.0.3 for Mac
-  - [tolua 1.0.7](https://github.com/topameng/tolua)
-  - Lua : default lua 5.1, release [encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
+  - [tolua 1.0.7](https://github.com/topameng/tolua) lua 5.1, [release encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
 
 #### * 目录和文件介绍：
 
