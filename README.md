@@ -44,5 +44,5 @@ Unity Android 项目需要添加的配置和常见问题，可参考：Templates
 
 ###### 打包进度与日志页面：
 
-![console](https://raw.githubusercontent.com/lolo1208/unity3d-lolo/master/Templates/Screenshots/screenshots/build-web-page.jpg)
+![console](https://raw.githubusercontent.com/lolo1208/unity3d-lolo/master/Templates/Screenshots/build-web-page.jpg)
 
