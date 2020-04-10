@@ -8,8 +8,8 @@ namespace ShibaInu
 
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-		/// APP 包体内容根目录 - Android
-		public static readonly string PackageDir = Application.dataPath + "!assets/";
+        /// APP 包体内容根目录 - Android
+        public static readonly string PackageDir = Application.dataPath + "!assets/";
 #else
         /// APP 包体内容根目录
         public static readonly string PackageDir = Application.streamingAssetsPath + "/";
