@@ -5,4 +5,9 @@
 --
 
 
+-- 预加载所有 Shader
+Res.PreloadShaders()
+
+
+--
 Stage.ShowScene(require("Module.Test.View.TestScene"))
