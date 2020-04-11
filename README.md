@@ -15,6 +15,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 [ShibaInu]->[Run th
 
 #### * 目录和文件：
   - **Assets/Framework/ShibaInu/** 核心框架代码目录，包含 C# 和 Lua 代码。
+  
   - **Assets/Framework/ToLua/** ToLua 框架代码目录，包含 C# 和 Lua 代码。
   - **Assets/Lua/** 项目 Lua 代码目录，与框架无关，可单独储存在代码库。
   - **Assets/Res/** 项目资源目录，与框架无关，可单独储存在代码库。
@@ -32,11 +33,12 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 [ShibaInu]->[Run th
   - **Tools/templates/java/** 框架包含的 Java 代码，打包 Andorid 时，会自动拷贝到 Android 项目中。
   - **Logs/Running.log** 运行时产生的日志。详细介绍可查看 Templates/Logger.docx
   - **LuaAPI/** 所有提供给 Lua 访问的 C# 类，属性，方法等，配合 EmmyLua 插件可在 IDEA 中实现 代码提示，快速访问，查看数据/参数类型，注释 等。
-    可用 [ShibaInu]->[Generate Lua API] 自动生成。
-    该目录的内容不会在 Lua 代码中 require()，也不会参与打包。
+    可在菜单栏中点击 [ShibaInu]->[Generate Lua API] 自动生成。
+    该目录内的 Lua 文件不会被 require()，也不会参与打包。
 
 #### * 编码环境：
 
+N/A
 
 # Build
 构建打包功能的代码分为两部分：
