@@ -323,11 +323,10 @@ namespace ShibaInu
             if (Common.IsDebug) return;
 
             DateTime dateTime = DateTime.Now;
-            string svcPath = "Shaders/Shaders.shadervariants";
-            AssetInfo info = GetAssetInfoWithAssetPath(svcPath);
+            AssetInfo info = GetAssetInfoWithAssetPath(Constants.SvcFilePath);
             AssetLoader.Load(info, Constants.CoreAssetGroup);
             info.ab.LoadAllAssets();
-            ShaderVariantCollection svc = info.ab.LoadAsset<ShaderVariantCollection>(Constants.ResDirPath + svcPath);
+            ShaderVariantCollection svc = info.ab.LoadAsset<ShaderVariantCollection>(Constants.ResDirPath + Constants.SvcFilePath);
             svc.WarmUp();
             Debug.Log("[ResManager] Shaders Preload and WarmUp: " + (DateTime.Now - dateTime).Milliseconds / 1000f);
         }

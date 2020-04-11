@@ -18,7 +18,6 @@ namespace ShibaInu
         public static readonly string UpdateDir = Application.persistentDataPath + "/";
 
 
-
 #if UNITY_EDITOR
         /// ToLua 框架根目录
         public static readonly string ToLuaRootPath = Application.dataPath + "/Framework/ToLua/";
@@ -30,7 +29,6 @@ namespace ShibaInu
 #endif
 
 
-
         /// 不销毁的根节点名称
         public const string GameObjectName = "[ShibaInu]";
         /// 启动场景的名称
@@ -39,6 +37,8 @@ namespace ShibaInu
         public const string EmptySceneName = "Empty";
         /// 版本信息文件名称
         public const string VerCfgFileName = "version.cfg";
+        /// Shaders 变体信息文件路径
+        public const string SvcFilePath = "Shaders/Shaders.shadervariants";
         /// 资源文件夹路径
         public const string ResDirPath = "Assets/Res/";
         /// 核心资源组名称（不会被销毁）

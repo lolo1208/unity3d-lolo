@@ -32,7 +32,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 [ShibaInu]->[Run th
   - **Tools/templates/cs/** 第三方的工具或类库，有需要可以拷贝至 Assets/Framework/3rdParty
   - **Tools/templates/java/** 框架包含的 Java 代码，打包 Andorid 时，会自动拷贝到 Android 项目中。
   - **Logs/Running.log** 运行时产生的日志。详细介绍可查看 Templates/Logger.docx
-  - **LuaAPI/** 所有提供给 Lua 访问的 C# 类，属性，方法等，配合 EmmyLua 插件可在 IDEA 中实现 代码提示，快速访问，查看数据/参数类型，注释 等。
+  - **LuaAPI/** 描述了所有提供给 Lua 访问的 C# 类，属性，方法等，配合 EmmyLua 插件可在 IDEA 中实现 代码提示，快速访问，查看数据/参数类型，注释 等。
     可在菜单栏中点击 [ShibaInu]->[Generate Lua API] 自动生成。
     该目录内的 Lua 文件不会被 require()，也不会参与打包。
 
