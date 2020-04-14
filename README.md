@@ -24,9 +24,9 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
     会被打入底包的场景有 Launcher.unity（启动场景）和 Empty.unity（空场景）。
   - `Assets/Res/BuildRules.txt` 打包规则配置文件，包含 忽略，合并，拆分 三种规则。
   - `Assets/Res/Shaders/Shaders.shadervariants` 需要被预热的 Shader 变体。
-    默认会在游戏启动时（launcher.lua 中）调用 `[Lua]Res.PreloadShaders()` 加载所有 Shader 和预热该文件中包含的变体。
+    默认会在游戏启动时（launcher.lua 中）调用 [Lua]Res.PreloadShaders() 加载所有 Shader 和预热该文件中包含的变体。
   - `Templates/` 项目用到的模版和说明文档，以及其他杂项。
-  - `Templates/EmptyProjectAssets/` 如果你想打出一个不包含任何资源文件的 XCode 或 AndroidStudio 项目，可将 Assets/Lua 和 Assets/Res 目录删除，然后将本目录下的内容拷贝到 Assets 目录下，再进行打包操作。
+  - `Templates/EmptyProjectAssets/` 如果你想打出一个不包含任何资源文件的 XCode 或 AndroidStudio 项目，可以将 Assets/Lua 和 Assets/Res 目录删除，然后将本目录下的内容拷贝到 Assets 目录下，再进行打包操作。
   - `Tools/` 工具目录，目前主要包含了打包相关工具。你可以在 Build 段落看到详解。
   - `Tools/templates/cs/` 第三方的工具或类库，有需要可以拷贝至 Assets/Framework/3rdParty
   - `Tools/templates/java/` 框架包含的 Java 代码，打包 Andorid 时，会自动拷贝到 Android 项目中。
@@ -49,7 +49,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
 
 标记目录类别有两种操作方式：
 
-  - 在左侧 Project 文件列表中，右键点击目录，在菜单中选择 `Mark Directory as`->`Excluded` 或 `Sources Root`
+  - 在左侧 `Project 文件列表`中右键点击目录，在菜单中选择 `Mark Directory as`->`Excluded` 或 `Sources Root`
   - 点击 `Project Structure` 按钮，在窗口中选择 `Project Settings`->`Modules` 进行配置。
     *按钮在右上角放大镜图标左侧*
 
@@ -122,16 +122,17 @@ npm install
 ```
 
 然后，编辑 `Tools/lib/config/config.js` 文件，根据当前操作系统，只需在 `macUnityPath` 或 `winUnityPath` 填入 Unity Editor 绝对路径即可。
-*变量 `unityVersion` 和路径中的 `[UnityVersion]` 替换符，配合 build.js `-u` 参数，可用于同一台机器的多个版本 Unity 打包。*
 
-接下来，可运行 startup-web.sh(MacOS) 或 startup-web.bat(Windows) 脚本，开启查看打包进度与日志的 Web 程序。
-浏览器 URL 参数 packid 为打包时的唯一标识 ID，bin 目录下的脚本默认都是用 packid=0 来打包。
+*你也可以配置变量 `unityVersion` 和路径中的 `[UnityVersion]` 替换符，配合 build.js `-u` 参数，用于同一台机器的多个版本 Unity 打包。*
+
+接下来，可运行 `startup-web.sh`(MacOS) 或 `startup-web.bat`(Windows) 脚本，开启查看打包进度与日志的 Web 程序。
+浏览器 URL 参数 `packid` 为打包时的唯一标识 ID，bin 目录下的脚本默认都是用 packid=0 来打包。
 *也可以跳过这一步，不启动 web 服务。*
 
-运行 build-android-as.sh 或 build-android-as.bat 脚本。
-*第一次打包速度会比较慢，需要生成 Unity/Library(Android) 资源（和 libil2cpp.symbols.zip）。*
+运行 `build-android-as.sh` 或 `build-android-as.bat` 脚本。
+*第一次打包速度会比较慢，需要生成 Unity/Library(Android) 资源（和 libil2cpp.symbols.zip）*
 
-默认生成的 AndroidStudio 项目路径为 Tools/build/ShibaInu/platform/android
+默认生成的 AndroidStudio 项目路径为 `Tools/build/ShibaInu/platform/android`
 
 Unity Android 项目需要添加的配置和常见问题，可参考：Templates/AndroidStudio.docx
 
