@@ -36,7 +36,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 [ShibaInu] -> [Run 
     可在菜单栏中点击 [ShibaInu]->[Generate Lua API] 自动生成。
     该目录内的 Lua 文件不会被 require()，也不会参与打包。
 
-#开发环境
+# 开发环境
 
 启动 IDEA，并点击打开项目，项目目录为 **Assets/**
 
@@ -52,7 +52,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 [ShibaInu] -> [Run 
   - 点击 [Project Structure] 按钮，在窗口 [Project Settings] -> [Modules] 中进行配置。
     *按钮在右上角放大镜图标左侧*
 
-######最终配置结果如图：
+###### 最终配置结果如图：
 ![](https://raw.githubusercontent.com/lolo1208/unity3d-lolo/master/Templates/Screenshots/project-structure.jpg)
 
 #### * C# -> Lua
@@ -80,11 +80,11 @@ Windows 为 [File] -> [Settings] - [Plugins]
 然后点击 [Lua Zip Library]，
 在弹出的窗口中，选择 Assets/LuaAPI 目录。
 自此，Lua 环境配置已全部完成。
-######如图：
+###### 如图：
 ![](https://raw.githubusercontent.com/lolo1208/unity3d-lolo/master/Templates/Screenshots/libraries-luaapi.jpg)
 
 另外，在 [Preferences] -> [Editor] -> [File Types] 窗口中，可以添加 ***.meta;** 忽略所有 meta 文件。
-######如图：
+###### 如图：
 ![](https://raw.githubusercontent.com/lolo1208/unity3d-lolo/master/Templates/Screenshots/preferences-ignore-meta.jpg)
 
 
