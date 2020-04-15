@@ -25,7 +25,7 @@ namespace ShibaInu
         public static readonly string ShibaInuRootPath = Application.dataPath + "/Framework/ShibaInu/";
 
         /// 进入 AssetBundle 模式的标志文件
-        public static readonly string ABModeFilePath = Application.streamingAssetsPath + "/AssetBundleMode.tmp";
+        public static readonly string ABModeFilePath = Application.streamingAssetsPath + "/AssetBundleMode.flag";
 #endif
 
 
