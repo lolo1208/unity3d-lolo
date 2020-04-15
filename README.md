@@ -6,14 +6,14 @@
 git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run the Application` 直接运行项目。
 也可在场景中的任意 GameObject 上 `Add Component`->`Main`，然后点击 `Play` 按钮运行项目。
 
-#### * 默认环境和版本：
+#### * 默认环境和版本
   - [Unity Editor 2018.4.8f1](https://unity3d.com/cn/unity/whats-new/2018.4.8) 可升级至任意版本
   - [IntelliJ IDEA CE 2018.1.8](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
   - [EmmyLua 1.2.6](https://emmylua.github.io) 该插件安装包放在 Templates/EmmyLua-1.2.6-IDEA172-181.zip
   - Visual Studio Community 2019 / 8.0.3 for Mac
   - [tolua 1.0.7](https://github.com/topameng/tolua), lua 5.1, [release encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
 
-#### * 特殊目录和文件：
+#### * 特殊目录和文件
   - `Assets/Framework/ShibaInu/` 核心框架代码目录，包含 C# 和 Lua 代码。
 
   - `Assets/Framework/ToLua/` ToLua 框架代码目录，包含 C# 和 Lua 代码。
@@ -64,7 +64,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
 
 完成后，再点击 `ShibaInu`->`Generate Lua API` 重新生成 LuaAPI 目录内可供 EmmyLua 插件快速访问和代码提示的 Lua 文件。
 
-不需要导出给 Lua 的访问的属性或方法，可添加 `[NoToLua]` 特性标签进行排除，
+不需要导出给 Lua 访问的属性或方法，可添加 `[NoToLua]` 特性标签进行排除，
 或在 `Assets/Framework/ToLua/Editor/ToLuaExport.cs` **memberFilter** 列表中添加排除。
 
 #### * 安装 EmmyLua 插件
@@ -107,11 +107,11 @@ Tools 为独立项目，bin 目录下的脚本是为当前项目打包所用。
 
 Tools 项目核心功能基于 [Node.js](https://nodejs.org/en/download) 实现，在使用前，请确保已安装好 Node.js 与 npm
 
-可运行 `build-help.sh` 或 `build-help.bat` 查看帮助信息(build options)
+*可运行 `build-help.sh` 或 `build-help.bat` 查看帮助信息(build options)*
 
-#### * 以导出 Android 项目为例：
+#### * 以导出 Android 项目为例
 
-第一次运行脚本前，需要先下载 Tools 项目所需 node_modules：
+第一次运行脚本前，需要先下载 Tools 项目所需 node_modules
 
 ```
 # Go into the repository
@@ -123,7 +123,7 @@ npm install
 
 然后，编辑 `Tools/lib/config/config.js` 文件，根据当前操作系统，只需在 `macUnityPath` 或 `winUnityPath` 填入 Unity Editor 绝对路径即可。
 
-*你也可以配置变量 `unityVersion` 和路径中的 `[UnityVersion]` 替换符，配合 build.js `-u` 参数，用于同一台机器的多个版本 Unity 打包。*
+*你也可以配置变量 `unityVersion` 和路径中的 `[UnityVersion]` 替换符，配合 build.js `-u` 参数，用于同一台机器的多个 Unity 版本打包。*
 
 接下来，可运行 `startup-web.sh`(MacOS) 或 `startup-web.bat`(Windows) 脚本，开启查看打包进度与日志的 Web 程序。
 浏览器 URL 参数 `packid` 为打包时的唯一标识 ID，bin 目录下的脚本默认都是用 packid=0 来打包。
@@ -141,3 +141,20 @@ Unity Android 项目需要添加的配置和常见问题，可参考：Templates
 ###### 打包进度与日志页面：
 ![](https://raw.githubusercontent.com/lolo1208/unity3d-lolo/master/Templates/Screenshots/build-web-page.jpg)
 
+#### * Unity Editor - `AssetBundle`
+
+你可以在 Unity Editor 中以 AssetBundle 模式加载资源。该模式对 模拟真机环境，检视资源 和 调试程序 都有非常大的帮助。
+打包步骤如下：
+
+在 Unity Editor 中关闭当前项目。
+
+运行脚本 `build-macos-ab-mode.sh` 或 `build-windows-ab-mode.bat` 脚本。
+该脚本会将所有资源打成 AssetBundle（Launcher 和 Empty 场景除外），
+Encode 所有 Lua 文件，
+然后拷贝至 `Assets/StreamingAssets` 目录。
+
+重新在 Unity Editor 中打开项目，这时默认已经进入了 AssetBundle 模式，直接运行项目即可。
+
+你也可以点击菜单 `ShibaInu`->`退出 AssetBundle 模式` 或  `ShibaInu`->`进入 AssetBundle 模式` 切换加载模式。
+
+*提示：可以在 Web 程序中查看打包进度与详细日志*
