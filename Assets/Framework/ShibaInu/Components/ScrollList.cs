@@ -166,9 +166,7 @@ namespace ShibaInu
             m_initialized = true;
 
             GameObject viewport = LuaHelper.CreateGameObject("Viewport", transform, false);
-            Mask mask = viewport.gameObject.AddComponent<Mask>();
-            mask.showMaskGraphic = false;
-            viewport.gameObject.AddComponent<Image>();
+            viewport.AddComponent<RectMask2D>();
             m_viewport = (RectTransform)viewport.transform;
             m_viewport.pivot = Vector2.up;
             m_viewport.sizeDelta = m_viewportSize;

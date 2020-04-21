@@ -318,10 +318,8 @@ namespace ShibaInu
 #endif
 
             // size
-            if (gameObject.GetComponent<Mask>() == null)
-                gameObject.AddComponent<Mask>().showMaskGraphic = false;
-            if (gameObject.GetComponent<Image>() == null)
-                gameObject.AddComponent<Image>();
+            if (gameObject.GetComponent<RectMask2D>() == null)
+                gameObject.AddComponent<RectMask2D>();
             ((RectTransform)transform).sizeDelta = m_viewSize;
 
             // views
