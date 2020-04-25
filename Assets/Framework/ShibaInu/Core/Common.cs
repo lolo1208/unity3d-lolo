@@ -11,7 +11,7 @@ namespace ShibaInu
         /// 当前固定比例方式 [ true:固定宽度，false:固定高度 ]
         public static bool IsFixedWidth;
         /// 是否在编辑器中运行，并且在开发模式下
-        public static bool IsDebug;
+        public static bool IsDebug = true;
 
         /// 不会被销毁的 GameObject
         public static GameObject go;

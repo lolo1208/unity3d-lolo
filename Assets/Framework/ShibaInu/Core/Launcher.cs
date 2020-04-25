@@ -28,6 +28,8 @@ namespace ShibaInu
                 Common.IsNeverSleep = true;
 #if UNITY_EDITOR
                 Common.IsDebug = !File.Exists(Constants.ABModeFilePath);
+#else
+                Common.IsDebug = false;
 #endif
 
                 StartCoroutine(Launch());
