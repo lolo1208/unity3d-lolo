@@ -49,6 +49,8 @@ BaseList.SELECT_MODE_INDEX = "index"
 --- 列表更新时，根据键来选中子项
 BaseList.SELECT_MODE_KEY = "key"
 
+local pos = Vector3.New()
+
 
 --
 --- 构造函数
@@ -189,7 +191,6 @@ function BaseList:UpdateNow()
     local count = min(dataCount, self._rowCount * self._columnCount)
     local item, lastItem ---@type ItemRenderer
     local lastItemX, lastItemY
-    local pos = Vector3.zero
     for i = 1, count do
         if lastItem ~= nil then
             local idx = i - 1
@@ -212,17 +213,20 @@ function BaseList:UpdateNow()
                 end
             end
         else
-            --pos.x = 0
-            --pos.y = 0
+            pos.x = 0
+            pos.y = 0
         end
 
         item = self:GetItem()
-        item.transform.localPosition = pos
-        self:UpdateItem(item, data:GetValueByIndex(i), i)
-
         lastItem = item
         lastItemX = pos.x
         lastItemY = pos.y
+
+        pos.x = pos.x + item.itemOffsetX
+        pos.y = pos.y + item.itemOffsetY
+        item.transform.localPosition = pos
+        self:UpdateItem(item, data:GetValueByIndex(i), i)
+
     end
 
     self:HideItemPool()

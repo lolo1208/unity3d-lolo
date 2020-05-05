@@ -8,6 +8,8 @@ local floor = math.floor
 local ceil = math.ceil
 local abs = math.abs
 
+
+--
 ---@class ScrollList : BaseList
 ---@field New fun(go:UnityEngine.GameObject, itemClass:any):ScrollList
 ---
@@ -28,6 +30,9 @@ local abs = math.abs
 ---@field protected _updateDirty boolean @ 是否已经被标记当前帧会更新
 ---
 local ScrollList = class("ScrollList", BaseList)
+
+local pos = Vector3.New()
+
 
 --
 --- 构造函数
@@ -50,7 +55,6 @@ function ScrollList:Ctor(go, itemClass)
     self._viewportWidth = viewportSize.x
     self._viewportHeight = viewportSize.y
 end
-
 
 
 --
@@ -153,7 +157,6 @@ function ScrollList:UpdateNow()
     -- 根据数据显示（创建）子项
     local lastItem ---@type ItemRenderer
     local lastItemX, lastItemY
-    local pos = Vector3.zero
     for i = minI + 1, maxI do
         local idx = i - 1
         if lastItem ~= nil then
@@ -187,12 +190,14 @@ function ScrollList:UpdateNow()
         end
 
         item = self:GetItem()
-        item.transform.localPosition = pos
-        self:UpdateItem(item, data:GetValueByIndex(i), i)
-
         lastItem = item
         lastItemX = pos.x
         lastItemY = pos.y
+
+        pos.x = pos.x + item.itemOffsetX
+        pos.y = pos.y + item.itemOffsetY
+        item.transform.localPosition = pos
+        self:UpdateItem(item, data:GetValueByIndex(i), i)
     end
 
     self:HideItemPool()

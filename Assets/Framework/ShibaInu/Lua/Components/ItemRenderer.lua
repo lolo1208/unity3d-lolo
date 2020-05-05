@@ -10,6 +10,8 @@
 ---@field deselect boolean @ 在已选中时，是否可以取消选中
 ---@field itemWidth number @ 布局宽度
 ---@field itemHeight number @ 布局高度
+---@field itemOffsetX number @ 布局时 x 偏移
+---@field itemOffsetY number @ 布局时 y 偏移
 ---
 ---@field protected _list BaseList
 ---@field protected _index number
@@ -92,9 +94,13 @@ end
 function ItemRenderer:OnInitialize()
     ItemRenderer.super.OnInitialize(self)
 
-    local sizeDelta = GetComponent.RectTransform(self.gameObject).sizeDelta
+    local sizeDelta = self.transform.sizeDelta
     self.itemWidth = sizeDelta.x
     self.itemHeight = sizeDelta.y
+
+    local pivot = self.transform.pivot
+    self.itemOffsetX = pivot.x * self.itemWidth
+    self.itemOffsetY = -(pivot.y * self.itemHeight)
 end
 
 

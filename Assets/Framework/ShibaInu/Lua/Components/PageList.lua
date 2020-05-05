@@ -23,7 +23,7 @@ local ceil = math.ceil
 ---
 local PageList = class("PageList", BaseList)
 
-local tmpVec3 = Vector3.zero
+local pos = Vector3.New()
 
 
 --
@@ -109,7 +109,6 @@ function PageList:UpdateViewItem(index)
     end
     local item, lastItem ---@type ItemRenderer
     local lastItemX, lastItemY
-    local pos = Vector3.zero
     for i = 1, count do
         if lastItem ~= nil then
             local idx = i - 1
@@ -132,24 +131,26 @@ function PageList:UpdateViewItem(index)
                 end
             end
         else
-            --pos.x = 0
-            --pos.y = 0
+            pos.x = 0
+            pos.y = 0
         end
 
         item = self:GetItem()
-        SetParent(item.transform, container)
-        item.transform.localPosition = pos
-        self:UpdateItem(item, data:GetValueByIndex(i + startIndex), i)
-
         lastItem = item
         lastItemX = pos.x
         lastItemY = pos.y
+        SetParent(item.transform, container)
+
+        pos.x = pos.x + item.itemOffsetX
+        pos.y = pos.y + item.itemOffsetY
+        item.transform.localPosition = pos
+        self:UpdateItem(item, data:GetValueByIndex(i + startIndex), i)
     end
 
     -- 偏移容器位置，居中显示
-    tmpVec3.x = -(self._columnCount * (lastItem.itemWidth + self._horizontalGap) - self._horizontalGap) / 2
-    tmpVec3.y = (self._rowCount * (lastItem.itemHeight + self._verticalGap) - self._verticalGap) / 2
-    container.localPosition = tmpVec3
+    pos.x = -(self._columnCount * (lastItem.itemWidth + self._horizontalGap) - self._horizontalGap) / 2
+    pos.y = (self._rowCount * (lastItem.itemHeight + self._verticalGap) - self._verticalGap) / 2
+    container.localPosition = pos
 end
 
 
