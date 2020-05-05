@@ -100,6 +100,10 @@ end
 function Scene:OnDestroy()
     Scene.super.OnDestroy(self)
 
+    if not isnull(self.gameObject) then
+        RemoveEventListener(self.gameObject, DestroyEvent.DESTROY, self.OnDestroy, self)
+    end
+
     RemoveEventListener(Stage, LoadSceneEvent.SUB_COMPLETE, self.LoadNextSubSceneAsync, self)
 end
 
