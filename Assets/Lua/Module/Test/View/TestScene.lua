@@ -41,9 +41,6 @@ function TestScene:OnInitialize()
     --
 
 
-    local ioGameBtn = samplesTra:Find("ioGameBtn").gameObject
-    AddEventListener(ioGameBtn, PointerEvent.CLICK, self.OnClick_ioGameBtn, self)
-
     local dungeonBtn = samplesTra:Find("dungeonBtn").gameObject
     AddEventListener(dungeonBtn, PointerEvent.CLICK, self.OnClick_dungeonBtn, self)
 
@@ -77,10 +74,6 @@ function TestScene:OnClick_backBtn(event)
     self.backBtn:SetActive(false)
 end
 
-
---
-function TestScene:OnClick_ioGameBtn(event)
-end
 
 
 --
