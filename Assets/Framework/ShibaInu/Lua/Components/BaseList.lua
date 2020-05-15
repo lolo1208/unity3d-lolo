@@ -19,8 +19,13 @@ local floor = math.floor
 ---@field autoSelectItem boolean @ 在 Update()、PointerDown、PointerClick 发生时，是否自动切换子项的选中状态。默认值：true
 ---
 ---@field protected _list ShibaInu.BaseList
----@field protected _content UnityEngine.Transform @ item 容器
+---@field protected _content UnityEngine.RectTransform @ item 容器
 ---@field protected _itemPrefab UnityEngine.GameObject @ Item 对应的 Prefab 对象
+---
+---@field protected _isUpdateCalc boolean @ 是否需要重新计算 行数，列数，item 间隔，整体偏移 等布局相关参数
+---@field protected _itemOffetX number @ item 整体 x 偏移（当 isAutoSize 值为 true 时）
+---@field protected _itemOffetY number @ item 整体 y 偏移
+---
 ---@field protected _rowCount number @ 行数
 ---@field protected _columnCount number @ 列数
 ---@field protected _verticalGap number @ 水平方向子项间的像素间隔
@@ -62,6 +67,7 @@ function BaseList:Ctor(go, itemClass)
     self._itemList = {}
     self._itemPool = {}
     self._isHorizontalSort = true
+    self._isUpdateCalc = true
     self._enabled = true
 
     self.autoSelectItem = true
@@ -83,13 +89,11 @@ function BaseList:Ctor(go, itemClass)
     end
     list.luaTarget = self
     self._list = list
-
     self._content = list.content
     self._rowCount = list.rowCount
     self._columnCount = list.columnCount
     self._horizontalGap = list.horizontalGap
     self._verticalGap = list.verticalGap
-
     self._itemPrefab = list.itemPrefab
     if isnull(self._itemPrefab) then
         self._itemPrefab = nil
@@ -98,7 +102,6 @@ function BaseList:Ctor(go, itemClass)
     self._itemClass = itemClass
     self.gameObject = go
     self:OnInitialize()
-    self:EnableDestroyListener()
 end
 
 
@@ -169,6 +172,11 @@ function BaseList:Update()
     AddEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
 end
 
+function BaseList:UpdateCalc()
+    self._isUpdateCalc = true
+    AddEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
+end
+
 --
 --- 立即更新显示内容，而不是等待 Event.LATE_UPDATE 事件更新
 function BaseList:UpdateNow()
@@ -187,9 +195,47 @@ function BaseList:UpdateNow()
         return
     end
 
+    local item ---@type ItemRenderer
+
+    -- 重新计算影响布局的各参数参数
+    if self._isUpdateCalc then
+        self._isUpdateCalc = false
+        local list = self._list
+        local contentSize = self._content.rect
+        local cw, ch = contentSize.width, contentSize.height
+        item = self:GetItem()
+
+        if list.isAutoSize then
+            self._itemOffetX = -cw / 2
+            self._itemOffetY = ch / 2
+        else
+            self._itemOffetX = 0
+            self._itemOffetY = 0
+        end
+
+        if list.isAutoItemCount then
+            self._columnCount = floor(cw / item.itemWidth)
+            self._rowCount = floor(ch / item.itemHeight)
+        else
+            self._columnCount = list.columnCount
+            self._rowCount = list.rowCount
+        end
+
+        if list.isAutoItemGap then
+            self._horizontalGap = (cw - self._columnCount * item.itemWidth) / (self._columnCount - 1)
+            self._verticalGap = (ch - self._rowCount * item.itemHeight) / (self._rowCount - 1)
+        else
+            self._horizontalGap = list.horizontalGap
+            self._verticalGap = list.verticalGap
+        end
+
+        self._itemPool[#self._itemPool + 1] = item
+        self:SyncPropertysToCS()
+    end
+
     -- 根据数据显示（创建）子项
     local count = min(dataCount, self._rowCount * self._columnCount)
-    local item, lastItem ---@type ItemRenderer
+    local lastItem ---@type ItemRenderer
     local lastItemX, lastItemY
     for i = 1, count do
         if lastItem ~= nil then
@@ -222,8 +268,8 @@ function BaseList:UpdateNow()
         lastItemX = pos.x
         lastItemY = pos.y
 
-        pos.x = pos.x + item.itemOffsetX
-        pos.y = pos.y + item.itemOffsetY
+        pos.x = pos.x + item.itemOffsetX + self._itemOffetX
+        pos.y = pos.y + item.itemOffsetY + self._itemOffetY
         item.transform.localPosition = pos
         self:UpdateItem(item, data:GetValueByIndex(i), i)
 

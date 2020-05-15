@@ -94,9 +94,9 @@ end
 function ItemRenderer:OnInitialize()
     ItemRenderer.super.OnInitialize(self)
 
-    local sizeDelta = self.transform.sizeDelta
-    self.itemWidth = sizeDelta.x
-    self.itemHeight = sizeDelta.y
+    local rect = self.transform.rect
+    self.itemWidth = rect.width
+    self.itemHeight = rect.height
 
     local pivot = self.transform.pivot
     self.itemOffsetX = pivot.x * self.itemWidth

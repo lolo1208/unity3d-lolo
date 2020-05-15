@@ -34,12 +34,30 @@ namespace ShibaInu
         {
             base.OnInspectorGUI();
 
+
+            // viewport size
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(m_c_viewportSize, m_labelWidth);
+
+            // size
+            EditorGUI.BeginDisabledGroup(m_scrollList.isAutoSize);
+            Vector2 viewportSize = m_viewportSize.vector2Value;
+            int vpw = EditorGUILayout.IntField((int)viewportSize.x, m_halfWidth);
+            int vph = EditorGUILayout.IntField((int)viewportSize.y);
+            if (!m_scrollList.isAutoSize)
+                m_scrollList.SetViewportSize((uint)(vpw < 0 ? 0 : vpw), (uint)(vph < 0 ? 0 : vph));
+            MarkSceneDirty(vpw != viewportSize.x || vph != viewportSize.y);
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUILayout.EndHorizontal();
+
+
             // direction
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField(m_c_direction, m_labelWidth);
             bool isVertical = m_scrollList.isVertical;
             bool isH = GUILayout.Toggle(!isVertical, m_c_horizontal, m_halfWidth);
-            bool isV = GUILayout.Toggle(isVertical, m_c_vertical, m_halfWidth);
+            bool isV = GUILayout.Toggle(isVertical, m_c_vertical);
             if (isVertical)
             {
                 if (isH)
@@ -57,22 +75,33 @@ namespace ShibaInu
                 }
             }
             EditorGUILayout.EndHorizontal();
-            m_rowCountDisabled = m_scrollList.isVertical;
-            m_columnCountDisabled = !m_scrollList.isVertical;
-
-
-            // viewport size
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(m_c_viewportSize, m_labelWidth);
-            Vector2 viewportSize = m_viewportSize.vector2Value;
-            int vpw = EditorGUILayout.IntField((int)viewportSize.x, m_halfWidth);
-            int vph = EditorGUILayout.IntField((int)viewportSize.y, m_halfWidth);
-            MarkSceneDirty(vpw != viewportSize.x || vph != viewportSize.y);
-            m_scrollList.SetViewportSize((uint)(vpw < 0 ? 0 : vpw), (uint)(vph < 0 ? 0 : vph));
-            EditorGUILayout.EndHorizontal();
 
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+
+
+        public override bool RowCountEnabled
+        {
+            get { return !m_scrollList.isVertical && !m_scrollList.isAutoItemCount; }
+        }
+
+        public override bool ColumnCountEnabled
+        {
+            get { return m_scrollList.isVertical && !m_scrollList.isAutoItemCount; }
+        }
+
+
+
+        public override bool HGapEnabled
+        {
+            get { return !m_scrollList.isAutoItemGap || !m_scrollList.isVertical; }
+        }
+
+        public override bool VGapEnabled
+        {
+            get { return !m_scrollList.isAutoItemGap || m_scrollList.isVertical; }
         }
 
 

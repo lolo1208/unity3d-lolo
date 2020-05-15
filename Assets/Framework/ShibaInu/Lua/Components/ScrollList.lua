@@ -27,7 +27,7 @@ local abs = math.abs
 ---@field protected _itemLayoutHeight number @ 用来布局的item高度（_itemHeight + _verticalGap）
 ---
 ---@field protected _lastUpdatePos number @ _content 上次滚动更新的位置
----@field protected _updateDirty boolean @ 是否已经被标记当前帧会更新
+---@field protected _isUpdateDirty boolean @ 是否已经被标记当前帧会更新
 ---
 local ScrollList = class("ScrollList", BaseList)
 
@@ -46,34 +46,39 @@ function ScrollList:Ctor(go, itemClass)
     self._itemLayoutWidth = 0
     self._itemLayoutHeight = 0
     self._lastUpdatePos = 0
-    self._updateDirty = false
+    self._isUpdateDirty = false
 
     self.scrollList = self._list
     self._isVertical = self._list.isVertical
     self._viewport = self._list.viewport
-    local viewportSize = self._viewport.sizeDelta
-    self._viewportWidth = viewportSize.x
-    self._viewportHeight = viewportSize.y
+
+    if self.scrollList.isAutoSize then
+        local viewportSize = self._viewport.rect
+        self._viewportWidth = viewportSize.width
+        self._viewportHeight = viewportSize.height
+    else
+        local viewportSize = self.scrollList:GetViewportSize()
+        self._viewportWidth = viewportSize.x
+        self._viewportHeight = viewportSize.y
+    end
 end
 
 
 --
 --- 滚动更新，由 ScrollList.cs 调用
 function ScrollList:UpdateScroll()
-    if self._updateDirty then
+    if self._isUpdateDirty then
         return
     end
 
     -- 验证滚动距离是否已经有一个 item 的尺寸
     local itemSize = self._isVertical and self._itemLayoutHeight or self._itemLayoutWidth
-    if itemSize > 0 then
-        local contentPos = self._content.localPosition
-        local curPos = self._isVertical and contentPos.y or contentPos.x
-        if abs(curPos - self._lastUpdatePos) > itemSize then
-            self:Update()
-            self._updateDirty = true
-            AddEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
-        end
+    local contentPos = self._content.localPosition
+    local curPos = self._isVertical and contentPos.y or contentPos.x
+    if abs(curPos - self._lastUpdatePos) > itemSize then
+        self:Update()
+        self._isUpdateDirty = true
+        AddEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
     end
 end
 
@@ -81,8 +86,8 @@ end
 --
 --- 更新列表（在 Event.LATE_UPDATE 事件中更新）
 function ScrollList:Update()
-    if not self._updateDirty then
-        self._updateDirty = true
+    if not self._isUpdateDirty then
+        self._isUpdateDirty = true
         AddEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
     end
 end
@@ -91,7 +96,7 @@ end
 --
 --- 立即更新显示内容，而不是等待 Event.LATE_UPDATE 事件更新
 function ScrollList:UpdateNow()
-    self._updateDirty = false
+    self._isUpdateDirty = false
     RemoveEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
     self:RecycleAllItem()
 
@@ -111,17 +116,53 @@ function ScrollList:UpdateNow()
     local item ---@type ItemRenderer
     local isVertical = self._isVertical
 
-    -- 先得到item的宽高
-    if self._itemWidth == 0 or self._itemHeight == 0 then
+    -- 重新计算影响布局的各参数参数
+    if self._isUpdateCalc then
+        self._isUpdateCalc = false
+        local list = self._list
+        local cw, ch = self._viewportWidth, self._viewportHeight
         item = self:GetItem()
+
+        if list.isAutoSize then
+            self._itemOffetX = -cw / 2
+            self._itemOffetY = ch / 2
+        else
+            self._itemOffetX = 0
+            self._itemOffetY = 0
+        end
+
+        self._columnCount = list.columnCount
+        self._rowCount = list.rowCount
+        if list.isAutoItemCount then
+            if isVertical then
+                self._columnCount = floor(cw / item.itemWidth)
+            else
+                self._rowCount = floor(ch / item.itemHeight)
+            end
+        end
+
+        self._horizontalGap = list.horizontalGap
+        self._verticalGap = list.verticalGap
+        if list.isAutoItemGap then
+            if isVertical then
+                self._horizontalGap = (cw - self._columnCount * item.itemWidth) / (self._columnCount - 1)
+            else
+                self._verticalGap = (ch - self._rowCount * item.itemHeight) / (self._rowCount - 1)
+            end
+        end
+
+        -- 得到item的宽高
         self._itemWidth = item.itemWidth
         self._itemHeight = item.itemHeight
         self._itemLayoutWidth = self._itemWidth + self._horizontalGap
         self._itemLayoutHeight = self._itemHeight + self._verticalGap
+
         self._itemPool[#self._itemPool + 1] = item
+        self:SyncPropertysToCS()
     end
 
-    -- 根据数据计算出内容的宽高
+
+    -- 根据数据量计算出内容的预计宽高
     local cw, ch
     if isVertical then
         cw = self._columnCount * self._itemLayoutWidth - self._horizontalGap
@@ -205,6 +246,17 @@ function ScrollList:UpdateNow()
     self:DispatchListEvent(ListEvent.UPDATE)
 end
 
+
+--
+--- 检查当前是否需要更新，如果需要更新，将会立即更新
+function ScrollList:UpdateCheck()
+    if self._isUpdateDirty then
+        self:UpdateNow()
+    end
+end
+
+
+--
 --- 通过索引来选中子项。
 --- @param index number
 function ScrollList:AutoSelectItemByIndex(index)
@@ -250,7 +302,6 @@ function ScrollList:GetItemByIndex(index)
 
     -- 已创建的item中，没有对应index的item（表示item在显示范围外），直接创建
     item = self:GetItem()
-    local pos = Vector3.zero
     local idx = index - 1
     if self._isVertical then
         pos.x = (idx % self._columnCount) * self._itemLayoutWidth
@@ -265,6 +316,64 @@ function ScrollList:GetItemByIndex(index)
     return item
 end
 
+
+
+--
+--- 滚动到指定位置
+---@param position number @ 位置，值范围：0~1
+---@param duration number @ -可选- 滚动耗时（秒），值 <= 0 时表示不使用缓动。默认：0.4
+---@param ease DG.Tweening.Ease @ -可选- 缓动方式。默认：OutCubic
+function ScrollList:ScrollToPosition(position, duration, ease)
+    self:UpdateCheck()
+    self.scrollList:ScrollToPosition(position, duration or 0.4, ease or DOTween_Enum.Ease.OutCubic)
+end
+
+--
+--- 滚动到指定 item 位置
+---@param item ItemRenderer
+---@param duration number @ -可选- 滚动耗时（秒），值 <= 0 时表示不使用缓动。默认：0.4
+---@param ease DG.Tweening.Ease @ -可选- 缓动方式。默认：OutCubic
+function ScrollList:ScrollToItem(item, duration, ease)
+    if item ~= nil and item:GetList() == self then
+        self:ScrollToItemIndex(item:GetIndex(), duration, ease)
+    end
+end
+
+--
+--- 滚动到当前选中的 item 位置
+---@param duration number @ -可选- 滚动耗时（秒），值 <= 0 时表示不使用缓动。默认：0.4
+---@param ease DG.Tweening.Ease @ -可选- 缓动方式。默认：OutCubic
+function ScrollList:ScrollToSelectedItem(duration, ease)
+    self:ScrollToItem(self._selectedItem, duration, ease)
+end
+
+--
+--- 滚动到 item 索引所在的位置
+---@param itemIndex number
+---@param duration number @ -可选- 滚动耗时（秒），值 <= 0 时表示不使用缓动。默认：0.4
+---@param ease DG.Tweening.Ease @ -可选- 缓动方式。默认：OutCubic
+function ScrollList:ScrollToItemIndex(itemIndex, duration, ease)
+    self:UpdateCheck()
+
+    -- 显示区域宽或高，内容宽或高，水平或垂直 item 间隔，每行或列 item 数量
+    local viewportSize, contentSize, itemGap, itemCount
+    if self._isVertical then
+        viewportSize = self._viewportHeight
+        contentSize = self._content.sizeDelta.y
+        itemGap = self._verticalGap
+        itemCount = self._columnCount
+    else
+        viewportSize = self._viewportWidth
+        contentSize = self._content.sizeDelta.x
+        itemGap = self._horizontalGap
+        itemCount = self._rowCount
+    end
+
+    local posMax = 1 + (viewportSize + itemGap) / (contentSize - viewportSize) -- 总宽或高（值大于 1）
+    local posRatio = posMax / ceil(self._data:GetCount() / itemCount) -- 每行或列所占宽高比
+    local position = posRatio * ceil(itemIndex / itemCount - 1) -- index 对应位置（0~posMax）
+    self:ScrollToPosition(1 - position, duration, ease)
+end
 
 
 
@@ -353,7 +462,7 @@ end
 
 function ScrollList:Clean()
     ScrollList.super.Clean(self)
-    self._updateDirty = false
+    self._isUpdateDirty = false
     self._lastUpdatePos = 0
 end
 

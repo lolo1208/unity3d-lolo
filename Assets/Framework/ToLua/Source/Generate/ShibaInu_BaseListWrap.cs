@@ -16,6 +16,9 @@ public class ShibaInu_BaseListWrap
 		L.RegVar("columnCount", get_columnCount, set_columnCount);
 		L.RegVar("horizontalGap", get_horizontalGap, set_horizontalGap);
 		L.RegVar("verticalGap", get_verticalGap, set_verticalGap);
+		L.RegVar("isAutoSize", get_isAutoSize, set_isAutoSize);
+		L.RegVar("isAutoItemCount", get_isAutoItemCount, set_isAutoItemCount);
+		L.RegVar("isAutoItemGap", get_isAutoItemGap, set_isAutoItemGap);
 		L.RegVar("content", get_content, null);
 		L.EndClass();
 	}
@@ -155,6 +158,63 @@ public class ShibaInu_BaseListWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_isAutoSize(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.BaseList obj = (ShibaInu.BaseList)o;
+			bool ret = obj.isAutoSize;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index isAutoSize on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_isAutoItemCount(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.BaseList obj = (ShibaInu.BaseList)o;
+			bool ret = obj.isAutoItemCount;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index isAutoItemCount on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_isAutoItemGap(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.BaseList obj = (ShibaInu.BaseList)o;
+			bool ret = obj.isAutoItemGap;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index isAutoItemGap on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_content(IntPtr L)
 	{
 		object o = null;
@@ -284,6 +344,63 @@ public class ShibaInu_BaseListWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index verticalGap on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_isAutoSize(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.BaseList obj = (ShibaInu.BaseList)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.isAutoSize = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index isAutoSize on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_isAutoItemCount(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.BaseList obj = (ShibaInu.BaseList)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.isAutoItemCount = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index isAutoItemCount on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_isAutoItemGap(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.BaseList obj = (ShibaInu.BaseList)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.isAutoItemGap = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index isAutoItemGap on a nil value");
 		}
 	}
 }

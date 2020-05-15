@@ -20,7 +20,7 @@ function Test_PageList:OnInitialize()
 
     self.pageList = PageList.New(
             self.transform:Find("PageList").gameObject,
-            require("Module.Test.Samples.PageList.Test_PageListItem")
+            require("Module.Test.Samples.BaseList.Test_BaseListItem")
     )
     self.pl = self.pageList.pageList
     Test_PageNum.New(self.transform:Find("PageNum").gameObject, self.pageList)

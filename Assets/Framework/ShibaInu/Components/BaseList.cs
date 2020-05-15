@@ -14,6 +14,8 @@ namespace ShibaInu
     [DisallowMultipleComponent]
     public class BaseList : MonoBehaviour
     {
+        protected const string ELEMENT_CONTENT = "Content";
+
 
         /// 对应的 lua BaseList 对象
         public virtual LuaTable luaTarget
@@ -102,7 +104,7 @@ namespace ShibaInu
         }
 
         [FormerlySerializedAs("horizontalGap"), SerializeField]
-        protected int m_horizontalGap = 0;
+        protected int m_horizontalGap;
 
 
         /// Item 垂直间隔
@@ -120,8 +122,41 @@ namespace ShibaInu
         }
 
         [FormerlySerializedAs("verticalGap"), SerializeField]
-        protected int m_verticalGap = 0;
+        protected int m_verticalGap;
 
+
+
+        /// 是否根据当前节点尺寸，来设置显示区域尺寸和位置
+        public virtual bool isAutoSize
+        {
+            set { m_isAutoSize = value; }
+            get { return m_isAutoSize; }
+        }
+
+        [FormerlySerializedAs("isAutoSize"), SerializeField]
+        protected bool m_isAutoSize;
+
+
+        /// 是否根据显示区域自动调整 item 数量
+        public bool isAutoItemCount
+        {
+            set { m_isAutoItemCount = value; }
+            get { return m_isAutoItemCount; }
+        }
+
+        [FormerlySerializedAs("isAutoItemCount"), SerializeField]
+        protected bool m_isAutoItemCount;
+
+
+        /// 是否根据显示区域自动调整 item 间隔
+        public bool isAutoItemGap
+        {
+            set { m_isAutoItemGap = value; }
+            get { return m_isAutoItemGap; }
+        }
+
+        [FormerlySerializedAs("isAutoItemGap"), SerializeField]
+        protected bool m_isAutoItemGap;
 
 
 
@@ -183,16 +218,34 @@ namespace ShibaInu
         /// </summary>
         protected virtual void Initialize()
         {
-            if (m_initialized)
-                return;
+            if (m_initialized) return;
             m_initialized = true;
 
-            m_content = (RectTransform)LuaHelper.CreateGameObject("Content", transform, false).transform;
-            m_content.pivot = Vector2.up;
-            m_content.localPosition = Vector3.zero;
+            m_content = CreateOrGetElement_Content();
         }
 
         protected bool m_initialized;
+
+
+
+        /// <summary>
+        /// 创建或获取子节点 ELEMENT_CONTENT
+        /// </summary>
+        /// <returns>The or get element content.</returns>
+        protected virtual RectTransform CreateOrGetElement_Content()
+        {
+            RectTransform tra = (RectTransform)transform.Find(ELEMENT_CONTENT);
+            if (tra == null)
+            {
+                tra = (RectTransform)new GameObject(ELEMENT_CONTENT, typeof(RectTransform))
+                { layer = gameObject.layer }.transform;
+                tra.SetParent(transform, false);
+                tra.anchorMin = Vector2.zero;
+                tra.anchorMax = Vector2.one;
+                tra.sizeDelta = Vector2.zero;
+            }
+            return tra;
+        }
 
 
 
@@ -203,8 +256,19 @@ namespace ShibaInu
             SyncPropertysToLua();
         }
 
-#endif
 
+        [NoToLua]
+        public virtual bool CreateElements()
+        {
+            if (transform.Find(ELEMENT_CONTENT) == null)
+            {
+                CreateOrGetElement_Content();
+                return true;
+            }
+            return false;
+        }
+
+#endif
 
         //
     }

@@ -19,6 +19,8 @@ namespace ShibaInu
         protected float m_widthValue;
         /// 半个内容宽度值
         protected float m_halfWidthValue;
+        /// 三分之一内容宽度值
+        protected float m_thirdWidthValue;
 
         /// 左侧 label 宽度 (GUILayoutOption)
         protected GUILayoutOption m_labelWidth;
@@ -26,6 +28,8 @@ namespace ShibaInu
         protected GUILayoutOption m_width;
         /// 半个内容宽度 (GUILayoutOption)
         protected GUILayoutOption m_halfWidth;
+        /// 三分之一内容宽度 (GUILayoutOption)
+        protected GUILayoutOption m_thirdWidth;
 
 
 
@@ -35,10 +39,12 @@ namespace ShibaInu
             m_labelWidthValue = EditorGUIUtility.labelWidth - 4;
             m_widthValue = m_viewWidthValue - m_labelWidthValue - 27;
             m_halfWidthValue = m_widthValue / 2;
+            m_thirdWidthValue = m_widthValue / 3;
 
             m_labelWidth = GUILayout.Width(m_labelWidthValue);
             m_width = GUILayout.Width(m_widthValue);
             m_halfWidth = GUILayout.Width(m_halfWidthValue);
+            m_thirdWidth = GUILayout.Width(m_thirdWidthValue);
         }
 
 

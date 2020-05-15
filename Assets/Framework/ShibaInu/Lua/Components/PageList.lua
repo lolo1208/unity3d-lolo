@@ -4,6 +4,7 @@
 -- Author LOLO
 --
 
+local pairs = pairs
 local min = math.min
 local ceil = math.ceil
 
@@ -167,7 +168,7 @@ end
 
 --
 --- 计算出总页数
-function PageList:CalculateTotalPageNum()
+function PageList:CalcTotalPageNum()
     if not self.destroyed then
         if self._data == nil then
             self._list.viewCount = 0
@@ -228,7 +229,7 @@ end
 ---@param value MapList
 function PageList:SetData(value)
     PageList.super.SetData(self, value)
-    self:CalculateTotalPageNum()
+    self:CalcTotalPageNum()
 end
 
 
@@ -238,7 +239,7 @@ end
 function PageList:DataChanged(event)
     PageList.super.DataChanged(self, event)
     if event.index == -1 then
-        self:CalculateTotalPageNum()
+        self:CalcTotalPageNum()
     end
 end
 
@@ -287,7 +288,7 @@ function PageList:Clean()
     end
 
     PageList.super.Clean(self)
-    self:CalculateTotalPageNum()
+    self:CalcTotalPageNum()
 end
 
 

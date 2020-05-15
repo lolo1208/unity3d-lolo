@@ -1,8 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Serialization;
+using UnityEngine.EventSystems;
 using LuaInterface;
+using DG.Tweening;
 
 
 namespace ShibaInu
@@ -12,8 +13,11 @@ namespace ShibaInu
     /// </summary>
     [AddComponentMenu("ShibaInu/Scroll List", 103)]
     [DisallowMultipleComponent]
-    public class ScrollList : BaseList
+    public class ScrollList : BaseList, IInitializePotentialDragHandler
     {
+        protected const string ELEMENT_VIEWPORT = "Viewport";
+
+
         /// 对应的 lua ScrollList 对象
         public override LuaTable luaTarget
         {
@@ -52,7 +56,6 @@ namespace ShibaInu
 
 
 
-
         /// <summary>
         /// 设置显示区域宽高
         /// </summary>
@@ -61,11 +64,14 @@ namespace ShibaInu
         public void SetViewportSize(uint width, uint height)
         {
             m_viewportSize.Set(width, height);
-            if (m_viewport)
+            if (!m_isAutoSize && m_viewport)
                 m_viewport.sizeDelta = m_viewportSize;
             ResetContentPosition();
             SyncPropertysToLua();
         }
+
+        public Vector2 GetViewportSize() { return m_viewportSize; }
+
         [FormerlySerializedAs("viewportSize"), SerializeField]
         protected Vector2 m_viewportSize = new Vector2(100, 100);
 
@@ -99,6 +105,34 @@ namespace ShibaInu
             get { return m_scrollRect; }
         }
         protected ScrollRect m_scrollRect;
+
+
+        /// 是否根据当前节点尺寸，来设置显示区域尺寸和位置
+        public override bool isAutoSize
+        {
+            set
+            {
+                if (value == m_isAutoSize) return;
+
+                m_isAutoSize = value;
+                RectTransform viewport = CreateOrGetElement_Viewport();
+                if (viewport != null)
+                {
+                    if (value)
+                    {
+                        viewport.anchorMin = Vector2.zero;
+                        viewport.anchorMax = Vector2.one;
+                        viewport.sizeDelta = Vector2.zero;
+                    }
+                    else
+                    {
+                        viewport.anchorMin = viewport.anchorMax = new Vector2(0.5f, 0.5f);
+                        viewport.sizeDelta = new Vector2(100, 100);
+                    }
+                }
+            }
+            get { return m_isAutoSize; }
+        }
 
 
 
@@ -151,37 +185,8 @@ namespace ShibaInu
             m_scrollRect.vertical = m_isVertical;
 
             m_viewportSize.Set(viewportWidth, viewportHeight);
-            m_viewport.sizeDelta = m_viewportSize;
-        }
-
-
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        protected override void Initialize()
-        {
-            if (m_initialized)
-                return;
-            m_initialized = true;
-
-            GameObject viewport = LuaHelper.CreateGameObject("Viewport", transform, false);
-            viewport.AddComponent<RectMask2D>();
-            m_viewport = (RectTransform)viewport.transform;
-            m_viewport.pivot = Vector2.up;
-            m_viewport.sizeDelta = m_viewportSize;
-            m_viewport.localPosition = Vector3.zero;
-
-            m_content = (RectTransform)LuaHelper.CreateGameObject("Content", m_viewport, false).transform;
-            m_content.pivot = Vector2.up;
-            m_content.localPosition = Vector3.zero;
-
-            m_scrollRect = gameObject.AddComponent<ScrollRect>();
-            m_scrollRect.content = m_content;
-            m_scrollRect.viewport = m_viewport;
-            m_scrollRect.horizontal = !m_isVertical;
-            m_scrollRect.vertical = m_isVertical;
-            m_scrollRect.onValueChanged.AddListener(ScrollRect_ValueChanged);
+            if (!m_isAutoSize)
+                m_viewport.sizeDelta = m_viewportSize;
         }
 
 
@@ -215,6 +220,163 @@ namespace ShibaInu
             }
         }
 
+
+
+        /// <summary>
+        /// 滚动到指定位置 0~1
+        /// </summary>
+        /// <param name="position">Position.</param>
+        /// <param name="duration">Duration.</param>
+        /// <param name="ease">Ease.</param>
+        public void ScrollToPosition(float position, float duration = 0.4f, Ease ease = Ease.OutCubic)
+        {
+            OnInitializePotentialDrag();
+
+            position = Mathf.Max(0, Mathf.Min(position, 1));
+            if (duration > 0)
+            {
+                if (m_isVertical)
+                    m_scrollTweener = m_scrollRect.DOVerticalNormalizedPos(position, duration).SetEase(ease);
+                else
+                    m_scrollTweener = m_scrollRect.DOHorizontalNormalizedPos(position, duration).SetEase(ease);
+            }
+            else
+            {
+                if (m_isVertical)
+                    m_scrollRect.verticalNormalizedPosition = position;
+                else
+                    m_scrollRect.horizontalNormalizedPosition = position;
+            }
+        }
+
+        [NoToLua]
+        public void OnInitializePotentialDrag(PointerEventData eventData = null)
+        {
+            if (m_scrollTweener != null)
+            {
+                m_scrollTweener.Kill();
+                m_scrollTweener = null;
+            }
+        }
+
+        private Tweener m_scrollTweener;
+
+
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        protected override void Initialize()
+        {
+            if (m_initialized) return;
+            m_initialized = true;
+
+            // 创建子节点和组件，并赋值
+            m_viewport = CreateOrGetElement_Viewport();
+            m_content = CreateOrGetElement_Content();
+            AddAllComponents();
+
+            m_scrollRect = gameObject.GetComponent<ScrollRect>();
+            m_scrollRect.content = m_content;
+            m_scrollRect.viewport = m_viewport;
+            m_scrollRect.horizontal = !m_isVertical;
+            m_scrollRect.vertical = m_isVertical;
+            m_scrollRect.onValueChanged.AddListener(ScrollRect_ValueChanged);
+        }
+
+
+
+        /// <summary>
+        /// 创建或获取子节点 ELEMENT_VIEWPORT
+        /// </summary>
+        /// <returns>The or get element content.</returns>
+        protected virtual RectTransform CreateOrGetElement_Viewport()
+        {
+            RectTransform tra = (RectTransform)transform.Find(ELEMENT_VIEWPORT);
+            if (tra == null)
+            {
+                tra = (RectTransform)new GameObject(ELEMENT_VIEWPORT, typeof(RectTransform))
+                { layer = gameObject.layer }.transform;
+                tra.SetParent(transform, false);
+                tra.pivot = Vector2.up;
+                m_isAutoSize = !m_isAutoSize;
+                isAutoSize = !m_isAutoSize;
+            }
+            return tra;
+        }
+
+
+        /// <summary>
+        /// 创建或获取子节点 ELEMENT_CONTENT
+        /// </summary>
+        /// <returns>The or get element content.</returns>
+        protected override RectTransform CreateOrGetElement_Content()
+        {
+            RectTransform viewport = (RectTransform)transform.Find(ELEMENT_VIEWPORT);
+            RectTransform tra = (RectTransform)viewport.Find(ELEMENT_CONTENT);
+            if (tra == null)
+            {
+                tra = (RectTransform)new GameObject(ELEMENT_CONTENT, typeof(RectTransform))
+                { layer = gameObject.layer }.transform;
+                tra.SetParent(viewport, false);
+                tra.pivot = Vector2.up;
+            }
+            return tra;
+        }
+
+
+        /// <summary>
+        /// 添加所需组件，包括子节点
+        /// </summary>
+        /// <returns><c>true</c>, if children components was added, <c>false</c> otherwise.</returns>
+        private bool AddAllComponents()
+        {
+            bool dirty = false;
+
+            if (gameObject.GetComponent<ScrollRect>() == null)
+            {
+                gameObject.AddComponent<ScrollRect>();
+                dirty = true;
+            }
+
+            GameObject viewport = transform.Find(ELEMENT_VIEWPORT).gameObject;
+            if (viewport.GetComponent<RectMask2D>() == null)
+            {
+                viewport.AddComponent<RectMask2D>();
+                dirty = true;
+            }
+
+            return dirty;
+        }
+
+
+
+#if UNITY_EDITOR
+
+        [NoToLua]
+        public override bool CreateElements()
+        {
+            bool dirty = false;
+
+            Transform viewport = transform.Find(ELEMENT_VIEWPORT);
+            if (viewport == null)
+            {
+                viewport = CreateOrGetElement_Viewport();
+                dirty = true;
+            }
+
+            if (viewport.Find(ELEMENT_CONTENT) == null)
+            {
+                CreateOrGetElement_Content();
+                dirty = true;
+            }
+
+            dirty = dirty || AddAllComponents();
+
+            return dirty;
+        }
+
+#endif
 
         //
     }
