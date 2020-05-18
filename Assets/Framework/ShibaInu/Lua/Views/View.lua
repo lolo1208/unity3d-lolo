@@ -158,7 +158,7 @@ function View:EnableDestroyListener(enabled)
         error(format(Constants.E2006, self.__classname))
     end
 
-    if enabled then
+    if enabled and not self.isScene then
         AddEventListener(go, DestroyEvent.DESTROY, self.OnDestroy, self)
     else
         RemoveEventListener(go, DestroyEvent.DESTROY, self.OnDestroy, self)

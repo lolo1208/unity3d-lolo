@@ -96,7 +96,9 @@ end
 ---@param event LoadSceneEvent
 local function LoadSceneCompleteHandler(event)
     RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
-    _loadingScene:OnDestroy()
+    if not _loadingScene.destroyed then
+        _loadingScene:OnDestroy()
+    end
     _loadingScene = nil
 
     if isDebug then
@@ -145,7 +147,9 @@ function Stage.DoShowScene()
     if _currentScene ~= nil then
         _prevSceneClass = _currentScene.__class
         _prevSceneName = _currentScene.moduleName
-        _currentScene:OnDestroy()
+        if not _currentScene.destroyed then
+            _currentScene:OnDestroy()
+        end
     end
     Stage.Clean()
 

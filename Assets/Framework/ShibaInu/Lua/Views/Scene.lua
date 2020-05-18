@@ -7,6 +7,7 @@
 
 ---@class Scene : Module
 ---
+---@field isScene boolean
 ---@field transitionEnabled boolean @ 是否启用转场效果（该属性会被静态访问，请定义成静态属性）。默认：true
 ---
 ---@field moduleName string @ 见构造函数参数
@@ -18,6 +19,7 @@
 ---@field asyncSubSceneIndex number @ 当前异步加载的 Sub 场景索引
 local Scene = class("Scene", Module)
 
+Scene.isScene = true
 Scene.transitionEnabled = true
 
 
@@ -99,10 +101,6 @@ end
 --- 场景被销毁时，由 Stage.lua 调用
 function Scene:OnDestroy()
     Scene.super.OnDestroy(self)
-
-    if not isnull(self.gameObject) then
-        RemoveEventListener(self.gameObject, DestroyEvent.DESTROY, self.OnDestroy, self)
-    end
 
     RemoveEventListener(Stage, LoadSceneEvent.SUB_COMPLETE, self.LoadNextSubSceneAsync, self)
 end
