@@ -86,6 +86,7 @@ end
 
 --
 function TestScene:OnDestroy()
+    TestScene.super.OnDestroy(self)
 end
 
 

@@ -15,10 +15,10 @@ local format = string.format
 ---@field transform UnityEngine.Transform | UnityEngine.RectTransform
 ---@field asyncHandler Handler @ 异步初始化时，创建的回调
 ---@field initShow boolean @ 初始化时是否直接显示（默认是否显示）。默认值：true
----@field visible boolean @ 是否已经显示
+---@field visible boolean @ 当前是否可见
+---@field initialized boolean @ 是否已经初始化完成了
 ---@field destroyed boolean @ 是否已经被销毁
 ---
----@field _initialized boolean @ 是否已经初始化完成了
 local View = class("View", EventDispatcher)
 
 View.initShow = true
@@ -43,7 +43,7 @@ end
 function View:Ctor(prefab, parent, groupName, isAsync)
     View.super.Ctor(self)
 
-    self._initialized = false
+    self.initialized = false
     self.visible = false
     self.destroyed = false
 
@@ -65,10 +65,10 @@ end
 --- 初始化时（已创建 prefab 实例），并设置 self.gameObject
 --- 注意：该函数只能被调用一次，子类可以在该函数内做一些初始化的工作。子类覆盖该函数时，记得调用 Class.super.OnInitialize(self)
 function View:OnInitialize()
-    if self._initialized then
+    if self.initialized then
         error(format(Constants.E2004, self.__classname))
     end
-    self._initialized = true
+    self.initialized = true
     self.asyncHandler = nil
 
     self.visible = self.initShow
@@ -94,7 +94,7 @@ end
 --- 设置是否可见
 ---@param value boolean
 function View:SetVisible(value)
-    if not self._initialized then
+    if not self.initialized then
         error(format(Constants.E2005, self.__classname))
     end
 

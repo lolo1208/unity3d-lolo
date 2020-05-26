@@ -158,11 +158,25 @@ namespace ShibaInu
 #if UNITY_EDITOR
             if (Common.IsDebug)
             {
+                if (s_coDce != null)
+                {
+                    Common.looper.StopCoroutine(s_coDce);
+                    s_coDce = null;
+                }
+
+                s_sceneName = sceneName;
                 // [ Editor Play Mode ] 请将要加载的场景（在 Assets/Res/Scene/ 目录下）加入到 [ Build Settings -> Scenes In Build ] 中
                 SceneManager.LoadScene(sceneName);
                 return;
             }
 #endif
+
+            // 停掉异步加载协程
+            if (s_coAlc != null)
+                Common.looper.StopCoroutine(s_coAlc);
+            s_coAlc = null;
+            s_abcr = null;
+            s_ao = null;
 
             // 这两个是随包走的场景
             if (sceneName != Constants.LauncherSceneName && sceneName != Constants.EmptySceneName)
@@ -202,7 +216,7 @@ namespace ShibaInu
 #endif
 
             Common.looper.StartCoroutine(UnloadSceneAssetBundle(s_sceneName));
-            s_sceneName = sceneName;
+            s_sceneName = sceneName;// 不能和上一行调换顺序
 
             if (s_coAlc != null)
                 Common.looper.StopCoroutine(s_coAlc);

@@ -16,7 +16,7 @@ local logWarning = ShibaInu.Logger.LogWarning
 local logError = ShibaInu.Logger.LogError
 local logNet = ShibaInu.Logger.LogNet
 
-local TYPE_LOG = "Log" -- 普通日志
+local TYPE_TRACE = "Trace" -- 默认日志
 local TYPE_NET_SUCC = "NetSucc" -- 网络日志 - 通信成功
 local TYPE_NET_FAIL = "NetFail" -- 网络日志 - 通信失败
 local TYPE_NET_PUSH = "NetPush" -- 网络日志 - 主动推送
@@ -31,14 +31,13 @@ local Logger = {}
 --
 --- 添加一条普通日志
 ---@param msg string @ 日志内容
----@param type string @ -可选- 日志类型。默认："Log"
----@param isStackTrace boolean @ -可选- 是否记录堆栈信息。默认：不记录
+---@param type string @ -可选- 日志类型。默认："Trace"
+---@param isStackTrace boolean @ -可选- 是否记录堆栈信息。默认：true
 function Logger.Log(msg, type, isStackTrace)
-    type = type or TYPE_LOG
+    type = type or TYPE_TRACE
 
-    if isStackTrace then
-        -- 需要写入堆栈
-        log(msg, type, traceback("", 2))
+    if isStackTrace ~= false then
+        log(msg, type, traceback("", 2)) -- 包含堆栈信息
     else
         log(msg, type)
     end

@@ -22,10 +22,14 @@ local loadSceneAsync = stage.LoadSceneAsync
 ---@class Stage
 local Stage = {}
 
+--
+
 --- Loading场景类
 Stage.loadingSceneClass = ""
 --- 空场景名称
 Stage.emptySceneName = "Empty"
+
+--
 
 local _event = Event.New()
 local _ed = EventDispatcher.New()
@@ -58,6 +62,10 @@ Stage.RemoveDontDestroy = stage.RemoveDontDestroy
 Stage.uiCanvas = stage.uiCanvas
 Stage.uiCanvasTra = stage.uiCanvasTra
 
+--
+
+---@type Handler @ 异步加载场景的延时帧回调
+local _dfcLoadScene
 
 
 --=-----------------------------[ 场景 ]-----------------------------=--
@@ -102,7 +110,8 @@ local function LoadSceneCompleteHandler(event)
     _loadingScene = nil
 
     if isDebug then
-        DelayedFrameCall(function()
+        _dfcLoadScene = DelayedFrameCall(function()
+            _dfcLoadScene = nil
             DispatchSceneChangedEvent(_currentScene)
         end)
     else
@@ -132,6 +141,20 @@ function Stage.ShowScene(sceneClass, reload)
         return -- 正在该场景中
     end
 
+    if _dfcLoadScene ~= nil then
+        CancelDelayedCall(_dfcLoadScene)
+        _dfcLoadScene = nil
+    end
+    RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
+    RemoveEventListener(Res, LoadResEvent.COMPLETE, LoadResCompleteHandler)
+
+    if _loadingScene ~= nil then
+        if not _loadingScene.destroyed then
+            _loadingScene:OnDestroy() -- 这里没有调用 Destroy()，后面 DoShowScene() 时，loadingScene 自然会被销毁
+        end
+        _loadingScene = nil
+    end
+
     _currentSceneClass = sceneClass
     if sceneClass.transitionEnabled then
         Stage.PlaySceneTransition(true)
@@ -153,9 +176,6 @@ function Stage.DoShowScene()
     end
     Stage.Clean()
 
-    RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
-    RemoveEventListener(Res, LoadResEvent.COMPLETE, LoadResCompleteHandler)
-
     -- 显示新场景
     _currentScene = _currentSceneClass.New()
     if _currentScene.moduleName == nil then
@@ -168,7 +188,8 @@ function Stage.DoShowScene()
             -- 先进入 Loading 场景
             _loadingScene = Stage.loadingSceneClass.New()
             loadScene(_loadingScene.assetName)
-            DelayedFrameCall(function()
+            _dfcLoadScene = DelayedFrameCall(function()
+                _dfcLoadScene = nil
                 DispatchSceneChangedEvent(_loadingScene)
 
                 -- 异步加载目标场景
@@ -177,7 +198,8 @@ function Stage.DoShowScene()
             end, nil, 2)
         else
             loadScene(_currentScene.assetName)
-            DelayedFrameCall(function()
+            _dfcLoadScene = DelayedFrameCall(function()
+                _dfcLoadScene = nil
                 DispatchSceneChangedEvent(_currentScene)
             end, nil, 2)
         end
