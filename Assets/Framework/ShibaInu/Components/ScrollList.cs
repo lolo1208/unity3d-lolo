@@ -197,10 +197,14 @@ namespace ShibaInu
         /// <param name="value">Value.</param>
         private void ScrollRect_ValueChanged(Vector2 value)
         {
-            m_luaUpdate.BeginPCall();
-            m_luaUpdate.Push(m_luaTarget);
-            m_luaUpdate.PCall();
-            m_luaUpdate.EndPCall();
+            try
+            {
+                m_luaUpdate.BeginPCall();
+                m_luaUpdate.Push(m_luaTarget);
+                m_luaUpdate.PCall();
+                m_luaUpdate.EndPCall();
+            }
+            catch { } // Relaunch() 时，该函数会被触发一次，但那时 m_luaUpdate 已被销毁
         }
 
 
