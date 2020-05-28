@@ -20,10 +20,25 @@ public class ShibaInu_NetHelperWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 0);
-			int o = ShibaInu.NetHelper.WatchNetTypeChange();
-			LuaDLL.lua_pushinteger(L, o);
-			return 1;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 0)
+			{
+				int o = ShibaInu.NetHelper.WatchNetTypeChange();
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else if (count == 1)
+			{
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 1);
+				int o = ShibaInu.NetHelper.WatchNetTypeChange(arg0);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.NetHelper.WatchNetTypeChange");
+			}
 		}
 		catch (Exception e)
 		{

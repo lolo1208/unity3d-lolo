@@ -19,6 +19,8 @@ namespace ShibaInu
         private static bool s_watchNetTypeChange;
         private static int s_curNetType;
         private static int s_lastNetType;
+        private static float s_wntcInterval;
+        private static float s_wntcLastTime; // 上次获取网络状态的时间
 
         private static bool s_pinging;
         private static Ping s_ping;
@@ -34,8 +36,9 @@ namespace ShibaInu
         [NoToLua]
         public static void Update()
         {
-            if (s_watchNetTypeChange)
+            if (s_watchNetTypeChange && TimeUtil.timeSec - s_wntcLastTime >= s_wntcInterval)
             {
+                s_wntcLastTime = TimeUtil.timeSec;
                 // 网络类型有改变
                 int netType = GetNetType();
                 if (netType != s_curNetType)
@@ -92,10 +95,13 @@ namespace ShibaInu
         /// 监听网络类型，在有变化时，抛出对应事件
         /// </summary>
         /// <returns>Current net type.</returns>
-        public static int WatchNetTypeChange()
+        /// <param name="interval">获取网络状态间隔（秒）</param>
+        public static int WatchNetTypeChange(float interval = 2)
         {
             s_watchNetTypeChange = true;
             s_curNetType = GetNetType();
+            s_wntcInterval = interval;
+            s_wntcLastTime = TimeUtil.GetTimeSec() - interval;
             return s_curNetType;
         }
 

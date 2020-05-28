@@ -20,9 +20,9 @@ local NetEvent = class("NetEvent", Event)
 
 --=------------------------------[ static ]------------------------------=--
 
---- 网络类型有变化
+--- 网络类型有变化。该事件只会在 NetHelper 上抛出
 NetEvent.NET_TYPE_CHANGED = "NetEvent_NetTypeChanged"
---- 有新的 ping 值
+--- 获取到新的 ping 值。该事件只会在 NetHelper 上抛出
 NetEvent.PING = "NetEvent_Ping"
 
 
