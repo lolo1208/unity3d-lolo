@@ -213,7 +213,6 @@ public static class CustomSettings
         _GT(typeof(Mosaic)),
         _GT(typeof(RadialBlur)),
 
-        _GT(typeof(ShibaInu.Random)),
         _GT(typeof(ShibaInu.LuaProfiler)),
         _GT(typeof(ShibaInu.Logger))
     };

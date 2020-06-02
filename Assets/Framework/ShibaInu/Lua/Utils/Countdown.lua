@@ -10,7 +10,7 @@ local ceil = math.ceil
 
 
 --
----@class Countdown @ 用于 指定执行域（self），携带参数 的情况下，执行回调函数
+---@class Countdown
 ---@field New fun(hander:Handler, totalTime:number, intervalTime:number):Countdown
 ---
 ---@field _totalTime number @ 倒计时总时间
@@ -145,15 +145,12 @@ function Countdown:IsRunning()
 end
 
 
-
 --
 --- 倒计时开始时间（设置totalTime的那一刻）
 ---@return number
 function Countdown:GetStartTime()
     return self._startTime
 end
-
-
 
 
 --
@@ -171,7 +168,6 @@ function Countdown:GetTime()
     end
     return t
 end
-
 
 
 --
@@ -192,8 +188,6 @@ function Countdown:GetCount()
     t = self._totalTime - t
     return ceil(t / self._intervalTime)
 end
-
-
 
 
 

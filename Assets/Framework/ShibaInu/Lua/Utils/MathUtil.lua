@@ -6,13 +6,13 @@
 
 local atan2 = math.atan2
 local floor = math.floor
-local random = math.random
 local pi = math.pi
 local sqrt = math.sqrt
 local cos = math.cos
 local sin = math.sin
 
 local RADIAN = 2 * math.pi / 360 -- 弧度实数
+local rand = Random.New()
 
 
 
@@ -33,26 +33,27 @@ end
 
 
 --
---- 随机一个分子，并返回该分子是否在 numerator 范围内
---- 例如：MathUtil.Random(30, 100) 会有百分之三十的几率返回 true
----@param numerator number @ -可选- 分子，默认：50
----@param denominator number @ -可选- 分母，默认：100
+--- 获取一个随机数，并返回该随机数是否在 a 范围内
+--- 默认 a = 0.5, b = 1，有 50% 概率返回 true
+---   Chance(0.3, 1) 将会有 30% 概率返回 true
+---@param a number
+---@param b number
 ---@return boolean
-function MathUtil.Random(numerator, denominator)
-    numerator = numerator or 50
-    denominator = denominator or 100
-    return random() * denominator < numerator
+function MathUtil.Chance(a, b)
+    return rand:Chance(a, b)
 end
 
 
 --
---- 获取介于min与max之间的随机数，返回值大于等于min，小于max
----@param min number @ 最小值
----@param max number @ 最大值
+--- 返回一个随机浮点数
+---   Random() 返回：0 ~ 1（不包含 1）
+---   Random(10) 返回：0 ~ 9.9999999
+---   Random(10, 20) 返回：10 ~ 19.9999999
+---@param a number
+---@param b number
 ---@return number
-function MathUtil.RandomBetween(min, max)
-    local range = max - min
-    return random() * range + min
+function MathUtil.Random(a, b)
+    return rand:NextFloat(a, b)
 end
 
 

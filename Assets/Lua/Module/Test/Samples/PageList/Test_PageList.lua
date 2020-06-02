@@ -40,7 +40,7 @@ function Test_PageList:OnInitialize()
     AddEventListener(self.transform:Find("IsVertical").gameObject, PointerEvent.CLICK, self.ChangeDirection, self)
 
     local data = MapList.New()
-    for i = 1, MathUtil.RandomBetween(20, 100) do
+    for i = 1, math.random(20, 100) do
         data:Add(i)
     end
     self.pageList:SetData(data)

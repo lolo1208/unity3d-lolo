@@ -62,7 +62,7 @@ function Test_ViewPager:VisibilityChanged(event)
 
     -- 设置数据或清理第三页的 ScrollList
     if event.value then
-        for i = 1, MathUtil.RandomBetween(23, 333) do
+        for i = 1, math.random(23, 333) do
             self.scrollListData:Add(i)
         end
     else

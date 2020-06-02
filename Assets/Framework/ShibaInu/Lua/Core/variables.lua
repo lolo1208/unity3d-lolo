@@ -120,6 +120,7 @@ MapList = require("Data.MapList")
 LinkedList = require("Data.LinkedList")
 RemainTime = require("Data.RemainTime")
 Countdown = require("Utils.Countdown")
+Random = require("Utils.Random")
 
 JSON = require("Utils.JSON")
 Logger = require("Utils.Logging.Logger")
