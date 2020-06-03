@@ -157,5 +157,15 @@ end
 
 
 --
+--- 设备震动反馈
+---@param style number @ -可选- 震动方式，见 Constants.VIBRATE_STYLE_ 系列常量。默认：MEDIUM
+function DeviceVibrate(style)
+    LuaHelper.DeviceVibrate(style or Constants.VIBRATE_STYLE_MEDIUM)
+end
+
+
+
+--
 Stats.Show()
+
 

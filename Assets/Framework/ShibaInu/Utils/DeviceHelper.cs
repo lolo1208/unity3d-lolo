@@ -76,7 +76,6 @@ namespace ShibaInu
         }
 
 
-
         /// <summary>
         /// Looper 判断设备方向是否有变化
         /// </summary>
@@ -104,6 +103,10 @@ namespace ShibaInu
 
 
 
+        /// <summary>
+        /// 当前设备是否为异形屏
+        /// </summary>
+        /// <returns><c>true</c>, if notch screen was ised, <c>false</c> otherwise.</returns>
         private static bool IsNotchScreen()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -118,7 +121,9 @@ namespace ShibaInu
         }
 
 
-
+        /// <summary>
+        /// 获取当前设备的安全区域边距
+        /// </summary>
         private static void GetSafeInsets()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -156,6 +161,26 @@ namespace ShibaInu
 
 
 
+        /// <summary>
+        /// 设备震动反馈
+        /// </summary>
+        /// <param name="style">震动方式 [ 1:轻微, 2:明显, 3:强烈 ]</param>
+        public static void Vibrate(int style)
+        {
+#if UNITY_ANDROID && !UNITY_EDITOR
+        m_androidDeviceHelper.CallStatic ("vibrate", style);
+
+#elif UNITY_IOS && !UNITY_EDITOR
+            VibrateImpl (style);
+
+#endif
+        }
+
+
+
+        // Native functions
+
+
 #if UNITY_ANDROID && !UNITY_EDITOR
 		
 		private static float ToInsetValue (float value)
@@ -178,6 +203,9 @@ namespace ShibaInu
 
 		[DllImport ("__Internal")]
 		private static extern void GetSafeInsetsImpl (out float top, out float bottom, out float left, out float right);
+        
+        [DllImport ("__Internal")]
+        private static extern void VibrateImpl (int style);
 
 #endif
 

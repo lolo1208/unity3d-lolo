@@ -3,9 +3,10 @@ package shibaInu.util;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import android.os.Build;
+import android.os.Vibrator;
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.graphics.Rect;
 import android.view.DisplayCutout;
 import android.view.View;
@@ -163,8 +164,7 @@ public class DeviceHelper {
             if (!isNotchScreen())
                 return NONE_SAFE_INSETS;
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-                )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
                 return getSafeInsets_androidP();
 
             switch (getDeviceType()) {
@@ -219,6 +219,31 @@ public class DeviceHelper {
             e.printStackTrace();
         }
         return NONE_SAFE_INSETS;
+    }
+
+
+    //
+
+    /**
+     * 设备震动反馈
+     *
+     * @param style 震动方式 [ 1:轻微, 2:明显, 3:强烈 ]
+     */
+    public static void vibrate(int style) {
+        Vibrator vibrator = (Vibrator) UnityPlayer.currentActivity.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            switch (style){
+                case 1:
+                    vibrator.vibrate(12);
+                    break;
+                case 2:
+                    vibrator.vibrate(25);
+                    break;
+                case 3:
+                    vibrator.vibrate(80);
+                    break;
+            }
+        }
     }
 
 

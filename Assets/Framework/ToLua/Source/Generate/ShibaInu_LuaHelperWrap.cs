@@ -23,6 +23,7 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("Relaunch", Relaunch);
 		L.RegFunction("IsDebug", IsDebug);
 		L.RegFunction("GetShader", GetShader);
+		L.RegFunction("DeviceVibrate", DeviceVibrate);
 		L.RegFunction("PlayDoubleImageShake", PlayDoubleImageShake);
 		L.RegFunction("PlayMosaic", PlayMosaic);
 		L.RegFunction("PlayRadialBlur", PlayRadialBlur);
@@ -314,6 +315,22 @@ public class ShibaInu_LuaHelperWrap
 			UnityEngine.Shader o = ShibaInu.LuaHelper.GetShader(arg0);
 			ToLua.PushSealed(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DeviceVibrate(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 1);
+			ShibaInu.LuaHelper.DeviceVibrate(arg0);
+			return 0;
 		}
 		catch (Exception e)
 		{

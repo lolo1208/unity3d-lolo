@@ -41,6 +41,13 @@ local Constants = {
     NET_TYPE_MOBILE = 2, -- 4G
 
 
+    -- 设备震动方式
+    VIBRATE_STYLE_CONTINUED = 0, -- 持续 UnityEngine.Handheld.Vibrate()
+    VIBRATE_STYLE_LIGHT = 1, -- 轻微
+    VIBRATE_STYLE_MEDIUM = 2, -- 明显
+    VIBRATE_STYLE_HEAVY = 3, -- 强烈
+
+
     -- 框架中用到到语言包 key
     LKEY_SFU_BYTE = "string.format.unit.byte",
     LKEY_SFU_KG = "string.format.unit.kb",

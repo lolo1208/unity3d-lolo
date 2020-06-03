@@ -19,6 +19,8 @@ function Test_Misc:OnInitialize()
 
     self.transform.sizeDelta = Vector2.zero
 
+
+    -- NumberText
     local ntTra = self.transform:Find("NumberText")
     self.numberText = NumberText.New(GetComponent.Text(ntTra:Find("Text").gameObject), math.random(999, 9999))
     self.blinkToggle = GetComponent.Toggle(ntTra:Find("Blink").gameObject)
@@ -27,10 +29,19 @@ function Test_Misc:OnInitialize()
     AddEventListener(ntTra:Find("DownBtn").gameObject, PointerEvent.CLICK, self.ChangeNumberText, self, 0, false)
     AddEventListener(self.blinkToggle.gameObject, PointerEvent.CLICK, self.ChangeNumberTextEff, self)
     AddEventListener(self.rollToggle.gameObject, PointerEvent.CLICK, self.ChangeNumberTextEff, self)
+
+
+    -- Vibrate
+    local vTra = self.transform:Find("Vibrate")
+    AddEventListener(vTra:Find("Light").gameObject, PointerEvent.CLICK, self.ClickVibrateBtn, self, 0, Constants.VIBRATE_STYLE_LIGHT)
+    AddEventListener(vTra:Find("Medium").gameObject, PointerEvent.CLICK, self.ClickVibrateBtn, self, 0, Constants.VIBRATE_STYLE_MEDIUM)
+    AddEventListener(vTra:Find("Heavy").gameObject, PointerEvent.CLICK, self.ClickVibrateBtn, self, 0, Constants.VIBRATE_STYLE_HEAVY)
+    AddEventListener(vTra:Find("Continued").gameObject, PointerEvent.CLICK, self.ClickVibrateBtn, self, 0, Constants.VIBRATE_STYLE_CONTINUED)
 end
 
 
---
+
+-- NumberText
 function Test_Misc:ChangeNumberText(event, isUp)
     local val = math.random(99, 999)
     if not isUp then
@@ -39,11 +50,16 @@ function Test_Misc:ChangeNumberText(event, isUp)
     self.numberText:SetValue(self.numberText.value + val)
 end
 
-
---
 function Test_Misc:ChangeNumberTextEff(event)
     self.numberText.isBlink = self.blinkToggle.isOn
     self.numberText.isRoll = self.rollToggle.isOn
+end
+
+
+
+-- Vibrate
+function Test_Misc:ClickVibrateBtn(event, style)
+    DeviceVibrate(style)
 end
 
 

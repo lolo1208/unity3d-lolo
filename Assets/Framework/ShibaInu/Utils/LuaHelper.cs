@@ -280,6 +280,26 @@ namespace ShibaInu
 
 
 
+        /// <summary>
+        /// 设备震动反馈
+        /// </summary>
+        /// <param name="style">震动方式 [ 0:持续, 1:轻微, 2:明显, 3:强烈 ]</param>
+        public static void DeviceVibrate(int style)
+        {
+#if !UNITY_STANDALONE && !UNITY_EDITOR
+            if (style == 0)
+            {
+                Handheld.Vibrate();
+            }
+            else
+            {
+                DeviceHelper.Vibrate(style);
+            }
+#endif
+        }
+
+
+
         #region 后处理效果
 
         /// <summary>
