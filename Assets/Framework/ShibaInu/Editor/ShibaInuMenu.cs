@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace ShibaInu
     /// </summary>
     public static class ShibaInuMenu
     {
+
+        // ----
 
         [MenuItem("ShibaInu/Run the Application", false, 101)]
         private static void RunTheApplication()
@@ -42,7 +45,20 @@ namespace ShibaInu
         }
 
 
+        [MenuItem("ShibaInu/Add All the Scenes to BuildSettings", false, 102)]
+        private static void AddAllScenes()
+        {
+            string[] files = Directory.GetFiles("Assets/Res/Scenes/", "*.unity");
+            List<EditorBuildSettingsScene> scenes = new List<EditorBuildSettingsScene>();
+            foreach (string path in files)
+                scenes.Add(new EditorBuildSettingsScene(path, true));
+            EditorBuildSettings.scenes = scenes.ToArray();
+            Debug.Log("已将 Assets/Res/Scenes/ 目录（不含子目录）下的所有场景添加至 BuildSettings");
+        }
 
+
+
+        // ----
 
         [MenuItem("ShibaInu/Language Window", false, 701)]
         private static void OpenLanguageWindow()
@@ -79,6 +95,7 @@ namespace ShibaInu
 
 
 
+        // ----
 
         [MenuItem("ShibaInu/Clear & Gen Lua Wraps", false, 801)]
         private static void ClearLuaWraps()
@@ -95,6 +112,7 @@ namespace ShibaInu
 
 
 
+        // ----
 
         [MenuItem("ShibaInu/进入 AssetBundle 模式", false, 901)]
         private static void EnterABMode()
@@ -124,6 +142,7 @@ namespace ShibaInu
 
 
 
+        // ----
 
         #region Re-import Assets With Default Setting
 
