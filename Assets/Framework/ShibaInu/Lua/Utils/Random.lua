@@ -19,7 +19,7 @@ end
 
 
 --
----@class Random @ 用于 指定执行域（self），携带参数 的情况下，执行回调函数
+---@class Random
 ---@field New fun(seed:number):Random
 ---
 ---@field seed number @ 随机种子。要更改该值请调用 self:SetSeed(value) 方法
