@@ -235,12 +235,26 @@ namespace ShibaInu
             if (!hasUpdate)// 从未更新过
                 VerCfgFilePath = Constants.PackageDir + Constants.VerCfgFileName;
 
-            // 获取版本号
-            string version = FileHelper.GetText(VerCfgFilePath);
-            Debug.Log("[ResManager] Version: " + version);
+
+            // 获取并解析版本号
+            string fullVersion = FileHelper.GetText(VerCfgFilePath);
+            Debug.Log("[ResManager] Version: " + fullVersion);
+            Common.VersionInfo.FullVersion = fullVersion;
+
+            string[] verStrArr = fullVersion.Split('.');
+            Common.VersionInfo.PackID = verStrArr[verStrArr.Length - 1];
+            Common.VersionInfo.BuildNumber = verStrArr[verStrArr.Length - 2];
+
+            Common.VersionInfo.ResVersion = "";
+            for (int i = 0; i < verStrArr.Length - 2; i++)
+            {
+                if (i != 0) Common.VersionInfo.ResVersion += ".";
+                Common.VersionInfo.ResVersion += verStrArr[i];
+            }
+
 
             // 解析资源清单文件
-            string manifestFilePath = (hasUpdate ? Constants.UpdateDir : Constants.PackageDir) + version + ".manifest";
+            string manifestFilePath = (hasUpdate ? Constants.UpdateDir : Constants.PackageDir) + fullVersion + ".manifest";
             using (StreamReader file = new StreamReader(new MemoryStream(FileHelper.GetBytes(manifestFilePath))))
             {
                 string line;

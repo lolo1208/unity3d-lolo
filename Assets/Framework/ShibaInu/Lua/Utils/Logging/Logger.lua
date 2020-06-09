@@ -17,6 +17,7 @@ local logError = ShibaInu.Logger.LogError
 local logNet = ShibaInu.Logger.LogNet
 
 local TYPE_TRACE = "Trace" -- 默认日志
+local TYPE_ERROR = "Error" -- 报错日志
 local TYPE_NET_SUCC = "NetSucc" -- 网络日志 - 通信成功
 local TYPE_NET_FAIL = "NetFail" -- 网络日志 - 通信失败
 local TYPE_NET_PUSH = "NetPush" -- 网络日志 - 主动推送
@@ -25,6 +26,9 @@ local TYPE_NET_PUSH = "NetPush" -- 网络日志 - 主动推送
 --
 ---@class Logger
 local Logger = {}
+
+---@type fun(type:string, msg:string, stackTrace:string)
+local uncaughtExceptionHandler
 
 
 
@@ -57,7 +61,11 @@ end
 ---[Error Handler]
 ---@param msg string @ 日志内容
 function Logger.LogError(msg)
-    logError(msg, traceback("", 2))
+    local stackTrace = traceback("", 2)
+    logError(msg, stackTrace)
+    if uncaughtExceptionHandler ~= nil then
+        uncaughtExceptionHandler(TYPE_ERROR, msg, stackTrace)
+    end
 end
 
 
@@ -121,6 +129,16 @@ function Logger.TryCall(fn, caller, ...)
         end
     end
     return status
+end
+
+
+
+--
+--- 设置 Lua 或 C# 出现未捕获异常时的回调
+---@param callback fun(type:string, msg:string, stackTrace:string) @ 报错时的回调，用于收集报错日志等
+function Logger.SetUncaughtExceptionHandler(callback)
+    uncaughtExceptionHandler = callback
+    ShibaInu.Logger.SetUncaughtExceptionHandler(callback)
 end
 
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using UnityEngine;
 using LuaInterface;
 
@@ -12,6 +11,7 @@ namespace ShibaInu
     /// </summary>
     public static class Logger
     {
+        private static LuaFunction s_uncaughtExceptionHandler;
 
 
         [NoToLua]
@@ -31,14 +31,31 @@ namespace ShibaInu
         {
             if (type == LogType.Exception || type == LogType.Assert)
             {
-                LogData.Append(
-                    type.ToString(),
-                    condition,
-                    string.Format("\nstack traceback:\n\t{0}", stackTrace.TrimEnd().Replace("\n", "\n\t"))
-                );
+                string logType = type.ToString();
+                stackTrace = string.Format("\nstack traceback:\n\t{0}", stackTrace.TrimEnd().Replace("\n", "\n\t"));
+                LogData.Append(logType, condition, stackTrace);
+
+                if (s_uncaughtExceptionHandler != null)
+                {
+                    s_uncaughtExceptionHandler.BeginPCall();
+                    s_uncaughtExceptionHandler.Push(logType);
+                    s_uncaughtExceptionHandler.Push(condition);
+                    s_uncaughtExceptionHandler.Push(stackTrace);
+                    s_uncaughtExceptionHandler.PCall();
+                    s_uncaughtExceptionHandler.EndPCall();
+                }
             }
         }
 
+
+        /// <summary>
+        /// 设置出现未捕获异常时的回调
+        /// </summary>
+        /// <param name="callback">Callback.</param>
+        public static void SetUncaughtExceptionHandler(LuaFunction callback)
+        {
+            s_uncaughtExceptionHandler = callback;
+        }
 
 
 
@@ -92,7 +109,6 @@ namespace ShibaInu
 
 
 
-
         /// <summary>
         /// [C#] 添加一条异常日志
         /// </summary>
@@ -108,6 +124,18 @@ namespace ShibaInu
         {
             Debug.LogException(new Exception(message));
         }
+
+
+
+        #region 清空所有引用（在动更结束后重启 app 时）
+
+        [NoToLua]
+        public static void ClearReference()
+        {
+            s_uncaughtExceptionHandler = null;
+        }
+
+        #endregion
 
 
         //

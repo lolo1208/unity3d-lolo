@@ -7,11 +7,28 @@ public class ShibaInu_LoggerWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginStaticLibs("Logger");
+		L.RegFunction("SetUncaughtExceptionHandler", SetUncaughtExceptionHandler);
 		L.RegFunction("Log", Log);
 		L.RegFunction("LogWarning", LogWarning);
 		L.RegFunction("LogError", LogError);
 		L.RegFunction("LogNet", LogNet);
 		L.EndStaticLibs();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetUncaughtExceptionHandler(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			LuaFunction arg0 = ToLua.CheckLuaFunction(L, 1);
+			ShibaInu.Logger.SetUncaughtExceptionHandler(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]

@@ -264,6 +264,28 @@ namespace ShibaInu
         }
 
 
+        /// <summary>
+        /// 获取版本信息
+        /// </summary>
+        /// <returns>The version info.</returns>
+        public static string GetVersionInfo()
+        {
+            return string.Format(@"{{
+                ""CoreVersion"":""{0}"",
+                ""FullVersion"":""{1}"",
+                ""ResVersion"":""{2}"",
+                ""BuildNumber"":""{3}"",
+                ""PackID"":""{4}""
+            }}",
+                Common.VersionInfo.CoreVersion,
+                Common.VersionInfo.FullVersion,
+                Common.VersionInfo.ResVersion,
+                Common.VersionInfo.BuildNumber,
+                Common.VersionInfo.PackID
+            );
+        }
+
+
 
         /// <summary>
         /// 通过名称获取 Shader(Always Included Shaders)，或通过路径加载 Shader(AssetBundle)

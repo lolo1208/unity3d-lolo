@@ -19,7 +19,7 @@ args
     .version('1.0.0')
     .option('-i, --id <value>', '本次打包唯一标识符')
     .option('-p, --projectName <value>', '项目名称')
-    .option('-v, --version3 <value>', '3位版本号')
+    .option('-v, --versionName <value>', '传入的（3或4位）用于显示的版本号')
     .option('-t, --targetPlatform <value>', '目标平台，可接受值: ios, android, macos, windows')
     .option('-n, --notEncode', '是否不需要编码 lua 文件')
     .option('-g, --generatePlatformProject', '是否生成目标平台项目，只支持: ios, android')
@@ -35,7 +35,7 @@ args
 
 common.id = args.id;                                            // -i
 common.projectName = args.projectName;                          // -p
-common.version3 = args.version3;                                // -v
+common.versionName = args.versionName;                          // -v
 common.targetPlatform = args.targetPlatform;                    // -t
 common.notEncode = args.notEncode;                              // -n
 common.generatePlatformProject = args.generatePlatformProject;  // -g
@@ -162,18 +162,20 @@ common.unityPath = (common.isWindows ? config.winUnityPath : config.macUnityPath
     .replace('[UnityVersion]', common.unityVersion);
 
 
-// 生成4位版本号
+// 根据 versionName 生成 buildNumber
 let versionCache;
 if (fs.existsSync(common.versionFile))
     versionCache = JSON.parse(fs.readFileSync(common.versionFile));
 else
     versionCache = {};
-if (versionCache[common.version3] === undefined)
-    versionCache[common.version3] = 0;
-common.version4 = `${common.version3}.${++versionCache[common.version3]}`;
+if (versionCache[common.versionName] === undefined)
+    versionCache[common.versionName] = 0;
+common.buildNumber = ++versionCache[common.versionName];
+// 完整版本号 = versionName.buildNumber.packid
+common.fullVersionNumber = `${common.versionName}.${common.buildNumber}.${common.id}`;
 
 // 版本资源清单文件
-common.resManifestFile = `${common.resManifestDir}${common.version4}.manifest`;
+common.resManifestFile = `${common.resManifestDir}${common.fullVersionNumber}.manifest`;
 
 
 // unity 项目路径

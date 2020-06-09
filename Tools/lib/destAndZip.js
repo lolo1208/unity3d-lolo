@@ -51,7 +51,7 @@ destAndZip.zip = function (callback) {
     }
 
     // zip 文件完整路径
-    let zipFile = common.packZip === 'true' ? common.zipDir + common.version4 + '.zip' : common.packZip;
+    let zipFile = common.packZip === 'true' ? common.zipDir + common.fullVersionNumber + '.zip' : common.packZip;
     logger.append('- 开始生成 zip: ' + zipFile.replace(common.buildDir, ''));
     common.createDir(zipFile);
     let output = fs.createWriteStream(zipFile);
@@ -67,7 +67,7 @@ destAndZip.zip = function (callback) {
     archive.pipe(output);
 
     // 版本信息文件
-    archive.append(common.version4, {name: versionFile});
+    archive.append(common.fullVersionNumber, {name: versionFile});
     // 资源清单文件
     archive.append(fs.createReadStream(common.resManifestFile), {name: path.basename(common.resManifestFile)});
     // 资源文件列表
@@ -102,7 +102,7 @@ destAndZip.destRes = function (destDir, callback) {
     common.removeDir(destDir);
 
     // 写入版本信息文件
-    common.writeFileSync(destDir + versionFile, common.version4);
+    common.writeFileSync(destDir + versionFile, common.fullVersionNumber);
     // 拷贝资源清单文件
     fs.copyFileSync(common.resManifestFile, destDir + path.basename(common.resManifestFile));
 

@@ -169,3 +169,8 @@ end
 Stats.Show()
 
 
+-- 收集报错和异常
+Logger.SetUncaughtExceptionHandler(function(type, msg, stackTrace)
+    print("[UncaughtExceptionHandler]", type, msg, stackTrace)
+end)
+

@@ -107,6 +107,7 @@ namespace ShibaInu
             DragDropEventDispatcher.ClearReference();
             StageTouchEventDispatcher.ClearReference();
             AvailabilityEventDispatcher.ClearReference();
+            Logger.ClearReference();
 
             // unload
             ResManager.UnloadAll();

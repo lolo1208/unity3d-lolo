@@ -24,8 +24,6 @@ LuaHelper = ShibaInu.LuaHelper
 --Stage = ShibaInu.Stage -- 已整合进 Stage.lua
 --Logger = ShibaInu.Logger -- 已整合进 Logger.lua
 
---
-
 
 
 --[ UnityEngine ]--
@@ -41,8 +39,6 @@ KeyCode = UnityEngine.KeyCode
 PlayerPrefs = UnityEngine.PlayerPrefs
 Shader = UnityEngine.Shader
 Material = UnityEngine.Material
-
---
 
 
 
@@ -76,8 +72,6 @@ DOTween_Enum = {
 TweenParams = DG.Tweening.TweenParams ---@type DG.Tweening.TweenParams
 DOTween.defaultEaseType = DOTween_Enum.Ease.Linear
 
---
-
 
 
 --[ Variables ]--
@@ -91,8 +85,6 @@ isMacEditor = isEditor and not isWindowEditor
 isMobile = Application.isMobilePlatform
 isAndroid = Application.platform == UnityEngine.RuntimePlatform.Android
 isIOS = isMobile and not isAndroid
-
---
 
 
 
@@ -161,5 +153,14 @@ NumberText = require("Components.NumberText")
 Stats = require("UI.Stats")
 Profiler = require("Utils.Optimize.Profiler")
 
+
+
 --
+---@class ShibaInu.VersionInfo
+---@field CoreVersion string @ C# 程序版本号（手动维护）
+---@field FullVersion string @ 完整版本号（自动获取）
+---@field ResVersion string @ 资源版本号（自动获取）
+---@field BuildNumber string @ 打包编号（自动获取）
+---@field PackID string @ 打包唯一标识符（自动获取）
+VersionInfo = JSON.Parse(LuaHelper.GetVersionInfo())
 

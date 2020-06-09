@@ -6,6 +6,17 @@ namespace ShibaInu
 {
     public static class Common
     {
+
+        public static VersionInfo VersionInfo = new VersionInfo
+        {
+            CoreVersion = "0.0.1", // C# 程序版本号（手动维护）
+            FullVersion = "0.0.0.0.0",
+            ResVersion = "0.0.0",
+            BuildNumber = "0",
+            PackID = "0"
+        };
+
+
         /// 固定 宽/高 值
         public static int FixedValue;
         /// 当前固定比例方式 [ true:固定宽度，false:固定高度 ]
@@ -19,6 +30,7 @@ namespace ShibaInu
         public static Looper looper;
         /// lua 管理器
         public static LuaManager luaMgr;
+
 
         /// 初始化是否已经完成（项目已启动）
         public static bool Initialized
@@ -131,4 +143,15 @@ namespace ShibaInu
 
         //
     }
+
+
+    public struct VersionInfo
+    {
+        public string CoreVersion; /// C# 程序版本号（手动维护）
+        public string FullVersion; /// 完整版本号（自动获取）
+        public string ResVersion; /// 资源版本号（自动获取）
+        public string BuildNumber; /// 打包编号（自动获取）
+        public string PackID; /// 打包唯一标识符（自动获取）
+    };
+
 }
