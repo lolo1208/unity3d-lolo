@@ -224,6 +224,7 @@ public static class LuaBinder
 		ShibaInu_DoubleImageShakeWrap.Register(L);
 		ShibaInu_MosaicWrap.Register(L);
 		ShibaInu_RadialBlurWrap.Register(L);
+		ShibaInu_MD5UtilWrap.Register(L);
 		ShibaInu_LuaProfilerWrap.Register(L);
 		ShibaInu_LoggerWrap.Register(L);
 		L.EndModule();

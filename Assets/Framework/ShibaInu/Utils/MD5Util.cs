@@ -1,6 +1,7 @@
-﻿using System.IO;
-using System.Text;
+﻿using System;
+using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 
 
 namespace ShibaInu
@@ -15,29 +16,20 @@ namespace ShibaInu
         /// <returns>The M d5.</returns>
         /// <param name="str">String.</param>
         /// <param name="isShort">If set to <c>true</c> is short.</param>
-        public static string GetMD5(string str, bool isShort = true)
+        public static string GetMD5(string str, bool isShort = false)
         {
-
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            byte[] data = Encoding.UTF8.GetBytes(str);
-            byte[] md5Data = md5.ComputeHash(data, 0, data.Length);
-            md5.Clear();
-
-            string destString = "";
-            int len = md5Data.Length;
-            for (int i = 0; i < len; i++)
+            using (MD5 md5 = MD5.Create())
             {
-                destString += System.Convert.ToString(md5Data[i], 16).PadLeft(2, '0');
+                byte[] data = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < data.Length; i++)
+                {
+                    sb.Append(data[i].ToString("x2"));
+                }
+                string dest = sb.ToString();
+                return isShort ? dest.Substring(8, 16) : dest;
             }
-            destString = destString.PadLeft(32, '0');
-
-            if (isShort)
-                return destString.Substring(8, 16);
-            else
-                return destString;
         }
-
-
 
 
         /// <summary>
@@ -46,24 +38,19 @@ namespace ShibaInu
         /// <returns>The file MD5.</returns>
         /// <param name="filePath">File path.</param>
         /// <param name="isShort">If set to <c>true</c> is short.</param>
-        public static string GetFileMD5(string filePath, bool isShort = true)
+        public static string GetFileMD5(string filePath, bool isShort = false)
         {
-            FileStream fs = new FileStream(filePath, FileMode.Open);
-            MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] retVal = md5.ComputeHash(fs);
-            fs.Close();
-
-            StringBuilder sb = new StringBuilder();
-            int len = retVal.Length;
-            for (int i = 0; i < len; i++)
+            using (IDisposable fs = new FileStream(filePath, FileMode.Open), md5 = MD5.Create())
             {
-                sb.Append(retVal[i].ToString("x2"));
+                byte[] data = ((MD5)md5).ComputeHash((FileStream)fs);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < data.Length; i++)
+                {
+                    sb.Append(data[i].ToString("x2"));
+                }
+                string dest = sb.ToString();
+                return isShort ? dest.Substring(8, 16) : dest;
             }
-
-            if (isShort)
-                return sb.ToString().Substring(8, 16);
-
-            return sb.ToString();
         }
 
 
