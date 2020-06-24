@@ -88,7 +88,7 @@ end
 
 
 
---[ Prefab Instantiate/Destroy ]--
+--[ Prefab Instantiate / Destroy ]--
 
 --- 创建并返回一个预设的实例
 --- 使用范例：
@@ -198,7 +198,7 @@ end
 
 
 
---[ Add/Get Component ]--
+--[ Add / Get Component ]--
 
 --- 添加或获取 GameObject 下的组件
 ---@param go UnityEngine.GameObject
@@ -580,4 +580,16 @@ function SetRandomseedWithNowTime()
     local val = (now.Minute * 60 + now.Second) * 1000 + now.Millisecond
     math.randomseed(val)
     return val
+end
+
+
+--
+--- 预加载资源（异步加载一堆资源的简化方法）
+---@param paths string[] @ 要异步加载的资源路径列表
+---@param groupName string @ -可选- 资源组名称。默认值为当前场景
+function Preload(paths, groupName)
+    groupName = groupName or Stage.GetCurrentAssetGroup()
+    for i = 1, #paths do
+        Res.LoadAssetAsync(paths[i], groupName)
+    end
 end

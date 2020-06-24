@@ -429,6 +429,19 @@ namespace ShibaInu
 
 
 
+
+        /// <summary>
+        /// 获取当前异步加载总进度 0~1
+        /// </summary>
+        /// <returns>The progress.</returns>
+        public static float GetProgress()
+        {
+            return AssetLoader.GetProgress();
+        }
+
+
+
+
         #region 卸载资源
 
         /// <summary>

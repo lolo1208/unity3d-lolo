@@ -92,7 +92,7 @@ function Scene:GetLoadSubSceneProgress()
     if count == completed then
         return 1 -- 全部加载完成了
     end
-    return (Stage.GetProgress() + completed) / count
+    return completed / count
 end
 
 

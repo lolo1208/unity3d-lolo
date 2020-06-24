@@ -37,6 +37,11 @@ function DungeonScene:Ctor()
     DungeonScene.super.Ctor(self, DungeonData.NAME, nil, true)
     DungeonData.scene = self
     --Stage.SetDontUnloadScene(self.moduleName, true)
+
+    --Preload({
+    --    "Prefabs/Test/TestTips.prefab",
+    --    "Prefabs/Dungeon/Skeleton/Skeleton.prefab",
+    --}, self.assetName)
 end
 
 

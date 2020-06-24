@@ -312,7 +312,7 @@ namespace ShibaInu
         private static IEnumerator DoUnload()
         {
             // 等待异步资源加载完成
-            while (GetProgress() != 1f)
+            while (GetProgress() < 1)
             {
                 yield return new WaitForEndOfFrame();
             }

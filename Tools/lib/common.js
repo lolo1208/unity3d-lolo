@@ -62,7 +62,7 @@ if (common.projectPath !== undefined) common.projectPath = path.normalize(common
 if (common.destDir !== undefined) {
     common.destDir = path.normalize(common.destDir + '/');
     if (common.abModeFlag)
-        common.abModeFlagFile = common.destDir + 'AssetBundleMode.tmp';
+        common.abModeFlagFile = common.destDir + 'AssetBundleMode.flag';
 }
 
 

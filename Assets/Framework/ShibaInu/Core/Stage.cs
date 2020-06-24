@@ -241,6 +241,12 @@ namespace ShibaInu
                 s_abcr = null;
             }
 
+            // 等待异步资源加载完成（停留在 Loading 场景，先不加载目标场景）
+            while (AssetLoader.GetProgress() < 1)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
             // 再异步加载场景
             s_ao = SceneManager.LoadSceneAsync(s_sceneName);
             yield return s_ao;
@@ -418,21 +424,22 @@ namespace ShibaInu
         #region 其他
 
         /// <summary>
-        /// 获取当前异步加载进度 0~1
+        /// 获取当前 异步加载场景 和 异步加载资源 的总进度，值：0~1
         /// </summary>
         /// <returns>The progress.</returns>
         public static float GetProgress()
         {
+            float pRes = AssetLoader.GetProgress();
+
             // 没有在加载场景
             if (s_abcr == null && s_ao == null)
-                return 1;
+                return pRes;
 
-            // 正在加载场景对应的 AssetBundle
-            if (s_abcr != null)
-                return s_abcr.progress * 0.9f;
-
-            // 正在异步加载场景本身
-            return Mathf.Min(s_ao.progress + 0.1f, 1f) * 0.1f + 0.9f;
+            // 正在加载场景对应的 AssetBundle 或 正在异步加载场景本身
+            float pScene = (s_abcr != null)
+                ? s_abcr.progress * 0.9f
+                : Mathf.Min(s_ao.progress + 0.1f, 1f) * 0.1f + 0.9f;
+            return (pScene + pRes) / 2;
         }
 
 

@@ -34,8 +34,8 @@ function LoadingScene:OnInitialize()
     self.barRect = GetComponent.RectTransform(transform:Find("Bar").gameObject)
 
     AddEventListener(Stage, Event.UPDATE, self.UpdateHandler, self)
-    AddEventListener(Stage, LoadSceneEvent.COMPLETE, self.LoadSceneCompleteHandler, self)
 end
+
 
 
 --
@@ -51,19 +51,11 @@ function LoadingScene:UpdateHandler(event)
 end
 
 
---
---- 加载完成
-function LoadingScene:LoadSceneCompleteHandler(event)
-    self:OnDestroy()
-end
-
-
 
 --
 function LoadingScene:OnDestroy()
     LoadingScene.super.OnDestroy(self)
     RemoveEventListener(Stage, Event.UPDATE, self.UpdateHandler, self)
-    RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, self.LoadSceneCompleteHandler, self)
 end
 
 

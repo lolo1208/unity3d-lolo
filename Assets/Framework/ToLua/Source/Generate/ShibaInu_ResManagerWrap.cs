@@ -23,6 +23,7 @@ public class ShibaInu_ResManagerWrap
 		L.RegFunction("LoadShaderAsync", LoadShaderAsync);
 		L.RegFunction("LoadAudioClip", LoadAudioClip);
 		L.RegFunction("LoadAudioClipAsync", LoadAudioClipAsync);
+		L.RegFunction("GetProgress", GetProgress);
 		L.RegFunction("Unload", Unload);
 		L.EndStaticLibs();
 	}
@@ -516,6 +517,22 @@ public class ShibaInu_ResManagerWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.ResManager.LoadAudioClipAsync");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetProgress(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			float o = ShibaInu.ResManager.GetProgress();
+			LuaDLL.lua_pushnumber(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{
