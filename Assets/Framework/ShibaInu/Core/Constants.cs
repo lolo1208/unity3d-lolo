@@ -52,6 +52,7 @@ namespace ShibaInu
 
         // -- editor play mode errors --
         public const string E5001 = "[C# ERROR] 资源文件不存在: {0}";
+        public const string E5002 = "[C# ERROR] 文件路径大小写不匹配: {0}";
 
 
     }

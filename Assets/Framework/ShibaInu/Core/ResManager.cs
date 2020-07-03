@@ -61,13 +61,18 @@ namespace ShibaInu
         private static T LoadAssetWithType<T>(string path, string groupName) where T : UnityEngine.Object
         {
             if (groupName == null) groupName = Stage.CurrentSceneName;
+            string fullPath = Constants.ResDirPath + path;
 
 #if UNITY_EDITOR
             if (Common.IsDebug)
             {
-                if (!File.Exists(Constants.ResDirPath + path))
+                if (!File.Exists(fullPath))
                     throw new Exception(string.Format(Constants.E5001, path));
-                return UnityEditor.AssetDatabase.LoadAssetAtPath<T>(Constants.ResDirPath + path);
+
+                if (!FileHelper.IsPathCaseMatch(path))
+                    throw new Exception(string.Format(Constants.E5002, path));
+
+                return UnityEditor.AssetDatabase.LoadAssetAtPath<T>(fullPath);
             }
 #endif
 
@@ -76,7 +81,7 @@ namespace ShibaInu
             if (s_resMap.TryGetValue(path, out AssetInfo info))
             {
                 AssetLoader.Load(info, groupName);
-                return info.ab.LoadAsset<T>(Constants.ResDirPath + path);
+                return info.ab.LoadAsset<T>(fullPath);
             }
             throw new Exception(string.Format(Constants.E5001, path));
         }
@@ -92,16 +97,20 @@ namespace ShibaInu
         private static void LoadAssetAsyncWithType<T>(string path, string groupName) where T : UnityEngine.Object
         {
             if (groupName == null) groupName = Stage.CurrentSceneName;
+            string fullPath = Constants.ResDirPath + path;
 
 #if UNITY_EDITOR
             if (Common.IsDebug)
             {
-                if (!File.Exists(Constants.ResDirPath + path))
+                if (!File.Exists(fullPath))
                     throw new Exception(string.Format(Constants.E5001, path));
+
+                if (!FileHelper.IsPathCaseMatch(path))
+                    throw new Exception(string.Format(Constants.E5002, path));
 
                 DispatchEvent(EVENT_START, path);
                 Common.looper.StartCoroutine(DispatchCompleteEvent(path,
-                    UnityEditor.AssetDatabase.LoadAssetAtPath<T>(Constants.ResDirPath + path)
+                    UnityEditor.AssetDatabase.LoadAssetAtPath<T>(fullPath)
                 ));
                 return;
             }
@@ -122,7 +131,7 @@ namespace ShibaInu
 #if UNITY_EDITOR
 
         /// <summary>
-        /// 在 editor play mode 状态下，延迟抛出资源异步加载完成事件
+        /// 延迟抛出资源异步加载完成事件
         /// </summary>
         /// <returns>The complete event.</returns>
         /// <param name="path">Path.</param>
@@ -144,7 +153,7 @@ namespace ShibaInu
 
 
         /// <summary>
-        /// 在 editor play mode 状态下，延迟抛出所有资源异步加载完成事件
+        /// 延迟抛出所有资源异步加载完成事件
         /// </summary>
         /// <returns>The all complete event.</returns>
         private static IEnumerator DispatchAllCompleteEvent()

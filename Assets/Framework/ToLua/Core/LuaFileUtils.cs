@@ -20,11 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using UnityEngine;
-using System.Collections.Generic;
+using System;
 using System.IO;
-using System.Collections;
-using System.Text;
+using System.Collections.Generic;
+using UnityEngine;
+using ShibaInu;
+
 
 namespace LuaInterface
 {
@@ -153,32 +154,30 @@ namespace LuaInterface
             return null;
         }
 
+
+
         public virtual byte[] ReadFile(string fileName)
         {
-            if (!ShibaInu.Common.IsDebug)
-                return ShibaInu.ResManager.GetLuaFileBytes(fileName);
+            if (!Common.IsDebug)
+                return ResManager.GetLuaFileBytes(fileName);
 
-            if (!beZip)
-            {
-                string path = FindFile(fileName);
-                byte[] str = null;
+            if (beZip) return ReadZipFile(fileName);
 
-                if (!string.IsNullOrEmpty(path) && File.Exists(path))
-                {
-#if !UNITY_WEBPLAYER
-                    str = File.ReadAllBytes(path);
-#else
-                    throw new LuaException("can't run in web platform, please switch to other platform");
+            string path = FindFile(fileName);
+            if (string.IsNullOrEmpty(path) && !File.Exists(path))
+                return null; // lua 文件不存在
+
+#if UNITY_EDITOR
+
+            if (!FileHelper.IsPathCaseMatch(path))
+                throw new Exception(string.Format(Constants.E5002, fileName + ".lua"));
+
 #endif
-                }
 
-                return str;
-            }
-            else
-            {
-                return ReadZipFile(fileName);
-            }
+            return File.ReadAllBytes(path);
         }
+
+
 
         public virtual string FindFileError(string fileName)
         {

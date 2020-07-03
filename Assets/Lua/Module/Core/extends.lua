@@ -171,6 +171,7 @@ Stats.Show()
 
 -- 收集报错和异常
 Logger.SetUncaughtExceptionHandler(function(type, msg, stackTrace)
-    print("[UncaughtExceptionHandler]", type, msg, stackTrace)
+    -- print("[UncaughtExceptionHandler]", type, msg, stackTrace)
+    -- 在这可以向服务器发送错误收集信息，注意去重！
 end)
 

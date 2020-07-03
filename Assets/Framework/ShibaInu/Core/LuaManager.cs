@@ -100,19 +100,6 @@ namespace ShibaInu
         }
 
 
-        // Update is called once per frame
-        [Obsolete]
-        public object[] CallFunction(string funcName, params object[] args)
-        {
-            LuaFunction func = state.GetFunction(funcName);
-            if (func != null)
-            {
-                return func.LazyCall(args);
-            }
-            return null;
-        }
-
-
         //
     }
 }
