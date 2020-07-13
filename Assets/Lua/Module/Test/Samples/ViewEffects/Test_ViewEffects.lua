@@ -21,9 +21,6 @@ local Test_ViewEffects = class("Test.Samples.BaseList.Test_ViewEffects", View)
 function Test_ViewEffects:OnInitialize()
     Test_ViewEffects.super.OnInitialize(self)
 
-    self.transform.sizeDelta = Vector2.zero
-
-
     -- MoveView
     local mvTra = self.transform:Find("MoveView")
     local viewsTra = mvTra:Find("Views")

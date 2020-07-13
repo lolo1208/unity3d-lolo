@@ -14,7 +14,7 @@ namespace ShibaInu
     {
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-		private static readonly AndroidJavaClass m_androidStreamingAssets = new AndroidJavaClass ("shibaInu.util.StreamingAssets");
+        private static readonly AndroidJavaClass m_androidStreamingAssets = new AndroidJavaClass ("shibaInu.util.StreamingAssets");
 #endif
 
 
@@ -26,10 +26,10 @@ namespace ShibaInu
         public static bool Exists(string path)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-			if(path.StartsWith(Constants.PackageDir))
-				return m_androidStreamingAssets.CallStatic<bool> ("exists", path.Replace (Constants.PackageDir, ""));
-			else
-				return File.Exists (path);
+            if(path.StartsWith(Constants.PackageDir))
+                return m_androidStreamingAssets.CallStatic<bool> ("exists", path.Replace (Constants.PackageDir, ""));
+            else
+                return File.Exists (path);
 
 #else
             return File.Exists(path);

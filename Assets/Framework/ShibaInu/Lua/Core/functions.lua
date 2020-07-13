@@ -172,15 +172,15 @@ function CreateGameObject(name, parent, notUI)
 end
 
 --- 设置 target 的父节点为 parent。
---- 并将 localScale, localPosition 属性重置
 ---@param target UnityEngine.Transform
 ---@param parent string | UnityEngine.Transform
-function SetParent(target, parent)
+---@param worldPositionStays boolean @ -可选- 是否保留在世界坐标系中的状态（包括位置和旋转等）。默认：false
+function SetParent(target, parent, worldPositionStays)
     -- 传入的 parent 是 图层名称
     if type(parent) == "string" then
         parent = Stage.GetLayer(parent)
     end
-    LuaHelper.SetParent(target, parent)
+    target:SetParent(parent, worldPositionStays == true)
 end
 
 --- 销毁 GameObject 或 Component

@@ -45,9 +45,7 @@ function TestScene:OnInitialize()
     AddEventListener(dungeonBtn, PointerEvent.CLICK, self.OnClick_dungeonBtn, self)
 
     local backBtn = uiCanvasTra:Find("BackBtn")
-    local anchoredPosition = backBtn.anchoredPosition
     SetParent(backBtn, Constants.LAYER_UI_TOP)
-    backBtn.anchoredPosition = anchoredPosition
     self.backBtn = backBtn.gameObject
     self.backBtn:SetActive(false)
     AddEventListener(self.backBtn, PointerEvent.CLICK, self.OnClick_backBtn, self)

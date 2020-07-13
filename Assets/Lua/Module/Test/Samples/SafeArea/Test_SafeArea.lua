@@ -18,13 +18,6 @@ function Test_SafeArea:Ctor(...)
 end
 
 
---
-function Test_SafeArea:OnInitialize()
-    Test_SafeArea.super.OnInitialize(self)
-    self.transform.sizeDelta = Vector2.zero
-end
-
-
 
 
 --

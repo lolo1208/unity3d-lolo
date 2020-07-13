@@ -17,9 +17,6 @@ local Test_Misc = class("Test.Samples.Test_Misc", View)
 function Test_Misc:OnInitialize()
     Test_Misc.super.OnInitialize(self)
 
-    self.transform.sizeDelta = Vector2.zero
-
-
     -- NumberText
     local ntTra = self.transform:Find("NumberText")
     self.numberText = NumberText.New(GetComponent.Text(ntTra:Find("Text").gameObject), math.random(999, 9999))

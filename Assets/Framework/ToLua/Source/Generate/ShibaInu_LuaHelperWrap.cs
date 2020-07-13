@@ -13,7 +13,6 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("AddAvailabilityEvent", AddAvailabilityEvent);
 		L.RegFunction("AddTriggerEvent", AddTriggerEvent);
 		L.RegFunction("CreateGameObject", CreateGameObject);
-		L.RegFunction("SetParent", SetParent);
 		L.RegFunction("SetLayerRecursively", SetLayerRecursively);
 		L.RegFunction("WorldToCanvasPoint", WorldToCanvasPoint);
 		L.RegFunction("ScreenToCanvasPoint", ScreenToCanvasPoint);
@@ -129,23 +128,6 @@ public class ShibaInu_LuaHelperWrap
 			UnityEngine.GameObject o = ShibaInu.LuaHelper.CreateGameObject(arg0, arg1, arg2);
 			ToLua.PushSealed(L, o);
 			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetParent(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 1);
-			UnityEngine.Transform arg1 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
-			ShibaInu.LuaHelper.SetParent(arg0, arg1);
-			return 0;
 		}
 		catch (Exception e)
 		{

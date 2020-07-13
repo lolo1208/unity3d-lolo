@@ -114,26 +114,10 @@ namespace ShibaInu
 
             if (parent != null)
             {
-                SetParent(go.transform, parent);
+                go.transform.SetParent(parent, false);
             }
 
             return go;
-        }
-
-
-        /// <summary>
-        /// 设置 target 的父节点为 parent。
-        /// 设置 target.layer 属性。
-        /// 并将 localScale, localPosition 属性重置。
-        /// </summary>
-        /// <param name="target">Target.</param>
-        /// <param name="parent">Parent.</param>
-        public static void SetParent(Transform target, Transform parent)
-        {
-            //SetLayerRecursively(target, parent.gameObject.layer);
-            target.SetParent(parent, true);
-            target.localScale = Vector3.one;
-            target.localPosition = Vector3.zero;
         }
 
 

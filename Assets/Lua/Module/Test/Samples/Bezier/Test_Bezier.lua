@@ -23,7 +23,6 @@ local cubicBezier = CubicBezier.New()
 function Test_Bezier:OnInitialize()
     Test_Bezier.super.OnInitialize(self)
 
-    self.transform.sizeDelta = Vector2.zero
     self.container = self.transform:Find("Anchors")
 
     self.pStart = self.transform:Find("Start").localPosition
