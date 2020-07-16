@@ -584,12 +584,30 @@ end
 
 
 --
---- 预加载资源（异步加载一堆资源的简化方法）
----@param paths string[] @ 要异步加载的资源路径列表
+--- 预加载资源
+---@param paths string | string[] @ 要异步加载的资源路径，或路径列表
 ---@param groupName string @ -可选- 资源组名称。默认值为当前场景
-function Preload(paths, groupName)
+function PreloadAssets(paths, groupName)
     groupName = groupName or Stage.GetCurrentAssetGroup()
-    for i = 1, #paths do
-        Res.LoadAssetAsync(paths[i], groupName)
+    if type(paths) == "string" then
+        Res.LoadAssetAsync(paths, groupName)
+    else
+        for i = 1, #paths do
+            Res.LoadAssetAsync(paths[i], groupName)
+        end
+    end
+end
+
+
+--
+--- 将 paths 对应的 AssetBundle 标记为永不卸载
+---@param paths string | string[] @ 要标记为不卸载的资源路径，或路径列表
+function DontUnloadAssets(paths)
+    if type(paths) == "string" then
+        Res.LoadAsset(paths, Constants.ASSET_GROUP_CORE)
+    else
+        for i = 1, #paths do
+            Res.LoadAsset(paths[i], Constants.ASSET_GROUP_CORE)
+        end
     end
 end

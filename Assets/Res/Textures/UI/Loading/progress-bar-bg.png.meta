@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cc05fb70905234811a9c423389aec818
+guid: 302627afa82244d158d18c525b56897a
 TextureImporter:
   fileIDToRecycleName: {}
   externalObjects: {}
@@ -46,7 +46,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 58, y: 0, z: 55, w: 0}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -60,17 +60,6 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 2
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    androidETC2FallbackOverride: 0
-  - serializedVersion: 2
-    buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -108,12 +97,12 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 222d05b407c274d1dad92ab4d19019f4
+    spriteID: 71340942adaa04825af6126f1bbfbbee
     vertices: []
     indices: 
     edges: []
     weights: []
-  spritePackingTag: Scenes_LoadingAssets_UI
+  spritePackingTag: Textures_UI_Loading
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
   userData: Imported

@@ -141,7 +141,7 @@ MoveWindow = require("Effects.View.MoveWindow")
 
 Config = require("Data.Config")
 Language = require("Data.Languages." .. Config.language)
-Stage.loadingSceneClass = require("Module.Loading.View.LoadingScene")
+Stage.loadingSceneClass = require("Module.Core.View.LoadingScene")
 
 --
 
