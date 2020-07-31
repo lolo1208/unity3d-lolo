@@ -58,7 +58,7 @@ function PrefabPool.Recycle(go, prefabPath)
         _pool[prefabPath] = pool
     end
     pool[#pool + 1] = go
-    go.transform:SetParent(_container)
+    go.transform:SetParent(_container, false)
 end
 
 
