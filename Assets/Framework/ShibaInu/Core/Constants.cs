@@ -15,7 +15,7 @@ namespace ShibaInu
         public static readonly string PackageDir = Application.streamingAssetsPath + "/";
 #endif
         /// 更新内容根目录
-        public static readonly string UpdateDir = Application.persistentDataPath + "/";
+        public static readonly string UpdateDir = Application.persistentDataPath + "/update/";
 
 
 #if UNITY_EDITOR

@@ -12,7 +12,7 @@ local remove = table.remove
 local PrefabPool = {}
 
 local _pool = {}
-local _transform ---@type UnityEngine.Transform
+local _container ---@type UnityEngine.Transform
 
 
 
@@ -48,7 +48,7 @@ end
 ---@param go UnityEngine.GameObject
 ---@param prefabPath string @ prefab 路径
 function PrefabPool.Recycle(go, prefabPath)
-    if isnull(go) then
+    if isnull(go) or _container == nil then
         return
     end
 
@@ -58,21 +58,22 @@ function PrefabPool.Recycle(go, prefabPath)
         _pool[prefabPath] = pool
     end
     pool[#pool + 1] = go
-
-    if _transform == nil then
-        local poolGO = GameObject.New("[PrefabPool]")
-        poolGO:SetActive(false)
-        _transform = poolGO.transform
-    end
-    go.transform:SetParent(_transform)
+    go.transform:SetParent(_container)
 end
 
 
 --
 --- 清空缓存池。切换到新场景时，会自动调用
-function PrefabPool.Clean()
+---@field createGO boolean @ -可选- 是否创建 [PrefabPool] 节点，默认：false
+function PrefabPool.Clean(createGO)
+    if createGO then
+        local go = GameObject.New("[PrefabPool]")
+        go:SetActive(false)
+        _container = go.transform
+    else
+        _container = nil
+    end
     _pool = {}
-    _transform = nil
 end
 
 

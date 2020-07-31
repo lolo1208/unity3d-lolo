@@ -4,27 +4,26 @@
 -- Author LOLO
 --
 
+local ProgressView = require("Module.Core.View.ProgressView")
+
 local floor = math.floor
 
 
 --
----@class Coew.LoadingScene : Scene
----@field New fun():Coew.LoadingScene
+---@class Core.LoadingScene : Scene
+---@field New fun():Core.LoadingScene
 ---
-local LoadingScene = class("Loading.LoadingScene", Scene)
+---@field progressView Core.ProgressView
+---
+local LoadingScene = class("Core.LoadingScene", Scene)
 LoadingScene.NAME = "Loading"
-
----@type View @ 不销毁的进度界面
-local progressView
----@type UnityEngine.UI.Image
-local bar
----@type UnityEngine.UI.Text
-local text
 
 
 --
 function LoadingScene:Ctor()
     LoadingScene.super.Ctor(self, self.NAME)
+
+    Stage.SetDontUnloadScene(self.NAME, true)
 end
 
 
@@ -32,21 +31,8 @@ end
 function LoadingScene:OnInitialize()
     LoadingScene.super.OnInitialize(self)
 
-    if progressView == nil then
-        local go = Instantiate("Prefabs/Core/Progress.prefab", Constants.LAYER_SCENE, Constants.ASSET_GROUP_CORE)
-        progressView = View.New()
-        progressView.gameObject = go
-        progressView:OnInitialize()
-        bar = GetComponent.Image(progressView.transform:Find("Bar"))
-        text = GetComponent.Text(progressView.transform:Find("Text"))
-
-        Stage.AddDontDestroy(go)
-        Stage.SetDontUnloadScene(self.assetName, true)
-    else
-        bar.fillAmount = 0
-        text.text = ""
-        progressView:Show()
-    end
+    self.progressView = ProgressView.GetInstance()
+    self.progressView:Show()
 
     AddEventListener(Stage, Event.UPDATE, self.UpdateHandler, self)
 end
@@ -57,8 +43,8 @@ end
 --- 进度更新
 function LoadingScene:UpdateHandler(event)
     local p = Stage.GetProgress()
-    bar.fillAmount = p
-    --text.text = floor(p * 100) .. "%"
+    self.progressView.bar.fillAmount = p
+    self.progressView.text.text = floor(p * 100) .. "%"
 end
 
 
@@ -68,11 +54,7 @@ function LoadingScene:OnDestroy()
     LoadingScene.super.OnDestroy(self)
 
     RemoveEventListener(Stage, Event.UPDATE, self.UpdateHandler, self)
-    if isDebug then
-        DelayedFrameCall(progressView.Hide, progressView)
-    else
-        progressView:Hide()
-    end
+    self.progressView:Hide()
 end
 
 

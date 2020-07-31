@@ -11,3 +11,4 @@ Res.PreloadShaders()
 
 --
 Stage.ShowScene(require("Module.Test.View.TestScene"))
+--Stage.ShowScene(require("Module.Update.View.UpdateScene"))

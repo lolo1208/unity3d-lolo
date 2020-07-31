@@ -88,7 +88,7 @@ local function DispatchSceneChangedEvent(scene)
         Stage.PlaySceneTransition(false)
     end
 
-    PrefabPool.Clean()
+    PrefabPool.Clean(true)
     scene:OnInitialize()
     _event.target = nil
     _event.isPropagationStopped = false
