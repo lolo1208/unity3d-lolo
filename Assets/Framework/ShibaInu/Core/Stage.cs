@@ -472,12 +472,12 @@ namespace ShibaInu
 
         #region 在 lua 层抛出事件
 
-        private const string EVENT_START = "LoadSceneEvent_Start";
-        private const string EVENT_COMPLETE = "LoadSceneEvent_Complete";
-        private const string EVENT_SUB_START = "LoadSceneEvent_SubStart";
-        private const string EVENT_SUB_COMPLETE = "LoadSceneEvent_SubComplete";
+        private const string EVENT_START = "SceneEvent_LoadStart";
+        private const string EVENT_COMPLETE = "SceneEvent_LoadComplete";
+        private const string EVENT_SUB_START = "SceneEvent_LoadSubStart";
+        private const string EVENT_SUB_COMPLETE = "SceneEvent_LoadSubComplete";
 
-        /// 在 lua 层抛出 LoadSceneEvent 的方法。 - Events/LoadSceneEvent.lua
+        /// 在 lua 层抛出 SceneEvent 的方法。 - Events/SceneEvent.lua
         private static LuaFunction s_dispatchEvent;
 
 
@@ -490,7 +490,7 @@ namespace ShibaInu
         {
             // 不能在 Initialize() 时获取该函数，因为相互依赖
             if (s_dispatchEvent == null)
-                s_dispatchEvent = Common.luaMgr.state.GetFunction("LoadSceneEvent.DispatchEvent");
+                s_dispatchEvent = Common.luaMgr.state.GetFunction("SceneEvent.DispatchEvent");
 
             s_dispatchEvent.BeginPCall();
             s_dispatchEvent.Push(type);

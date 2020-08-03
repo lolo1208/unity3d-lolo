@@ -492,13 +492,13 @@ namespace ShibaInu
         #region 在 lua 层抛出事件
 
         [NoToLua]
-        public const string EVENT_START = "LoadResEvent_Start";
+        public const string EVENT_START = "ResEvent_LoadStart";
         [NoToLua]
-        public const string EVENT_COMPLETE = "LoadResEvent_Complete";
+        public const string EVENT_COMPLETE = "ResEvent_LoadComplete";
         [NoToLua]
-        public const string EVENT_ALL_COMPLETE = "LoadResEvent_All_Complete";
+        public const string EVENT_ALL_COMPLETE = "ResEvent_LoadAllComplete";
 
-        /// 在 lua 层抛出 LoadResEvent 的方法。 - Events/LoadResEvent.lua
+        /// 在 lua 层抛出 ResEvent 的方法。 - Events/ResEvent.lua
         private static LuaFunction s_dispatchEvent;
 
         /// <summary>
@@ -519,7 +519,7 @@ namespace ShibaInu
             }
 
             if (s_dispatchEvent == null)
-                s_dispatchEvent = Common.luaMgr.state.GetFunction("LoadResEvent.DispatchEvent");
+                s_dispatchEvent = Common.luaMgr.state.GetFunction("ResEvent.DispatchEvent");
 
             s_dispatchEvent.BeginPCall();
             s_dispatchEvent.Push(type);

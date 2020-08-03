@@ -131,11 +131,11 @@ end
 ---@param handler Handler @ 异步加载完成，并创建实例成功后的回调
 ---@param parent string | UnityEngine.Transform @ -可选- 图层名称 或 父节点(Transform)
 function InstantiateAsync(prefabPath, groupName, handler, parent)
-    ---@param event LoadResEvent
+    ---@param event ResEvent
     local function loadResComplete(event)
         -- 加载预设资源完成
         if event.assetPath == prefabPath then
-            RemoveEventListener(Res, LoadResEvent.COMPLETE, loadResComplete)
+            RemoveEventListener(Res, ResEvent.LOAD_COMPLETE, loadResComplete)
 
             -- 已经被取消了
             if handler.callback == nil then
@@ -154,7 +154,7 @@ function InstantiateAsync(prefabPath, groupName, handler, parent)
             handler:Execute(go)
         end
     end
-    AddEventListener(Res, LoadResEvent.COMPLETE, loadResComplete)
+    AddEventListener(Res, ResEvent.LOAD_COMPLETE, loadResComplete)
     Res.LoadAssetAsync(prefabPath, groupName)
 end
 

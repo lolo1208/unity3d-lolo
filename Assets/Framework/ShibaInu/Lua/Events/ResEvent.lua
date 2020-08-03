@@ -1,16 +1,16 @@
 --
--- 资源加载相关事件
+-- 资源相关事件
 -- 2017/11/09
 -- Author LOLO
 --
 
----@class LoadResEvent : Event
+---@class ResEvent : Event
 ---@field assetPath string @ 当前事件对应的资源路径
 ---@field assetData UnityEngine.Object @ 当前事件对应的资源数据
-local LoadResEvent = class("LoadResEvent", Event)
+local ResEvent = class("ResEvent", Event)
 
-function LoadResEvent:Ctor(type, data)
-    LoadResEvent.super.Ctor(self, type, data)
+function ResEvent:Ctor(type, data)
+    ResEvent.super.Ctor(self, type, data)
 end
 
 
@@ -19,23 +19,23 @@ end
 --=------------------------------[ static ]------------------------------=--
 
 --- 开始加载某个资源。该事件只会在 Res(ShibaInu.ResManager) 上抛出
-LoadResEvent.START = "LoadResEvent_Start"
+ResEvent.LOAD_START = "ResEvent_LoadStart"
 
 --- 加载某个资源完成。该事件只会在 Res(ShibaInu.ResManager) 上抛出
-LoadResEvent.COMPLETE = "LoadResEvent_Complete"
+ResEvent.LOAD_COMPLETE = "ResEvent_LoadComplete"
 
 --- 加载所有资源完成。该事件只会在 Res(ShibaInu.ResManager) 上抛出
-LoadResEvent.ALL_COMPLETE = "LoadResEvent_All_Complete"
+ResEvent.LOAD_ALL_COMPLETE = "ResEvent_LoadAllComplete"
 
 
 --
-local event = LoadResEvent.New()
+local event = ResEvent.New()
 
---- 抛出加载相关事件，由 ABLoader.cs / ResManager.cs 调用
+--- 抛出资源相关事件，由 ResManager.cs / AssetLoader.cs 调用
 ---@param type string
 ---@param path string
 ---@param data UnityEngine.Object
-function LoadResEvent.DispatchEvent(type, path, data)
+function ResEvent.DispatchEvent(type, path, data)
     event.data = nil
     event.target = nil
     event.isPropagationStopped = false
@@ -51,4 +51,4 @@ end
 
 
 
-return LoadResEvent
+return ResEvent

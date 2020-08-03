@@ -46,9 +46,6 @@ Event.FIXED_UPDATE = "Event_FixedUpdate"
 --- 屏幕尺寸有改变。该事件只会在 Stage 上抛出
 Event.RESIZE = "Event_Resize"
 
---- 当前场景有改变。该事件只会在 Stage 上抛出
-Event.SCENE_CHANGED = "Event_SceneChanged"
-
 --- 当前程序被激活（从后台切回）。该事件只会在 Stage 上抛出
 Event.ACTIVATED = "Event_Activated"
 

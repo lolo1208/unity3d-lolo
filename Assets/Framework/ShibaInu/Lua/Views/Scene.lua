@@ -68,14 +68,14 @@ end
 
 --
 --- 异步加载下一个 SubScene
----@param event LoadSceneEvent
+---@param event SceneEvent
 function Scene:LoadNextSubSceneAsync(event)
     self.asyncSubSceneIndex = self.asyncSubSceneIndex + 1
     if self.asyncSubSceneIndex <= #self.asyncSubScenes then
-        AddEventListener(Stage, LoadSceneEvent.SUB_COMPLETE, self.LoadNextSubSceneAsync, self)
+        AddEventListener(Stage, SceneEvent.LOAD_SUB_COMPLETE, self.LoadNextSubSceneAsync, self)
         Stage.LoadSubSceneAsync(self.asyncSubScenes[self.asyncSubSceneIndex])
     else
-        RemoveEventListener(Stage, LoadSceneEvent.SUB_COMPLETE, self.LoadNextSubSceneAsync, self)
+        RemoveEventListener(Stage, SceneEvent.LOAD_SUB_COMPLETE, self.LoadNextSubSceneAsync, self)
     end
 end
 
@@ -102,7 +102,7 @@ end
 function Scene:OnDestroy()
     Scene.super.OnDestroy(self)
 
-    RemoveEventListener(Stage, LoadSceneEvent.SUB_COMPLETE, self.LoadNextSubSceneAsync, self)
+    RemoveEventListener(Stage, SceneEvent.LOAD_SUB_COMPLETE, self.LoadNextSubSceneAsync, self)
 end
 
 

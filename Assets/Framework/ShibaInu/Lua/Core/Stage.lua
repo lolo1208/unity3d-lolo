@@ -90,20 +90,15 @@ local function DispatchSceneChangedEvent(scene)
 
     PrefabPool.Clean(true)
     scene:OnInitialize()
-    _event.target = nil
-    _event.isPropagationStopped = false
-
-    _event.type = Event.SCENE_CHANGED
-    _event.data = scene.moduleName
-    trycall(_ed.DispatchEvent, _ed, _event, false, false)
+    SceneEvent.DispatchEvent(SceneEvent.CHANGED, scene.moduleName)
 end
 
 
 --
 --- 异步加载场景完成
----@param event LoadSceneEvent
+---@param event SceneEvent
 local function LoadSceneCompleteHandler(event)
-    RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
+    RemoveEventListener(Stage, SceneEvent.LOAD_COMPLETE, LoadSceneCompleteHandler)
     if not _loadingScene.destroyed then
         _loadingScene:OnDestroy()
     end
@@ -122,10 +117,10 @@ end
 
 --
 --- 异步加载场景 perfab 完成
----@param event LoadResEvent
+---@param event ResEvent
 local function LoadResCompleteHandler(event)
     if event.assetPath == _currentScene.prefabPath then
-        RemoveEventListener(Res, LoadResEvent.COMPLETE, LoadResCompleteHandler)
+        RemoveEventListener(Res, ResEvent.LOAD_COMPLETE, LoadResCompleteHandler)
         _currentScene.gameObject = Instantiate(event.assetData, Constants.LAYER_SCENE)
         DispatchSceneChangedEvent(_currentScene)
     end
@@ -145,8 +140,8 @@ function Stage.ShowScene(sceneClass, reload)
         CancelDelayedCall(_dfcLoadScene)
         _dfcLoadScene = nil
     end
-    RemoveEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
-    RemoveEventListener(Res, LoadResEvent.COMPLETE, LoadResCompleteHandler)
+    RemoveEventListener(Stage, SceneEvent.LOAD_COMPLETE, LoadSceneCompleteHandler)
+    RemoveEventListener(Res, ResEvent.LOAD_COMPLETE, LoadResCompleteHandler)
 
     if _loadingScene ~= nil then
         if not _loadingScene.destroyed then
@@ -193,7 +188,7 @@ function Stage.DoShowScene()
                 DispatchSceneChangedEvent(_loadingScene)
 
                 -- 异步加载目标场景
-                AddEventListener(Stage, LoadSceneEvent.COMPLETE, LoadSceneCompleteHandler)
+                AddEventListener(Stage, SceneEvent.LOAD_COMPLETE, LoadSceneCompleteHandler)
                 loadSceneAsync(_currentScene.assetName)
             end, nil, 2)
         else
@@ -212,7 +207,7 @@ function Stage.DoShowScene()
         end
 
         if _currentScene.isAsync then
-            AddEventListener(Res, LoadResEvent.COMPLETE, LoadResCompleteHandler)
+            AddEventListener(Res, ResEvent.LOAD_COMPLETE, LoadResCompleteHandler)
             Res.LoadAssetAsync(_currentScene.prefabPath, _currentScene.assetName)
         else
             _currentScene.gameObject = Instantiate(Res.LoadAsset(_currentScene.prefabPath, _currentScene.assetName), Constants.LAYER_SCENE)

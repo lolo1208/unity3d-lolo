@@ -92,8 +92,8 @@ isIOS = isMobile and not isAndroid
 
 Constants = require("Core.Constants")
 Event = require("Events.Event")
-LoadResEvent = require("Events.LoadResEvent")
-LoadSceneEvent = require("Events.LoadSceneEvent")
+ResEvent = require("Events.ResEvent")
+SceneEvent = require("Events.SceneEvent")
 DestroyEvent = require("Events.DestroyEvent")
 AvailabilityEvent = require("Events.AvailabilityEvent")
 PointerEvent = require("Events.PointerEvent")
