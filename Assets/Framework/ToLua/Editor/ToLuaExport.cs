@@ -165,8 +165,10 @@ public static class ToLuaExport
         "Dictionary.TryAdd",
         "KeyValuePair.Deconstruct",
         "ParticleSystem.SetJob",
-        "ParticleSystem.subEmitters", /*2019.09 ios编译出错，也可能是unity版本问题*/
-        "Type.IsSZArray"
+        "Type.IsSZArray",
+        "ParticleSystem.subEmitters", // 2019.09 iOS
+        "ParticleSystem.SetParticles", // 2018.4.25f1
+        "ParticleSystem.GetParticles",
     };
 
     class _MethodBase
@@ -299,9 +301,15 @@ public static class ToLuaExport
                 }
                 else
                 {
-                    Type genericClass = typeof(LuaOut<>);
-                    Type t = genericClass.MakeGenericType(args[i].ParameterType.GetElementType());
-                    list.Add(t);
+                    try
+                    {
+                        Type genericClass = typeof(LuaOut<>);
+                        Type t = genericClass.MakeGenericType(args[i].ParameterType.GetElementType());
+                        list.Add(t);
+                    } catch(Exception)
+                    {
+                        Debug.LogError("ToLua Gen Lua Wraps 时有错误产生！请注意控制台错误信息，在 ToLuaExport.cs #memberFilter 列表中添加排除，或使用 [NoToLua] 排除。");
+                    }
                 }
             }
 

@@ -1,16 +1,16 @@
 # 介绍
 
-本项目是基于 [Unity](https://unity.com) 与 [ToLua](https://github.com/topameng/tolua) 的框架项目，以及部分示例内容。
+[本项目](https://github.com/lolo1208/unity3d-lolo) 是基于 [Unity](https://unity.com) 与 [ToLua](https://github.com/topameng/tolua) 的框架项目，以及部分示例内容。
 主要内容包括：C# 代码，Lua 代码，Node.js 代码，sh / bat 脚本，开发环境，以及打包工具。
 
 git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run the Application` 直接运行项目。
 也可在场景中的任意 GameObject 上 `Add Component`->`Main`，然后点击 `Play` 按钮运行项目。
 
 #### * 默认环境和版本
-  - [Unity Editor 2018.4.8f1](https://unity3d.com/cn/unity/whats-new/2018.4.8) 可升级至任意版本
-  - [IntelliJ IDEA CE 2018.1.8](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
-  - [EmmyLua 1.2.6](https://emmylua.github.io) 该插件安装包放在 Templates/EmmyLua-1.2.6-IDEA172-181.zip
-  - Visual Studio Community 2019 / 8.0.3 for Mac
+  - [Unity Editor 2018.4.25f1](https://unity3d.com/cn/unity/whats-new/2018.4.25) 可升级至任意版本
+  - [IntelliJ IDEA CE 2020.1.4](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
+  - [EmmyLua 1.3.3](https://emmylua.github.io) 该插件安装包放在 Templates/IntelliJ-EmmyLua-1.3.3.150-IDEA201.zip
+  - Visual Studio Community 2019 / 8.6.5 for Mac
   - [tolua 1.0.7](https://github.com/topameng/tolua), lua 5.1, [release encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
 
 #### * 特殊目录和文件
@@ -54,7 +54,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
     *按钮在右上角放大镜图标左侧*
 
 ###### 最终配置结果如图：
-![](https://raw.githubusercontent.com/lolo1208/unity3d-lolo/master/Templates/Screenshots/project-structure.jpg)
+![](http://lolo.link/img/github/unity-framework/project-structure.jpg)
 
 #### * C# -> Lua
 首先，将需要导出给 Lua 访问的 类，属性，方法 等添加到 `Assets/Framework/ToLua/Editor/CustomSettings.cs` 中。
@@ -82,7 +82,7 @@ Windows 为 `File`->`Settings`->`Plugins`
 然后选择 `Assets/LuaAPI` 目录。
 
 ###### 如图：
-![](https://raw.githubusercontent.com/lolo1208/unity3d-lolo/master/Templates/Screenshots/libraries-luaapi.jpg)
+![](http://lolo.link/img/github/unity-framework/libraries-luaapi.jpg)
 
 自此，Lua 开发环境已全部配置完成。
 
@@ -90,7 +90,7 @@ Windows 为 `File`->`Settings`->`Plugins`
 打开 `Preferences`->`Editor`->`File Types` 窗口，在 `Ignore files and folders` 输入框中添加 **`*.meta;`** 即可忽略所有 meta 文件。
 
 ###### 如图：
-![](https://raw.githubusercontent.com/lolo1208/unity3d-lolo/master/Templates/Screenshots/preferences-ignore-meta.jpg)
+![](http://lolo.link/img/github/unity-framework/preferences-ignore-meta.jpg)
 
 
 # Build
@@ -139,7 +139,7 @@ Unity Android 项目需要添加的配置和常见问题，可参考：Templates
 ***注意：打包前，请在 Unity Editor 中关闭当前项目。***
 
 ###### 打包进度与日志页面：
-![](https://raw.githubusercontent.com/lolo1208/unity3d-lolo/master/Templates/Screenshots/build-web-page.jpg)
+![](http://lolo.link/img/github/unity-framework/build-web-page.jpg)
 
 #### * Unity Editor - `AssetBundle`
 

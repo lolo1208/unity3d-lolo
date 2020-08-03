@@ -10,8 +10,6 @@ public class UnityEngine_ParticleSystemWrap
 		L.RegFunction("SetCustomParticleData", SetCustomParticleData);
 		L.RegFunction("GetCustomParticleData", GetCustomParticleData);
 		L.RegFunction("TriggerSubEmitter", TriggerSubEmitter);
-		L.RegFunction("SetParticles", SetParticles);
-		L.RegFunction("GetParticles", GetParticles);
 		L.RegFunction("Simulate", Simulate);
 		L.RegFunction("Play", Play);
 		L.RegFunction("Pause", Pause);
@@ -151,93 +149,6 @@ public class UnityEngine_ParticleSystemWrap
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.ParticleSystem.TriggerSubEmitter");
-			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetParticles(IntPtr L)
-	{
-		try
-		{
-			int count = LuaDLL.lua_gettop(L);
-
-			if (count == 2)
-			{
-				UnityEngine.ParticleSystem obj = (UnityEngine.ParticleSystem)ToLua.CheckObject(L, 1, typeof(UnityEngine.ParticleSystem));
-				UnityEngine.ParticleSystem.Particle[] arg0 = null;
-				obj.SetParticles(arg0);
-				return 0;
-			}
-			else if (count == 3)
-			{
-				UnityEngine.ParticleSystem obj = (UnityEngine.ParticleSystem)ToLua.CheckObject(L, 1, typeof(UnityEngine.ParticleSystem));
-				UnityEngine.ParticleSystem.Particle[] arg0 = null;
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				obj.SetParticles(arg0, arg1);
-				return 0;
-			}
-			else if (count == 4)
-			{
-				UnityEngine.ParticleSystem obj = (UnityEngine.ParticleSystem)ToLua.CheckObject(L, 1, typeof(UnityEngine.ParticleSystem));
-				UnityEngine.ParticleSystem.Particle[] arg0 = null;
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
-				obj.SetParticles(arg0, arg1, arg2);
-				return 0;
-			}
-			else
-			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.ParticleSystem.SetParticles");
-			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetParticles(IntPtr L)
-	{
-		try
-		{
-			int count = LuaDLL.lua_gettop(L);
-
-			if (count == 2)
-			{
-				UnityEngine.ParticleSystem obj = (UnityEngine.ParticleSystem)ToLua.CheckObject(L, 1, typeof(UnityEngine.ParticleSystem));
-				UnityEngine.ParticleSystem.Particle[] arg0 = null;
-				int o = obj.GetParticles(arg0);
-				LuaDLL.lua_pushinteger(L, o);
-				return 1;
-			}
-			else if (count == 3)
-			{
-				UnityEngine.ParticleSystem obj = (UnityEngine.ParticleSystem)ToLua.CheckObject(L, 1, typeof(UnityEngine.ParticleSystem));
-				UnityEngine.ParticleSystem.Particle[] arg0 = null;
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				int o = obj.GetParticles(arg0, arg1);
-				LuaDLL.lua_pushinteger(L, o);
-				return 1;
-			}
-			else if (count == 4)
-			{
-				UnityEngine.ParticleSystem obj = (UnityEngine.ParticleSystem)ToLua.CheckObject(L, 1, typeof(UnityEngine.ParticleSystem));
-				UnityEngine.ParticleSystem.Particle[] arg0 = null;
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
-				int o = obj.GetParticles(arg0, arg1, arg2);
-				LuaDLL.lua_pushinteger(L, o);
-				return 1;
-			}
-			else
-			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.ParticleSystem.GetParticles");
 			}
 		}
 		catch (Exception e)
