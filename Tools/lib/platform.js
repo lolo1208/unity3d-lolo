@@ -61,6 +61,7 @@ platform.start = function (cb) {
     cmd += ` -development ${common.development}`;
     child_process.exec(cmd, (err, stdout, stderr) => {
         if (err) throw err;
+        common.verifyUnityLogError();
         logger.append(`- 生成 ${ppName} 项目完成`);
         progress.gpp(1);
         generateComplete();

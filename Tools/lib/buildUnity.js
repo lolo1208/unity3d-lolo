@@ -77,6 +77,7 @@ let build = function () {
     cmd += ` -scenes ${buildScenes.join(',')}`;
     child_process.exec(cmd, (err, stdout, stderr) => {
         if (err) throw err;
+        common.verifyUnityLogError();
         if (readUnityOutHandle !== null)
             clearTimeout(readUnityOutHandle);
         callback();

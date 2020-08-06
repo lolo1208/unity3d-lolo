@@ -28,6 +28,7 @@ let generate = function (callback) {
     cmd += ` -manifestPath ${common.manifestFile}`;
     child_process.exec(cmd, (err, stdout, stderr) => {
         if (err) throw err;
+        common.verifyUnityLogError();
         progress.manifest(1);
         logger.append("- 生成打包清单完成");
         callback();

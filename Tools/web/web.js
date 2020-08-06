@@ -86,8 +86,7 @@ function showLog(element) {
                     E('downloadBtn').style.visibility = 'visible';
                 }
             }
-        }
-        else if (type == LOG_TYPE.RES) {
+        } else if (type == LOG_TYPE.RES) {
             resTable = '<table class="res-tb">';
             data = JSON.parse(data);
             var i = 0;
@@ -100,22 +99,40 @@ function showLog(element) {
             resTable += '</table>';
         }
 
-        if (type == LOG_TYPE.RES)
-            logContent.innerHTML = resTable;
-        else
-            logContent.innerHTML = data.replace(/\n/g, '<br/>');
-
         var autoScrollDiv = E("autoScrollDiv");
         if (type == LOG_TYPE.BUILD || type == LOG_TYPE.UNITY) {
             autoScrollDiv.style.visibility = "visible";
-            scrollToBottom();
             delayRefreshLog();
-        }
-        else {
+
+            // 结束打包后，将 Unity 日志中的 Error 和 Crash 标红
+            if (!packaging && type == LOG_TYPE.UNITY) {
+                // Error
+                data = data.replace(/error/gi, 'Error');
+                data = data.replace(/\n/g, '<br/>');
+                var idx = data.indexOf("Error");
+                while (idx != -1) {
+                    startIdx = data.lastIndexOf('<br/>', idx);
+                    data = insert(data, startIdx + 5, '<span class="fail-color">');
+                    endIdx = data.indexOf('<br/>', idx);
+                    data = insert(data, endIdx, '</span>');
+                    idx = data.indexOf("Error", endIdx);
+                }
+
+                // Crash
+                data = data.replace(/Crash!!!/gi, '<span class="fail-color">' +
+                    'Crash!!!<br/>' +
+                    'Crash 常发生在资源处理阶段，<br/>' +
+                    '请往上看！！！<br/>' +
+                    '看日志最终停留在处理哪个资源，再围绕该资源分析原因！<br/>' +
+                    '<br/></span>');
+            }
+        } else {
             autoScrollDiv.style.visibility = "hidden";
             logContent.scrollTop = 0;
         }
 
+        logContent.innerHTML = type == LOG_TYPE.RES ? resTable : data.replace(/\n/g, '<br/>');
+        scrollToBottom();
     });
 }
 
@@ -145,6 +162,11 @@ function downloadZip() {
     iframe.id = 'download-iframe';
     iframe.src = zipPath;
     document.body.appendChild(iframe);
+}
+
+
+function insert(str, index, value) {
+    return str.substr(0, index) + value + str.substr(index);
 }
 
 
@@ -197,8 +219,7 @@ function getProgress() {
                 ? '<b class="succ-color">打包成功</b>'
                 : '<b class="fail-color">打包出错</b>';
             showLog(E(curLogType));
-        }
-        else
+        } else
             delayRefreshProgress();
     });
 }
@@ -217,8 +238,7 @@ function setProgress(name, data) {
         setProgressBar(bar, Math.floor(data[0] / data[1] * 100));
         complete = data[0] == data[1];
         if (complete) text += ' [ ' + formatTime(data[2]) + ' ]';
-    }
-    else {
+    } else {
         item.className = 'progress-item progress-item-disabled';
         bar.className = 'progress-item';
     }

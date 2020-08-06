@@ -204,6 +204,16 @@ common.libraryNativeDir = `${common.libraryCaheRootDir}${common.isWindows ? 'win
 
 
 /**
+ * 验证 Unity 进程生成的日志中，是否包含了 C# 代码异常
+ */
+common.verifyUnityLogError = function () {
+    let log = fs.readFileSync(common.unityLogFile).toString();
+    if (log.lastIndexOf('): error') !== -1)
+        throw Error('调用 Unity 程序出错！\nUnity 运行日志中包含 C# Error');
+}
+
+
+/**
  * 结束进程
  * @param code
  */
@@ -335,8 +345,7 @@ common.mergeDir = function (srcDir, destDir, callback) {
         if (!fs.existsSync(destFile)) {
             fs.renameSync(srcFile, destFile);
             next();
-        }
-        else {
+        } else {
             if (fs.statSync(srcFile).isDirectory()) {
                 common.mergeDir(srcFile, destFile, next);// 目录递归
             } else {

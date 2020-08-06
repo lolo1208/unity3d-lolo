@@ -102,7 +102,7 @@ html, body {
     line-height: 23px;
     padding: 0 10px;
     font-size: 14px;
-    overflow-y: auto;
+    overflow: auto;
 }
 
 .content-text-small {
