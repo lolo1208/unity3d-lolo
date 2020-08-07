@@ -15,4 +15,4 @@ path_dest=${path_proj}Assets/StreamingAssets/
 
 cd ${path_sh}../lib
 
-node build.js -i 0 -v 1.2.3 -p ShibaInu -t macos -f ${path_proj} -d ${path_dest} -y
+node build.js -i 0 -v 1.2.3 -p ShibaInu -t macos -f ${path_proj} -d ${path_dest} -y -n
