@@ -270,6 +270,17 @@ namespace ShibaInu
         }
 
 
+        /// <summary>
+        /// 向 Native 发送消息
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="msg"></param>
+        public static void SendMessageToNative(string action, string msg)
+        {
+            NativeHelper.SendMessageToNative(action, msg);
+        }
+
+
 
         /// <summary>
         /// 通过名称获取 Shader(Always Included Shaders)，或通过路径加载 Shader(AssetBundle)

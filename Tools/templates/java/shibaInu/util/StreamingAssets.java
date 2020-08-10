@@ -49,9 +49,6 @@ public class StreamingAssets {
 
     /**
      * 文件是否存在
-     *
-     * @param filePath
-     * @return
      */
     public static boolean exists(String filePath) {
         if (sAssetMgr == null) initialize();
@@ -62,9 +59,6 @@ public class StreamingAssets {
 
     /**
      * 获取文件的字节内容
-     *
-     * @param filePath
-     * @return
      */
     public static byte[] getBytes(String filePath) {
         if (sAssetMgr == null) initialize();
@@ -88,9 +82,6 @@ public class StreamingAssets {
 
     /**
      * 获取文件的字符串内容
-     *
-     * @param filePath
-     * @return
      */
     public static String getText(String filePath) {
         if (sAssetMgr == null) initialize();

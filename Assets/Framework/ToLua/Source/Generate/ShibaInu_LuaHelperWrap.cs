@@ -22,6 +22,7 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("Relaunch", Relaunch);
 		L.RegFunction("IsDebug", IsDebug);
 		L.RegFunction("GetVersionInfo", GetVersionInfo);
+		L.RegFunction("SendMessageToNative", SendMessageToNative);
 		L.RegFunction("GetShader", GetShader);
 		L.RegFunction("DeviceVibrate", DeviceVibrate);
 		L.RegFunction("PlayDoubleImageShake", PlayDoubleImageShake);
@@ -297,6 +298,23 @@ public class ShibaInu_LuaHelperWrap
 			string o = ShibaInu.LuaHelper.GetVersionInfo();
 			LuaDLL.lua_pushstring(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SendMessageToNative(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			string arg0 = ToLua.CheckString(L, 1);
+			string arg1 = ToLua.CheckString(L, 2);
+			ShibaInu.LuaHelper.SendMessageToNative(arg0, arg1);
+			return 0;
 		}
 		catch (Exception e)
 		{

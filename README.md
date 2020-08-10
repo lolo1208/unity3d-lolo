@@ -37,6 +37,9 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   该目录内的 Lua 文件不会被 require()，也不会参与打包，仅用于代码提示。
   - `Assets/Framework/ShibaInu/Lua/Define/` 与 LuaAPI 目录类似。
 
+#### * 其他文档
+  - [NativeEvent / NativeHelper](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/NativeEvent.md)
+
 # 开发环境
 
 启动 IDEA，并点击打开项目，项目目录为 `Assets/`
@@ -113,7 +116,7 @@ Tools 项目核心功能基于 [Node.js](https://nodejs.org/en/download) 实现�
 
 第一次运行脚本前，需要先下载 Tools 项目所需 node_modules
 
-```
+```bash
 # Go into the repository
 cd Tools
 
@@ -158,3 +161,4 @@ Encode 所有 Lua 文件，
 你也可以点击菜单 `ShibaInu`->`退出 AssetBundle 模式` 或  `ShibaInu`->`进入 AssetBundle 模式` 切换加载模式。
 
 *提示：可以在 Web 程序中查看打包进度与详细日志*
+

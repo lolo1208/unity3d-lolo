@@ -230,6 +230,16 @@ namespace ShibaInu
         }
 
 
+        /// <summary>
+        /// 收到 Native 发来的消息
+        /// </summary>
+        /// <param name="msg"></param>
+        protected void OnReceiveNativeMessage(string msg)
+        {
+            NativeHelper.OnReceiveNativeMessage(msg);
+        }
+
+
 
         void OnDestroy()
         {

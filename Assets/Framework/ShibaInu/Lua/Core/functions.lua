@@ -611,3 +611,12 @@ function DontUnloadAssets(paths)
         end
     end
 end
+
+
+--
+--- 向 Native(Java/OC) 发送消息
+---@param action string
+---@param msg string
+function SendMessageToNative(action, msg)
+    LuaHelper.SendMessageToNative(action, msg)
+end

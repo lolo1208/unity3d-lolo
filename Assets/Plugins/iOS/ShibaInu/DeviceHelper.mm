@@ -4,6 +4,7 @@
 #include "AudioToolbox/AudioServices.h"
 
 
+
 extern "C" bool IsNotchScreenImpl()
 {
     if (@available(iOS 11.0, *)) {
@@ -61,3 +62,4 @@ extern "C" void VibrateImpl(int style)
         }
     }
 }
+

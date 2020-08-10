@@ -12,11 +12,6 @@ namespace ShibaInu
     public static class DeviceHelper
     {
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-		private static readonly AndroidJavaClass m_androidDeviceHelper = new AndroidJavaClass ("shibaInu.util.DeviceHelper");
-#endif
-
-
         /// 设备是否为横屏
         public static bool isLandscape;
         /// 设备是否支持自动旋转
@@ -110,14 +105,16 @@ namespace ShibaInu
         private static bool IsNotchScreen()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-			return m_androidDeviceHelper.CallStatic<bool> ("isNotchScreen");
+
+            return m_androidDeviceHelper.CallStatic<bool>("isNotchScreen");
 
 #elif UNITY_IOS && !UNITY_EDITOR
-			return IsNotchScreenImpl ();
 
-#else
-            return false;
+            return IsNotchScreenImpl();
+
 #endif
+
+            return false;
         }
 
 
@@ -168,9 +165,11 @@ namespace ShibaInu
         public static void Vibrate(int style)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-        m_androidDeviceHelper.CallStatic ("vibrate", style);
+
+            m_androidDeviceHelper.CallStatic ("vibrate", style);
 
 #elif UNITY_IOS && !UNITY_EDITOR
+
             VibrateImpl (style);
 
 #endif
@@ -178,20 +177,21 @@ namespace ShibaInu
 
 
 
-        // Native functions
-
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-		
-		private static float ToInsetValue (float value)
-		{
-			return value * Common.GetFixedScreenScale ();
-		}
 
-		private static float ToInsetValue (string value)
-		{
-			return ToInsetValue (float.Parse (value));
-		}
+        private static readonly AndroidJavaClass m_androidDeviceHelper = new AndroidJavaClass("shibaInu.util.DeviceHelper");
+
+
+        private static float ToInsetValue(float value)
+        {
+            return value * Common.GetFixedScreenScale();
+        }
+
+        private static float ToInsetValue(string value)
+        {
+            return ToInsetValue(float.Parse(value));
+        }
 
 #endif
 

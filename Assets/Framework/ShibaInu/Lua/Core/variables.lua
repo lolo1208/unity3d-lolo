@@ -107,6 +107,7 @@ NetEvent = require("Events.NetEvent")
 HttpEvent = require("Events.HttpEvent")
 SocketEvent = require("Events.SocketEvent")
 AnimationEvent = require("Events.AnimationEvent")
+NativeEvent = require("Events.NativeEvent")
 
 MapList = require("Data.MapList")
 LinkedList = require("Data.LinkedList")

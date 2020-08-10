@@ -22,13 +22,13 @@ import com.unity3d.player.UnityPlayer;
  */
 public class DeviceHelper {
 
-
     /**
      * 设备类型
      */
-    public enum DeviceType {
+    enum DeviceType {
         XIAOMI, HUAWEI, OPPO, VIVO, OTHER
     }
+
 
     /**
      * 获取当前设备类型
@@ -232,7 +232,7 @@ public class DeviceHelper {
     public static void vibrate(int style) {
         Vibrator vibrator = (Vibrator) UnityPlayer.currentActivity.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         if (vibrator != null && vibrator.hasVibrator()) {
-            switch (style){
+            switch (style) {
                 case 1:
                     vibrator.vibrate(12);
                     break;

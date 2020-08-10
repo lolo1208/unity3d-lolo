@@ -1,4 +1,3 @@
-
 package shibaInu.util;
 
 import java.io.File;
@@ -16,7 +15,6 @@ import dalvik.system.DexFile;
  * Created by LOLO on 2019/3/9.
  */
 public class SystemPropertiesProxy {
-
 
     /**
      * Get the value for the given key.
