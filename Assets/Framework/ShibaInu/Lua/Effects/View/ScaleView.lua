@@ -103,7 +103,9 @@ function ScaleView:Hide()
     self.tweener:Join(self.canvasGroup:DOFade(self.hide_alpha, self.hide_duration):SetEase(self.hide_ease))
     self.tweener:AppendCallback(function()
         self.tweener = nil
-        self.gameObject:SetActive(false)
+        if not isnull(self.gameObject) then
+            self.gameObject:SetActive(false)
+        end
         self:SuperHide()
     end)
 end
