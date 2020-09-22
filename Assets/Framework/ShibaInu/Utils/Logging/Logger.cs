@@ -29,27 +29,54 @@ namespace ShibaInu
         /// <param name="type">Type.</param>
         private static void UnityLogCallback(string condition, string stackTrace, LogType type)
         {
-            if (type == LogType.Exception || type == LogType.Assert)
+            switch (type)
             {
-                string logType = type.ToString();
-                stackTrace = string.Format("\nstack traceback:\n\t{0}", stackTrace.TrimEnd().Replace("\n", "\n\t"));
-                LogData.Append(logType, condition, stackTrace);
+                case LogType.Exception:
+                case LogType.Assert:
+                    string logType = type.ToString();
+                    stackTrace = string.Format("\nstack traceback:\n\t{0}", stackTrace.TrimEnd().Replace("\n", "\n\t"));
+                    LogData.Append(logType, condition, stackTrace);
+                    UncaughtExceptionHandler(logType, condition, stackTrace);
+                    break;
 
-                if (s_uncaughtExceptionHandler != null)
-                {
-                    s_uncaughtExceptionHandler.BeginPCall();
-                    s_uncaughtExceptionHandler.Push(logType);
-                    s_uncaughtExceptionHandler.Push(condition);
-                    s_uncaughtExceptionHandler.Push(stackTrace);
-                    s_uncaughtExceptionHandler.PCall();
-                    s_uncaughtExceptionHandler.EndPCall();
-                }
+                case LogType.Warning:
+                    // 将 DoTween 回调中的报错从 Warning 转为 Error
+                    if (condition.StartsWith("DOTWEEN :: An error inside a tween callback", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        int idx1 = condition.IndexOf('\n');
+                        int idx2 = condition.IndexOf("\n\n", idx1);
+                        stackTrace = condition.Substring(idx1, idx2 - idx1);
+                        condition = condition.Substring(0, idx1);
+                        LogError(condition, stackTrace);
+                        UncaughtExceptionHandler(LogData.TYPE_ERROR, condition, stackTrace);
+                    }
+                    break;
             }
         }
 
 
         /// <summary>
-        /// 设置出现未捕获异常时的回调
+        /// 调用异常收集回调
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="msg"></param>
+        /// <param name="stackTrace"></param>
+        private static void UncaughtExceptionHandler(string type, string msg, string stackTrace)
+        {
+            if (s_uncaughtExceptionHandler != null)
+            {
+                s_uncaughtExceptionHandler.BeginPCall();
+                s_uncaughtExceptionHandler.Push(type);
+                s_uncaughtExceptionHandler.Push(msg);
+                s_uncaughtExceptionHandler.Push(stackTrace);
+                s_uncaughtExceptionHandler.PCall();
+                s_uncaughtExceptionHandler.EndPCall();
+            }
+        }
+
+
+        /// <summary>
+        /// 设置异常收集回调
         /// </summary>
         /// <param name="callback">Callback.</param>
         public static void SetUncaughtExceptionHandler(LuaFunction callback)
