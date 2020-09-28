@@ -18,21 +18,14 @@ namespace ShibaInu
             // 首次启动
             if (!Common.Initialized)
             {
-                // 初始变量赋值
-                Common.FixedValue = 640;
-                Common.IsFixedWidth = false;
-                DeviceHelper.SetScreenOrientation(true);
-                Common.IsOptimizeResolution = true;
-                Common.FrameRate = 60;
-                Common.IsNeverSleep = true;
 #if UNITY_EDITOR
                 Common.IsDebug = !File.Exists(Constants.ABModeFilePath);
 #else
                 Common.IsDebug = false;
 #endif
 
+                App.ShibaInuExtend.BeforeLaunch();
                 StartCoroutine(Launch());
-
             }
             else
             {
@@ -108,6 +101,7 @@ namespace ShibaInu
             StageTouchEventDispatcher.ClearReference();
             AvailabilityEventDispatcher.ClearReference();
             Logger.ClearReference();
+            App.ShibaInuExtend.ClearReference();
 
             // unload
             ResManager.UnloadAll();

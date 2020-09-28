@@ -9,7 +9,7 @@ namespace ShibaInu
 
         public static VersionInfo VersionInfo = new VersionInfo
         {
-            CoreVersion = "0.0.1", // C# 程序版本号（手动维护）
+            CoreVersion = "0.0.0", // C# 程序版本号（手动维护）
             FullVersion = "0.0.0.0.0",
             ResVersion = "0.0.0",
             BuildNumber = "0",
@@ -17,7 +17,7 @@ namespace ShibaInu
         };
 
 
-        /// 固定 宽/高 值
+        /// 固定宽或高值
         public static int FixedValue;
         /// 当前固定比例方式 [ true:固定宽度，false:固定高度 ]
         public static bool IsFixedWidth;

@@ -181,7 +181,7 @@ public static class CustomSettings
         _GT(typeof(DateTime)),
 
 
-        // ShibaInu
+        #region ShibaInu
         _GT(typeof(Stage)),
         _GT(typeof(ResManager)),
         _GT(typeof(AudioManager)),
@@ -216,6 +216,9 @@ public static class CustomSettings
         _GT(typeof(MD5Util)),
         _GT(typeof(ShibaInu.LuaProfiler)),
         _GT(typeof(ShibaInu.Logger)),
+        #endregion
+
+
     };
 
 
