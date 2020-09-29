@@ -19,8 +19,8 @@ Res = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.ResMana
 Audio = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.AudioManager, __newindex = ShibaInu.AudioManager })
 ---@type ShibaInu.NetHelper
 NetHelper = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.NetHelper, __newindex = ShibaInu.NetHelper })
-
-LuaHelper = ShibaInu.LuaHelper
+---@type App.LuaHelper
+LuaHelper = setmetatable({}, { __index = App.LuaHelper, __newindex = App.LuaHelper })
 --Stage = ShibaInu.Stage -- 已整合进 Stage.lua
 --Logger = ShibaInu.Logger -- 已整合进 Logger.lua
 

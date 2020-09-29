@@ -4,7 +4,7 @@
 namespace App
 {
     /// <summary>
-    /// ShinaInu 框架 在游戏中的扩展
+    /// ShinaInu 框架在游戏中的扩展
     /// </summary>
     public static class ShibaInuExtend
     {

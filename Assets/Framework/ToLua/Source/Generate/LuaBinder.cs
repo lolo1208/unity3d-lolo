@@ -201,7 +201,6 @@ public static class LuaBinder
 		ShibaInu_StageWrap.Register(L);
 		ShibaInu_ResManagerWrap.Register(L);
 		ShibaInu_AudioManagerWrap.Register(L);
-		ShibaInu_LuaHelperWrap.Register(L);
 		ShibaInu_NetHelperWrap.Register(L);
 		ShibaInu_HttpRequestWrap.Register(L);
 		ShibaInu_HttpDownloadWrap.Register(L);
@@ -227,6 +226,10 @@ public static class LuaBinder
 		ShibaInu_MD5UtilWrap.Register(L);
 		ShibaInu_LuaProfilerWrap.Register(L);
 		ShibaInu_LoggerWrap.Register(L);
+		ShibaInu_LuaHelperWrap.Register(L);
+		L.EndModule();
+		L.BeginModule("App");
+		App_LuaHelperWrap.Register(L);
 		L.EndModule();
 		L.EndModule();
 		L.BeginPreLoad();

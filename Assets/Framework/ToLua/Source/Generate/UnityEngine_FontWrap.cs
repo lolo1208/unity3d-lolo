@@ -11,7 +11,6 @@ public class UnityEngine_FontWrap
 		L.RegFunction("GetMaxVertsForString", GetMaxVertsForString);
 		L.RegFunction("HasCharacter", HasCharacter);
 		L.RegFunction("GetOSInstalledFontNames", GetOSInstalledFontNames);
-		L.RegFunction("GetPathsToOSFonts", GetPathsToOSFonts);
 		L.RegFunction("GetCharacterInfo", GetCharacterInfo);
 		L.RegFunction("RequestCharactersInTexture", RequestCharactersInTexture);
 		L.RegFunction("New", _CreateUnityEngine_Font);
@@ -135,22 +134,6 @@ public class UnityEngine_FontWrap
 		{
 			ToLua.CheckArgsCount(L, 0);
 			string[] o = UnityEngine.Font.GetOSInstalledFontNames();
-			ToLua.Push(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetPathsToOSFonts(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 0);
-			string[] o = UnityEngine.Font.GetPathsToOSFonts();
 			ToLua.Push(L, o);
 			return 1;
 		}

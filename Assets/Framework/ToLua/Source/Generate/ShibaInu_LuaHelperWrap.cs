@@ -6,41 +6,99 @@ public class ShibaInu_LuaHelperWrap
 {
 	public static void Register(LuaState L)
 	{
-		L.BeginStaticLibs("LuaHelper");
+		L.BeginClass(typeof(ShibaInu.LuaHelper), typeof(System.Object));
+		L.RegFunction("IsDebug", IsDebug);
+		L.RegFunction("GetVersionInfo", GetVersionInfo);
+		L.RegFunction("SendMessageToNative", SendMessageToNative);
+		L.RegFunction("DeviceVibrate", DeviceVibrate);
+		L.RegFunction("Relaunch", Relaunch);
+		L.RegFunction("CreateGameObject", CreateGameObject);
+		L.RegFunction("SetLayerRecursively", SetLayerRecursively);
+		L.RegFunction("WorldToCanvasPoint", WorldToCanvasPoint);
+		L.RegFunction("ScreenToCanvasPoint", ScreenToCanvasPoint);
+		L.RegFunction("GetShader", GetShader);
+		L.RegFunction("AddOrGetComponent", AddOrGetComponent);
+		L.RegFunction("GetMarkPointGameObject", GetMarkPointGameObject);
+		L.RegFunction("SendHttpRequest", SendHttpRequest);
 		L.RegFunction("AddDestroyEvent", AddDestroyEvent);
 		L.RegFunction("AddPointerEvent", AddPointerEvent);
 		L.RegFunction("AddDragDropEvent", AddDragDropEvent);
 		L.RegFunction("AddAvailabilityEvent", AddAvailabilityEvent);
 		L.RegFunction("AddTriggerEvent", AddTriggerEvent);
-		L.RegFunction("CreateGameObject", CreateGameObject);
-		L.RegFunction("SetLayerRecursively", SetLayerRecursively);
-		L.RegFunction("WorldToCanvasPoint", WorldToCanvasPoint);
-		L.RegFunction("ScreenToCanvasPoint", ScreenToCanvasPoint);
-		L.RegFunction("SendHttpRequest", SendHttpRequest);
-		L.RegFunction("AddOrGetComponent", AddOrGetComponent);
-		L.RegFunction("GetMarkPointGameObject", GetMarkPointGameObject);
-		L.RegFunction("Relaunch", Relaunch);
-		L.RegFunction("IsDebug", IsDebug);
-		L.RegFunction("GetVersionInfo", GetVersionInfo);
-		L.RegFunction("SendMessageToNative", SendMessageToNative);
-		L.RegFunction("GetShader", GetShader);
-		L.RegFunction("DeviceVibrate", DeviceVibrate);
 		L.RegFunction("PlayDoubleImageShake", PlayDoubleImageShake);
 		L.RegFunction("PlayMosaic", PlayMosaic);
 		L.RegFunction("PlayRadialBlur", PlayRadialBlur);
 		L.RegFunction("SetGaussianBlurEnabled", SetGaussianBlurEnabled);
-		L.EndStaticLibs();
+		L.RegFunction("New", _CreateShibaInu_LuaHelper);
+		L.RegFunction("__tostring", ToLua.op_ToString);
+		L.EndClass();
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int AddDestroyEvent(IntPtr L)
+	static int _CreateShibaInu_LuaHelper(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 0)
+			{
+				ShibaInu.LuaHelper obj = new ShibaInu.LuaHelper();
+				ToLua.PushObject(L, obj);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to ctor method: ShibaInu.LuaHelper.New");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int IsDebug(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			bool o = ShibaInu.LuaHelper.IsDebug();
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetVersionInfo(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			string o = ShibaInu.LuaHelper.GetVersionInfo();
+			LuaDLL.lua_pushstring(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SendMessageToNative(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
-			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
-			ShibaInu.LuaHelper.AddDestroyEvent(arg0, arg1);
+			string arg0 = ToLua.CheckString(L, 1);
+			string arg1 = ToLua.CheckString(L, 2);
+			ShibaInu.LuaHelper.SendMessageToNative(arg0, arg1);
 			return 0;
 		}
 		catch (Exception e)
@@ -50,14 +108,13 @@ public class ShibaInu_LuaHelperWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int AddPointerEvent(IntPtr L)
+	static int DeviceVibrate(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
-			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
-			ShibaInu.LuaHelper.AddPointerEvent(arg0, arg1);
+			ToLua.CheckArgsCount(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 1);
+			ShibaInu.LuaHelper.DeviceVibrate(arg0);
 			return 0;
 		}
 		catch (Exception e)
@@ -67,48 +124,12 @@ public class ShibaInu_LuaHelperWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int AddDragDropEvent(IntPtr L)
+	static int Relaunch(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
-			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
-			ShibaInu.LuaHelper.AddDragDropEvent(arg0, arg1);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int AddAvailabilityEvent(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
-			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
-			ShibaInu.LuaHelper.AddAvailabilityEvent(arg0, arg1);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int AddTriggerEvent(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
-			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
-			ShibaInu.LuaHelper.AddTriggerEvent(arg0, arg1);
+			ToLua.CheckArgsCount(L, 0);
+			ShibaInu.LuaHelper.Relaunch();
 			return 0;
 		}
 		catch (Exception e)
@@ -204,16 +225,14 @@ public class ShibaInu_LuaHelperWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SendHttpRequest(IntPtr L)
+	static int GetShader(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 3);
+			ToLua.CheckArgsCount(L, 1);
 			string arg0 = ToLua.CheckString(L, 1);
-			LuaFunction arg1 = ToLua.CheckLuaFunction(L, 2);
-			string arg2 = ToLua.CheckString(L, 3);
-			ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1, arg2);
-			ToLua.PushObject(L, o);
+			UnityEngine.Shader o = ShibaInu.LuaHelper.GetShader(arg0);
+			ToLua.PushSealed(L, o);
 			return 1;
 		}
 		catch (Exception e)
@@ -259,28 +278,16 @@ public class ShibaInu_LuaHelperWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Relaunch(IntPtr L)
+	static int SendHttpRequest(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 0);
-			ShibaInu.LuaHelper.Relaunch();
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int IsDebug(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 0);
-			bool o = ShibaInu.LuaHelper.IsDebug();
-			LuaDLL.lua_pushboolean(L, o);
+			ToLua.CheckArgsCount(L, 3);
+			string arg0 = ToLua.CheckString(L, 1);
+			LuaFunction arg1 = ToLua.CheckLuaFunction(L, 2);
+			string arg2 = ToLua.CheckString(L, 3);
+			ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1, arg2);
+			ToLua.PushObject(L, o);
 			return 1;
 		}
 		catch (Exception e)
@@ -290,30 +297,14 @@ public class ShibaInu_LuaHelperWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetVersionInfo(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 0);
-			string o = ShibaInu.LuaHelper.GetVersionInfo();
-			LuaDLL.lua_pushstring(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SendMessageToNative(IntPtr L)
+	static int AddDestroyEvent(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 2);
-			string arg0 = ToLua.CheckString(L, 1);
-			string arg1 = ToLua.CheckString(L, 2);
-			ShibaInu.LuaHelper.SendMessageToNative(arg0, arg1);
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
+			ShibaInu.LuaHelper.AddDestroyEvent(arg0, arg1);
 			return 0;
 		}
 		catch (Exception e)
@@ -323,15 +314,15 @@ public class ShibaInu_LuaHelperWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetShader(IntPtr L)
+	static int AddPointerEvent(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
-			string arg0 = ToLua.CheckString(L, 1);
-			UnityEngine.Shader o = ShibaInu.LuaHelper.GetShader(arg0);
-			ToLua.PushSealed(L, o);
-			return 1;
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
+			ShibaInu.LuaHelper.AddPointerEvent(arg0, arg1);
+			return 0;
 		}
 		catch (Exception e)
 		{
@@ -340,13 +331,48 @@ public class ShibaInu_LuaHelperWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int DeviceVibrate(IntPtr L)
+	static int AddDragDropEvent(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
-			int arg0 = (int)LuaDLL.luaL_checknumber(L, 1);
-			ShibaInu.LuaHelper.DeviceVibrate(arg0);
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
+			ShibaInu.LuaHelper.AddDragDropEvent(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int AddAvailabilityEvent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
+			ShibaInu.LuaHelper.AddAvailabilityEvent(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int AddTriggerEvent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
+			ShibaInu.LuaHelper.AddTriggerEvent(arg0, arg1);
 			return 0;
 		}
 		catch (Exception e)

@@ -185,7 +185,6 @@ public static class CustomSettings
         _GT(typeof(Stage)),
         _GT(typeof(ResManager)),
         _GT(typeof(AudioManager)),
-        _GT(typeof(LuaHelper)),
         _GT(typeof(NetHelper)),
 
         _GT(typeof(HttpRequest)),
@@ -218,6 +217,9 @@ public static class CustomSettings
         _GT(typeof(ShibaInu.Logger)),
         #endregion
 
+
+        // App
+        _GT(typeof(App.LuaHelper)),
 
     };
 
