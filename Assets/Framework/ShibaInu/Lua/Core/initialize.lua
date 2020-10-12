@@ -59,3 +59,8 @@ if isEditor then
 end
 
 
+-- 禁用协程
+coroutine = setmetatable({}, { __index = function()
+    error(Constants.E1002)
+end })
+
