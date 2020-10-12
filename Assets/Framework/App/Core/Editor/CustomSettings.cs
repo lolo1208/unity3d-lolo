@@ -218,8 +218,10 @@ public static class CustomSettings
         #endregion
 
 
-        // App
+        // Project
         _GT(typeof(App.LuaHelper)),
+        _GT(typeof(App.AstMsgProtocol)),
+
 
     };
 

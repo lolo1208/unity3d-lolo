@@ -9,7 +9,7 @@ namespace ShibaInu
     /// <summary>
     /// Tcp socket client.
     /// </summary>
-    public class TcpSocket
+    public class TcpSocket : ISocket
     {
         /// 读取数据的 buffer 尺寸
         private const int BUFFER_SIZE = 8192;
@@ -229,7 +229,7 @@ namespace ShibaInu
         /// msgProtocol 解包出一条消息时的回调
         /// </summary>
         /// <param name="data">Data.</param>
-        private void OnMessage(System.Object data)
+        private void OnMessage(object data)
         {
             lock (LOCK_OBJECT)
             {
@@ -244,7 +244,7 @@ namespace ShibaInu
         /// 发送数据
         /// </summary>
         /// <param name="data">Data.</param>
-        public void Send(System.Object data)
+        public void Send(object data)
         {
             if (!connected)
                 return;
@@ -330,7 +330,7 @@ namespace ShibaInu
         /// </summary>
         /// <param name="type">Type.</param>
         /// <param name="data">Data.</param>
-        private void DispatchEvent(string type, System.Object data = null)
+        private void DispatchEvent(string type, object data = null)
         {
             Common.looper.AddNetAction(() =>
             {

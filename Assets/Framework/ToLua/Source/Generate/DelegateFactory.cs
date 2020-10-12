@@ -71,6 +71,7 @@ public class DelegateFactory
 		dict.Add(typeof(UnityEngine.UI.InputField.OnValidateInput), factory.UnityEngine_UI_InputField_OnValidateInput);
 		dict.Add(typeof(System.Action<int,string>), factory.System_Action_int_string);
 		dict.Add(typeof(System.Action<string,object>), factory.System_Action_string_object);
+		dict.Add(typeof(System.Action<object>), factory.System_Action_object);
 
 		DelegateTraits<System.Action>.Init(factory.System_Action);
 		DelegateTraits<UnityEngine.Events.UnityAction>.Init(factory.UnityEngine_Events_UnityAction);
@@ -126,6 +127,7 @@ public class DelegateFactory
 		DelegateTraits<UnityEngine.UI.InputField.OnValidateInput>.Init(factory.UnityEngine_UI_InputField_OnValidateInput);
 		DelegateTraits<System.Action<int,string>>.Init(factory.System_Action_int_string);
 		DelegateTraits<System.Action<string,object>>.Init(factory.System_Action_string_object);
+		DelegateTraits<System.Action<object>>.Init(factory.System_Action_object);
 
 		TypeTraits<System.Action>.Init(factory.Check_System_Action);
 		TypeTraits<UnityEngine.Events.UnityAction>.Init(factory.Check_UnityEngine_Events_UnityAction);
@@ -181,6 +183,7 @@ public class DelegateFactory
 		TypeTraits<UnityEngine.UI.InputField.OnValidateInput>.Init(factory.Check_UnityEngine_UI_InputField_OnValidateInput);
 		TypeTraits<System.Action<int,string>>.Init(factory.Check_System_Action_int_string);
 		TypeTraits<System.Action<string,object>>.Init(factory.Check_System_Action_string_object);
+		TypeTraits<System.Action<object>>.Init(factory.Check_System_Action_object);
 
 		StackTraits<System.Action>.Push = factory.Push_System_Action;
 		StackTraits<UnityEngine.Events.UnityAction>.Push = factory.Push_UnityEngine_Events_UnityAction;
@@ -236,6 +239,7 @@ public class DelegateFactory
 		StackTraits<UnityEngine.UI.InputField.OnValidateInput>.Push = factory.Push_UnityEngine_UI_InputField_OnValidateInput;
 		StackTraits<System.Action<int,string>>.Push = factory.Push_System_Action_int_string;
 		StackTraits<System.Action<string,object>>.Push = factory.Push_System_Action_string_object;
+		StackTraits<System.Action<object>>.Push = factory.Push_System_Action_object;
 	}
     
     public static Delegate CreateDelegate(Type t, LuaFunction func = null)
@@ -3471,6 +3475,63 @@ public class DelegateFactory
 	}
 
 	void Push_System_Action_string_object(IntPtr L, System.Action<string,object> o)
+	{
+		ToLua.Push(L, o);
+	}
+
+	class System_Action_object_Event : LuaDelegate
+	{
+		public System_Action_object_Event(LuaFunction func) : base(func) { }
+		public System_Action_object_Event(LuaFunction func, LuaTable self) : base(func, self) { }
+
+		public void Call(object param0)
+		{
+			func.BeginPCall();
+			func.Push(param0);
+			func.PCall();
+			func.EndPCall();
+		}
+
+		public void CallWithSelf(object param0)
+		{
+			func.BeginPCall();
+			func.Push(self);
+			func.Push(param0);
+			func.PCall();
+			func.EndPCall();
+		}
+	}
+
+	public System.Action<object> System_Action_object(LuaFunction func, LuaTable self, bool flag)
+	{
+		if (func == null)
+		{
+			System.Action<object> fn = delegate(object param0) { };
+			return fn;
+		}
+
+		if(!flag)
+		{
+			System_Action_object_Event target = new System_Action_object_Event(func);
+			System.Action<object> d = target.Call;
+			target.method = d.Method;
+			return d;
+		}
+		else
+		{
+			System_Action_object_Event target = new System_Action_object_Event(func, self);
+			System.Action<object> d = target.CallWithSelf;
+			target.method = d.Method;
+			return d;
+		}
+	}
+
+	bool Check_System_Action_object(IntPtr L, int pos)
+	{
+		return TypeChecker.CheckDelegateType(typeof(System.Action<object>), L, pos);
+	}
+
+	void Push_System_Action_object(IntPtr L, System.Action<object> o)
 	{
 		ToLua.Push(L, o);
 	}

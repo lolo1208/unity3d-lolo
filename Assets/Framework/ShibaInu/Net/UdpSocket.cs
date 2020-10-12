@@ -9,7 +9,7 @@ using LuaInterface;
 namespace ShibaInu
 {
 
-    public class UdpSocket
+    public class UdpSocket : ISocket
     {
         /// SocketEvent.lua
         private static LuaFunction s_dispatchEvent;
@@ -81,9 +81,10 @@ namespace ShibaInu
         /// <summary>
         /// 连接指定主机和端口（稍后向该地址发送数据）
         /// </summary>
-        /// <param name="host">Host.</param>
-        /// <param name="port">Port.</param>
-        public void Connect(string host, int port, UInt32 conv)
+        /// <param name="host"></param>
+        /// <param name="port"></param>
+        /// <param name="conv"></param>
+        public void Connect(string host, int port, uint conv)
         {
             Close();
 
@@ -164,7 +165,7 @@ namespace ShibaInu
         /// msgProtocol 解包出一条消息时的回调
         /// </summary>
         /// <param name="data">Data.</param>
-        private void OnMessage(System.Object data)
+        private void OnMessage(object data)
         {
             lock (LOCK_OBJECT)
             {
@@ -181,7 +182,7 @@ namespace ShibaInu
         /// 发送数据
         /// </summary>
         /// <param name="data">Data.</param>
-        public void Send(System.Object data)
+        public void Send(object data)
         {
             if (m_client == null || !m_client.Client.Connected)
                 return;

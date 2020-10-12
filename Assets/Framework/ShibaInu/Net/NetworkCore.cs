@@ -4,7 +4,6 @@
 namespace ShibaInu
 {
 
-
     /// <summary>
     /// Http 请求方式常量
     /// </summary>
@@ -17,6 +16,7 @@ namespace ShibaInu
         /// 只获取 response handers (content length)
         public const string HEAD = "HEAD";
     }
+
 
 
     /// <summary>
@@ -40,7 +40,6 @@ namespace ShibaInu
 
 
 
-
     /// <summary>
     /// Socket 相关事件常量
     /// </summary>
@@ -55,6 +54,32 @@ namespace ShibaInu
         /// 收到消息
         public const string MESSAGE = "SocketEvent_Message";
     }
+
+
+
+    /// <summary>
+    /// Socket 接口
+    /// </summary>
+    public interface ISocket
+    {
+        /// 消息协议处理对象。默认使用 StringMsgProtocol
+        IMsgProtocol msgProtocol { set; }
+
+        /// 当前连接的主机地址
+        string host { get; }
+        /// 当前连接的端口
+        int port { get; }
+        /// 是否已经建立好连接了
+        bool connected { get; }
+
+
+        /// 发送数据
+        void Send(object data);
+
+        /// 关闭当前连接
+        void Close();
+    }
+
 
 
     /// <summary>

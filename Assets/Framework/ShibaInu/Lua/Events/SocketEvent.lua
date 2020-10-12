@@ -33,13 +33,13 @@ SocketEvent.MESSAGE = "SocketEvent_Message"
 local event = SocketEvent.New()
 
 --- 抛出 Socket 相关事件，由 TcpSocket.cs / UdpSocket.cs 调用
----@param client TcpSocket | UdpSocket
+---@param socket TcpSocket | UdpSocket
 ---@param type string
 ---@param data any
-function SocketEvent.DispatchEvent(client, type, data)
+function SocketEvent.DispatchEvent(socket, type, data)
     event.type = type
     event.data = data
-    trycall(client.DispatchEvent, client, event, false, false)
+    trycall(socket.DispatchEvent, socket, event, false, false)
 end
 
 
