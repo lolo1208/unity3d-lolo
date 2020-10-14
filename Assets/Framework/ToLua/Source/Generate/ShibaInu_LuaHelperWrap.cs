@@ -14,6 +14,7 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("Relaunch", Relaunch);
 		L.RegFunction("CreateGameObject", CreateGameObject);
 		L.RegFunction("SetLayerRecursively", SetLayerRecursively);
+		L.RegFunction("DestroyChildren", DestroyChildren);
 		L.RegFunction("WorldToCanvasPoint", WorldToCanvasPoint);
 		L.RegFunction("ScreenToCanvasPoint", ScreenToCanvasPoint);
 		L.RegFunction("GetShader", GetShader);
@@ -166,6 +167,22 @@ public class ShibaInu_LuaHelperWrap
 			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 1);
 			int arg1 = (int)LuaDLL.luaL_checknumber(L, 2);
 			ShibaInu.LuaHelper.SetLayerRecursively(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DestroyChildren(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 1);
+			ShibaInu.LuaHelper.DestroyChildren(arg0);
 			return 0;
 		}
 		catch (Exception e)

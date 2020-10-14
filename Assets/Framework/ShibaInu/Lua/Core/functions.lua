@@ -194,6 +194,12 @@ function Destroy(obj, delay)
     end
 end
 
+--- 销毁 target 的所有子节点（保留 target）
+---@param target UnityEngine.Transform @ 目标对象
+function DestroyChildren(target)
+    LuaHelper.DestroyChildren(target)
+end
+
 --
 
 

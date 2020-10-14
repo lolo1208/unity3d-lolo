@@ -135,6 +135,19 @@ namespace ShibaInu
                 SetLayerRecursively(child, layer);
         }
 
+
+        /// <summary>
+        /// 销毁 target 的所有子节点（保留 target）
+        /// </summary>
+        /// <param name="target"></param>
+        public static void DestroyChildren(Transform target)
+        {
+            for (int i = target.childCount - 1; i >= 0; i--)
+            {
+                GameObject.Destroy(target.GetChild(i).gameObject);
+            }
+        }
+
         #endregion
 
 
