@@ -5,9 +5,10 @@ using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using ShibaInu;
 
 
-namespace ShibaInu
+namespace App
 {
     /// <summary>
     /// 项目添加新资源时，进行一些默认设置
