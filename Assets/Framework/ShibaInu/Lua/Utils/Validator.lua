@@ -19,7 +19,7 @@ local Validator = {}
 ---@return boolean
 function Validator.NotExactlySpace(str)
     for i = 1, #str do
-        local c = sub(i, i)
+        local c = sub(str, i, i)
         if c ~= " " and c ~= "　" then
             return true
         end
