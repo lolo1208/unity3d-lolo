@@ -33,13 +33,13 @@ namespace ShibaInu
         private GUILayoutOption m_w50;
         private GUILayoutOption m_w60;
         private GUILayoutOption m_w73;
-        private GUILayoutOption m_w75;
-        private GUILayoutOption m_w120;
+        private GUILayoutOption m_w70;
+        private GUILayoutOption m_w125;
         private GUILayoutOption m_w155;
         private GUILayoutOption m_w288;
         private GUILayoutOption m_w368;
         private GUILayoutOption m_w420;
-        private GUILayoutOption m_h28;
+        private GUILayoutOption m_h30;
         private GUILayoutOption m_h215;
 
 
@@ -57,13 +57,13 @@ namespace ShibaInu
             m_w50 = GUILayout.Width(50);
             m_w60 = GUILayout.Width(60);
             m_w73 = GUILayout.Width(73);
-            m_w75 = GUILayout.Width(75);
-            m_w120 = GUILayout.Width(120);
+            m_w70 = GUILayout.Width(70);
+            m_w125 = GUILayout.Width(125);
             m_w155 = GUILayout.Width(155);
             m_w288 = GUILayout.Width(288);
             m_w368 = GUILayout.Width(368);
             m_w420 = GUILayout.Width(420);
-            m_h28 = GUILayout.Height(28);
+            m_h30 = GUILayout.Height(30);
             m_h215 = GUILayout.Height(215);
 
             m_fbxDir = PlayerPrefs.GetString("GAW.fbxDir");
@@ -166,7 +166,7 @@ namespace ShibaInu
             GUILayout.Label("动画类型：", m_w60);
             GUI.skin.label.alignment = alignment;
 
-            m_aniType = EditorGUILayout.Popup(m_aniType, s_aniTypes, m_w120);
+            m_aniType = EditorGUILayout.Popup(m_aniType, s_aniTypes, m_w125);
             GUILayout.Label(m_aniType == 0
                 ? "给定播放速度等参数，自动切换帧实现动画播放"
                 : "只显示给定帧号对应的画面，不会自动切换帧");
@@ -190,12 +190,12 @@ namespace ShibaInu
             GUILayout.Space(10);
             m_tex2 = GUILayout.Toggle(m_tex2, "power of 2 texture sizes", m_w155);
             EditorGUI.BeginDisabledGroup(true);
-            GUILayout.Toggle(true, "generate material", m_w120);
+            GUILayout.Toggle(true, "generate materials", m_w125);
             EditorGUI.EndDisabledGroup();
 
-            GUILayout.BeginVertical(m_w75);
-            GUILayout.Space(-4);
-            if (GUILayout.Button("开始生成", m_h28))
+            GUILayout.BeginVertical(m_w70);
+            GUILayout.Space(-5);
+            if (GUILayout.Button("开始生成", m_h30))
             {
                 Export();
                 return;
