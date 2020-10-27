@@ -621,8 +621,8 @@ end
 
 --
 --- 向 Native(Java/OC) 发送消息
----@param action string
----@param msg string
+---@param action string @ 指令
+---@param msg string @ -可选- 指令附带的消息。默认：空字符串 ""
 function SendMessageToNative(action, msg)
-    LuaHelper.SendMessageToNative(action, msg)
+    LuaHelper.SendMessageToNative(action, msg or "")
 end
