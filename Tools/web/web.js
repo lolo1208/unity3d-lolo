@@ -14,6 +14,9 @@ var LOG_TYPE = {
     PROGRESS: 'progress'
 };
 
+// 在 Unity log 中需要标红的报错关键字
+var errorKeys = ["Error", "Exception", "Script asset"];
+
 
 var packid = getQueryVariable('packid');
 if (packid == null) {
@@ -106,16 +109,27 @@ function showLog(element) {
 
             // 结束打包后，将 Unity 日志中的 Error 和 Crash 标红
             if (!packaging && type == LOG_TYPE.UNITY) {
-                // Error
                 data = data.replace(/error/gi, 'Error');
                 data = data.replace(/\n/g, '<br/>');
-                var idx = data.indexOf("Error");
-                while (idx != -1) {
-                    startIdx = data.lastIndexOf('<br/>', idx);
-                    data = insert(data, startIdx + 5, '<span class="fail-color">');
-                    endIdx = data.indexOf('<br/>', idx);
-                    data = insert(data, endIdx, '</span>');
-                    idx = data.indexOf("Error", endIdx);
+                var isFristError = true;
+
+                for (var k = 0; k < errorKeys.length; k++) {
+                    var ek = errorKeys[k];
+                    var idx = data.indexOf(ek);
+                    while (idx != -1) {
+                        startIdx = data.lastIndexOf('<br/>', idx);
+                        data = insert(data, startIdx + 5, isFristError
+                            ? '<span id="fristError" class="fail-color">'
+                            : '<span class="fail-color">'
+                        );
+                        endIdx = data.indexOf('<br/>', idx);
+                        data = insert(data, endIdx, '</span>');
+                        idx = data.indexOf(ek, endIdx);
+                        if (isFristError) {
+                            isFristError = false;
+                            E('fristErrorBtn').style.visibility = 'visible';
+                        }
+                    }
                 }
 
                 // Crash
@@ -130,6 +144,9 @@ function showLog(element) {
             autoScrollDiv.style.visibility = "hidden";
             logContent.scrollTop = 0;
         }
+
+        if (packaging || type != LOG_TYPE.UNITY)
+            E('fristErrorBtn').style.visibility = 'hidden';
 
         logContent.innerHTML = type == LOG_TYPE.RES ? resTable : data.replace(/\n/g, '<br/>');
         scrollToBottom();

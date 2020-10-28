@@ -120,8 +120,7 @@ html, body {
     color: rgb(202, 60, 60);
 }
 
-#downloadBtn {
-    display: inline-block;
+.content-btn {
     visibility: hidden;
     position: absolute;
     top: -15px;
@@ -233,9 +232,9 @@ html, body {
     other
  */
 
-.blue-btn {
+.btn {
+    display: inline-block;
     color: #FFF;
-    background-color: #33C3F0;
     font-size: 11px;
     line-height: 35px;
     padding: 0 20px;
@@ -243,8 +242,16 @@ html, body {
     border-radius: 5px;
 }
 
-.blue-btn:hover {
-    background-color: #329eca;
+.btn:hover {
+    opacity: 0.85;
+}
+
+.blue-btn {
+    background-color: #108ee9;
+}
+
+.red-btn {
+    background-color: #ff5500;
 }
 
 a {
