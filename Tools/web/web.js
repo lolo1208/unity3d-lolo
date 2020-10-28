@@ -15,7 +15,7 @@ var LOG_TYPE = {
 };
 
 // 在 Unity log 中需要标红的报错关键字
-var errorKeys = ["Error", "Exception", "Script asset"];
+var failedKeys = ["Error", "Exception", "Script asset", "not supported"];
 
 
 var packid = getQueryVariable('packid');
@@ -107,29 +107,32 @@ function showLog(element) {
             autoScrollDiv.style.visibility = "visible";
             delayRefreshLog();
 
-            // 结束打包后，将 Unity 日志中的 Error 和 Crash 标红
+            // 结束打包后，将 Unity 日志中的报错信息标红
             if (!packaging && type == LOG_TYPE.UNITY) {
-                data = data.replace(/error/gi, 'Error');
-                data = data.replace(/\n/g, '<br/>');
-                var isFristError = true;
-
-                for (var k = 0; k < errorKeys.length; k++) {
-                    var ek = errorKeys[k];
-                    var idx = data.indexOf(ek);
+                data = data.replace(/error/gi, 'Error');// error 关键字大小写需要统一
+                data = data.replace(/\n/g, '<br/>');// <br/> 作为首尾索引字符
+                var failedList = [];
+                for (var k = 0; k < failedKeys.length; k++) {
+                    var fk = failedKeys[k];
+                    var idx = data.indexOf(fk);
                     while (idx != -1) {
                         startIdx = data.lastIndexOf('<br/>', idx);
-                        data = insert(data, startIdx + 5, isFristError
-                            ? '<span id="fristError" class="fail-color">'
-                            : '<span class="fail-color">'
+                        data = insert(data, startIdx + 5,
+                            '<span id="errorAnchor' + startIdx + '" class="fail-color">'
                         );
                         endIdx = data.indexOf('<br/>', idx);
                         data = insert(data, endIdx, '</span>');
-                        idx = data.indexOf(ek, endIdx);
-                        if (isFristError) {
-                            isFristError = false;
-                            E('fristErrorBtn').style.visibility = 'visible';
-                        }
+                        idx = data.indexOf(fk, endIdx);
+                        failedList.push(startIdx);
                     }
+                }
+
+                var failedCount = data.indexOf('Socket: connect failed') != -1 ? 1 : 0;
+                if (failedList.length > failedCount) {
+                    failedList.sort();
+                    var firstErrorBtn = E('firstErrorBtn');
+                    firstErrorBtn.style.visibility = 'visible';
+                    firstErrorBtn.href = '#errorAnchor' + failedList[failedCount];
                 }
 
                 // Crash
@@ -146,7 +149,7 @@ function showLog(element) {
         }
 
         if (packaging || type != LOG_TYPE.UNITY)
-            E('fristErrorBtn').style.visibility = 'hidden';
+            E('firstErrorBtn').style.visibility = 'hidden';
 
         logContent.innerHTML = type == LOG_TYPE.RES ? resTable : data.replace(/\n/g, '<br/>');
         scrollToBottom();
