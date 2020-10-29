@@ -107,8 +107,8 @@ function showLog(element) {
             autoScrollDiv.style.visibility = "visible";
             delayRefreshLog();
 
-            // 结束打包后，将 Unity 日志中的报错信息标红
-            if (!packaging && type == LOG_TYPE.UNITY) {
+            // 打包结束，并失败，将 Unity 日志中的报错信息标红
+            if (!packaging && !successful && type == LOG_TYPE.UNITY) {
                 data = data.replace(/error/gi, 'Error');// error 关键字大小写需要统一
                 data = data.replace(/\n/g, '<br/>');// <br/> 作为首尾索引字符
                 var failedList = [];
@@ -196,6 +196,7 @@ function insert(str, index, value) {
 // 右侧 - 打包进度
 
 var packaging = true;// 是否正在打包中
+var successful = false;// 打包是否成功
 var refreshProgressHandle = null;
 var barInfo = {};
 
@@ -235,7 +236,8 @@ function getProgress() {
         // 已全部完成
         if (data.status != 1) {
             packaging = false;
-            E('pTotalTitle').innerHTML = (data.status == 0)
+            successful = data.status == 0;
+            E('pTotalTitle').innerHTML = successful
                 ? '<b class="succ-color">打包成功</b>'
                 : '<b class="fail-color">打包出错</b>';
             showLog(E(curLogType));
