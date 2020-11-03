@@ -137,10 +137,10 @@ function showLog(element) {
 
                 // Crash
                 data = data.replace(/Crash!!!/gi, '<span class="fail-color">' +
-                    'Crash!!!<br/>' +
+                    'Crash！！！<br/>' +
                     'Crash 常发生在资源处理阶段，<br/>' +
                     '请往上看！！！<br/>' +
-                    '看日志最终停留在处理哪个资源，再围绕该资源分析原因！<br/>' +
+                    '看日志最终停留在处理哪个资源，再围绕该资源分析原因。<br/>' +
                     '<br/></span>');
             }
         } else {
