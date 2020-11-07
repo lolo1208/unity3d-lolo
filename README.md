@@ -26,9 +26,8 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   - `Assets/Res/Shaders/Shaders.shadervariants` 需要被预热的 Shader 变体。
     默认会在游戏启动时（launcher.lua 中）调用 [Lua]Res.PreloadShaders() 加载所有 Shader 和预热该文件中包含的变体。
   - `Templates/` 项目用到的模版和说明文档，以及其他杂项。
-  - `Templates/EmptyProjectAssets/` 如果你想打出一个不包含任何资源文件的 XCode 或 AndroidStudio 项目，可以将 Assets/Lua 和 Assets/Res 目录删除，然后将本目录下的内容拷贝到 Assets 目录下，再进行打包操作。
+  - `Templates/EmptyProject_Assets/` 如果你想打出一个不包含任何资源文件的 XCode 或 AndroidStudio 项目，可以将 Assets/Lua 和 Assets/Res 目录删除，然后将该目录下的内容拷贝到 Assets 目录下，再进行打包操作。
   - `Tools/` 工具目录，目前主要包含了打包相关工具。你可以在 Build 段落看到详解。
-  - `Tools/templates/cs/` 第三方的工具或类库，有需要可以拷贝至 Assets/Framework/3rdParty
   - `Tools/templates/java/` 框架包含的 Java 代码，打包 Andorid 时，会自动拷贝到 Android 项目中。
   - `Logs/Running.log` 运行时产生的日志。详细介绍可查看 Templates/Logger.docx
   - `LuaAPI/` 该目录内生成了提供给 Lua 访问的 C# 类，属性，方法等，
