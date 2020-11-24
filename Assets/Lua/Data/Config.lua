@@ -14,7 +14,7 @@ Config.language = "en-US"
 --=-------------------------------------------------------------=--
 
 
---=------------------[ C#LocalizationText 调用 ]------------------=--
+--=------------------[ C#LocalizationText 调用 ]-----------------=--
 --- 获取当前使用的语种地区代码
 function Config._GetCurrentLanguage()
     return Config.language
@@ -24,7 +24,7 @@ end
 function Config._GetLanguageByKey(key)
     return Language[key]
 end
---=---------------------------------------------------------------=--
+--=--------------------------------------------------------------=--
 
 
 
