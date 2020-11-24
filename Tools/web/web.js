@@ -33,6 +33,8 @@ var curLogType = LOG_TYPE.BUILD;
 var refreshLogHandle = null;
 var versionNum = null;
 var zipPath = null;
+var errorList = [];
+var errorIndex = -1;
 
 
 function delayRefreshLog() {
@@ -111,28 +113,33 @@ function showLog(element) {
             if (!packaging && !successful && type == LOG_TYPE.UNITY) {
                 data = data.replace(/error/gi, 'Error');// error 关键字大小写需要统一
                 data = data.replace(/\n/g, '<br/>');// <br/> 作为首尾索引字符
-                var failedList = [];
+                errorList = [];
                 for (var k = 0; k < failedKeys.length; k++) {
                     var fk = failedKeys[k];
                     var idx = data.indexOf(fk);
                     while (idx != -1) {
                         startIdx = data.lastIndexOf('<br/>', idx);
-                        data = insert(data, startIdx + 5,
-                            '<span id="errorAnchor' + startIdx + '" class="fail-color">'
-                        );
                         endIdx = data.indexOf('<br/>', idx);
-                        data = insert(data, endIdx, '</span>');
+                        var errStr = data.substring(startIdx, endIdx);
+                        if (errStr.indexOf('Socket: connect failed') == -1
+                            && errStr.indexOf('LuaException.cs') == -1
+                        ) {
+                            data = insert(data, startIdx + 5,
+                                '<span id="errorAnchor' + startIdx + '" class="fail-color">'
+                            );
+                            endIdx = data.indexOf('<br/>', idx);
+                            data = insert(data, endIdx, '</span>');
+                            errorList.push(startIdx);
+                        }
                         idx = data.indexOf(fk, endIdx);
-                        failedList.push(startIdx);
                     }
                 }
 
-                var failedCount = data.indexOf('Socket: connect failed') != -1 ? 1 : 0;
-                if (failedList.length > failedCount) {
-                    failedList.sort();
-                    var firstErrorBtn = E('firstErrorBtn');
-                    firstErrorBtn.style.visibility = 'visible';
-                    firstErrorBtn.href = '#errorAnchor' + failedList[failedCount];
+                if (errorList.length > 0) {
+                    errorList.sort();
+                    errorIndex = -1;
+                    E('nextErrorBtn').style.visibility = 'visible';
+                    nextError();
                 }
 
                 // Crash
@@ -149,7 +156,7 @@ function showLog(element) {
         }
 
         if (packaging || type != LOG_TYPE.UNITY)
-            E('firstErrorBtn').style.visibility = 'hidden';
+            E('nextErrorBtn').style.visibility = 'hidden';
 
         logContent.innerHTML = type == LOG_TYPE.RES ? resTable : data.replace(/\n/g, '<br/>');
         scrollToBottom();
@@ -182,6 +189,13 @@ function downloadZip() {
     iframe.id = 'download-iframe';
     iframe.src = zipPath;
     document.body.appendChild(iframe);
+}
+
+
+function nextError() {
+    if (++errorIndex == errorList.length)
+        errorIndex = 0;
+    E('nextErrorBtn').href = '#errorAnchor' + errorList[errorIndex];
 }
 
 
