@@ -38,6 +38,9 @@ function Test_ScrollList:OnInitialize()
     )
     hList:SetData(data:Clone())
 
+    vList:ScrollToItemIndex(40)
+    hList:ScrollToItemIndex(40)
+
 end
 
 return Test_ScrollList

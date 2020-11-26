@@ -372,7 +372,10 @@ function ScrollList:ScrollToItemIndex(itemIndex, duration, ease)
     local posMax = 1 + (viewportSize + itemGap) / (contentSize - viewportSize) -- 总宽或高（值大于 1）
     local posRatio = posMax / ceil(self._data:GetCount() / itemCount) -- 每行或列所占宽高比
     local position = posRatio * ceil(itemIndex / itemCount - 1) -- index 对应位置（0~posMax）
-    self:ScrollToPosition(1 - position, duration, ease)
+    if self._isVertical then
+        position = 1 - position
+    end
+    self:ScrollToPosition(position, duration, ease)
 end
 
 
