@@ -222,8 +222,12 @@ function BaseList:UpdateNow()
         end
 
         if list.isAutoItemGap then
-            self._horizontalGap = (cw - self._columnCount * item.itemWidth) / (self._columnCount - 1)
-            self._verticalGap = (ch - self._rowCount * item.itemHeight) / (self._rowCount - 1)
+            if self._columnCount > 1 then
+                self._horizontalGap = (cw - self._columnCount * item.itemWidth) / (self._columnCount - 1)
+            end
+            if self._rowCount > 1 then
+                self._verticalGap = (ch - self._rowCount * item.itemHeight) / (self._rowCount - 1)
+            end
         else
             self._horizontalGap = list.horizontalGap
             self._verticalGap = list.verticalGap

@@ -145,9 +145,13 @@ function ScrollList:UpdateNow()
         self._verticalGap = list.verticalGap
         if list.isAutoItemGap then
             if isVertical then
-                self._horizontalGap = (cw - self._columnCount * item.itemWidth) / (self._columnCount - 1)
+                if self._columnCount > 1 then
+                    self._horizontalGap = (cw - self._columnCount * item.itemWidth) / (self._columnCount - 1)
+                end
             else
-                self._verticalGap = (ch - self._rowCount * item.itemHeight) / (self._rowCount - 1)
+                if self._rowCount > 1 then
+                    self._verticalGap = (ch - self._rowCount * item.itemHeight) / (self._rowCount - 1)
+                end
             end
         end
 
