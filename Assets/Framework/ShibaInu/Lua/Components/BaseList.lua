@@ -234,7 +234,7 @@ function BaseList:UpdateNow()
         end
 
         self._itemPool[#self._itemPool + 1] = item
-        self:SyncPropertysToCS()
+        self:SyncPropertysToCS(false)
     end
 
     -- 根据数据显示（创建）子项
@@ -734,9 +734,12 @@ end
 
 --
 --- 属性有改变时，将 lua 中的属性同步到 C# 中
-function BaseList:SyncPropertysToCS()
+---@param update boolean @ 是否调用更新函数
+function BaseList:SyncPropertysToCS(update)
     self._list:SyncPropertys(self._itemPrefab, self._rowCount, self._columnCount, self._horizontalGap, self._verticalGap)
-    self:Update()
+    if update ~= false then
+        self:Update()
+    end
 end
 
 --

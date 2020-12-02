@@ -162,7 +162,7 @@ function ScrollList:UpdateNow()
         self._itemLayoutHeight = self._itemHeight + self._verticalGap
 
         self._itemPool[#self._itemPool + 1] = item
-        self:SyncPropertysToCS()
+        self:SyncPropertysToCS(false)
     end
 
 
@@ -445,9 +445,12 @@ end
 
 --
 --- 属性有改变时，将 lua 中的属性同步到 C# 中
-function ScrollList:SyncPropertysToCS()
+---@param update boolean @ 是否调用更新函数
+function ScrollList:SyncPropertysToCS(update)
     self._list:SyncPropertys(self._itemPrefab, self._rowCount, self._columnCount, self._horizontalGap, self._verticalGap, self._isVertical, self._viewportWidth, self._viewportHeight)
-    self:Update()
+    if update ~= false then
+        self:Update()
+    end
 end
 
 
