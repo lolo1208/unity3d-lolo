@@ -85,6 +85,13 @@ function GetComponent.Image(go)
     return go:GetComponent(_typeof_class(UnityEngine.UI.Image))
 end
 
+--- 获取 gameObject 下的 UnityEngine.UI.RawImage 组件
+---@param go UnityEngine.GameObject
+---@return UnityEngine.UI.RawImage
+function GetComponent.RawImage(go)
+    return go:GetComponent(_typeof_class(UnityEngine.UI.RawImage))
+end
+
 --- 获取 gameObject 下的 UnityEngine.UI.Text 组件
 ---@param go UnityEngine.GameObject
 ---@return UnityEngine.UI.Text

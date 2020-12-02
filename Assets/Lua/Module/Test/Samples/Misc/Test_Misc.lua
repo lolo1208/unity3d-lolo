@@ -34,6 +34,12 @@ function Test_Misc:OnInitialize()
     AddEventListener(vTra:Find("Medium").gameObject, PointerEvent.CLICK, self.ClickVibrateBtn, self, 0, Constants.VIBRATE_STYLE_MEDIUM)
     AddEventListener(vTra:Find("Heavy").gameObject, PointerEvent.CLICK, self.ClickVibrateBtn, self, 0, Constants.VIBRATE_STYLE_HEAVY)
     AddEventListener(vTra:Find("Continued").gameObject, PointerEvent.CLICK, self.ClickVibrateBtn, self, 0, Constants.VIBRATE_STYLE_CONTINUED)
+
+    -- Flow Light
+    local img = GetComponent.RawImage(self.transform:Find("FlowLight/Light").gameObject)
+    local mat = GameObject.Instantiate(img.material)
+    mat:SetFloat("_StartTime", TimeUtil.timeSinceLevelLoad)
+    img.material = mat
 end
 
 

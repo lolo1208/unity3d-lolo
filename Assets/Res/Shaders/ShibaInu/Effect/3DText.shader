@@ -3,7 +3,7 @@
 // 2018/8/22
 // Author LOLO
 //
-Shader "ShibaInu/UI/3DText"
+Shader "ShibaInu/Effect/3DText"
 {
 
 	Properties

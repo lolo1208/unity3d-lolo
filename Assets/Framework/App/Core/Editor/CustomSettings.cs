@@ -175,6 +175,7 @@ public static class CustomSettings
         _GT(typeof(Button)),
         _GT(typeof(Toggle)),
         _GT(typeof(Shadow)),
+        _GT(typeof(RawImage)),
 
 
         // .Net

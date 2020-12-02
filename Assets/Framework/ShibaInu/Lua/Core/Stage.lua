@@ -374,7 +374,7 @@ end
 
 --=----------------------------[ 全屏模态 ]----------------------------=--
 
-local _modalGO = CreateGameObject("[Modal]", Stage.uiCanvasTra).gameObject
+local _modalGO = CreateGameObject("[Modal]", Stage.uiCanvasTra)
 local _modalTra = _modalGO.transform
 local _modalImg = AddOrGetComponent(_modalGO, UnityEngine.UI.Image)
 _modalTra.anchorMin = Vector2.zero
