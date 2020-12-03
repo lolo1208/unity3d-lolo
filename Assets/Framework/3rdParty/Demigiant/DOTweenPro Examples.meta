@@ -9,12 +9,15 @@ labels:
 - VisualScripting
 - VisualEditor
 - iTween
-- LeanTween
 - DFTween
+- LeanTween
 - Ease
 - Easing
 - Shake
 - Punch
+- 2DToolkit
+- TextMeshPro
+- Text
 folderAsset: yes
 DefaultImporter:
   userData: 

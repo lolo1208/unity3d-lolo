@@ -434,7 +434,7 @@ public class UnityEngine_UI_GraphicWrap
 			UnityEngine.UI.Graphic obj = (UnityEngine.UI.Graphic)ToLua.CheckObject<UnityEngine.UI.Graphic>(L, 1);
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOFade(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOFade(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -453,7 +453,7 @@ public class UnityEngine_UI_GraphicWrap
 			UnityEngine.UI.Graphic obj = (UnityEngine.UI.Graphic)ToLua.CheckObject<UnityEngine.UI.Graphic>(L, 1);
 			UnityEngine.Color arg0 = ToLua.ToColor(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOColor(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOColor(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}

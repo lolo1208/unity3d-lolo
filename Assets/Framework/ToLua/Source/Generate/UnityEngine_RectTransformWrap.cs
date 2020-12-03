@@ -22,6 +22,9 @@ public class UnityEngine_RectTransformWrap
 		L.RegFunction("DOPivot", DOPivot);
 		L.RegFunction("DOAnchorMin", DOAnchorMin);
 		L.RegFunction("DOAnchorMax", DOAnchorMax);
+		L.RegFunction("DOAnchorPos3DZ", DOAnchorPos3DZ);
+		L.RegFunction("DOAnchorPos3DY", DOAnchorPos3DY);
+		L.RegFunction("DOAnchorPos3DX", DOAnchorPos3DX);
 		L.RegFunction("DOAnchorPos3D", DOAnchorPos3D);
 		L.RegFunction("DOAnchorPosY", DOAnchorPosY);
 		L.RegFunction("DOAnchorPosX", DOAnchorPosX);
@@ -435,7 +438,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOSizeDelta(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOSizeDelta(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -445,7 +448,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				DG.Tweening.Tweener o = obj.DOSizeDelta(arg0, arg1, arg2);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOSizeDelta(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -469,7 +472,7 @@ public class UnityEngine_RectTransformWrap
 			UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOPivotY(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOPivotY(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -488,7 +491,7 @@ public class UnityEngine_RectTransformWrap
 			UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOPivotX(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOPivotX(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -507,7 +510,7 @@ public class UnityEngine_RectTransformWrap
 			UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
 			UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOPivot(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOPivot(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -529,7 +532,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOAnchorMin(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorMin(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -539,7 +542,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				DG.Tweening.Tweener o = obj.DOAnchorMin(arg0, arg1, arg2);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorMin(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -566,7 +569,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOAnchorMax(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorMax(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -576,13 +579,124 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				DG.Tweening.Tweener o = obj.DOAnchorMax(arg0, arg1, arg2);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorMax(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.RectTransform.DOAnchorMax");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DOAnchorPos3DZ(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 3)
+			{
+				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPos3DZ(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPos3DZ(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.RectTransform.DOAnchorPos3DZ");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DOAnchorPos3DY(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 3)
+			{
+				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPos3DY(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPos3DY(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.RectTransform.DOAnchorPos3DY");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DOAnchorPos3DX(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 3)
+			{
+				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPos3DX(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPos3DX(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.RectTransform.DOAnchorPos3DX");
 			}
 		}
 		catch (Exception e)
@@ -603,7 +717,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
 				UnityEngine.Vector3 arg0 = ToLua.ToVector3(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOAnchorPos3D(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPos3D(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -613,7 +727,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.Vector3 arg0 = ToLua.ToVector3(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				DG.Tweening.Tweener o = obj.DOAnchorPos3D(arg0, arg1, arg2);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector3,UnityEngine.Vector3,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPos3D(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -640,7 +754,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
 				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOAnchorPosY(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPosY(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -650,7 +764,7 @@ public class UnityEngine_RectTransformWrap
 				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				DG.Tweening.Tweener o = obj.DOAnchorPosY(arg0, arg1, arg2);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPosY(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -677,7 +791,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
 				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOAnchorPosX(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPosX(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -687,7 +801,7 @@ public class UnityEngine_RectTransformWrap
 				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				DG.Tweening.Tweener o = obj.DOAnchorPosX(arg0, arg1, arg2);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPosX(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -714,7 +828,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.RectTransform obj = (UnityEngine.RectTransform)ToLua.CheckObject(L, 1, typeof(UnityEngine.RectTransform));
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOAnchorPos(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPos(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -724,7 +838,7 @@ public class UnityEngine_RectTransformWrap
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				DG.Tweening.Tweener o = obj.DOAnchorPos(arg0, arg1, arg2);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOAnchorPos(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}

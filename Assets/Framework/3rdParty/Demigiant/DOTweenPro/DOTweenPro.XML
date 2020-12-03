@@ -4,6 +4,11 @@
         <name>DOTweenPro</name>
     </assembly>
     <members>
+        <member name="M:DG.Tweening.Core.ABSAnimationComponent.DORestart">
+            <summary>
+            Restarts the tween
+            </summary>
+        </member>
         <member name="M:DG.Tweening.Core.ABSAnimationComponent.DORestart(System.Boolean)">
             <summary>
             Restarts the tween
@@ -14,6 +19,14 @@
         <member name="T:DG.Tweening.DOTweenPath">
             <summary>
             Attach this to a GameObject to create and assign a path to it
+            </summary>
+        </member>
+        <member name="E:DG.Tweening.DOTweenPath.OnReset">
+            <summary>Used internally by the editor</summary>
+        </member>
+        <member name="M:DG.Tweening.DOTweenPath.DORestart">
+            <summary>
+            Restarts the tween
             </summary>
         </member>
         <member name="M:DG.Tweening.DOTweenPath.DORestart(System.Boolean)">
@@ -33,33 +46,6 @@
             Tweens a Vector3 along a spiral.
             EndValue represents the direction of the spiral
             </summary>
-        </member>
-        <member name="T:DG.Tweening.ShortcutExtensionsPro">
-            <summary>
-            Methods that extend known Unity objects and allow to directly create and control tweens from their instances
-            </summary>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensionsPro.DOSpiral(UnityEngine.Transform,System.Single,System.Nullable{UnityEngine.Vector3},DG.Tweening.SpiralMode,System.Single,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Transform's localPosition in a spiral shape.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="duration">The duration of the tween</param>
-            <param name="axis">The axis around which the spiral will rotate</param>
-            <param name="mode">The type of spiral movement</param>
-            <param name="speed">Speed of the rotations</param>
-            <param name="frequency">Frequency of the rotation. Lower values lead to wider spirals</param>
-            <param name="depth">Indicates how much the tween should move along the spiral's axis</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
-        </member>
-        <member name="M:DG.Tweening.ShortcutExtensionsPro.DOSpiral(UnityEngine.Rigidbody,System.Single,System.Nullable{UnityEngine.Vector3},DG.Tweening.SpiralMode,System.Single,System.Single,System.Single,System.Boolean)">
-            <summary>Tweens a Rigidbody's position in a spiral shape.
-            Also stores the transform as the tween's target so it can be used for filtered operations</summary>
-            <param name="duration">The duration of the tween</param>
-            <param name="axis">The axis around which the spiral will rotate</param>
-            <param name="mode">The type of spiral movement</param>
-            <param name="speed">Speed of the rotations</param>
-            <param name="frequency">Frequency of the rotation. Lower values lead to wider spirals</param>
-            <param name="depth">Indicates how much the tween should move along the spiral's axis</param>
-            <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
         </member>
         <member name="T:DG.Tweening.SpiralMode">
             <summary>

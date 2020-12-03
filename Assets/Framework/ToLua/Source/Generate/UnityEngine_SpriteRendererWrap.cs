@@ -8,6 +8,10 @@ public class UnityEngine_SpriteRendererWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.SpriteRenderer), typeof(UnityEngine.Renderer));
+		L.RegFunction("DOBlendableColor", DOBlendableColor);
+		L.RegFunction("DOGradientColor", DOGradientColor);
+		L.RegFunction("DOFade", DOFade);
+		L.RegFunction("DOColor", DOColor);
 		L.RegFunction("New", _CreateUnityEngine_SpriteRenderer);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -41,6 +45,82 @@ public class UnityEngine_SpriteRendererWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to ctor method: UnityEngine.SpriteRenderer.New");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DOBlendableColor(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			UnityEngine.SpriteRenderer obj = (UnityEngine.SpriteRenderer)ToLua.CheckObject(L, 1, typeof(UnityEngine.SpriteRenderer));
+			UnityEngine.Color arg0 = ToLua.ToColor(L, 2);
+			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+			DG.Tweening.Tweener o = obj.DOBlendableColor(arg0, arg1);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DOGradientColor(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			UnityEngine.SpriteRenderer obj = (UnityEngine.SpriteRenderer)ToLua.CheckObject(L, 1, typeof(UnityEngine.SpriteRenderer));
+			UnityEngine.Gradient arg0 = (UnityEngine.Gradient)ToLua.CheckObject<UnityEngine.Gradient>(L, 2);
+			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+			DG.Tweening.Sequence o = obj.DOGradientColor(arg0, arg1);
+			ToLua.PushSealed(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DOFade(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			UnityEngine.SpriteRenderer obj = (UnityEngine.SpriteRenderer)ToLua.CheckObject(L, 1, typeof(UnityEngine.SpriteRenderer));
+			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOFade(arg0, arg1);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DOColor(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			UnityEngine.SpriteRenderer obj = (UnityEngine.SpriteRenderer)ToLua.CheckObject(L, 1, typeof(UnityEngine.SpriteRenderer));
+			UnityEngine.Color arg0 = ToLua.ToColor(L, 2);
+			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOColor(arg0, arg1);
+			ToLua.PushObject(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

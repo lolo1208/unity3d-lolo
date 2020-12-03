@@ -9,6 +9,7 @@ public class DG_Tweening_PathTypeWrap
 		L.BeginEnum(typeof(DG.Tweening.PathType));
 		L.RegVar("Linear", get_Linear, null);
 		L.RegVar("CatmullRom", get_CatmullRom, null);
+		L.RegVar("CubicBezier", get_CubicBezier, null);
 		L.RegFunction("IntToEnum", IntToEnum);
 		L.EndEnum();
 		TypeTraits<DG.Tweening.PathType>.Check = CheckType;
@@ -36,6 +37,13 @@ public class DG_Tweening_PathTypeWrap
 	static int get_CatmullRom(IntPtr L)
 	{
 		ToLua.Push(L, DG.Tweening.PathType.CatmullRom);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_CubicBezier(IntPtr L)
+	{
+		ToLua.Push(L, DG.Tweening.PathType.CubicBezier);
 		return 1;
 	}
 

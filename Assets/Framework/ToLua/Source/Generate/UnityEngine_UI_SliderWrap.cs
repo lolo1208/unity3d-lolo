@@ -250,7 +250,7 @@ public class UnityEngine_UI_SliderWrap
 				UnityEngine.UI.Slider obj = (UnityEngine.UI.Slider)ToLua.CheckObject<UnityEngine.UI.Slider>(L, 1);
 				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOValue(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOValue(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -260,7 +260,7 @@ public class UnityEngine_UI_SliderWrap
 				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
 				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
-				DG.Tweening.Tweener o = obj.DOValue(arg0, arg1, arg2);
+				DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOValue(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}

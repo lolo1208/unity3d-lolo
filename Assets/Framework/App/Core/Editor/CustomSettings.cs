@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Audio;
 using DG.Tweening;
 using DG.Tweening.Core;
+using DG.Tweening.Plugins.Core.PathCore;
 using DG.Tweening.Plugins.Options;
 using ShibaInu;
 using BindType = ToLuaMenu.BindType;
@@ -54,54 +56,67 @@ public static class CustomSettings
         _GT(typeof(LuaInjectionStation)),
         _GT(typeof(InjectType)),
         _GT(typeof(LuaInterface.Debugger)).SetNameSpace(null),
-        
 
-        // DoTween
-        _GT(typeof(Component)).AddExtendType (typeof(ShortcutExtensions)),
-        _GT(typeof(Transform)).AddExtendType (typeof(ShortcutExtensions)),
-        _GT(typeof(Light)).AddExtendType (typeof(ShortcutExtensions)),
-        _GT(typeof(Material)).AddExtendType (typeof(ShortcutExtensions)),
-        _GT(typeof(Rigidbody)).AddExtendType (typeof(ShortcutExtensions)),
+
+        #region DoTween
         _GT(typeof(Camera)).AddExtendType (typeof(ShortcutExtensions)),
-        _GT(typeof(AudioSource)).AddExtendType (typeof(ShortcutExtensions)),
-        _GT(typeof(LineRenderer)).AddExtendType(typeof(ShortcutExtensions)),
+        _GT(typeof(Light)).AddExtendType (typeof(ShortcutExtensions)),
+        _GT(typeof(LineRenderer)).AddExtendType (typeof(ShortcutExtensions)),
+        _GT(typeof(Material)).AddExtendType (typeof(ShortcutExtensions)),
+        _GT(typeof(Transform)).AddExtendType (typeof(ShortcutExtensions)),
+        _GT(typeof(Component)).AddExtendType (typeof(ShortcutExtensions)),
         _GT(typeof(TrailRenderer)).AddExtendType(typeof(ShortcutExtensions)),
-        _GT(typeof(RectTransform)).AddExtendType (typeof(ShortcutExtensions46)),
-        _GT(typeof(Graphic)).AddExtendType (typeof(ShortcutExtensions46)),
-        _GT(typeof(Image)).AddExtendType (typeof(ShortcutExtensions46)),
-        _GT(typeof(Text)).AddExtendType (typeof(ShortcutExtensions46)),
-        _GT(typeof(Slider)).AddExtendType (typeof(ShortcutExtensions46)),
-        _GT(typeof(CanvasGroup)).AddExtendType (typeof(ShortcutExtensions46)),
-        _GT(typeof(SpriteRenderer)).AddExtendType (typeof(ShortcutExtensions46)),
+
+        _GT(typeof(CanvasGroup)).AddExtendType (typeof(DOTweenModuleUI)),
+        _GT(typeof(Graphic)).AddExtendType (typeof(DOTweenModuleUI)),
+        _GT(typeof(Image)).AddExtendType (typeof(DOTweenModuleUI)),
+        _GT(typeof(LayoutElement)).AddExtendType (typeof(DOTweenModuleUI)),
+        _GT(typeof(Outline)).AddExtendType (typeof(DOTweenModuleUI)),
+        _GT(typeof(RectTransform)).AddExtendType (typeof(DOTweenModuleUI)),
+        _GT(typeof(ScrollRect)).AddExtendType (typeof(DOTweenModuleUI)),
+        _GT(typeof(Slider)).AddExtendType (typeof(DOTweenModuleUI)),
+        _GT(typeof(Text)).AddExtendType (typeof(DOTweenModuleUI)),
+
+        _GT(typeof(AudioSource)).AddExtendType (typeof(DOTweenModuleAudio)),
+        _GT(typeof(AudioMixer)).AddExtendType (typeof(DOTweenModuleAudio)),
+        _GT(typeof(Rigidbody)).AddExtendType (typeof(DOTweenModulePhysics)),
+        _GT(typeof(Rigidbody2D)).AddExtendType (typeof(DOTweenModulePhysics2D)),
+        _GT(typeof(SpriteRenderer)).AddExtendType (typeof(DOTweenModuleSprite)),
+
+        _GT(typeof(Tween)).SetBaseType (typeof(object)).AddExtendType (typeof(TweenExtensions)).AddExtendType (typeof(ShortcutExtensions)).AddExtendType (typeof(TweenSettingsExtensions)),
+        _GT(typeof(Sequence)).AddExtendType (typeof(TweenSettingsExtensions)),
+        _GT(typeof(Tweener)).AddExtendType (typeof(TweenSettingsExtensions)),
+
+        _GT(typeof(TweenerCore<string, string, StringOptions>)).SetWrapName ("DG_Tweening_Options_String").SetLibName ("DG_Tweening_Options_String"),
+        _GT(typeof(TweenerCore<float, float, FloatOptions>)).SetWrapName ("DG_Tweening_Options_Float").SetLibName ("DG_Tweening_Options_Float"),
+        _GT(typeof(TweenerCore<uint, uint, UintOptions>)).SetWrapName ("DG_Tweening_Options_Uint").SetLibName ("DG_Tweening_Options_Uint"),
+        _GT(typeof(TweenerCore<Color, Color, ColorOptions>)).SetWrapName ("DG_Tweening_Options_Color").SetLibName ("DG_Tweening_Options_Color"),
+        _GT(typeof(TweenerCore<Vector2, Vector2, VectorOptions>)).SetWrapName ("DG_Tweening_Options_Vector2").SetLibName ("DG_Tweening_Options_Vector2"),
+        _GT(typeof(TweenerCore<Vector3, Vector3, VectorOptions>)).SetWrapName ("DG_Tweening_Options_Vector3").SetLibName ("DG_Tweening_Options_Vector3"),
+        _GT(typeof(TweenerCore<Vector3, Vector3[], Vector3ArrayOptions>)).SetWrapName ("DG_Tweening_Options_Vector3Array").SetLibName ("DG_Tweening_Options_Vector3Array"),
+        _GT(typeof(TweenerCore<Vector3, Path, PathOptions>)).SetWrapName ("DG_Tweening_Options_Path").SetLibName ("DG_Tweening_Options_Path"),
+        _GT(typeof(TweenerCore<Quaternion, Vector3, QuaternionOptions>)).SetWrapName ("DG_Tweening_Options_Quaternion").SetLibName ("DG_Tweening_Options_Quaternion"),
+        _GT(typeof(TweenerCore<Rect, Rect, RectOptions>)).SetWrapName ("DG_Tweening_Options_Rect").SetLibName ("DG_Tweening_Options_Rect"),
 
         _GT(typeof(DOTween)),
         _GT(typeof(DOVirtual)),
         _GT(typeof(EaseFactory)),
         _GT(typeof(TweenParams)),
         _GT(typeof(ABSSequentiable)),
+        _GT(typeof(DOTweenAnimation)),
 
         _GT(typeof(Ease)),
         _GT(typeof(LoopType)),
         _GT(typeof(PathMode)),
         _GT(typeof(PathType)),
-        _GT(typeof(RotateMode)),
         _GT(typeof(AutoPlay)),
-        _GT(typeof(AxisConstraint)),
-        _GT(typeof(LogBehaviour)),
-        _GT(typeof(ScrambleMode)),
         _GT(typeof(TweenType)),
         _GT(typeof(UpdateType)),
-
-        _GT(typeof(Tween)).SetBaseType (typeof(object)).AddExtendType (typeof(TweenExtensions)),
-        _GT(typeof(Sequence)).AddExtendType (typeof(TweenSettingsExtensions)),
-        _GT(typeof(Tweener)).AddExtendType (typeof(TweenSettingsExtensions)),
-
-        _GT(typeof(TweenerCore<string, string, StringOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_String").SetLibName ("DG_Tweening_Plugins_Options_String"),
-        _GT(typeof(TweenerCore<float, float, FloatOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Float").SetLibName ("DG_Tweening_Plugins_Options_Float"),
-        _GT(typeof(TweenerCore<uint, uint, UintOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Uint").SetLibName ("DG_Tweening_Plugins_Options_Uint"),
-        _GT(typeof(TweenerCore<Vector3, Vector3, VectorOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Vector").SetLibName ("DG_Tweening_Plugins_Options_Vector"),
-        _GT(typeof(TweenerCore<Quaternion, Vector3, QuaternionOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Quaternion").SetLibName ("DG_Tweening_Plugins_Options_Quaternion"),
-        _GT(typeof(TweenerCore<Color, Color, ColorOptions>)).SetWrapName ("DG_Tweening_Plugins_Options_Color").SetLibName ("DG_Tweening_Plugins_Options_Color"),
+        _GT(typeof(RotateMode)),
+        _GT(typeof(LogBehaviour)),
+        _GT(typeof(ScrambleMode)),
+        _GT(typeof(AxisConstraint)),
+        #endregion
 
 
         // UnityEngine
@@ -170,7 +185,6 @@ public static class CustomSettings
 
         _GT(typeof(PointerEventData)),
 
-        _GT(typeof(ScrollRect)),
         _GT(typeof(InputField)),
         _GT(typeof(Button)),
         _GT(typeof(Toggle)),

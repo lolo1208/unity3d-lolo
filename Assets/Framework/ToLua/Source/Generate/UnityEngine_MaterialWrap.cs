@@ -1727,12 +1727,22 @@ public class UnityEngine_MaterialWrap
 				ToLua.PushObject(L, o);
 				return 1;
 			}
-			else if (count == 4)
+			else if (count == 4 && TypeChecker.CheckTypes<string, float>(L, 3))
 			{
 				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
 				UnityEngine.Color arg0 = ToLua.ToColor(L, 2);
-				string arg1 = ToLua.CheckString(L, 3);
-				float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
+				string arg1 = ToLua.ToString(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
+				DG.Tweening.Tweener o = obj.DOBlendableColor(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<int, float>(L, 3))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				UnityEngine.Color arg0 = ToLua.ToColor(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
 				DG.Tweening.Tweener o = obj.DOBlendableColor(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
@@ -1753,14 +1763,32 @@ public class UnityEngine_MaterialWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 4);
-			UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
-			UnityEngine.Vector4 arg0 = ToLua.ToVector4(L, 2);
-			string arg1 = ToLua.CheckString(L, 3);
-			float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
-			DG.Tweening.Tweener o = obj.DOVector(arg0, arg1, arg2);
-			ToLua.PushObject(L, o);
-			return 1;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 4 && TypeChecker.CheckTypes<int, float>(L, 3))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				UnityEngine.Vector4 arg0 = ToLua.ToVector4(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector4,UnityEngine.Vector4,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOVector(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<string, float>(L, 3))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				UnityEngine.Vector4 arg0 = ToLua.ToVector4(L, 2);
+				string arg1 = ToLua.ToString(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector4,UnityEngine.Vector4,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOVector(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Material.DOVector");
+			}
 		}
 		catch (Exception e)
 		{
@@ -1780,7 +1808,7 @@ public class UnityEngine_MaterialWrap
 				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOTiling(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOTiling(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -1790,7 +1818,7 @@ public class UnityEngine_MaterialWrap
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				string arg1 = ToLua.CheckString(L, 3);
 				float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
-				DG.Tweening.Tweener o = obj.DOTiling(arg0, arg1, arg2);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOTiling(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -1817,7 +1845,7 @@ public class UnityEngine_MaterialWrap
 				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOOffset(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOOffset(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -1827,7 +1855,7 @@ public class UnityEngine_MaterialWrap
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				string arg1 = ToLua.CheckString(L, 3);
 				float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
-				DG.Tweening.Tweener o = obj.DOOffset(arg0, arg1, arg2);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Vector2,UnityEngine.Vector2,DG.Tweening.Plugins.Options.VectorOptions> o = obj.DOOffset(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -1847,14 +1875,32 @@ public class UnityEngine_MaterialWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 4);
-			UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
-			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
-			string arg1 = ToLua.CheckString(L, 3);
-			float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
-			DG.Tweening.Tweener o = obj.DOFloat(arg0, arg1, arg2);
-			ToLua.PushObject(L, o);
-			return 1;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 4 && TypeChecker.CheckTypes<int, float>(L, 3))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
+				DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOFloat(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<string, float>(L, 3))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				string arg1 = ToLua.ToString(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
+				DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOFloat(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Material.DOFloat");
+			}
 		}
 		catch (Exception e)
 		{
@@ -1874,17 +1920,27 @@ public class UnityEngine_MaterialWrap
 				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
 				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOFade(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOFade(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
-			else if (count == 4)
+			else if (count == 4 && TypeChecker.CheckTypes<string, float>(L, 3))
 			{
 				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
 				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
-				string arg1 = ToLua.CheckString(L, 3);
-				float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
-				DG.Tweening.Tweener o = obj.DOFade(arg0, arg1, arg2);
+				string arg1 = ToLua.ToString(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOFade(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<int, float>(L, 3))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOFade(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
@@ -1911,17 +1967,27 @@ public class UnityEngine_MaterialWrap
 				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
 				UnityEngine.Color arg0 = ToLua.ToColor(L, 2);
 				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-				DG.Tweening.Tweener o = obj.DOColor(arg0, arg1);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOColor(arg0, arg1);
 				ToLua.PushObject(L, o);
 				return 1;
 			}
-			else if (count == 4)
+			else if (count == 4 && TypeChecker.CheckTypes<string, float>(L, 3))
 			{
 				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
 				UnityEngine.Color arg0 = ToLua.ToColor(L, 2);
-				string arg1 = ToLua.CheckString(L, 3);
-				float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
-				DG.Tweening.Tweener o = obj.DOColor(arg0, arg1, arg2);
+				string arg1 = ToLua.ToString(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOColor(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<int, float>(L, 3))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				UnityEngine.Color arg0 = ToLua.ToColor(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
+				DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOColor(arg0, arg1, arg2);
 				ToLua.PushObject(L, o);
 				return 1;
 			}

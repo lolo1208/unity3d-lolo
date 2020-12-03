@@ -21,6 +21,7 @@ public class DG_Tweening_TweenWrap
 		L.RegFunction("ElapsedPercentage", ElapsedPercentage);
 		L.RegFunction("Elapsed", Elapsed);
 		L.RegFunction("Duration", Duration);
+		L.RegFunction("ElapsedDelay", ElapsedDelay);
 		L.RegFunction("Delay", Delay);
 		L.RegFunction("CompletedLoops", CompletedLoops);
 		L.RegFunction("WaitForStart", WaitForStart);
@@ -43,14 +44,52 @@ public class DG_Tweening_TweenWrap
 		L.RegFunction("ForceInit", ForceInit);
 		L.RegFunction("Flip", Flip);
 		L.RegFunction("Complete", Complete);
+		L.RegFunction("DOTimeScale", DOTimeScale);
+		L.RegFunction("SetSpeedBased", SetSpeedBased);
+		L.RegFunction("SetRelative", SetRelative);
+		L.RegFunction("SetDelay", SetDelay);
+		L.RegFunction("SetAs", SetAs);
+		L.RegFunction("OnWaypointChange", OnWaypointChange);
+		L.RegFunction("OnKill", OnKill);
+		L.RegFunction("OnComplete", OnComplete);
+		L.RegFunction("OnStepComplete", OnStepComplete);
+		L.RegFunction("OnUpdate", OnUpdate);
+		L.RegFunction("OnRewind", OnRewind);
+		L.RegFunction("OnPause", OnPause);
+		L.RegFunction("OnPlay", OnPlay);
+		L.RegFunction("OnStart", OnStart);
+		L.RegFunction("SetUpdate", SetUpdate);
+		L.RegFunction("SetRecyclable", SetRecyclable);
+		L.RegFunction("SetEase", SetEase);
+		L.RegFunction("SetLoops", SetLoops);
+		L.RegFunction("SetTarget", SetTarget);
+		L.RegFunction("SetLink", SetLink);
+		L.RegFunction("SetId", SetId);
+		L.RegFunction("SetAutoKill", SetAutoKill);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("timeScale", get_timeScale, set_timeScale);
 		L.RegVar("isBackwards", get_isBackwards, set_isBackwards);
 		L.RegVar("id", get_id, set_id);
+		L.RegVar("stringId", get_stringId, set_stringId);
+		L.RegVar("intId", get_intId, set_intId);
 		L.RegVar("target", get_target, set_target);
+		L.RegVar("onPlay", get_onPlay, set_onPlay);
+		L.RegVar("onPause", get_onPause, set_onPause);
+		L.RegVar("onRewind", get_onRewind, set_onRewind);
+		L.RegVar("onUpdate", get_onUpdate, set_onUpdate);
+		L.RegVar("onStepComplete", get_onStepComplete, set_onStepComplete);
+		L.RegVar("onComplete", get_onComplete, set_onComplete);
+		L.RegVar("onKill", get_onKill, set_onKill);
+		L.RegVar("onWaypointChange", get_onWaypointChange, set_onWaypointChange);
 		L.RegVar("easeOvershootOrAmplitude", get_easeOvershootOrAmplitude, set_easeOvershootOrAmplitude);
 		L.RegVar("easePeriod", get_easePeriod, set_easePeriod);
+		L.RegVar("debugTargetId", get_debugTargetId, set_debugTargetId);
+		L.RegVar("isRelative", get_isRelative, null);
+		L.RegVar("active", get_active, null);
 		L.RegVar("fullPosition", get_fullPosition, set_fullPosition);
+		L.RegVar("hasLoops", get_hasLoops, null);
+		L.RegVar("playedOnce", get_playedOnce, null);
+		L.RegVar("position", get_position, null);
 		L.EndClass();
 	}
 
@@ -333,6 +372,23 @@ public class DG_Tweening_TweenWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.Duration");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ElapsedDelay(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			float o = obj.ElapsedDelay();
+			LuaDLL.lua_pushnumber(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -807,6 +863,622 @@ public class DG_Tweening_TweenWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DOTimeScale(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+			DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOTimeScale(arg0, arg1);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetSpeedBased(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				DG.Tweening.Tween o = obj.SetSpeedBased();
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				DG.Tweening.Tween o = obj.SetSpeedBased(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetSpeedBased");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetRelative(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				DG.Tweening.Tween o = obj.SetRelative();
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				DG.Tweening.Tween o = obj.SetRelative(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetRelative");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetDelay(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				DG.Tweening.Tween o = obj.SetDelay(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				DG.Tweening.Tween o = obj.SetDelay(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetDelay");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetAs(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, DG.Tweening.TweenParams>(L, 1))
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.ToObject(L, 1);
+				DG.Tweening.TweenParams arg0 = (DG.Tweening.TweenParams)ToLua.ToObject(L, 2);
+				DG.Tweening.Tween o = obj.SetAs(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, DG.Tweening.Tween>(L, 1))
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.ToObject(L, 1);
+				DG.Tweening.Tween arg0 = (DG.Tweening.Tween)ToLua.ToObject(L, 2);
+				DG.Tweening.Tween o = obj.SetAs(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetAs");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OnWaypointChange(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			DG.Tweening.TweenCallback<int> arg0 = (DG.Tweening.TweenCallback<int>)ToLua.CheckDelegate<DG.Tweening.TweenCallback<int>>(L, 2);
+			DG.Tweening.Tween o = obj.OnWaypointChange(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OnKill(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			DG.Tweening.Tween o = obj.OnKill(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OnComplete(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			DG.Tweening.Tween o = obj.OnComplete(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OnStepComplete(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			DG.Tweening.Tween o = obj.OnStepComplete(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OnUpdate(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			DG.Tweening.Tween o = obj.OnUpdate(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OnRewind(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			DG.Tweening.Tween o = obj.OnRewind(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OnPause(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			DG.Tweening.Tween o = obj.OnPause(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OnPlay(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			DG.Tweening.Tween o = obj.OnPlay(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OnStart(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			DG.Tweening.Tween o = obj.OnStart(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetUpdate(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, DG.Tweening.UpdateType>(L, 1))
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.ToObject(L, 1);
+				DG.Tweening.UpdateType arg0 = (DG.Tweening.UpdateType)ToLua.ToObject(L, 2);
+				DG.Tweening.Tween o = obj.SetUpdate(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, bool>(L, 1))
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.ToObject(L, 1);
+				bool arg0 = LuaDLL.lua_toboolean(L, 2);
+				DG.Tweening.Tween o = obj.SetUpdate(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				DG.Tweening.UpdateType arg0 = (DG.Tweening.UpdateType)ToLua.CheckObject(L, 2, typeof(DG.Tweening.UpdateType));
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				DG.Tweening.Tween o = obj.SetUpdate(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetUpdate");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetRecyclable(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				DG.Tweening.Tween o = obj.SetRecyclable();
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				DG.Tweening.Tween o = obj.SetRecyclable(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetRecyclable");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetEase(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, DG.Tweening.EaseFunction>(L, 1))
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.ToObject(L, 1);
+				DG.Tweening.EaseFunction arg0 = (DG.Tweening.EaseFunction)ToLua.ToObject(L, 2);
+				DG.Tweening.Tween o = obj.SetEase(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, UnityEngine.AnimationCurve>(L, 1))
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.ToObject(L, 1);
+				UnityEngine.AnimationCurve arg0 = (UnityEngine.AnimationCurve)ToLua.ToObject(L, 2);
+				DG.Tweening.Tween o = obj.SetEase(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, DG.Tweening.Ease>(L, 1))
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.ToObject(L, 1);
+				DG.Tweening.Ease arg0 = (DG.Tweening.Ease)ToLua.ToObject(L, 2);
+				DG.Tweening.Tween o = obj.SetEase(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				DG.Tweening.Ease arg0 = (DG.Tweening.Ease)ToLua.CheckObject(L, 2, typeof(DG.Tweening.Ease));
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+				DG.Tweening.Tween o = obj.SetEase(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 4)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				DG.Tweening.Ease arg0 = (DG.Tweening.Ease)ToLua.CheckObject(L, 2, typeof(DG.Tweening.Ease));
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+				float arg2 = (float)LuaDLL.luaL_checknumber(L, 4);
+				DG.Tweening.Tween o = obj.SetEase(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetEase");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetLoops(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				DG.Tweening.Tween o = obj.SetLoops(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				DG.Tweening.LoopType arg1 = (DG.Tweening.LoopType)ToLua.CheckObject(L, 3, typeof(DG.Tweening.LoopType));
+				DG.Tweening.Tween o = obj.SetLoops(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetLoops");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetTarget(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+			object arg0 = ToLua.ToVarObject(L, 2);
+			DG.Tweening.Tween o = obj.SetTarget(arg0);
+			ToLua.PushObject(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetLink(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 2, typeof(UnityEngine.GameObject));
+				DG.Tweening.Tween o = obj.SetLink(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 2, typeof(UnityEngine.GameObject));
+				DG.Tweening.LinkBehaviour arg1 = (DG.Tweening.LinkBehaviour)ToLua.CheckObject(L, 3, typeof(DG.Tweening.LinkBehaviour));
+				DG.Tweening.Tween o = obj.SetLink(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetLink");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetId(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, int>(L, 1))
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.ToObject(L, 1);
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				DG.Tweening.Tween o = obj.SetId(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, string>(L, 1))
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.ToObject(L, 1);
+				string arg0 = ToLua.ToString(L, 2);
+				DG.Tweening.Tween o = obj.SetId(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, object>(L, 1))
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.ToObject(L, 1);
+				object arg0 = ToLua.ToVarObject(L, 2);
+				DG.Tweening.Tween o = obj.SetId(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetId");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetAutoKill(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				DG.Tweening.Tween o = obj.SetAutoKill();
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				DG.Tweening.Tween obj = (DG.Tweening.Tween)ToLua.CheckObject<DG.Tweening.Tween>(L, 1);
+				bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+				DG.Tweening.Tween o = obj.SetAutoKill(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Tween.SetAutoKill");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_timeScale(IntPtr L)
 	{
 		object o = null;
@@ -864,6 +1536,44 @@ public class DG_Tweening_TweenWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_stringId(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			string ret = obj.stringId;
+			LuaDLL.lua_pushstring(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index stringId on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_intId(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			int ret = obj.intId;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index intId on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_target(IntPtr L)
 	{
 		object o = null;
@@ -879,6 +1589,158 @@ public class DG_Tweening_TweenWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index target on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_onPlay(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback ret = obj.onPlay;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onPlay on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_onPause(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback ret = obj.onPause;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onPause on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_onRewind(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback ret = obj.onRewind;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onRewind on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_onUpdate(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback ret = obj.onUpdate;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onUpdate on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_onStepComplete(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback ret = obj.onStepComplete;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onStepComplete on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_onComplete(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback ret = obj.onComplete;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onComplete on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_onKill(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback ret = obj.onKill;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onKill on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_onWaypointChange(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback<int> ret = obj.onWaypointChange;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onWaypointChange on a nil value");
 		}
 	}
 
@@ -921,6 +1783,63 @@ public class DG_Tweening_TweenWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_debugTargetId(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			string ret = obj.debugTargetId;
+			LuaDLL.lua_pushstring(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index debugTargetId on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_isRelative(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			bool ret = obj.isRelative;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index isRelative on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_active(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			bool ret = obj.active;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index active on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_fullPosition(IntPtr L)
 	{
 		object o = null;
@@ -936,6 +1855,63 @@ public class DG_Tweening_TweenWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index fullPosition on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_hasLoops(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			bool ret = obj.hasLoops;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index hasLoops on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_playedOnce(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			bool ret = obj.playedOnce;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index playedOnce on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_position(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			float ret = obj.position;
+			LuaDLL.lua_pushnumber(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index position on a nil value");
 		}
 	}
 
@@ -997,6 +1973,44 @@ public class DG_Tweening_TweenWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_stringId(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			string arg0 = ToLua.CheckString(L, 2);
+			obj.stringId = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index stringId on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_intId(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			obj.intId = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index intId on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_target(IntPtr L)
 	{
 		object o = null;
@@ -1012,6 +2026,158 @@ public class DG_Tweening_TweenWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index target on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_onPlay(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			obj.onPlay = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onPlay on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_onPause(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			obj.onPause = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onPause on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_onRewind(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			obj.onRewind = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onRewind on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_onUpdate(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			obj.onUpdate = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onUpdate on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_onStepComplete(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			obj.onStepComplete = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onStepComplete on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_onComplete(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			obj.onComplete = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onComplete on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_onKill(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback arg0 = (DG.Tweening.TweenCallback)ToLua.CheckDelegate<DG.Tweening.TweenCallback>(L, 2);
+			obj.onKill = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onKill on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_onWaypointChange(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			DG.Tweening.TweenCallback<int> arg0 = (DG.Tweening.TweenCallback<int>)ToLua.CheckDelegate<DG.Tweening.TweenCallback<int>>(L, 2);
+			obj.onWaypointChange = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index onWaypointChange on a nil value");
 		}
 	}
 
@@ -1050,6 +2216,25 @@ public class DG_Tweening_TweenWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index easePeriod on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_debugTargetId(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			DG.Tweening.Tween obj = (DG.Tweening.Tween)o;
+			string arg0 = ToLua.CheckString(L, 2);
+			obj.debugTargetId = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index debugTargetId on a nil value");
 		}
 	}
 

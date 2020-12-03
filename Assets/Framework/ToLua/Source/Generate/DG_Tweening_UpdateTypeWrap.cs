@@ -10,6 +10,7 @@ public class DG_Tweening_UpdateTypeWrap
 		L.RegVar("Normal", get_Normal, null);
 		L.RegVar("Late", get_Late, null);
 		L.RegVar("Fixed", get_Fixed, null);
+		L.RegVar("Manual", get_Manual, null);
 		L.RegFunction("IntToEnum", IntToEnum);
 		L.EndEnum();
 		TypeTraits<DG.Tweening.UpdateType>.Check = CheckType;
@@ -44,6 +45,13 @@ public class DG_Tweening_UpdateTypeWrap
 	static int get_Fixed(IntPtr L)
 	{
 		ToLua.Push(L, DG.Tweening.UpdateType.Fixed);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_Manual(IntPtr L)
+	{
+		ToLua.Push(L, DG.Tweening.UpdateType.Manual);
 		return 1;
 	}
 

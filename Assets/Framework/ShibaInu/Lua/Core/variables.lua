@@ -69,7 +69,7 @@ DOTween_Enum = {
     ---@type DG.Tweening.UpdateType
     UpdateType = DG.Tweening.UpdateType,
 }
-TweenParams = DG.Tweening.TweenParams ---@type DG.Tweening.TweenParams
+DOTweenParams = DG.Tweening.TweenParams ---@type DG.Tweening.TweenParams
 DOTween.defaultEaseType = DOTween_Enum.Ease.Linear
 
 

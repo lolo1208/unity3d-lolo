@@ -574,7 +574,7 @@ public class UnityEngine_LightWrap
 			UnityEngine.Light obj = (UnityEngine.Light)ToLua.CheckObject(L, 1, typeof(UnityEngine.Light));
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOShadowStrength(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOShadowStrength(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -593,7 +593,7 @@ public class UnityEngine_LightWrap
 			UnityEngine.Light obj = (UnityEngine.Light)ToLua.CheckObject(L, 1, typeof(UnityEngine.Light));
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOIntensity(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOIntensity(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -612,7 +612,7 @@ public class UnityEngine_LightWrap
 			UnityEngine.Light obj = (UnityEngine.Light)ToLua.CheckObject(L, 1, typeof(UnityEngine.Light));
 			UnityEngine.Color arg0 = ToLua.ToColor(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOColor(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOColor(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}

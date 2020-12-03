@@ -1616,7 +1616,7 @@ public class UnityEngine_CameraWrap
 			UnityEngine.Camera obj = (UnityEngine.Camera)ToLua.CheckObject(L, 1, typeof(UnityEngine.Camera));
 			UnityEngine.Rect arg0 = StackTraits<UnityEngine.Rect>.Check(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DORect(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Rect,UnityEngine.Rect,DG.Tweening.Plugins.Options.RectOptions> o = obj.DORect(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -1635,7 +1635,7 @@ public class UnityEngine_CameraWrap
 			UnityEngine.Camera obj = (UnityEngine.Camera)ToLua.CheckObject(L, 1, typeof(UnityEngine.Camera));
 			UnityEngine.Rect arg0 = StackTraits<UnityEngine.Rect>.Check(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOPixelRect(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Rect,UnityEngine.Rect,DG.Tweening.Plugins.Options.RectOptions> o = obj.DOPixelRect(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -1654,7 +1654,7 @@ public class UnityEngine_CameraWrap
 			UnityEngine.Camera obj = (UnityEngine.Camera)ToLua.CheckObject(L, 1, typeof(UnityEngine.Camera));
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOOrthoSize(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOOrthoSize(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -1673,7 +1673,7 @@ public class UnityEngine_CameraWrap
 			UnityEngine.Camera obj = (UnityEngine.Camera)ToLua.CheckObject(L, 1, typeof(UnityEngine.Camera));
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DONearClipPlane(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DONearClipPlane(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -1692,7 +1692,7 @@ public class UnityEngine_CameraWrap
 			UnityEngine.Camera obj = (UnityEngine.Camera)ToLua.CheckObject(L, 1, typeof(UnityEngine.Camera));
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOFieldOfView(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOFieldOfView(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -1711,7 +1711,7 @@ public class UnityEngine_CameraWrap
 			UnityEngine.Camera obj = (UnityEngine.Camera)ToLua.CheckObject(L, 1, typeof(UnityEngine.Camera));
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOFarClipPlane(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOFarClipPlane(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -1730,7 +1730,7 @@ public class UnityEngine_CameraWrap
 			UnityEngine.Camera obj = (UnityEngine.Camera)ToLua.CheckObject(L, 1, typeof(UnityEngine.Camera));
 			UnityEngine.Color arg0 = ToLua.ToColor(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOColor(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<UnityEngine.Color,UnityEngine.Color,DG.Tweening.Plugins.Options.ColorOptions> o = obj.DOColor(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}
@@ -1749,7 +1749,7 @@ public class UnityEngine_CameraWrap
 			UnityEngine.Camera obj = (UnityEngine.Camera)ToLua.CheckObject(L, 1, typeof(UnityEngine.Camera));
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOAspect(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOAspect(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}

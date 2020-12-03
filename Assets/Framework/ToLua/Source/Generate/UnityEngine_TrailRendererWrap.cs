@@ -544,7 +544,7 @@ public class UnityEngine_TrailRendererWrap
 			UnityEngine.TrailRenderer obj = (UnityEngine.TrailRenderer)ToLua.CheckObject(L, 1, typeof(UnityEngine.TrailRenderer));
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
-			DG.Tweening.Tweener o = obj.DOTime(arg0, arg1);
+			DG.Tweening.Core.TweenerCore<float,float,DG.Tweening.Plugins.Options.FloatOptions> o = obj.DOTime(arg0, arg1);
 			ToLua.PushObject(L, o);
 			return 1;
 		}

@@ -35,6 +35,7 @@ public class DG_Tweening_SequenceWrap
 		L.RegFunction("SetEase", SetEase);
 		L.RegFunction("SetLoops", SetLoops);
 		L.RegFunction("SetTarget", SetTarget);
+		L.RegFunction("SetLink", SetLink);
 		L.RegFunction("SetId", SetId);
 		L.RegFunction("SetAutoKill", SetAutoKill);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -112,12 +113,29 @@ public class DG_Tweening_SequenceWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			DG.Tweening.Sequence obj = (DG.Tweening.Sequence)ToLua.CheckObject(L, 1, typeof(DG.Tweening.Sequence));
-			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
-			DG.Tweening.Tween o = obj.SetDelay(arg0);
-			ToLua.PushObject(L, o);
-			return 1;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DG.Tweening.Sequence obj = (DG.Tweening.Sequence)ToLua.CheckObject(L, 1, typeof(DG.Tweening.Sequence));
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				DG.Tweening.Tween o = obj.SetDelay(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				DG.Tweening.Sequence obj = (DG.Tweening.Sequence)ToLua.CheckObject(L, 1, typeof(DG.Tweening.Sequence));
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				DG.Tweening.Tween o = obj.SetDelay(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Sequence.SetDelay");
+			}
 		}
 		catch (Exception e)
 		{
@@ -676,16 +694,75 @@ public class DG_Tweening_SequenceWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetLink(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				DG.Tweening.Sequence obj = (DG.Tweening.Sequence)ToLua.CheckObject(L, 1, typeof(DG.Tweening.Sequence));
+				UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 2, typeof(UnityEngine.GameObject));
+				DG.Tweening.Tween o = obj.SetLink(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				DG.Tweening.Sequence obj = (DG.Tweening.Sequence)ToLua.CheckObject(L, 1, typeof(DG.Tweening.Sequence));
+				UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 2, typeof(UnityEngine.GameObject));
+				DG.Tweening.LinkBehaviour arg1 = (DG.Tweening.LinkBehaviour)ToLua.CheckObject(L, 3, typeof(DG.Tweening.LinkBehaviour));
+				DG.Tweening.Tween o = obj.SetLink(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Sequence.SetLink");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int SetId(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			DG.Tweening.Sequence obj = (DG.Tweening.Sequence)ToLua.CheckObject(L, 1, typeof(DG.Tweening.Sequence));
-			object arg0 = ToLua.ToVarObject(L, 2);
-			DG.Tweening.Tween o = obj.SetId(arg0);
-			ToLua.PushObject(L, o);
-			return 1;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, int>(L, 1))
+			{
+				DG.Tweening.Sequence obj = (DG.Tweening.Sequence)ToLua.ToObject(L, 1);
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				DG.Tweening.Tween o = obj.SetId(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, string>(L, 1))
+			{
+				DG.Tweening.Sequence obj = (DG.Tweening.Sequence)ToLua.ToObject(L, 1);
+				string arg0 = ToLua.ToString(L, 2);
+				DG.Tweening.Tween o = obj.SetId(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<DG.Tweening.Tween, object>(L, 1))
+			{
+				DG.Tweening.Sequence obj = (DG.Tweening.Sequence)ToLua.ToObject(L, 1);
+				object arg0 = ToLua.ToVarObject(L, 2);
+				DG.Tweening.Tween o = obj.SetId(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: DG.Tweening.Sequence.SetId");
+			}
 		}
 		catch (Exception e)
 		{

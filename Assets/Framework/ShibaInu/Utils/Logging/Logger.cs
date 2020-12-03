@@ -41,12 +41,15 @@ namespace ShibaInu
 
                 case LogType.Warning:
                     // 将 DoTween 回调中的报错从 Warning 转为 Error
-                    if (condition.StartsWith("DOTWEEN :: An error inside a tween callback", StringComparison.InvariantCultureIgnoreCase))
+                    int idx = condition.IndexOf("An error inside a tween callback");
+                    if (idx != -1)
                     {
+                        condition = condition.Substring(condition.IndexOf('►', idx) + 1);
                         int idx1 = condition.IndexOf('\n');
                         int idx2 = condition.IndexOf("\n\n", idx1);
                         stackTrace = condition.Substring(idx1, idx2 - idx1);
                         condition = condition.Substring(0, idx1);
+                        condition = "[tween callback]" + condition;
                         LogError(condition, stackTrace);
                         UncaughtExceptionHandler(LogData.TYPE_ERROR, condition, stackTrace);
                     }
