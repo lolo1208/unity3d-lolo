@@ -7,6 +7,8 @@ namespace ShibaInu
     /// <summary>
     /// 安全区域布局
     /// </summary>
+    [AddComponentMenu("ShibaInu/Safe Area Layout", 201)]
+    [DisallowMultipleComponent]
     public class SafeAreaLayout : MonoBehaviour
     {
         /// 安全区域容器

@@ -11,7 +11,7 @@ namespace ShibaInu
     /// <summary>
     /// 当 gameObject 与鼠标指针（touch）交互时，播放缩放缓动效果。
     /// </summary>
-    [AddComponentMenu("ShibaInu/Pointer Scaler", 302)]
+    [AddComponentMenu("ShibaInu/Pointer Scaler", 203)]
     [DisallowMultipleComponent]
     public class PointerScaler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
     {

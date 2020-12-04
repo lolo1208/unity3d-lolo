@@ -10,7 +10,7 @@ namespace ShibaInu
     /// <summary>
     /// 可以使 IPointerDownHandler, IPointerUpHandler, IPointerClickHandler 向下穿透一级
     /// </summary>
-    [AddComponentMenu("ShibaInu/Pointer Event Passer", 301)]
+    [AddComponentMenu("ShibaInu/Pointer Event Passer", 202)]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(PointerEventDispatcher))]// PointerEventDispatcher 脚本必须在之前添加好，保证在穿透前自身先抛出事件
     public class PointerEventPasser : MonoBehaviour, IPointerDownHandler, IPointerUpHandler

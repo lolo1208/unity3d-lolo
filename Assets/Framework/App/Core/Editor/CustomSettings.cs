@@ -117,6 +117,47 @@ public static class CustomSettings
         _GT(typeof(ScrambleMode)),
         _GT(typeof(AxisConstraint)),
         #endregion
+        
+
+        #region ShibaInu
+        _GT(typeof(Stage)),
+        _GT(typeof(ResManager)),
+        _GT(typeof(AudioManager)),
+        _GT(typeof(NetHelper)),
+
+        _GT(typeof(HttpRequest)),
+        _GT(typeof(HttpDownload)),
+        _GT(typeof(HttpUpload)),
+        _GT(typeof(TcpSocket)),
+        _GT(typeof(UdpSocket)),
+
+        _GT(typeof(Picker)),
+        _GT(typeof(BaseList)),
+        _GT(typeof(ScrollList)),
+        _GT(typeof(PageList)),
+        _GT(typeof(ViewPager)),
+        _GT(typeof(PageTransformerType)),
+        _GT(typeof(CircleImage)),
+        _GT(typeof(LocalizationText)),
+
+        _GT(typeof(SafeAreaLayout)),
+        _GT(typeof(PointerScaler)),
+        _GT(typeof(PointerEventPasser)),
+        _GT(typeof(FrameAnimationController)),
+        _GT(typeof(ThirdPersonCamera)),
+
+        _GT(typeof(DoubleImageShake)),
+        _GT(typeof(Mosaic)),
+        _GT(typeof(RadialBlur)),
+
+        _GT(typeof(MD5Util)),
+        _GT(typeof(ShibaInu.LuaProfiler)),
+        _GT(typeof(ShibaInu.Logger)),
+        #endregion
+        
+
+        // .Net
+        _GT(typeof(DateTime)),
 
 
         // UnityEngine
@@ -192,52 +233,10 @@ public static class CustomSettings
         _GT(typeof(RawImage)),
 
 
-        // .Net
-        _GT(typeof(DateTime)),
-
-
-        #region ShibaInu
-        _GT(typeof(Stage)),
-        _GT(typeof(ResManager)),
-        _GT(typeof(AudioManager)),
-        _GT(typeof(NetHelper)),
-
-        _GT(typeof(HttpRequest)),
-        _GT(typeof(HttpDownload)),
-        _GT(typeof(HttpUpload)),
-        _GT(typeof(TcpSocket)),
-        _GT(typeof(UdpSocket)),
-
-        _GT(typeof(Picker)),
-        _GT(typeof(BaseList)),
-        _GT(typeof(ScrollList)),
-        _GT(typeof(PageList)),
-        _GT(typeof(ViewPager)),
-        _GT(typeof(PageTransformerType)),
-        _GT(typeof(CircleImage)),
-        _GT(typeof(LocalizationText)),
-
-        _GT(typeof(SafeAreaLayout)),
-        _GT(typeof(PointerScaler)),
-        _GT(typeof(PointerEventPasser)),
-        _GT(typeof(FrameAnimationController)),
-        _GT(typeof(ThirdPersonCamera)),
-
-        _GT(typeof(DoubleImageShake)),
-        _GT(typeof(Mosaic)),
-        _GT(typeof(RadialBlur)),
-
-        _GT(typeof(MD5Util)),
-        _GT(typeof(ShibaInu.LuaProfiler)),
-        _GT(typeof(ShibaInu.Logger)),
-        #endregion
-
 
         // Project
         _GT(typeof(App.LuaHelper)),
         _GT(typeof(App.AstMsgProtocol)),
-
-
     };
 
 

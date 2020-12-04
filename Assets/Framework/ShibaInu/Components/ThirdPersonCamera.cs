@@ -9,7 +9,7 @@ namespace ShibaInu
     /// <summary>
     /// 第三人称镜头
     /// </summary>
-    [AddComponentMenu("ShibaInu/Third Person Camera", 202)]
+    [AddComponentMenu("ShibaInu/Third Person Camera", 302)]
     [DisallowMultipleComponent]
     public class ThirdPersonCamera : MonoBehaviour
     {
