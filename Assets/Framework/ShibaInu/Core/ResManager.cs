@@ -170,6 +170,53 @@ namespace ShibaInu
 
 
         /// <summary>
+        /// 返回：path 对应的资源文件是否存在
+        /// </summary>
+        /// <param name="path">资源路径。例："Prefabs/Core/UICanvas.prefab"</param>
+        /// <returns></returns>
+        public static bool ResFileExists(string path)
+        {
+            string fullPath = Constants.ResDirPath + path;
+#if UNITY_EDITOR
+            if (Common.IsDebug)
+            {
+                if (!File.Exists(fullPath)) return false;
+
+                if (!FileHelper.IsPathCaseMatch(path))
+                    throw new Exception(string.Format(Constants.E5002, path));
+
+                return true;
+            }
+#endif
+            return s_resMap.ContainsKey(path);
+        }
+
+
+        /// <summary>
+        /// 返回：path 对应的 lua 文件是否存在
+        /// </summary>
+        /// <param name="path">lua 路径。例："Module.Core.launcher" 或 "Module/Core/launcher"</param>
+        /// <returns></returns>
+        public static bool LuaFileExists(string path)
+        {
+            string fullPath = path.Replace(".", "/");
+#if UNITY_EDITOR
+            if (Common.IsDebug)
+            {
+                fullPath = LuaFileUtils.Instance.FindFile(fullPath); // value: "Module/Core/launcher.lua"
+                if (string.IsNullOrEmpty(fullPath) || !File.Exists(fullPath)) return false;
+
+                if (!FileHelper.IsPathCaseMatch(fullPath))
+                    throw new Exception(string.Format(Constants.E5002, path.Replace(".", "/") + ".lua"));
+
+                return true;
+            }
+#endif
+            return s_luaMap.ContainsKey(fullPath);
+        }
+
+
+        /// <summary>
         /// 通过 AssetBundle 的文件名来获取对应的 AssetInfo
         /// </summary>
         /// <returns>The AssetInfo with AssetBundle file name.</returns>
@@ -186,7 +233,7 @@ namespace ShibaInu
         /// 通过 资源路径 来获取对应的 AssetInfo
         /// </summary>
         /// <returns>The AssetInfo with asset path.</returns>
-        /// <param name="path">Path.</param>
+        /// <param name="path">资源路径。例："Prefabs/Core/UICanvas.prefab"</param>
         [NoToLua]
         public static AssetInfo GetAssetInfoWithAssetPath(string path)
         {
@@ -213,7 +260,7 @@ namespace ShibaInu
         /// 获取 Lua 文件的字节内容
         /// </summary>
         /// <returns>The lua file bytes.</returns>
-        /// <param name="path">lua 路径（不带后缀），如：Module/Core/launcher </param>
+        /// <param name="path">lua 路径（不带后缀）。例："Module/Core/launcher"</param>
         [NoToLua]
         public static byte[] GetLuaFileBytes(string path)
         {

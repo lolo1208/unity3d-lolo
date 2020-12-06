@@ -7,6 +7,8 @@ public class ShibaInu_ResManagerWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginStaticLibs("ResManager");
+		L.RegFunction("ResFileExists", ResFileExists);
+		L.RegFunction("LuaFileExists", LuaFileExists);
 		L.RegFunction("PreloadShaders", PreloadShaders);
 		L.RegFunction("LoadText", LoadText);
 		L.RegFunction("LoadAsset", LoadAsset);
@@ -26,6 +28,40 @@ public class ShibaInu_ResManagerWrap
 		L.RegFunction("GetProgress", GetProgress);
 		L.RegFunction("Unload", Unload);
 		L.EndStaticLibs();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ResFileExists(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			bool o = ShibaInu.ResManager.ResFileExists(arg0);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int LuaFileExists(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			bool o = ShibaInu.ResManager.LuaFileExists(arg0);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
