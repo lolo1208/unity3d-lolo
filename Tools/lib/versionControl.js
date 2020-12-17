@@ -27,7 +27,7 @@ versionControl.start = function (cb) {
     common.writeFileSync(common.versionLogFile, '');
 
     if (cfgName.endsWith('.svn')) {
-        const svn = require('./svn');
+        const svn = require('./vc_svn');
         svn.start(cb);
         return;
     }

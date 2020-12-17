@@ -15,7 +15,7 @@ const versionControl = require('./versionControl');
 const svnCfg = require('./config/' + common.svnOrGitConfigName);
 
 
-const svn = module.exports = {};
+const vc_svn = module.exports = {};
 
 const cmdTypes = {checkout: 'ckeckout', update: 'update', revert: 'revert'};
 
@@ -24,7 +24,7 @@ let completeCount = 0;// SVN 检出或更新已完成项目数
 let callback = null;// 全部完成时的回调
 
 
-svn.start = function (cb) {
+vc_svn.start = function (cb) {
     buildUnity.cacheLibrary(false);
     callback = cb;
     progress.data.svn[1] = svnCfg.list.length;
@@ -108,13 +108,13 @@ let createWork = function (data, workDirPath) {
 
 let execSvnCmd = function (type, args, callback) {
     let cmd;
-    let [url, dir, username, password] = [args.url, args.dir, args.username, args.password];
+    let [url, dir, un, pw] = [args.url, args.dir, args.username, args.password];
     switch (type) {
         case cmdTypes.checkout:
-            cmd = `svn checkout ${url} ${dir} --username ${username} --password ${password}`;
+            cmd = `svn checkout ${url} ${dir} --username ${un} --password "${pw}"`;
             break;
         case cmdTypes.update:
-            cmd = `svn update ${dir} --username ${username} --password ${password}`;
+            cmd = `svn update ${dir} --username ${un} --password "${pw}"`;
             break;
         case cmdTypes.revert:
             cmd = `svn revert -R ${dir}`;
@@ -137,6 +137,11 @@ let execSvnCmd = function (type, args, callback) {
             versionControl.appendLog('none');
         else
             versionControl.appendLog(`<p class="content-text-error">${stderr}</p>`);
+
+        if (err) {
+            versionControl.appendLog('<b>[error]:</b>');
+            versionControl.appendLog(`<p class="content-text-error">${err.stack}</p>`);
+        }
 
         versionControl.appendLog('</p>', ' ');
 
