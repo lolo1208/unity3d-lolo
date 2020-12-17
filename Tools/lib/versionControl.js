@@ -51,8 +51,7 @@ versionControl.appendLog = function (...list) {
     let data = '';
     if (isFirstAppendLog) {
         isFirstAppendLog = false;
-    }
-    else
+    } else
         data = '\n';
     data += list.join('\n');
     data = data.replace(/\r\n/g, '\n');

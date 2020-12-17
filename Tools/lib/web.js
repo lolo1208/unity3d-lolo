@@ -1,4 +1,5 @@
 /**
+ * [ 独立脚本 ]
  * 启动 web 服务
  * Created by LOLO on 2019/4/25.
  */
@@ -73,13 +74,11 @@ const server = http.createServer((request, response) => {
                     errHandler(err);
                     return;
                 }
-            }
-            else {
+            } else {
                 errHandler(err);
                 return;
             }
-        }
-        else {
+        } else {
             size = stats.size;
         }
 

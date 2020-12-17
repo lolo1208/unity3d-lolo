@@ -26,7 +26,7 @@ process.on('uncaughtException', function (err) {
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
-            }</p>`
+        }</p>`
     );
     console.error(err.stack);
     common.exit(2);

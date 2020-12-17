@@ -1,5 +1,5 @@
 /**
- * 独立脚本
+ * [ 独立脚本 ]
  * 生成 SVN 配置文件
  * Created by LOLO on 2020/12/16.
  */
@@ -15,7 +15,8 @@ args
     .option('-s, --svn <value>', '需要写入配置文件的 svn 相关信息列表，第一条需为主工程项目。格式：url,dest,un,pw|url,de...')
     .option('-u, --username <value>', '默认 svn 账号')
     .option('-p, --password <value>', '默认 svn 密码')
-    .option('-n, --cfgName <value>', '生成的配置文件名称，如果忽略该参数，默认值为 -s 参数值的 md5 值')
+    .option('-n, --cfgName <value>', '生成的配置文件名称。默认值为 -s 参数值的 md5 值')
+    .option('-d, --destDir <value>', 'svn 检出的本地目录。默认值为 common.sourceDir')
     .parse(process.argv);
 
 
@@ -23,6 +24,7 @@ const svn = args.svn;
 const username = args.username;
 const password = args.password;
 const cfgName = args.cfgName;
+const destDir = args.destDir;
 
 
 //
@@ -56,11 +58,7 @@ function main() {
         return;
 
     // 构建需保存的数据
-    let data = {
-        username: username,
-        password: password,
-        list: [],
-    };
+    let data = {username, password, destDir, list: []};
 
     // 解析 svn 信息列表
     let list = svn.split('|');

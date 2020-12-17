@@ -32,6 +32,13 @@ svn.start = function (cb) {
     progress.setTiming(progress.TT_SVN, true);
     logger.append('- 开始检出或更新 SVN 项目');
 
+    // 有指定检出的本地目录
+    if (svnCfg.destDir) {
+        common.sourceDir = path.normalize(svnCfg.destDir + '/');
+        common.sourceProjectDir = `${common.sourceDir}project/`;
+    }
+
+    // 几个项目同时执行 svn 命令
     for (let i = svnCfg.list.length - 1; i >= 0; i--)
         createWork(svnCfg.list[i], `work${i + 1}/`);
 };
@@ -67,8 +74,7 @@ let createWork = function (data, workDirPath) {
                 workError = err;
                 logger.append(`* 还原 ${args.url} 失败`);
                 endWork();
-            }
-            else {
+            } else {
                 // 再做更新操作
                 execSvnCmd(cmdTypes.update, args, (err) => {
                     if (err) {

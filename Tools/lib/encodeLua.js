@@ -70,8 +70,7 @@ let encodeComplete = function () {
             logger.append("- 编码 lua 文件已全部完成");
         progress.setTiming(progress.TT_LUA, false);
         callback();
-    }
-    else
+    } else
         encodeNext();
 };
 

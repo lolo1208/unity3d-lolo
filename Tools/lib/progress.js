@@ -6,7 +6,6 @@
 
 const fs = require('fs');
 const common = require('./common');
-const versionControl = require('./versionControl');
 
 
 const progress = module.exports = {};

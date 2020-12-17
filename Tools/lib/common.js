@@ -7,7 +7,6 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const child_process = require('child_process');
 const args = require('commander');
 const config = require('./config/config');
 
