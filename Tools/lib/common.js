@@ -23,7 +23,7 @@ args
     .option('-n, --notEncode', '是否不需要编码 lua 文件')
     .option('-g, --generatePlatformProject', '是否生成目标平台项目，只支持: ios, android')
     .option('-u, --unityVersion <value>', '使用的 unity 版本号，默认值为: config.unityVersion')
-    .option('-f, --projectPath <value>', '项目路径。如果传入了该参数，将会忽略版本检出和更新（-s 参数）')
+    .option('-f, --projectPath <value>', '项目路径')
     .option('-s, --svnOrGitConfigName <value>', 'svn 或 git 配置名称')
     .option('-c, --platformProject <value>', '目标平台项目路径。如果传入了该参数，-g 参数将为 true')
     .option('-d, --destDir <value>', '将生成的资源拷贝至该目录')
