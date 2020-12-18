@@ -8,11 +8,7 @@ Packages
 UnityPackageManager
 Temp
 LuaAPI
-PlatformProjects
-Log
 Logs
-Library_iOS
-Library_Android
 
 Assets/StreamingAssets
 Assets/StreamingAssets.meta
@@ -30,3 +26,4 @@ Tools/tmp
 Tools/build
 Tools/node_modules
 Tools/package-lock.json
+Tools/bin-local

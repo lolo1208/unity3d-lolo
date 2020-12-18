@@ -76,7 +76,7 @@ namespace ShibaInu
             string manifestPath = GetCmdLineArg("-manifestPath");
             //string manifestPath = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/log/0/manifest.log";
 
-            ClearAllAssetBundleNames();
+            ShibaInuMenu.ClearAllAssetBundleNames();
 
             s_abiList.Clear();
             s_abiMap.Clear();
@@ -322,17 +322,6 @@ namespace ShibaInu
 
                 }
             }
-        }
-
-
-        /// <summary>
-        /// 清除所有已设置的 AssetBundle Name
-        /// </summary>
-        private static void ClearAllAssetBundleNames()
-        {
-            string[] names = AssetDatabase.GetAllAssetBundleNames();
-            foreach (string name in names)
-                AssetDatabase.RemoveAssetBundleName(name, true);
         }
 
 
