@@ -15,7 +15,10 @@ var LOG_TYPE = {
 };
 
 // 在 Unity log 中需要标红的报错关键字
-var failedKeys = ["Error", "Exception", "Script asset", "not supported"];
+var failedKeys = [
+    "Error", "Exception", "Script asset",
+    "not supported", "Unrecognized assets"
+];
 
 
 var packid = getQueryVariable('packid');
