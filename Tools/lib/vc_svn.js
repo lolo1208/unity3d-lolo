@@ -120,7 +120,7 @@ let execSvnCmd = function (type, args, callback) {
             cmd = `svn revert -R ${dir}`;
     }
 
-    child_process.exec(cmd, {maxBuffer: 1024 * 1024}, (err, stdout, stderr) => {
+    child_process.exec(cmd, {maxBuffer: 1024 * 1024 * 5}, (err, stdout, stderr) => {
         // 添加 svn 日志
         versionControl.appendLog(`<b>##[ ${url} ]##</b>`);
         versionControl.appendLog(`<b>${cmd.slice(0, cmd.lastIndexOf(' --password'))}</b>`);

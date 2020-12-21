@@ -26,4 +26,3 @@ Tools/tmp
 Tools/build
 Tools/node_modules
 Tools/package-lock.json
-Tools/bin/ast
