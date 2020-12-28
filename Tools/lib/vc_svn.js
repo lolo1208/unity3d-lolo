@@ -68,23 +68,37 @@ let createWork = function (data, workDirPath) {
         fs.renameSync(destDir, args.dir);// 先移动到工作目录
 
         logger.append(`* 开始更新 ${args.url}`);
-        // 先做还原操作
-        execSvnCmd(cmdTypes.revert, args, (err) => {
+
+        // 先更新
+        execSvnCmd(cmdTypes.update, args, (err) => {
             if (err) {
-                workError = err;
-                logger.append(`* 还原 ${args.url} 失败`);
-                endWork();
-            } else {
-                // 再做更新操作
-                execSvnCmd(cmdTypes.update, args, (err) => {
+                // 更新失败尝试还原
+                logger.append(`* 更新 ${args.url} 失败，尝试还原`);
+                execSvnCmd(cmdTypes.revert, args, (err) => {
                     if (err) {
+                        // 还原失败，结束
                         workError = err;
-                        logger.append(`* 更新 ${args.url} 失败`);
+                        logger.append(`* 还原 ${args.url} 失败`);
+                        endWork();
                     } else {
-                        logger.append(`* 更新 ${args.url} 完成`);
+                        // 还原成功，再次尝试更新
+                        logger.append(`* 还原 ${args.url} 成功，再次尝试更新`);
+                        execSvnCmd(cmdTypes.update, args, (err) => {
+                            if (err) {
+                                workError = err;
+                                logger.append(`* 更新 ${args.url} 失败`);
+                            } else {
+                                logger.append(`* 更新 ${args.url} 完成`);
+                            }
+                            // 结束
+                            endWork();
+                        });
                     }
-                    endWork();
                 });
+            } else {
+                // 更新成功，结束
+                logger.append(`* 更新 ${args.url} 完成`);
+                endWork();
             }
         });
     }
@@ -137,6 +151,9 @@ let execSvnCmd = function (type, args, callback) {
             versionControl.appendLog('none');
         else
             versionControl.appendLog(`<p class="content-text-error">${stderr}</p>`);
+
+        if (stdout.indexOf('Summary of conflicts') !== -1)
+            err = new Error('执行 SVN 命令时，有冲突产生！');
 
         if (err) {
             versionControl.appendLog('<b>[error]:</b>');
