@@ -346,6 +346,23 @@ function Stage.CloseAllWindow(excludeWindow)
     end
 end
 
+--- 当前是否有 已经打开的窗口
+---@return boolean
+function Stage.HasWindowOpened()
+    for i = 1, #_windowList do
+        if _windowList[i].visible then
+            return true
+        end
+    end
+    return false
+end
+
+--- 获取已注册（已打开）的窗口列表
+---@return Window[]
+function Stage.GetWindowList()
+    return ObjectUtil.Copy(_windowList)
+end
+
 
 --=-----------------------------[ 图层 ]-----------------------------=--
 
