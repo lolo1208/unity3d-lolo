@@ -56,6 +56,8 @@ namespace App
         /// </summary>
         void OnPreprocessTexture()
         {
+            if (Application.isBatchMode) return;
+
             if (Path.GetExtension(assetPath).ToLower() == ".dds")
             {
                 LogError("警告：iOS 不支持 .dds 格式的纹理！" + assetPath);
