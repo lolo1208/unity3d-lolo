@@ -5,6 +5,7 @@
 
 
 const fs = require('fs');
+const path = require('path');
 const child_process = require('child_process');
 const common = require('./common');
 const logger = require('./logger');
@@ -16,6 +17,7 @@ const platform = module.exports = {};
 
 let callback;// 完成时的回调
 let ppName = common.targetPlatform === 'ios' ? 'XCode' : 'AndroidStudio';
+let isAndroidUnity2019 = false;
 
 // 需要合并的文件夹
 const combineDirs = {
@@ -75,8 +77,14 @@ platform.start = function (cb) {
 let generateComplete = function () {
     let isAndroid = common.targetPlatform === 'android';
     if (isAndroid) {
-        // AndroidStudio 项目会生成在子目录中
-        common.tmpPlatformDir += `${fs.readdirSync(common.tmpPlatformDir)[0]}/`;
+        isAndroidUnity2019 = fs.existsSync(`${common.tmpPlatformDir}unityLibrary/`);
+        if (isAndroidUnity2019) {
+            // unity2019 项目在 unityLibrary 目录中
+            common.tmpPlatformDir += 'unityLibrary/';
+        } else {
+            // unity2018 项目会生成在子目录中
+            common.tmpPlatformDir += `${fs.readdirSync(common.tmpPlatformDir)[0]}/`;
+        }
         // 拷贝框架 java 代码
         common.copyDir(common.androidJavaDir, `${common.tmpPlatformDir}src/main/java/`);
     }
@@ -102,6 +110,12 @@ let generateComplete = function () {
 let updatePlatformProject = function () {
     logger.append(`- 开始更新 ${ppName} 项目`);
 
+    let dirParent = '';
+    if (isAndroidUnity2019) {
+        dirParent = 'unityLibrary/';// unity2019 需要添加前置目录
+        common.tmpPlatformDir = path.normalize(common.tmpPlatformDir + '../');// 回到上一级目录
+    }
+
     // 没生成过，直接改名
     if (!fs.existsSync(common.targetPlatformDir)) {
         fs.renameSync(common.tmpPlatformDir, common.targetPlatformDir);
@@ -110,14 +124,13 @@ let updatePlatformProject = function () {
 
     // 同步文件夹内容
     else {
-        let dirs = combineDirs[common.targetPlatform];
-
         // 删除资源目录
-        common.removeDir(dirs.res);
+        let dirs = combineDirs[common.targetPlatform];
+        common.removeDir(common.targetPlatformDir + dirParent + dirs.res);
 
         // 拷贝目录
         for (let i = 0; i < dirs.copy.length; i++) {
-            let dirName = dirs.copy[i];
+            let dirName = dirParent + dirs.copy[i];
             common.copyDir(common.tmpPlatformDir + dirName, common.targetPlatformDir + dirName);
         }
 
@@ -129,7 +142,7 @@ let updatePlatformProject = function () {
                 updateComplete();
                 return;
             }
-            let dirName = dirs.merge[index];
+            let dirName = dirParent + dirs.merge[index];
             common.mergeDir(common.tmpPlatformDir + dirName, common.targetPlatformDir + dirName, next);
         };
         next();

@@ -20,11 +20,15 @@ args
     .parse(process.argv);
 
 
-const src = args.src;
-const destDir = path.normalize(args.dest + '/');
-const isZip = path.extname(src) === '.zip';
 const platform = args.platform;
 const isAndroid = platform === 'android';
+
+let destDir = path.normalize(args.dest + '/');
+if (isAndroid && fs.existsSync(`${destDir}unityLibrary/`))// android unity2019
+    destDir += 'unityLibrary/';
+
+const src = args.src;
+const isZip = path.extname(src) === '.zip';
 const tmpDir = path.normalize(`../tmp/${Date.now()}/`);
 const tmpUnzipDir = `${tmpDir}unzip/`;
 const tmpBinDir = `${tmpDir}bin/`;
