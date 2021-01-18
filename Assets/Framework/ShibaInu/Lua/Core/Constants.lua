@@ -22,6 +22,12 @@ local Constants = {
     LAYER_TOP = "topLayer", -- 顶级层
 
 
+    -- 事件侦听优先级
+    PRIORITY_LOW = -99,
+    PRIORITY_NORMAL = 0,
+    PRIORITY_HIGH = 99,
+
+
     -- HTTP 相关常量
     HTTP_EXCEPTION_CREATE_THREAD = -1, -- HTTP 异常状态码：创建线程时发生异常
     HTTP_EXCEPTION_SEND_REQUEST = -2, -- HTTP 异常状态码：发送请求时发生异常

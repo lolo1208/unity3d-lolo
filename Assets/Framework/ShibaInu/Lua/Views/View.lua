@@ -15,12 +15,12 @@ local format = string.format
 ---@field transform UnityEngine.Transform | UnityEngine.RectTransform
 ---@field asyncHandler Handler @ 异步初始化时，创建的回调
 ---@field initShow boolean @ 初始化时是否直接显示（默认是否显示）。默认值：true
+---@field showed boolean @ 是否已经显示。用于初始化显示时做判断
 ---@field visible boolean @ 当前是否可见
 ---@field initialized boolean @ 是否已经初始化完成了
 ---@field destroyed boolean @ 是否已经被销毁
 ---
 local View = class("View", EventDispatcher)
-
 View.initShow = true
 
 
@@ -44,6 +44,7 @@ function View:Ctor(prefab, parent, groupName, isAsync)
     View.super.Ctor(self)
 
     self.initialized = false
+    self.showed = false
     self.visible = false
     self.destroyed = false
 
@@ -75,7 +76,8 @@ function View:OnInitialize()
     if self.gameObject ~= nil then
         -- 子类有重写 OnDestroy()
         if self.OnDestroy ~= View.OnDestroy then
-            self:EnableDestroyListener() -- 当 initShow=false，让 DestroyEventDispatcher.cs 先触发 Awake()，再 go.SetActive(false)
+            -- 当 initShow=false，让 DestroyEventDispatcher.cs 先触发 Awake()，再 go.SetActive(false)
+            self:EnableDestroyListener()
         end
 
         self.transform = self.gameObject.transform
@@ -83,8 +85,18 @@ function View:OnInitialize()
             self.gameObject:SetActive(self.visible)
         end
     end
+
+    -- 默认如果可见，需在 LATE_UPDATE 时间中调用 OnShow()，避免 OnShow() 在子类 OnInitialize() 未执行完毕前触发
     if self.visible then
-        self:OnShow()
+        local doOnShow
+        doOnShow = function()
+            RemoveEventListener(Stage, Event.LATE_UPDATE, doOnShow)
+            if self.visible and not self.showed then
+                self.showed = true
+                self:OnShow()
+            end
+        end
+        AddEventListener(Stage, Event.LATE_UPDATE, doOnShow, nil, Constants.PRIORITY_HIGH)
     end
 end
 
@@ -98,6 +110,7 @@ function View:SetVisible(value)
         error(format(Constants.E2005, self.__classname))
     end
 
+    self.showed = value
     self.visible = value
     local go = self.gameObject
     if isnull(go) then

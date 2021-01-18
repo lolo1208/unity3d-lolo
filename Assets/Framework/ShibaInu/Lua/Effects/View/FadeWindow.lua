@@ -27,7 +27,6 @@ FadeWindow.hide_scale = FadeView.hide_scale
 FadeWindow.hide_alpha = FadeView.hide_alpha
 FadeWindow.hide_duration = FadeView.hide_duration
 
-
 -- 覆盖函数
 FadeWindow.OnInitialize = FadeView.OnInitialize
 FadeWindow.Show = FadeView.Show
@@ -35,10 +34,7 @@ FadeWindow.Hide = FadeView.Hide
 FadeWindow.Destroy = FadeView.Destroy
 
 FadeWindow.SuperOnInitialize = Window.OnInitialize
-FadeWindow.SuperShow = Window.Show
-FadeWindow.SuperHide = Window.Hide
 FadeWindow.SuperDestroy = Window.Destroy
-
 
 
 --

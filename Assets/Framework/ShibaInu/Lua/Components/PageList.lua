@@ -37,9 +37,9 @@ function PageList:Ctor(go, itemClass)
     self.pageList = self._list
     self._viewUpdateDirty = {}
     self._viewItemList = {}
-    self:AddEventListener(PageEvent.VISIBILITY_CHANGED, self.VisibilityChangedHandler, self, -1)
-    self:AddEventListener(PageEvent.SELECTION_CHANGED, self.SelectionChangedHandler, self, -1)
-    self:AddEventListener(PageEvent.REMOVED, self.RemovedHandler, self, -1)
+    self:AddEventListener(PageEvent.VISIBILITY_CHANGED, self.VisibilityChangedHandler, self, Constants.PRIORITY_LOW)
+    self:AddEventListener(PageEvent.SELECTION_CHANGED, self.SelectionChangedHandler, self, Constants.PRIORITY_LOW)
+    self:AddEventListener(PageEvent.REMOVED, self.RemovedHandler, self, Constants.PRIORITY_LOW)
 end
 
 

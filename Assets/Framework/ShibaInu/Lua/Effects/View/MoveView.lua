@@ -12,8 +12,6 @@
 ---@field showed boolean @ 是否已经显示。用于重复调用 Show() 和 Hide() 时做判断
 ---
 ---@field SuperOnInitialize fun()
----@field SuperShow fun()
----@field SuperHide fun()
 ---@field SuperDestroy fun()
 ---@field SuperOnDestroy fun()
 ---
@@ -50,11 +48,8 @@ MoveView.hide_position = Vector3.New(-100, 0, 0)
 MoveView.hide_alpha = 0.05
 MoveView.hide_duration = 0.2
 
-
 -- 覆盖的函数
 MoveView.SuperOnInitialize = View.OnInitialize
-MoveView.SuperShow = View.Show
-MoveView.SuperHide = View.Hide
 MoveView.SuperDestroy = View.Destroy
 MoveView.SuperOnDestroy = View.OnDestroy
 
@@ -74,6 +69,7 @@ function MoveView:OnInitialize()
         self.transform.localPosition = self.hide_position
     end
     if self.initShow then
+        self.visible = false
         self:Show()
     end
 end
@@ -101,7 +97,10 @@ function MoveView:Show()
         self.tweener:Join(self.canvasGroup:DOFade(self.show_alpha, self.show_duration):SetEase(self.show_ease))
         self.tweener:AppendCallback(function()
             self.tweener = nil
-            self:SuperShow()
+            if not self.visible then
+                self.visible = true
+                self:OnShow()
+            end
         end)
     end
 
@@ -132,7 +131,10 @@ function MoveView:Hide()
             if not isnull(self.gameObject) then
                 self.gameObject:SetActive(false)
             end
-            self:SuperHide()
+            if self.visible then
+                self.visible = false
+                self:OnHide()
+            end
         end)
     end
 end
@@ -160,10 +162,16 @@ function MoveView:UpdateAnchoredPosition()
         self.transform.anchoredPosition = endPos
         self.canvasGroup.alpha = endAlpha
         if self.showed then
-            self:SuperShow()
+            if not self.visible then
+                self.visible = true
+                self:OnShow()
+            end
         else
             self.gameObject:SetActive(false)
-            self:SuperHide()
+            if self.visible then
+                self.visible = false
+                self:OnHide()
+            end
         end
     else
         local p = time / duration -- 进度

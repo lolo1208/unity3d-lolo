@@ -27,7 +27,6 @@ ScaleWindow.hide_scale = ScaleView.hide_scale
 ScaleWindow.hide_alpha = ScaleView.hide_alpha
 ScaleWindow.hide_duration = ScaleView.hide_duration
 
-
 -- 覆盖函数
 ScaleWindow.OnInitialize = ScaleView.OnInitialize
 ScaleWindow.Show = ScaleView.Show
@@ -35,10 +34,7 @@ ScaleWindow.Hide = ScaleView.Hide
 ScaleWindow.Destroy = ScaleView.Destroy
 
 ScaleWindow.SuperOnInitialize = Window.OnInitialize
-ScaleWindow.SuperShow = Window.Show
-ScaleWindow.SuperHide = Window.Hide
 ScaleWindow.SuperDestroy = Window.Destroy
-
 
 
 --

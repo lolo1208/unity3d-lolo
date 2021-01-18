@@ -12,8 +12,6 @@
 ---@field showed boolean @ 是否已经显示。用于重复调用 Show() 和 Hide() 时做判断
 ---
 ---@field SuperOnInitialize fun()
----@field SuperShow fun()
----@field SuperHide fun()
 ---@field SuperDestroy fun()
 ---
 ---@field show_ease DG.Tweening.Ease
@@ -37,11 +35,8 @@ FadeView.hide_ease = DOTween_Enum.Ease.Linear
 FadeView.hide_alpha = 0
 FadeView.hide_duration = 0.15
 
-
 -- 覆盖的函数
 FadeView.SuperOnInitialize = View.OnInitialize
-FadeView.SuperShow = View.Show
-FadeView.SuperHide = View.Hide
 FadeView.SuperDestroy = View.Destroy
 
 
@@ -55,6 +50,7 @@ function FadeView:OnInitialize()
 
     self.canvasGroup.alpha = self.hide_alpha
     if self.initShow then
+        self.visible = false
         self:Show()
     end
 end
@@ -75,7 +71,10 @@ function FadeView:Show()
     self.tweener = self.canvasGroup:DOFade(self.show_alpha, self.show_duration):SetEase(self.show_ease)
     self.tweener:OnComplete(function()
         self.tweener = nil
-        self:SuperShow()
+        if not self.visible then
+            self.visible = true
+            self:OnShow()
+        end
     end)
 end
 
@@ -97,7 +96,10 @@ function FadeView:Hide()
         if not isnull(self.gameObject) then
             self.gameObject:SetActive(false)
         end
-        self:SuperHide()
+        if self.visible then
+            self.visible = false
+            self:OnHide()
+        end
     end)
 end
 

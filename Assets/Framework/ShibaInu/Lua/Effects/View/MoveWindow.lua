@@ -27,7 +27,6 @@ MoveWindow.hide_position = MoveView.hide_position
 MoveWindow.hide_alpha = MoveView.hide_alpha
 MoveWindow.hide_duration = MoveView.hide_duration
 
-
 -- 覆盖函数
 MoveWindow.OnInitialize = MoveView.OnInitialize
 MoveWindow.Show = MoveView.Show
@@ -36,11 +35,8 @@ MoveWindow.Destroy = MoveView.Destroy
 MoveWindow.OnDestroy = MoveView.OnDestroy
 
 MoveWindow.SuperOnInitialize = Window.OnInitialize
-MoveWindow.SuperShow = Window.Show
-MoveWindow.SuperHide = Window.Hide
 MoveWindow.SuperDestroy = Window.Destroy
 MoveWindow.SuperOnDestroy = Window.OnDestroy
-
 
 
 --

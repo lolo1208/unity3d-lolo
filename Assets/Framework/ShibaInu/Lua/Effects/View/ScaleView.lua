@@ -12,8 +12,6 @@
 ---@field showed boolean @ 是否已经显示。用于重复调用 Show() 和 Hide() 时做判断
 ---
 ---@field SuperOnInitialize fun()
----@field SuperShow fun()
----@field SuperHide fun()
 ---@field SuperDestroy fun()
 ---
 ---@field show_ease DG.Tweening.Ease
@@ -41,11 +39,8 @@ ScaleView.hide_scale = Vector3.New(0.3, 0.3, 0.3)
 ScaleView.hide_alpha = 0
 ScaleView.hide_duration = 0.15
 
-
 -- 覆盖的函数
 ScaleView.SuperOnInitialize = View.OnInitialize
-ScaleView.SuperShow = View.Show
-ScaleView.SuperHide = View.Hide
 ScaleView.SuperDestroy = View.Destroy
 
 
@@ -60,6 +55,7 @@ function ScaleView:OnInitialize()
     self.canvasGroup.alpha = self.hide_alpha
     self.transform.localScale = self.hide_scale
     if self.initShow then
+        self.visible = false
         self:Show()
     end
 end
@@ -82,7 +78,10 @@ function ScaleView:Show()
     self.tweener:Join(self.canvasGroup:DOFade(self.show_alpha, self.show_duration):SetEase(self.show_ease))
     self.tweener:AppendCallback(function()
         self.tweener = nil
-        self:SuperShow()
+        if not self.visible then
+            self.visible = true
+            self:OnShow()
+        end
     end)
 end
 
@@ -106,7 +105,10 @@ function ScaleView:Hide()
         if not isnull(self.gameObject) then
             self.gameObject:SetActive(false)
         end
-        self:SuperHide()
+        if self.visible then
+            self.visible = false
+            self:OnHide()
+        end
     end)
 end
 
