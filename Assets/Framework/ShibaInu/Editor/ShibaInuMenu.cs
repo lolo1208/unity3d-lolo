@@ -120,6 +120,10 @@ namespace ShibaInu
             string[] names = AssetDatabase.GetAllAssetBundleNames();
             foreach (string name in names)
                 AssetDatabase.RemoveAssetBundleName(name, true);
+
+            AssetDatabase.RemoveUnusedAssetBundleNames();
+
+            Debug.Log("Clear All AssetBundle Names Complete!");
         }
 
 

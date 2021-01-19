@@ -15,6 +15,7 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("CreateGameObject", CreateGameObject);
 		L.RegFunction("SetLayerRecursively", SetLayerRecursively);
 		L.RegFunction("DestroyChildren", DestroyChildren);
+		L.RegFunction("FindRootObjectInScene", FindRootObjectInScene);
 		L.RegFunction("WorldToCanvasPoint", WorldToCanvasPoint);
 		L.RegFunction("ScreenToCanvasPoint", ScreenToCanvasPoint);
 		L.RegFunction("GetShader", GetShader);
@@ -184,6 +185,24 @@ public class ShibaInu_LuaHelperWrap
 			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 1);
 			ShibaInu.LuaHelper.DestroyChildren(arg0);
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int FindRootObjectInScene(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			string arg0 = ToLua.CheckString(L, 1);
+			string arg1 = ToLua.CheckString(L, 2);
+			UnityEngine.GameObject o = ShibaInu.LuaHelper.FindRootObjectInScene(arg0, arg1);
+			ToLua.PushSealed(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

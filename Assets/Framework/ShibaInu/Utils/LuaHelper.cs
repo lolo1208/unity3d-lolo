@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using LuaInterface;
 
 
@@ -146,6 +147,28 @@ namespace ShibaInu
             {
                 GameObject.Destroy(target.GetChild(i).gameObject);
             }
+        }
+
+
+        /// <summary>
+        /// 先找到 sceneName 对应的场景，然后在该场景中获取 objName 对应的根节点 GameObject，并返回该对象
+        /// </summary>
+        /// <param name="sceneName">场景名称</param>
+        /// <param name="objName">要查找的根节点 GameObject 的名称</param>
+        /// <returns></returns>
+        public static GameObject FindRootObjectInScene(string sceneName, string objName)
+        {
+            Scene scene = SceneManager.GetSceneByName(sceneName);
+            if (!scene.isLoaded || scene.rootCount == 0)
+                return null;
+
+            GameObject[] list = scene.GetRootGameObjects();
+            foreach (GameObject go in list)
+            {
+                if (go.name == objName)
+                    return go;
+            }
+            return null;
         }
 
         #endregion
