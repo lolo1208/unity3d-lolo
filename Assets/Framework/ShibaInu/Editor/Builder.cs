@@ -543,9 +543,18 @@ namespace ShibaInu
             if (Directory.Exists(outputDir))
                 Directory.Delete(outputDir, true);
 
-            BuildOptions options = development == "true"
+            BuildOptions options;
+#if UNITY_2018
+            // Unity 2018
+            options = development == "true"
                 ? BuildOptions.AcceptExternalModificationsToPlayer | BuildOptions.Development | BuildOptions.ConnectWithProfiler
                 : BuildOptions.AcceptExternalModificationsToPlayer;
+#else
+            // Unity 2019 or Newer
+            options = development == "true"
+                ? BuildOptions.AllowDebugging | BuildOptions.Development | BuildOptions.ConnectWithProfiler
+                : BuildOptions.None;
+#endif
             BuildPipeline.BuildPlayer(CoreScenes, outputDir, buildTarget, options);
         }
 

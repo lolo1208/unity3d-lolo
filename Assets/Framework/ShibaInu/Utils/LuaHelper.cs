@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using LuaInterface;
+using DG.Tweening;
 
 
 namespace ShibaInu
@@ -86,6 +87,7 @@ namespace ShibaInu
         /// </summary>
         public static void Relaunch()
         {
+            DOTween.KillAll();
             Common.go.AddComponent<Launcher>();
         }
 
