@@ -75,6 +75,7 @@ function Test_UIEffects:Click_FlyBehind(event)
     tmpVec3.y = random(y) - y / 2
 
     local item = PrefabPool.Get(TIPS_PATH, Constants.LAYER_ALERT).transform
+    item.localPosition = Vector3.zero
     FlyBehind.Once(item, tmpVec3, TIPS_PATH)
 end
 
