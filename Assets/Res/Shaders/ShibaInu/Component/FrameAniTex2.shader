@@ -1,20 +1,21 @@
 ﻿//
-// 依照 _AniTex 中包含的顶点数据播放动画
-// 给定播放速度等参数，自动切换帧实现动画播放
-// 2019/6/3
+// 依照 _AniTex 中包含的顶点数据帧显示指定帧
+// 只显示给定帧号对应的画面，不会自动切换帧
+// 支持两张贴图（_MainTex 和 _SecondTex）切换
+// 2021/02/01
 // Author LOLO
 //
-Shader "ShibaInu/Component/GpuAnimation"
+Shader "ShibaInu/Component/FrameAnimationTex2"
 {
 
 	Properties
 	{
-        _MainTex ("Base (RGB)", 2D) = "white" {}
+        _MainTex ("MainTex, Base (RGB)", 2D) = "white" {}
+        _SecondTex ("SecondTex, Base (RGB)", 2D) = "white" {}
         _AniTex ("动画纹理", 2D) = "white" {}
-        _AniLen ("动画时长", Float) = 1
-        _StartTime ("开始时间", Float) = 0
-        _Speed ("播放速度", Float) = 1
-        [Toggle] _Loop ("是否循环播放", Float) = 0
+        _FrameCount ("总帧数", int) = 0
+        _CurrentFrame ("当前帧", int) = 1
+        [Toggle] _UseMainTex ("使用 MainTex（选中）或 SecondTex（未选）", Float) = 1
 	}
     
     
@@ -54,15 +55,15 @@ Shader "ShibaInu/Component/GpuAnimation"
     
 
     sampler2D _MainTex;
+    sampler2D _SecondTex;
     sampler2D _AniTex;
     
     UNITY_INSTANCING_BUFFER_START(Props)
-    UNITY_DEFINE_INSTANCED_PROP(float, _StartTime)
-    UNITY_DEFINE_INSTANCED_PROP(float, _Loop)
-    UNITY_DEFINE_INSTANCED_PROP(float, _Speed)
+    UNITY_DEFINE_INSTANCED_PROP(int, _CurrentFrame)
+    UNITY_DEFINE_INSTANCED_PROP(int, _UseMainTex)
     UNITY_INSTANCING_BUFFER_END(Props)
     
-    half _AniLen;
+    int _FrameCount;
     
     float4 _MainTex_ST;
     float4 _AniTex_TexelSize;// x == 1 / width
@@ -72,18 +73,10 @@ Shader "ShibaInu/Component/GpuAnimation"
     {
         UNITY_SETUP_INSTANCE_ID(v);
         
-        float startTime = UNITY_ACCESS_INSTANCED_PROP(Props, _StartTime);
-        float loop = UNITY_ACCESS_INSTANCED_PROP(Props, _Loop);
-        float speed = UNITY_ACCESS_INSTANCED_PROP(Props, _Speed);
+        int curFrame = UNITY_ACCESS_INSTANCED_PROP(Props, _CurrentFrame);
         
         half x = (vid + 0.5) * _AniTex_TexelSize.x;
-        half y = (_Time.y - startTime) / _AniLen * speed;
-        half first = step(1, abs(y)); // true = 0
-        loop = step(loop, 0); // true = 0
-        half reverse = step(0, speed);// true = 0
-        half m = fmod(y, 1);
-        m = m + 1 + reverse;
-        y = max(m, first * loop * 3);
+        half y = ((half)curFrame - 1) / (_FrameCount - 1);
         
         // 前面 +半帧，后面 -半帧
         half h = _AniTex_TexelSize.w;
@@ -103,7 +96,10 @@ Shader "ShibaInu/Component/GpuAnimation"
     fixed4 frag (v2f i) : SV_Target
     {
         UNITY_SETUP_INSTANCE_ID(i);
-        fixed4 col = tex2D(_MainTex, i.uv);
+        // 切换两张贴图
+        int useMainTex = UNITY_ACCESS_INSTANCED_PROP(Props, _UseMainTex);
+        int useSecondTex = step(useMainTex, 0);// true = 1
+        fixed4 col = tex2D(_MainTex, i.uv) * useMainTex + tex2D(_SecondTex, i.uv) * useSecondTex;
         return col;
     }
 

@@ -1,14 +1,16 @@
 --
 -- 使用 GpuAnimationWindow 从 fbx 文件中提取（合并）mesh，生成动画对应的纹理
--- 再使用 shader "ShibaInu/Component/FrameAnimation" 配合 ShibaInu.FrameAnimationController 播放 GPU 动画
--- 2019/7/2
+-- 使用 shader "ShibaInu/Component/FrameAnimation"
+--     或 "ShibaInu/Component/FrameAnimationTex2"
+--     依靠 C#ShibaInu.FrameAnimationController 播放 GPU 动画
+-- 2019/07/02
 -- Author LOLO
 --
 
 
 --
 ---@class FrameAnimation : EventDispatcher
----@field New fun(go:UnityEngine.GameObject, fac:ShibaInu.FrameAnimationController, assetDirPath:string):FrameAnimation
+---@field New fun(go:UnityEngine.GameObject, fac:ShibaInu.FrameAnimationController, assetDirPath:string, useMainTex:boolean):FrameAnimation
 ---
 ---@field go UnityEngine.GameObject @ 对应的 GameObject
 ---@field fac ShibaInu.FrameAnimationController @ 对应的 FrameAnimationController
@@ -45,7 +47,8 @@ end
 ---@param go UnityEngine.GameObject
 ---@param fac ShibaInu.FrameAnimationController
 ---@param assetDirPath string
-function FrameAnimation:Ctor(go, fac, assetDirPath)
+---@param useMainTex boolean
+function FrameAnimation:Ctor(go, fac, assetDirPath, useMainTex)
     FrameAnimation.super.Ctor(self)
 
     self.frameCount = 0
@@ -56,6 +59,7 @@ function FrameAnimation:Ctor(go, fac, assetDirPath)
     self.go = go
     self.fac = fac
     self:SetAssetDirPath(assetDirPath)
+    self:SetUseMainTex(useMainTex ~= false)
 end
 
 
@@ -74,6 +78,14 @@ function FrameAnimation:SetAssetDirPath(assetDirPath)
             self.fac:SetAssetDir(self.id, assetDirPath)
         end
     end
+end
+
+
+--
+--- 设置是否使用 MainTex
+---@param value boolean @ true: 使用 MainTex, false: 使用 SecondTex
+function FrameAnimation:SetUseMainTex(value)
+    self.fac:SetUseMainTex(self.id, value)
 end
 
 

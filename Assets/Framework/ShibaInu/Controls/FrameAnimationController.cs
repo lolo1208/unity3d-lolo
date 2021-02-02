@@ -45,7 +45,8 @@ namespace ShibaInu
             {
                 id = ++m_id,
                 filter = filter,
-                renderer = renderer
+                renderer = renderer,
+                useMainTex = true
             };
             m_aniMap.Add(ani.id, ani);
             SetAssetDir(ani, assetDir);
@@ -99,6 +100,28 @@ namespace ShibaInu
 
 
         /// <summary>
+        /// 设置是否使用 MainTex
+        /// </summary>
+        /// <param name="id">Identifier.</param>
+        /// <param name="value">true: 使用 MainTex, false: 使用 SecondTex</param>
+        public void SetUseMainTex(int id, bool value)
+        {
+            FrameAnimation ani;
+            if (!m_aniMap.TryGetValue(id, out ani))
+            {
+                Logger.LogException(string.Format(Constants.E1003, id));
+                return;
+            }
+            if (ani.useMainTex == value) return;
+
+            // 更新 shader _UseMainTex
+            ani.renderer.GetPropertyBlock(m_props);
+            m_props.SetInt("_UseMainTex", value ? 1 : 0);
+            ani.renderer.SetPropertyBlock(m_props);
+        }
+
+
+        /// <summary>
         /// 播放动画
         /// </summary>
         /// <returns>该动画总帧数</returns>
@@ -140,7 +163,7 @@ namespace ShibaInu
             ani.material = data.material;
             ani.frameCount = data.frameCount;
             ani.aniName = aniName;
-            ani.currentFrame = loop && randomFrame ? UnityEngine.Random.Range(0, data.frameCount) : 0;
+            ani.currentFrame = loop && randomFrame ? Random.Range(0, data.frameCount) : 0;
             m_playingList.Add(ani);
 
             return ani.frameCount;
@@ -241,6 +264,8 @@ namespace ShibaInu
             public int id;
             /// 动画资源所在目录路径（GpuAnimationWindow 中设置的 导出目录）
             public string assetDir;
+            /// 当前是否使用 MainTex，或使用 SecondTex(false)
+            public bool useMainTex;
             /// 当前动画名称
             public string aniName;
             /// 需要在 Update() 时切换到该材质球

@@ -14,16 +14,25 @@ namespace ShibaInu
     public class GpuAnimationWindow : EditorWindow
     {
         private static readonly Rect WND_RECT = new Rect(0, 0, 530, 430);
-        private static readonly string[] s_aniTypes = { "Gpu Animation", "Frame Animation" };
-        private static readonly string[] s_shaderNames = { "ShibaInu/Component/GpuAnimation", "ShibaInu/Component/FrameAnimation" };
+        private static readonly string[] s_aniTypes = {
+            "Gpu Animation",
+            "Frame Animation",
+            "Frame Animation(Tex2)"
+        };
+        private static readonly string[] s_shaderNames = {
+            "ShibaInu/Component/GpuAnimation",
+            "ShibaInu/Component/FrameAnimation",
+            "ShibaInu/Component/FrameAnimationTex2"
+        };
 
         private string m_fbxDir = "";
         private string m_texPath = "";
+        private string m_tex2Path = "";
         private string m_exportDir = "";
         private string m_finalExportDir;
         private int m_aniType;
         private bool m_genSubDir = true;
-        private bool m_tex2;
+        private bool m_po2sTex;
         private int m_fps;
         private int m_index;
         private string m_log = "";
@@ -35,6 +44,7 @@ namespace ShibaInu
         private GUILayoutOption m_w73;
         private GUILayoutOption m_w70;
         private GUILayoutOption m_w125;
+        private GUILayoutOption m_w140;
         private GUILayoutOption m_w155;
         private GUILayoutOption m_w288;
         private GUILayoutOption m_w368;
@@ -59,6 +69,7 @@ namespace ShibaInu
             m_w73 = GUILayout.Width(73);
             m_w70 = GUILayout.Width(70);
             m_w125 = GUILayout.Width(125);
+            m_w140 = GUILayout.Width(140);
             m_w155 = GUILayout.Width(155);
             m_w288 = GUILayout.Width(288);
             m_w368 = GUILayout.Width(368);
@@ -69,9 +80,10 @@ namespace ShibaInu
             m_fbxDir = PlayerPrefs.GetString("GAW.fbxDir");
             m_exportDir = PlayerPrefs.GetString("GAW.exportDir");
             m_texPath = PlayerPrefs.GetString("GAW.texPath");
+            m_tex2Path = PlayerPrefs.GetString("GAW.tex2Path");
             m_aniType = PlayerPrefs.GetInt("GAW.aniType");
             m_fps = PlayerPrefs.GetInt("GAW.fps");
-            m_tex2 = PlayerPrefs.GetInt("GAW.tex2") == 1;
+            m_po2sTex = PlayerPrefs.GetInt("GAW.po2sTex") == 1;
         }
 
 
@@ -121,7 +133,7 @@ namespace ShibaInu
             GUILayout.BeginVertical(m_w50);
             if (GUILayout.Button("浏览"))
             {
-                string texPath = EditorUtility.OpenFilePanel("动画模型使用的贴图", m_texPath, "png,jpg,gif,bmp,tga,psd,tiff,iff,tif,tca,pict");
+                string texPath = EditorUtility.OpenFilePanel("Main Texture", m_texPath, "png,jpg,gif,bmp,tga,psd,tiff,iff,tif,tca,pict");
                 if (texPath != "") m_texPath = texPath;
             }
             GUILayout.EndVertical();
@@ -129,6 +141,31 @@ namespace ShibaInu
 
 
             GUILayout.Space(10);
+
+
+            if (m_aniType == 2)
+            {
+                GUILayout.BeginHorizontal();
+                alignment = GUI.skin.label.alignment;
+                GUI.skin.label.alignment = TextAnchor.MiddleRight;
+                GUILayout.Label("纹理2：", m_w60);
+                GUI.skin.label.alignment = alignment;
+
+                alignment = GUI.skin.textField.alignment;
+                GUI.skin.textField.alignment = TextAnchor.MiddleLeft;
+                m_tex2Path = GUILayout.TextField(m_tex2Path, m_w368);
+                GUI.skin.textField.alignment = alignment;
+
+                GUILayout.BeginVertical(m_w50);
+                if (GUILayout.Button("浏览"))
+                {
+                    string texPath = EditorUtility.OpenFilePanel("Second Texture", m_tex2Path, "png,jpg,gif,bmp,tga,psd,tiff,iff,tif,tca,pict");
+                    if (texPath != "") m_tex2Path = texPath;
+                }
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
+                GUILayout.Space(10);
+            }
 
 
             GUILayout.BeginHorizontal();
@@ -166,10 +203,21 @@ namespace ShibaInu
             GUILayout.Label("动画类型：", m_w60);
             GUI.skin.label.alignment = alignment;
 
-            m_aniType = EditorGUILayout.Popup(m_aniType, s_aniTypes, m_w125);
-            GUILayout.Label(m_aniType == 0
-                ? "给定播放速度等参数，自动切换帧实现动画播放"
-                : "只显示给定帧号对应的画面，不会自动切换帧");
+            m_aniType = EditorGUILayout.Popup(m_aniType, s_aniTypes, m_w140);
+            string aniTypeIntro = "";
+            switch (m_aniType)
+            {
+                case 0:
+                    aniTypeIntro = "给定播放速度等参数，自动切换帧实现动画播放";
+                    break;
+                case 1:
+                    aniTypeIntro = "只显示给定帧号对应的画面，不会自动切换帧";
+                    break;
+                case 2:
+                    aniTypeIntro = "指定帧画面，不自动切换帧，可切换显示两张纹理";
+                    break;
+            }
+            GUILayout.Label(aniTypeIntro);
 
 
             GUILayout.EndHorizontal();
@@ -188,7 +236,7 @@ namespace ShibaInu
             m_fps = Mathf.Max(0, Mathf.Min(m_fps, 60));
 
             GUILayout.Space(10);
-            m_tex2 = GUILayout.Toggle(m_tex2, "power of 2 texture sizes", m_w155);
+            m_po2sTex = GUILayout.Toggle(m_po2sTex, "power of 2 texture sizes", m_w155);
             EditorGUI.BeginDisabledGroup(true);
             GUILayout.Toggle(true, "generate materials", m_w125);
             EditorGUI.EndDisabledGroup();
@@ -243,6 +291,21 @@ namespace ShibaInu
                 return;
             }
 
+            if (m_aniType == 2)
+            {
+                if (m_tex2Path == "")
+                {
+                    ShowMessage("请选择 [纹理2]");
+                    return;
+                }
+                if (!File.Exists(m_tex2Path))
+                {
+                    ShowMessage("所选的 [纹理2] 文件不存在！");
+                    return;
+                }
+            }
+
+
             if (!Directory.Exists(m_fbxDir))
             {
                 ShowMessage("所选的 [动画资源目录] 不存在！");
@@ -296,6 +359,8 @@ namespace ShibaInu
             string dirName = Path.GetFileName(m_fbxDir);
             string meshPath = m_finalExportDir + "Mesh.asset";
             string mainTexPath = m_finalExportDir + "MainTex" + Path.GetExtension(m_texPath);
+            string secondTexPath = m_finalExportDir + "SecondTex" + Path.GetExtension(m_tex2Path);
+            bool hasSecondTex = m_aniType == 2;
 
             m_index++;
             if (m_index == m_fbxList.Count)
@@ -342,8 +407,16 @@ namespace ShibaInu
 
                     // 拷贝默认纹理
                     File.Copy(m_texPath, mainTexPath, true);
+                    AppendLog("已拷贝 MainTex 至：" + mainTexPath);
+
+                    // 拷贝纹理2
+                    if (hasSecondTex)
+                    {
+                        File.Copy(m_tex2Path, secondTexPath, true);
+                        AppendLog("已拷贝 SecondTex 至：" + secondTexPath);
+                    }
+
                     AssetDatabase.Refresh();
-                    AppendLog("已拷贝纹理至：" + mainTexPath);
                 }
 
 
@@ -365,8 +438,8 @@ namespace ShibaInu
                     fps = m_fps == 0 ? (int)clip.frameRate : m_fps;
                     frameNum = (int)Mathf.Round(fps * aniLen);
 
-                    width = m_tex2 ? Mathf.NextPowerOfTwo(vertexCount) : vertexCount;
-                    height = m_tex2 ? Mathf.ClosestPowerOfTwo(frameNum) : frameNum;
+                    width = m_po2sTex ? Mathf.NextPowerOfTwo(vertexCount) : vertexCount;
+                    height = m_po2sTex ? Mathf.ClosestPowerOfTwo(frameNum) : frameNum;
                     aniData = new Texture2D(width, height, TextureFormat.RGBAHalf, false);
 
                     float perFrameTime = aniLen / (height - 1);
@@ -403,11 +476,19 @@ namespace ShibaInu
                     Material material = new Material(shader);
                     Texture mainTex = AssetDatabase.LoadAssetAtPath<Texture>(mainTexPath);
                     material.SetTexture("_MainTex", mainTex);
+
+                    if (hasSecondTex)
+                    {
+                        Texture secondTex = AssetDatabase.LoadAssetAtPath<Texture>(secondTexPath);
+                        material.SetTexture("_SecondTex", secondTex);
+                    }
+
                     material.SetTexture("_AniTex", aniData);
                     if (m_aniType == 0)
                         material.SetFloat("_AniLen", aniLen);
                     else
                         material.SetInt("_FrameCount", frameNum);
+
                     aniMatPath = m_finalExportDir + aniName + ".mat";
                     AssetDatabase.CreateAsset(material, aniMatPath);
                     AppendLog("已生成材质球：" + aniMatPath);
@@ -443,9 +524,10 @@ namespace ShibaInu
             PlayerPrefs.SetString("GAW.fbxDir", m_fbxDir);
             PlayerPrefs.SetString("GAW.exportDir", m_exportDir);
             PlayerPrefs.SetString("GAW.texPath", m_texPath);
+            PlayerPrefs.SetString("GAW.tex2Path", m_tex2Path);
             PlayerPrefs.SetInt("GAW.aniType", m_aniType);
             PlayerPrefs.SetInt("GAW.fps", m_fps);
-            PlayerPrefs.SetInt("GAW.tex2", m_tex2 ? 1 : 0);
+            PlayerPrefs.SetInt("GAW.po2sTex", m_po2sTex ? 1 : 0);
         }
 
 

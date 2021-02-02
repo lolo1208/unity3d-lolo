@@ -9,6 +9,7 @@ public class ShibaInu_FrameAnimationControllerWrap
 		L.BeginClass(typeof(ShibaInu.FrameAnimationController), typeof(System.Object));
 		L.RegFunction("AddAnimation", AddAnimation);
 		L.RegFunction("SetAssetDir", SetAssetDir);
+		L.RegFunction("SetUseMainTex", SetUseMainTex);
 		L.RegFunction("PlayAnimation", PlayAnimation);
 		L.RegFunction("StopAnimation", StopAnimation);
 		L.RegFunction("RemoveAnimation", RemoveAnimation);
@@ -72,6 +73,24 @@ public class ShibaInu_FrameAnimationControllerWrap
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 			string arg1 = ToLua.CheckString(L, 3);
 			obj.SetAssetDir(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetUseMainTex(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			ShibaInu.FrameAnimationController obj = (ShibaInu.FrameAnimationController)ToLua.CheckObject<ShibaInu.FrameAnimationController>(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+			obj.SetUseMainTex(arg0, arg1);
 			return 0;
 		}
 		catch (Exception e)
