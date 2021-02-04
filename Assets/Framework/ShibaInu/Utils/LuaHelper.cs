@@ -193,7 +193,8 @@ namespace ShibaInu
 
             pos = Stage.uiCanvas.worldCamera.ScreenToWorldPoint(pos);
             Vector3 s = Stage.uiCanvasTra.localScale;
-            tmpVec3.Set(pos.x / s.x, pos.y / s.y, Stage.uiCanvasTra.anchoredPosition3D.z);
+            //tmpVec3.Set(pos.x / s.x, pos.y / s.y, Stage.uiCanvasTra.anchoredPosition3D.z);
+            tmpVec3.Set(pos.x / s.x, pos.y / s.y, 0);
             return tmpVec3;
         }
 
@@ -207,7 +208,7 @@ namespace ShibaInu
         public static Vector3 ScreenToCanvasPoint(Vector3 pos, RectTransform parent = null)
         {
             if (parent == null) parent = Stage.uiLayer;
-            Camera cam = Stage.uiCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? Stage.uiCanvas.worldCamera : null;
+            Camera cam = Stage.uiCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : Stage.uiCanvas.worldCamera;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(parent, pos, cam, out Vector2 p);
             //tmpVec3.Set(p.x, p.y, Stage.uiCanvasTra.anchoredPosition3D.z);
             tmpVec3.Set(p.x, p.y, 0);
