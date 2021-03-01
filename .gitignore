@@ -13,6 +13,7 @@ Logs
 Assets/StreamingAssets
 Assets/StreamingAssets.meta
 Assets/Framework/App/Core/AstMsgProtocol.cs
+Assets/Framework/App/Core/AstMsgProtocol.cs.meta
 Assets/Framework/3rdParty/StompyRobot
 Assets/Framework/3rdParty/StompyRobot.meta
 --Assets/Framework/ToLua/Source/Generate/*
