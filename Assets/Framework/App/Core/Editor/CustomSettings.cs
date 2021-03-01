@@ -236,7 +236,7 @@ public static class CustomSettings
 
         // Project
         _GT(typeof(App.LuaHelper)),
-        _GT(typeof(App.AstMsgProtocol)),
+        //_GT(typeof(App.AstMsgProtocol)),
     };
 
 
