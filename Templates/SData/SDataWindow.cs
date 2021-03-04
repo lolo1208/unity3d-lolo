@@ -232,8 +232,8 @@ namespace GodEditor
             GUILayout.Space(150);
             if (GUILayout.Button("生成 SData，保存配置项", m_h30))
             {
-                GenerateSData();
                 SaveConfig();
+                GenerateSData();
                 AssetDatabase.Refresh();
             }
             GUILayout.Space(150);
@@ -295,7 +295,15 @@ namespace GodEditor
 
                         DataSet ds = new DataSet();
                         MySqlDataAdapter adapter = new MySqlDataAdapter("select * from " + tableName, conn);
-                        adapter.Fill(ds);
+                        try
+                        {
+                        	adapter.Fill(ds);
+                        }
+			            catch (Exception e)
+			            {
+			            	Debug.LogError("导出表：'" + tableName + "' 时出现异常！！！");
+			            	throw e;
+			            }
                         var table = ds.Tables[0];
                         var items = table.Rows;
                         var fields = table.Columns;
