@@ -161,6 +161,7 @@ public static class CustomSettings
 
 
         // UnityEngine
+        _GT(typeof(SystemInfo)),
         _GT(typeof(Behaviour)),
         _GT(typeof(MonoBehaviour)),
         _GT(typeof(GameObject)),

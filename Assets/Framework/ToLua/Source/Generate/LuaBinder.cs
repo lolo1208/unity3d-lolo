@@ -27,6 +27,7 @@ public static class LuaBinder
 		UnityEngine_AudioSourceWrap.Register(L);
 		UnityEngine_Rigidbody2DWrap.Register(L);
 		UnityEngine_SpriteRendererWrap.Register(L);
+		UnityEngine_SystemInfoWrap.Register(L);
 		UnityEngine_BehaviourWrap.Register(L);
 		UnityEngine_MonoBehaviourWrap.Register(L);
 		UnityEngine_GameObjectWrap.Register(L);

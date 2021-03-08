@@ -8,6 +8,7 @@ local type = type
 local error = error
 local pairs = pairs
 local concat = table.concat
+local EncodeURI = StringUtil.EncodeURI
 
 
 --
@@ -17,7 +18,7 @@ local concat = table.concat
 ---@field url string @ 网络地址
 ---@field timeout number @ 超时时间，默认值：5秒
 ---@field method string @ 请求方式，默认：如果有设置 post 数据，值为"POST"。否则"GET"
----@field postData table @ 要发送的 post 数据
+---@field postData table<string,string> | string @ 要发送的 post 数据
 ---@field callback Handler @ 请求结束时的回调 callback(successful, content)
 ---
 ---@field statusCode number @ 请求结束时的状态码
@@ -94,16 +95,14 @@ function HttpRequest:Send(url, callback, postData)
         else
             local pd = {}
             for k, v in pairs(self.postData) do
-                --request:AppedPostData(k, v)
                 if #pd > 0 then
                     pd[#pd + 1] = "&"
                 end
                 pd[#pd + 1] = k
                 pd[#pd + 1] = "="
-                pd[#pd + 1] = StringUtil.EncodeURI(v)
+                pd[#pd + 1] = EncodeURI(v)
             end
-            local str = concat(pd, "")
-            request.postData = str
+            request.postData = concat(pd, "")
         end
     else
         method = Constants.HTTP_METHOD_GET

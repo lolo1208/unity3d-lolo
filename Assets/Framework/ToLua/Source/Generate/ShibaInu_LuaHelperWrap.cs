@@ -318,13 +318,36 @@ public class ShibaInu_LuaHelperWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 3);
-			string arg0 = ToLua.CheckString(L, 1);
-			LuaFunction arg1 = ToLua.CheckLuaFunction(L, 2);
-			string arg2 = ToLua.CheckString(L, 3);
-			ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1, arg2);
-			ToLua.PushObject(L, o);
-			return 1;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				string arg1 = ToLua.CheckString(L, 2);
+				ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				string arg1 = ToLua.CheckString(L, 2);
+				LuaFunction arg2 = ToLua.CheckLuaFunction(L, 3);
+				ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.LuaHelper.SendHttpRequest");
+			}
 		}
 		catch (Exception e)
 		{

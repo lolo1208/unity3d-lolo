@@ -129,6 +129,8 @@ namespace App
                 overridden = true
             };
 
+            // 注：升级到 Unity 2019 使用 URP 时，ASTC_RGBA_6x6 和 ASTC_RGB_6x6 将不可用，
+            //    可使用 ASTC_6x6 来代替这两个值，Unity 会自动判定 alpha 来做压缩。
             bool isAndroid = platform == PLATFORM_ANDROID;
             if (importer.DoesSourceTextureHaveAlpha())
                 settings.format = isAndroid ? TextureImporterFormat.ETC2_RGBA8 : TextureImporterFormat.ASTC_RGBA_6x6;

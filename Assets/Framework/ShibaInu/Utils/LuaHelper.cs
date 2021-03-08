@@ -277,11 +277,11 @@ namespace ShibaInu
         /// <summary>
         /// 发送一条 http 请求，并返回对应 HttpRequest 实例
         /// </summary>
-        /// <returns>The http request.</returns>
-        /// <param name="url">URL.</param>
-        /// <param name="callback">Callback.</param>
-        /// <param name="postData">Post data.</param>
-        public static HttpRequest SendHttpRequest(string url, LuaFunction callback, string postData)
+        /// <param name="url"></param>
+        /// <param name="postData"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public static HttpRequest SendHttpRequest(string url, string postData = null, LuaFunction callback = null)
         {
             HttpRequest req = new HttpRequest { url = url };
 
