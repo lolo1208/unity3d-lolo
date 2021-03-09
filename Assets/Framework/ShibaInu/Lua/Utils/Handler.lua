@@ -4,7 +4,6 @@
 -- Author LOLO
 --
 
-local select = select
 local unpack = unpack
 local remove = table.remove
 
@@ -35,7 +34,7 @@ local Handler = class("Handler")
 --- 如果 Handler 只需要被执行一次，推荐使用 Handler.create() 创建
 ---@param callback fun()
 ---@param caller any
----@vararg any @ 附带的参数
+---@vararg any[] @ 附带的参数
 function Handler:Ctor(callback, caller, ...)
     self:SetTo(callback, caller, { ... }, false)
 
@@ -62,7 +61,7 @@ end
 
 --
 --- 执行回调
----@vararg any @ 附带的参数。在执行回调时，args 的值会添加到创建时传入的 args 之前。args.concat(self.args)
+---@vararg any[] @ 附带的参数。在执行回调时，args 的值会添加到创建时传入的 args 之前。args.concat(self.args)
 function Handler:Execute(...)
     if self.delayedTime ~= nil or self.delayedFrame ~= nil then
         CancelDelayedCall(self)
@@ -71,11 +70,12 @@ function Handler:Execute(...)
     local callback = self.callback
     local caller = self.caller
     local args = { ... } -- 连接参数，args 在前，self.args 在后
-    local argsCount = select("#", ...)
     local self_args = self.args
-    local self_argsCount = select("#", unpack(self_args))
-    for i = 1, self_argsCount do
-        args[argsCount + i] = self_args[i]
+    if self_args then
+        local argsCount = #args
+        for i = 1, #self_args do
+            args[argsCount + i] = self_args[i]
+        end
     end
 
     if self.once then
@@ -84,9 +84,9 @@ function Handler:Execute(...)
 
     if callback ~= nil then
         if caller ~= nil then
-            return callback(caller, unpack(args, 1, argsCount + self_argsCount))
+            return callback(caller, unpack(args))
         else
-            return callback(unpack(args, 1, argsCount + self_argsCount))
+            return callback(unpack(args))
         end
     end
 end
@@ -129,7 +129,7 @@ Handler._pool = {}
 --- 如果不想执行完毕被回收（比如：timer.timerHandler），请使用 new Hander() 来创建。或设置 once=false
 ---@param callback fun()
 ---@param caller any
----@param ... any[] @ 附带的参数
+---@vararg any[] @ 附带的参数
 ---@return Handler
 function Handler.Once(callback, caller, ...)
     local handler ---@type Handler

@@ -102,7 +102,7 @@ function HttpRequest:Send(url, callback, postData)
                 pd[#pd + 1] = "="
                 pd[#pd + 1] = EncodeURI(v)
             end
-            request.postData = concat(pd, "")
+            request.postData = concat(pd)
         end
     else
         method = Constants.HTTP_METHOD_GET

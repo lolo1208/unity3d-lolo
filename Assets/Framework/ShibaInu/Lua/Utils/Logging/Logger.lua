@@ -9,8 +9,6 @@ local xpcall = xpcall
 local traceback = debug.traceback
 local unpack = unpack
 
-local isJIT = isJIT
-
 local log = ShibaInu.Logger.Log
 local logWarning = ShibaInu.Logger.LogWarning
 local logError = ShibaInu.Logger.LogError
@@ -97,10 +95,16 @@ end
 
 
 
-
-
 -- try call
 local errorHandler = Logger.LogError
+
+-- 确定是否可以使用新版本（lua5.2 or newer）的 xpcall
+-- 使用新版本的 xpcall 可以减少一次匿名函数封装和 unpack() 调用
+local isLatestXpcall
+xpcall(function(isLatest)
+    isLatestXpcall = isLatest == true
+end, function()
+end, true)
 
 --
 --- 调用 fn，并捕获出现的错误（ try ... catch ）
@@ -108,27 +112,27 @@ local errorHandler = Logger.LogError
 ---@param caller any @ -可选- self 对象，默认为 nil
 ---@vararg any @ -可选- 附带的参数
 ---@return boolean @ 调用函数是否成功（是否没有报错）
-function Logger.TryCall(fn, caller, ...)
-    local status
-    if isJIT then
+if isLatestXpcall then
+    Logger.TryCall = function(fn, caller, ...)
         if caller == nil then
-            status = xpcall(fn, errorHandler, ...)
+            return xpcall(fn, errorHandler, ...)
         else
-            status = xpcall(fn, errorHandler, caller, ...)
+            return xpcall(fn, errorHandler, caller, ...)
         end
-    else
+    end
+else
+    Logger.TryCall = function(fn, caller, ...)
         local args = { ... }
         if caller == nil then
-            status = xpcall(function()
+            return xpcall(function()
                 fn(unpack(args))
             end, errorHandler)
         else
-            status = xpcall(function()
+            return xpcall(function()
                 fn(caller, unpack(args))
             end, errorHandler)
         end
     end
-    return status
 end
 
 

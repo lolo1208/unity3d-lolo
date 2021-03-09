@@ -317,7 +317,7 @@ end
 function Test_Network:AppendTcpLog(log, isUpdate)
     insert(self.tcpLogData, log)
     if isUpdate then
-        self.tcpLog.text = concat(self.tcpLogData, "")
+        self.tcpLog.text = concat(self.tcpLogData)
     end
 end
 
@@ -345,7 +345,7 @@ function Test_Network:UdpSocketEventHandler(event)
         insert(log, event.data)
     end
     insert(log, "\n")
-    self.udpLog.text = concat(log, "")
+    self.udpLog.text = concat(log)
 
     if event.type == SocketEvent.CONNECT_FAIL or event.type == SocketEvent.DISCONNECT then
         self.udpConnBtn.interactable = true
@@ -361,7 +361,7 @@ function Test_Network:Click_udpSendBtn(event)
         insert(log, "send : ")
         insert(log, data)
         insert(log, "\n")
-        self.udpLog.text = concat(log, "")
+        self.udpLog.text = concat(log)
 
         self.udpSocket:Send(data)
     end
