@@ -4,19 +4,65 @@
 -- Author LOLO
 --
 
+local type = type
+local tostring = tostring
+local concat = table.concat
 
 require("Core.functions")
 require("Core.variables")
-SetRandomseedWithNowTime()
+
 
 
 -- 全局函数和全局变量定义完成后，才能定义的内容 --
+local stringify = JSON.Stringify
+SetRandomseedWithNowTime()
+
+
 
 -- log function
 trycall = Logger.TryCall
 log = Logger.Log
 logWarning = Logger.LogWarning
 logError = Logger.LogError
+
+
+--
+local warningMsgCount = {}
+--- 添加一条警告日志。相同内容的 msg，最多警告 maximum 次。maximum 默认值：1
+function logWarningCount(msg, maximum)
+    local count = warningMsgCount[msg]
+    if count == nil then
+        count = 0
+        warningMsgCount[msg] = count
+    end
+    if count < (maximum or 1) then
+        warningMsgCount[msg] = count + 1
+        logWarning(msg)
+    end
+end
+
+--
+--- 添加（打印）一条 [Trace] 类型日志。
+--- 该函数可传入多个参数
+function trace(...)
+    local args = { ... }
+    for i = 1, #args do
+        args[i] = tostring(args[i])
+    end
+    log(concat(args, "    "))
+end
+
+--
+--- 添加（打印）一条 [Trace] 类型日志。
+--- 与 trace() 函数不同的是，传入的 lua table 将会被格式化成 JSON 字符串
+function dump(...)
+    local args = { ... }
+    for i = 1, #args do
+        args[i] = type(args[i]) == "table" and stringify(args[i]) or tostring(args[i])
+    end
+    log(concat(args, "    "))
+end
+
 
 
 -- PlayerPrefs on Editor
@@ -57,6 +103,7 @@ if isEditor then
         Save = playerPrefs.Save,
     }
 end
+
 
 
 -- 禁用协程
