@@ -111,7 +111,7 @@ function HttpDownload:EndedHandler(statusCode, errMsg)
     self.successful = statusCode > 199 and statusCode < 300
 
     -- 抛出 HttpEvent.ENDED 事件
-    self:DispatchEvent(event, Event.Get(HttpEvent, HttpEvent.ENDED))
+    self:DispatchEvent(Event.Get(HttpEvent, HttpEvent.ENDED))
 
     -- 执行 callback
     local callback = self.callback
