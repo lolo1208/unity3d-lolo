@@ -48,17 +48,27 @@ end
 ---@param go UnityEngine.GameObject
 ---@param prefabPath string @ prefab 路径
 function PrefabPool.Recycle(go, prefabPath)
-    if isnull(go) or _container == nil then
-        return
-    end
-
     local pool = _pool[prefabPath]
+    local poolCount
     if pool == nil then
         pool = {}
         _pool[prefabPath] = pool
+        poolCount = 0
+    else
+        poolCount = #pool
+        if poolCount > 100 then
+            if isEditor then
+                logWarningCount(Constants.W1003, 20)
+            end
+            return
+        end
     end
-    pool[#pool + 1] = go
+
+    if isnull(go) or _container == nil then
+        return
+    end
     go.transform:SetParent(_container, false)
+    pool[poolCount + 1] = go
 end
 
 

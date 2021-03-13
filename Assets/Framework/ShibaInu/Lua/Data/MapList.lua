@@ -313,22 +313,17 @@ end
 
 --=------------------------------[ other ]------------------------------=--
 
-local event = DataEvent.New(DataEvent.DATA_CHANGED)
-
 --- 抛出数据改变事件
 ---@param index number
 ---@param oldValue any
 ---@param newValue any
 function MapList:DispatchDataEvent(index, oldValue, newValue)
     if self.dispatchChanged then
-        event.data = nil
-        event.target = nil
-        event.isPropagationStopped = false
-
+        local event = Event.Get(DataEvent, DataEvent.DATA_CHANGED)
         event.index = index or -1
         event.oldValue = oldValue
         event.newValue = newValue
-        self:DispatchEvent(event, false, false)
+        self:DispatchEvent(event)
     end
 end
 

@@ -5,11 +5,8 @@
 --
 
 ---@class SocketEvent : Event
+---@field New fun():SocketEvent
 local SocketEvent = class("SocketEvent", Event)
-
-function SocketEvent:Ctor(type, data)
-    SocketEvent.super.Ctor(self, type, data)
-end
 
 
 
@@ -28,23 +25,19 @@ SocketEvent.DISCONNECT = "SocketEvent_Disconnect"
 SocketEvent.MESSAGE = "SocketEvent_Message"
 
 
-
 --
-local event = SocketEvent.New()
-
 --- 抛出 Socket 相关事件，由 TcpSocket.cs / UdpSocket.cs 调用
 ---@param socket TcpSocket | UdpSocket
 ---@param type string
 ---@param data any
 function SocketEvent.DispatchEvent(socket, type, data)
-    event.type = type
-    event.data = data
-    trycall(socket.DispatchEvent, socket, event, false, false)
+    trycall(socket.DispatchEvent, socket, Event.Get(SocketEvent, type, data))
 end
-
 
 --=----------------------------------------------------------------------=--
 
 
 
+--
 return SocketEvent
+

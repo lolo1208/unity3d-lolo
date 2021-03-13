@@ -5,15 +5,12 @@
 --
 
 ---@class AnimationEvent : Event
+---@field New fun():AnimationEvent
+---
 ---@field target Animation
 ---@field currentTarget Animation
 ---@field aniName string @ 当前动画的名称
 local AnimationEvent = class("AnimationEvent", Event)
-
-
-function AnimationEvent:Ctor(type, data)
-    AnimationEvent.super.Ctor(self, type, data)
-end
 
 
 
@@ -25,9 +22,10 @@ AnimationEvent.ANI_START = "AnimationEvent_AnimationStart"
 --- 动画播放完成
 AnimationEvent.ANI_COMPLETE = "AnimationEvent_AnimationComplete"
 
-
 --=----------------------------------------------------------------------=--
 
 
 
+--
 return AnimationEvent
+

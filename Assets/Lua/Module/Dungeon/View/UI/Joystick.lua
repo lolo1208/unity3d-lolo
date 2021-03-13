@@ -47,7 +47,6 @@ local JoystickEvent = require("Module.Dungeon.Model.JoystickEvent")
 local Joystick = class("Dungeon.Joystick", View)
 
 local tmpPos = Vector3.zero
-local event = JoystickEvent.New()
 
 local CHANGE_ANGLE_DELAY = 0.04 -- 变换角度间隔
 local MAX_ANGLE = 360 -- 每次最多变换角度数
@@ -349,11 +348,11 @@ end
 --
 --- 抛出摇杆事件
 function Joystick:DispatchJoystickEvent(type)
-    event.isPropagationStopped = false
-    event.type = type
+    ---@type Dungeon.Events.JoystickEvent
+    local event = Event.Get(JoystickEvent, type)
     event.using = self._moveing
     event.angle = self._curAngle
-    self:DispatchEvent(event, false, false)
+    self:DispatchEvent(event)
 end
 
 

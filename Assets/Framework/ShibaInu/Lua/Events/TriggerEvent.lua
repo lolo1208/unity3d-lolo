@@ -5,12 +5,10 @@
 --
 
 ---@class TriggerEvent : Event
+---@field New fun():TriggerEvent
+---
 ---@field data UnityEngine.Collider
 local TriggerEvent = class("TriggerEvent", Event)
-
-function TriggerEvent:Ctor(type, data)
-    TriggerEvent.super.Ctor(self, type, data)
-end
 
 
 
@@ -27,24 +25,18 @@ TriggerEvent.EXIT = "TriggerEvent_Exit"
 
 
 --
-local event = TriggerEvent.New()
-
 --- 抛出 Trigger 相关事件，由 TriggerEventDispatcher.cs 调用
 ---@param ed EventDispatcher
 ---@param type string
 ---@param data UnityEngine.Collider
 function TriggerEvent.DispatchEvent(ed, type, data)
-    event.target = nil
-    event.isPropagationStopped = false
-
-    event.type = type
-    event.data = data
-    trycall(ed.DispatchEvent, ed, event, false, false)
+    trycall(ed.DispatchEvent, ed, Event.Get(TriggerEvent, type, data))
 end
-
 
 --=----------------------------------------------------------------------=--
 
 
 
+--
 return TriggerEvent
+

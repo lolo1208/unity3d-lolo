@@ -24,8 +24,6 @@ TabNavigator.EVENT_VIEW_CHANGED = "TabNavigatorEvent_ViewChanged"
 local STATE_NORMAL = "Normal"     -- 按钮正常状态子节点的名称
 local STATE_SELECTED = "Selected" -- 按钮选中状态子节点的名称
 
-local event = Event.New()
-
 
 --
 --- 构造函数
@@ -113,11 +111,7 @@ function TabNavigator:SelectView(viewName)
     self._currentViewName = viewName
     SetSelect(self, viewName, true)
 
-    event.target = nil
-    event.isPropagationStopped = false
-    event.type = TabNavigator.EVENT_VIEW_CHANGED
-    event.data = viewName
-    self:DispatchEvent(event, false, false)
+    self:DispatchEvent(Event.Get(Event, TabNavigator.EVENT_VIEW_CHANGED, viewName))
 end
 
 

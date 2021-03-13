@@ -5,14 +5,11 @@
 --
 
 ---@class ResEvent : Event
+---@field New fun():ResEvent
+---
 ---@field assetPath string @ 当前事件对应的资源路径
 ---@field assetData UnityEngine.Object @ 当前事件对应的资源数据
 local ResEvent = class("ResEvent", Event)
-
-function ResEvent:Ctor(type, data)
-    ResEvent.super.Ctor(self, type, data)
-end
-
 
 
 
@@ -29,26 +26,22 @@ ResEvent.LOAD_ALL_COMPLETE = "ResEvent_LoadAllComplete"
 
 
 --
-local event = ResEvent.New()
-
 --- 抛出资源相关事件，由 ResManager.cs / AssetLoader.cs 调用
 ---@param type string
 ---@param path string
 ---@param data UnityEngine.Object
 function ResEvent.DispatchEvent(type, path, data)
-    event.data = nil
-    event.target = nil
-    event.isPropagationStopped = false
-
-    event.type = type
+    ---@type NativeEvent
+    local event = ResEvent.Get(ResEvent, type)
     event.assetPath = path
     event.assetData = data
-    trycall(DispatchEvent, nil, Res, event, false, false)
+    trycall(DispatchEvent, nil, Res, event)
 end
-
 
 --=----------------------------------------------------------------------=--
 
 
 
+--
 return ResEvent
+

@@ -28,15 +28,6 @@ local error = error
 ---
 local HttpDownload = class("HttpDownload", EventDispatcher)
 
-local event = HttpEvent.New(HttpEvent.ENDED)
-
-
---
---- 构造函数
-function HttpDownload:Ctor()
-    HttpDownload.super.Ctor(self)
-end
-
 
 --
 --- 开始下载
@@ -119,8 +110,8 @@ function HttpDownload:EndedHandler(statusCode, errMsg)
     self.errMsg = errMsg
     self.successful = statusCode > 199 and statusCode < 300
 
-    -- 抛出 HttpRequestEvent.ENDED 事件
-    self:DispatchEvent(event, false, false)
+    -- 抛出 HttpEvent.ENDED 事件
+    self:DispatchEvent(event, Event.Get(HttpEvent, HttpEvent.ENDED))
 
     -- 执行 callback
     local callback = self.callback

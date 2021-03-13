@@ -4,15 +4,11 @@
 -- Author LOLO
 --
 
-
---
 ---@class ListEvent : Event
+---@field New fun():ListEvent
+---
 ---@field item ItemRenderer @ 对应的 item
 local ListEvent = class("ListEvent", Event)
-
-function ListEvent:Ctor(type, data)
-    ListEvent.super.Ctor(self, type, data)
-end
 
 
 
@@ -40,6 +36,6 @@ ListEvent.UPDATE = "ListEvent_ListUpdate"
 
 
 
-
 --
 return ListEvent
+

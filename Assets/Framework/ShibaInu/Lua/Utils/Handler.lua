@@ -28,6 +28,10 @@ local remove = table.remove
 ---@field lambda fun(...) @ self:Execute(...) 的匿名函数
 local Handler = class("Handler")
 
+---@type Handler[] @ 缓存池
+local _pool = {}
+
+
 
 --
 --- 创建一个 Handler 对象
@@ -98,11 +102,23 @@ end
 ---@return void
 function Handler:Recycle()
     if self.inPool then
+        if isEditor then
+            error(Constants.E1003)
+        end
         return
     end
+
+    local poolCount = #_pool
+    if poolCount > 300 then
+        if isEditor then
+            logWarningCount(Constants.W1002, 20)
+        end
+        return
+    end
+
     self.inPool = true
     self:Clean()
-    Handler._pool[#Handler._pool + 1] = self
+    _pool[poolCount + 1] = self
 end
 
 --- 清除引用（不再执行 callback）
@@ -121,9 +137,6 @@ end
 
 --=------------------------------[ static ]------------------------------=--
 
----@type table<number, Handler> @ 缓存池
-Handler._pool = {}
-
 --- 创建，或从池中获取一个 Handler 对象。
 --- 注意：使用 Handler.once() 创建的 Handler 对象 once 属性默认为 true。
 --- 如果不想执行完毕被回收（比如：timer.timerHandler），请使用 new Hander() 来创建。或设置 once=false
@@ -133,8 +146,8 @@ Handler._pool = {}
 ---@return Handler
 function Handler.Once(callback, caller, ...)
     local handler ---@type Handler
-    if #Handler._pool > 0 then
-        handler = remove(Handler._pool)
+    if #_pool > 0 then
+        handler = remove(_pool)
         handler.inPool = false
         handler:SetTo(callback, caller, { ... }, true)
     else

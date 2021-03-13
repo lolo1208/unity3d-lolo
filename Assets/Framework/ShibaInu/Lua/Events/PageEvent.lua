@@ -4,9 +4,9 @@
 -- Author LOLO
 --
 
-
---
 ---@class PageEvent : Event
+---@field New fun():PageEvent
+---
 ---@field target ViewPager
 ---@field currentTarget ViewPager
 ---@field index number @ 页面对应的索引
@@ -16,8 +16,7 @@ local PageEvent = class("PageEvent", Event)
 
 
 
-
--- ---------------------[ static ]--------------------- --
+--=------------------------------[ static ]------------------------------=--
 
 --- 页面显示或隐藏
 PageEvent.VISIBILITY_CHANGED = "PageEvent_VisibilityChanged"
@@ -32,10 +31,7 @@ PageEvent.ADDED = "PageEvent_Added"
 PageEvent.REMOVED = "PageEvent_Removed"
 
 
-
 --
-local event = PageEvent.New()
-
 --- 抛出 PageEvent，由 C# VierPager.cs 调用
 ---@param ed EventDispatcher
 ---@param type string
@@ -43,18 +39,18 @@ local event = PageEvent.New()
 ---@param view UnityEngine.GameObject
 ---@param value boolean
 function PageEvent.DispatchEvent(ed, type, index, view, value)
-    event.data = nil
-    event.target = nil
-    event.isPropagationStopped = false
-
-    event.type = type
+    ---@type NativeEvent
+    local event = Event.Get(PageEvent, type)
     event.view = view
     event.index = index
     event.value = value
-    trycall(ed.DispatchEvent, ed, event, false, false)
+    trycall(ed.DispatchEvent, ed, event)
 end
+
+--=----------------------------------------------------------------------=--
 
 
 
 --
 return PageEvent
+

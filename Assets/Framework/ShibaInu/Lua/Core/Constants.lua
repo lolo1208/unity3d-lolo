@@ -63,7 +63,9 @@ local Constants = {
 
     -- 错误信息
     E1001 = "请勿创建全局变量或全局函数！",
-    E1002 = "协程已被禁用！协程的实现代码充满不稳定性，结果也常脱离预期。请使用其他方式实现业务逻辑！",
+    E1002 = "协程已被禁用！协程的实现代码充满不稳定性，结果也常背离预期。请使用其他方式实现业务逻辑！",
+    E1003 = "Handler 对象已在缓存池中，不能重复回收。重要：请务必检查调用 Recycle() 函数的相关逻辑！",
+    E1004 = "Event 对象已在缓存池中，不能重复回收。重要：请务必检查调用 Recycle() 函数的相关逻辑！",
 
     E2001 = "不存在的图层：%s",
     E2002 = "必须设定场景名称（moduleName）。className：%s",
@@ -80,9 +82,13 @@ local Constants = {
     E3006 = "HttpDownload.url 不能为 nil",
     E3007 = "HttpDownload.savePath 不能为 nil",
     E3008 = "HttpUpload.url 不能为 nil",
-    E3009 = "Httpupload.filePath 不能为 nil",
+    E3009 = "HttpUpload.filePath 不能为 nil",
     E3010 = "Countdown.intervalTime 的值不能为 %s",
 
+    -- 警告信息
+    W1001 = "{1} 缓存池中实例数量过多！请尽量使用 Event.Get() 来获取实例，减少 {1}.New() 的使用。",
+    W1002 = "Handler 缓存池中实例数量过多！请减少 Handler.New() 的使用。只会触发一次的回调，请使用 hander() 或 Handler.Once() 来获取 Handler 实例。",
+    W1003 = "PrefabPool 缓存池中 %s 的实例过多！请检查相关逻辑是否合理。",
 
 }
 

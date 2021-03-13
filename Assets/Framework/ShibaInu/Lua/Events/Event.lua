@@ -17,8 +17,11 @@ local remove = table.remove
 ---@field currentTarget EventDispatcher @ 当前事件的传递者（当前回调的注册对象）
 ---@field target EventDispatcher @ 事件的真正的抛出者
 ---@field isPropagationStopped boolean @ 事件传播（冒泡）是否已停止，[default:false]
+---@field inPool boolean @ 是否正在缓存池中
 local Event = class("Event")
 
+
+--
 --- 构造函数
 --- 注意：请使用 Event.Get() 和 Event.Recycle() 来创建和回收事件对象
 ---@param type string
@@ -32,7 +35,6 @@ end
 
 
 --=------------------------------[ static ]------------------------------=--
-
 
 --- 帧更新事件。该事件只会在 Stage 上抛出
 Event.UPDATE = "Event_Update"
@@ -56,8 +58,6 @@ Event.DEACTIVATED = "Event_Deactivated"
 Event.AUDIO_COMPLETE = "Event_AudioComplete"
 
 
-
-
 --
 --- 从池中获取一个事件对象
 ---@param EventClass Event @ 事件Class
@@ -74,6 +74,7 @@ function Event.Get(EventClass, type, data)
     end
     event.type = type
     event.data = data
+    event.inPool = false
     return event
 end
 
@@ -83,36 +84,48 @@ end
 ---@param event Event
 ---@return void
 function Event.Recycle(event)
+    if event.inPool then
+        if isEditor then
+            error(Constants.E1004)
+        end
+        return
+    end
+
+    local pool = event.__class._pool
+    local poolCount
+    if pool == nil then
+        pool = {}
+        event.__class._pool = pool
+        poolCount = 0
+    else
+        poolCount = #pool
+        if poolCount > 200 then
+            if isEditor then
+                logWarningCount(StringUtil.Substitute(Constants.W1001, event.__classname), 20)
+            end
+            return
+        end
+    end
+    event.inPool = true
+    pool[poolCount + 1] = event
+
     event.data = nil
     event.target = nil
     event.currentTarget = nil
     event.isPropagationStopped = false
-
-    local pool = event.__class._pool
-    if pool == nil then
-        pool = {}
-        event.__class._pool = pool
-    end
-    pool[#pool + 1] = event
 end
-
 
 
 
 --
-local acEvent = Event.New(Event.AUDIO_COMPLETE)
-
 --- 抛出 AUDIO_COMPLETE 事件，由 C# AudioManager.cs 调用
 ---@param path string
 function Event.DispatchAudioCompleteEvent(path)
-    acEvent.target = nil
-    acEvent.isPropagationStopped = false
-    acEvent.data = path
-    trycall(DispatchEvent, nil, Audio, acEvent, false, false)
+    trycall(DispatchEvent, nil, Audio, Event.Get(Event, Event.AUDIO_COMPLETE, path))
 end
-
 
 
 
 --
 return Event
+

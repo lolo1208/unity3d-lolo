@@ -32,16 +32,12 @@ local GpuAnimation = class("GpuAnimation", EventDispatcher)
 
 local pool = {}
 local props = UnityEngine.MaterialPropertyBlock.New()
-local event = AnimationEvent.New()
 
 local function DispatchAnimationEvent(ani, type)
-    event.data = nil
-    event.target = nil
-    event.isPropagationStopped = false
-
-    event.type = type
+    ---@type AnimationEvent
+    local event = Event.Get(AnimationEvent, type)
     event.aniName = ani.aniName
-    ani:DispatchEvent(event, false, false)
+    ani:DispatchEvent(event)
 end
 
 
@@ -209,3 +205,4 @@ end
 
 --
 return GpuAnimation
+

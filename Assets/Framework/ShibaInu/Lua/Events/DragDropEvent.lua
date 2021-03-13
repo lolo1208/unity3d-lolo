@@ -6,13 +6,10 @@
 --
 
 ---@class DragDropEvent : Event
+---@field New fun():DragDropEvent
+---
 ---@field data UnityEngine.EventSystems.PointerEventData  @ 指针事件附带的数据
 local DragDropEvent = class("DragDropEvent", Event)
-
-function DragDropEvent:Ctor(type, data)
-    DragDropEvent.super.Ctor(self, type, data)
-end
-
 
 
 
@@ -35,24 +32,18 @@ DragDropEvent.DROP = "DragDropEvent_Drop"
 
 
 --
-local event = DragDropEvent.New()
-
 --- 抛出拖放相关事件，由 DragDropEventDispatcher.cs 调用
 ---@param ed EventDispatcher
 ---@param type string
 ---@param data UnityEngine.EventSystems.PointerEventData
 function DragDropEvent.DispatchEvent(ed, type, data)
-    event.target = nil
-    event.isPropagationStopped = false
-
-    event.type = type
-    event.data = data
-    trycall(ed.DispatchEvent, ed, event, false, false)
+    trycall(ed.DispatchEvent, ed, Event.Get(DragDropEvent, type, data))
 end
-
 
 --=----------------------------------------------------------------------=--
 
 
 
+--
 return DragDropEvent
+

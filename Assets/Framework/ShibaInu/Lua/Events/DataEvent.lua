@@ -5,15 +5,12 @@
 --
 
 ---@class DataEvent : Event
+---@field New fun():DataEvent
+---
 ---@field index number @ 值在 MapList 中的索引
 ---@field oldValue any @ 原值
 ---@field newValue any @ 新值
 local DataEvent = class("DataEvent", Event)
-
-
-function DataEvent:Ctor(type, data)
-    DataEvent.super.Ctor(self, type, data)
-end
 
 
 
@@ -22,9 +19,10 @@ end
 --- 数据已改变
 DataEvent.DATA_CHANGED = "DataEvent_DataChanged"
 
-
 --=----------------------------------------------------------------------=--
 
 
 
+--
 return DataEvent
+

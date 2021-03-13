@@ -5,13 +5,10 @@
 --
 
 ---@class SceneEvent : Event
+---@field New fun():SceneEvent
+---
 ---@field sceneName string @ 当前正在加载的场景名称
 local SceneEvent = class("SceneEvent", Event)
-
-function SceneEvent:Ctor(type, data)
-    SceneEvent.super.Ctor(self, type, data)
-end
-
 
 
 
@@ -36,24 +33,20 @@ SceneEvent.CHANGED = "SceneEvent_Changed"
 
 
 --
-local event = SceneEvent.New()
-
 --- 抛出场景相关事件，由 Stage.cs 调用
 ---@param type string
 ---@param sceneName string
 function SceneEvent.DispatchEvent(type, sceneName)
-    event.data = nil
-    event.target = nil
-    event.isPropagationStopped = false
-
-    event.type = type
+    ---@type SceneEvent
+    local event = Event.Get(SceneEvent, type)
     event.sceneName = sceneName
-    trycall(DispatchEvent, nil, Stage, event, false, false)
+    trycall(DispatchEvent, nil, Stage, event)
 end
-
 
 --=----------------------------------------------------------------------=--
 
 
 
+--
 return SceneEvent
+

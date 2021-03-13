@@ -251,19 +251,14 @@ end
 
 --=------------------------------[ other ]------------------------------=--
 
-local event = ListEvent.New()
-
 --- 抛出列表相关事件
 ---@param type string
 ---@param item ItemRenderer
 function Picker:DispatchListEvent(type, item)
-    event.data = nil
-    event.target = nil
-    event.isPropagationStopped = false
-
-    event.type = type
+    ---@type ListEvent
+    local event = Event.Get(ListEvent, type)
     event.item = item
-    self:DispatchEvent(event, false, false)
+    self:DispatchEvent(event)
 end
 
 

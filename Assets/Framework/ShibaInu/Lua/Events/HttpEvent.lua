@@ -6,12 +6,7 @@
 
 ---@class HttpEvent : Event
 ---@field New fun():HttpEvent
----
 local HttpEvent = class("HttpEvent", Event)
-
-function HttpEvent:Ctor(type, data)
-    HttpEvent.super.Ctor(self, type, data)
-end
 
 
 
@@ -24,4 +19,6 @@ HttpEvent.ENDED = "HttpEvent_Ended"
 
 
 
+--
 return HttpEvent
+
