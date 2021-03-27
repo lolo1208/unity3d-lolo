@@ -15,7 +15,7 @@ namespace ShibaInu
 
         #region 向 Native 发送消息
 
-        public static void SendMessageToNative(string action, string msg)
+        public static void SendMessageToNative(string action, string msg = "")
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
 

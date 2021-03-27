@@ -12,9 +12,9 @@ import dalvik.system.DexFile;
 
 /**
  * 代理（反射）调用 SystemProperties 的相关方法
- * Created by LOLO on 2019/3/9.
+ * Created by LOLO on 2019/03/09.
  */
-public class SystemPropertiesProxy {
+public final class SystemPropertiesProxy {
 
     /**
      * Get the value for the given key.

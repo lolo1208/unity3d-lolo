@@ -14,9 +14,10 @@ import java.util.HashSet;
  * 解析项目包含的文件列表
  * 读取 Unity 项目 streamingAssets 目录下的文件
  * C#FileHelper 调用
- * Created by LOLO on 2018/6/5.
+ * Created by LOLO on 2018/06/05.
  */
-public class StreamingAssets {
+public final class StreamingAssets {
+
     // Android App AssetManager
     private static AssetManager sAssetMgr = null;
     // streamingAssets 包含的文件列表

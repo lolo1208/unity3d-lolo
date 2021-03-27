@@ -4,7 +4,6 @@ package shibaInu.app;
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import com.unity3d.player.UnityPlayer;
 
@@ -15,7 +14,7 @@ import java.util.HashMap;
  * 该工具类用于在 AndroidManifest.xml 中获取 meta-data 标签对应的数据
  * Created by LOLO on 2020/12/25.
  */
-public class MetaDataUtil {
+public final class MetaDataUtil {
 
 
     // 缓存内容
@@ -33,7 +32,7 @@ public class MetaDataUtil {
             return String.valueOf(cache.get(key));
 
         Activity activity = UnityPlayer.currentActivity;
-        String value = null;
+        String value = "";
         try {
             ApplicationInfo appInfo = activity.getPackageManager().getApplicationInfo(
                     activity.getPackageName(),
@@ -41,7 +40,6 @@ public class MetaDataUtil {
             );
             value = appInfo.metaData.getString(key);
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e("[BASE]", "getMetaDataFormApplication - key: " + key);
             e.printStackTrace();
         }
 

@@ -14,7 +14,7 @@ import com.unity3d.player.UnityPlayer;
  * Unity 与 Native 通信相关工具类
  * Created by LOLO on 2020/08/08.
  */
-public class NativeHelper {
+public final class NativeHelper {
 
     private static HashMap<Integer, UnityMsgCallback> callbacks = new HashMap<>();
     private static int callbackHandleID = 0;
@@ -77,6 +77,10 @@ public class NativeHelper {
      */
     public static void sendMessageToUnity(String action, String msg) {
         UnityPlayer.UnitySendMessage("[ShibaInu]", "OnReceiveNativeMessage", action + "#" + msg);
+    }
+
+    public static void sendMessageToUnity(String action) {
+        sendMessageToUnity(action, "");
     }
 
 

@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import com.unity3d.player.UnityPlayer;
 
@@ -17,7 +16,7 @@ import com.unity3d.player.UnityPlayer;
  * 设备相关工具类
  * Created by LOLO on 2020/12/25.
  */
-public class DeviceUtil {
+public final class DeviceUtil {
 
 
     /**
@@ -48,7 +47,6 @@ public class DeviceUtil {
                 deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
             }
         }
-        Log.i("[BASE]", "DeviceId: " + deviceId);
         return deviceId;
     }
 

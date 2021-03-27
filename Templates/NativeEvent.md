@@ -34,24 +34,40 @@ handleID = shibaInu.util.NativeHelper.registerUnityMsgCallback((action, msg) -> 
 ```
 
 
-#### OC
+#### Obj-C
 ```objc
 // 向 Unity 发送消息
-#include "NativeHelper.h"
+#import "NativeHelper.h"
 SendMessageToUnity(@"action", @"NSString 字符串");
 SendMessageToUnity("action", "char* 字符串");
 
 // 接收 Unity 发来的消息
-#include "NativeHelper.h"
-[[NSNotificationCenter defaultCenter]
- addObserverForName:UNITY_MSG_NOTIF_NAME object:nil queue:[NSOperationQueue mainQueue]
- usingBlock:^(NSNotification *notification){
+#import "NativeHelper.h"
+NSNotificationCenter * __weak center = [NSNotificationCenter defaultCenter];
+id __block token = [center addObserverForName:UNITY_MSG_NOTIF_NAME
+                                       object:nil
+                                        queue:[NSOperationQueue mainQueue]
+                                   usingBlock:^(NSNotification *notification) {
     NSDictionary *data = [notification object];
-    NSLog(@"action = %@", [data objectForKey:UNITY_MSG_KEY_ACT]);
-    NSLog(@"msg = %@", [data objectForKey:UNITY_MSG_KEY_MSG]);
+    NSString *act = [data objectForKey:UNITY_MSG_KEY_ACT];
+    NSString *msg = [data objectForKey:UNITY_MSG_KEY_MSG];
+    NSLog(@"action=%@, msg=%@", act, msg);
+    [center removeObserver:token];
 }];
 
-// 不使用匿名函数接收通知，或移除通知侦听，可参见：
+// or
+
+[[NSNotificationCenter defaultCenter] addObserverForName:UNITY_MSG_NOTIF_NAME
+                                                  object:nil
+                                                   queue:[NSOperationQueue mainQueue]
+                                              usingBlock:^(NSNotification *notification) {
+    NSDictionary *data = [notification object];
+    NSString *act = [data objectForKey:UNITY_MSG_KEY_ACT];
+    NSString *msg = [data objectForKey:UNITY_MSG_KEY_MSG];
+    NSLog(@"action=%@, msg=%@", act, msg);
+}];
+
+// 使用前先了解 NSNotificationCenter:
 // https://developer.apple.com/documentation/foundation/nsnotificationcenter
 ```
 

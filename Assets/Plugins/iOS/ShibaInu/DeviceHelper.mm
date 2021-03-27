@@ -1,7 +1,13 @@
-#include "UnityAppController.h"
-#include "UI/UnityView.h"
-#include "UIKit/UIFeedbackGenerator.h"
-#include "AudioToolbox/AudioServices.h"
+//
+// 设备相关工具类
+// Created by LOLO on 2019/03/07.
+//
+
+#import "UI/UnityView.h"
+#import "UIKit/UIFeedbackGenerator.h"
+#import "AudioToolbox/AudioServices.h"
+#import "UnityAppController.h"
+#import "NativeHelper.h"
 
 
 

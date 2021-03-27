@@ -33,9 +33,7 @@ function PrefabPool.Get(prefabPath, parent)
         if isnull(go) then
             return PrefabPool.Get(prefabPath, parent)
         end
-        if parent ~= nil then
-            SetParent(go.transform, parent)
-        end
+        SetParent(go.transform, parent)
         return go
     else
         return Instantiate(prefabPath, parent)
@@ -56,10 +54,11 @@ function PrefabPool.Recycle(go, prefabPath)
         poolCount = 0
     else
         poolCount = #pool
-        if poolCount > 100 then
+        if poolCount > 150 then
             if isEditor then
                 logWarningCount(Constants.W1003, 20)
             end
+            Destroy(go)
             return
         end
     end

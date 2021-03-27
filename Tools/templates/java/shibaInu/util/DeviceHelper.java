@@ -18,9 +18,9 @@ import com.unity3d.player.UnityPlayer;
 
 /**
  * 设备相关工具类
- * Created by LOLO on 2019/3/7.
+ * Created by LOLO on 2019/03/07.
  */
-public class DeviceHelper {
+public final class DeviceHelper {
 
     /**
      * 设备类型
