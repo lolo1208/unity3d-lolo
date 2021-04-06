@@ -178,7 +178,6 @@ namespace ShibaInu
             string path = s_loadAssetList.Dequeue();
             Type type = s_loadAssetTypeList.Dequeue();
             ResManager.DispatchEvent(ResManager.EVENT_START, path);
-            yield return new WaitForEndOfFrame();
 
             AssetInfo info = ResManager.GetAssetInfoWithAssetPath(path);
             s_abr = info.ab.LoadAssetAsync(Constants.ResDirPath + path, type);
