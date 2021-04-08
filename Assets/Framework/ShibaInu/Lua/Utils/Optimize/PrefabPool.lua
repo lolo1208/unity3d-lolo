@@ -4,7 +4,10 @@
 -- Author LOLO
 --
 
+local pairs = pairs
 local remove = table.remove
+local ceil = math.ceil
+local TimeUtil = TimeUtil
 
 
 --
@@ -12,7 +15,10 @@ local remove = table.remove
 local PrefabPool = {}
 
 local _pool = {}
-local _container ---@type UnityEngine.Transform
+---@type UnityEngine.Transform
+local _container
+---@type Timer
+local _clearTimer
 
 
 
@@ -23,21 +29,23 @@ local _container ---@type UnityEngine.Transform
 ---@return UnityEngine.GameObject
 function PrefabPool.Get(prefabPath, parent)
     local pool = _pool[prefabPath]
-    if pool == nil then
-        pool = {}
-        _pool[prefabPath] = pool
+    -- 更新缓存命中时间
+    if pool then
+        pool[1] = TimeUtil.totalDeltaTime
     end
 
-    if #pool > 0 then
-        local go = remove(pool)
-        if isnull(go) then
-            return PrefabPool.Get(prefabPath, parent)
-        end
-        SetParent(go.transform, parent)
-        return go
-    else
+    -- 没有池，或池里没对象，创建新实例并返回
+    if pool == nil or #pool < 2 then
         return Instantiate(prefabPath, parent)
     end
+
+    -- 返回池里的实例
+    local go = remove(pool)
+    if isnull(go) then
+        return PrefabPool.Get(prefabPath, parent)
+    end
+    SetParent(go.transform, parent)
+    return go
 end
 
 
@@ -46,28 +54,22 @@ end
 ---@param go UnityEngine.GameObject
 ---@param prefabPath string @ prefab 路径
 function PrefabPool.Recycle(go, prefabPath)
-    local pool = _pool[prefabPath]
-    local poolCount
-    if pool == nil then
-        pool = {}
-        _pool[prefabPath] = pool
-        poolCount = 0
-    else
-        poolCount = #pool
-        if poolCount > 150 then
-            if isEditor then
-                logWarningCount(Constants.W1003, 20)
-            end
-            Destroy(go)
-            return
-        end
-    end
-
-    if isnull(go) or _container == nil then
+    if isnull(go) then
         return
     end
+    if _container == nil then
+        Destroy(go)
+        return
+    end
+
+    local pool = _pool[prefabPath]
+    if pool == nil then
+        pool = { TimeUtil.totalDeltaTime }
+        _pool[prefabPath] = pool
+    end
+
     go.transform:SetParent(_container, false)
-    pool[poolCount + 1] = go
+    pool[#pool + 1] = go
 end
 
 
@@ -79,12 +81,46 @@ function PrefabPool.Clean(createGO)
         local go = GameObject.New("[PrefabPool]")
         go:SetActive(false)
         _container = go.transform
+
+        if _clearTimer == nil then
+            _clearTimer = Timer.New(60, Handler.New(PrefabPool.ClearUnused))
+            _clearTimer:Start()
+        end
     else
         _container = nil
     end
     _pool = {}
 end
 
+
+--
+--- （定时）清空长时间未使用的实例
+function PrefabPool.ClearUnused()
+    local time = TimeUtil.totalDeltaTime
+    local removeList
+    for path, pool in pairs(_pool) do
+        if time - pool[1] > 300 then
+            local count = ceil((#pool - 1) / 3) -- 每次清理 1/3
+            print(count, path, time)
+            if count == 0 then
+                if removeList == nil then
+                    removeList = {}
+                end
+                removeList[#removeList + 1] = path
+            else
+                for i = 1, count do
+                    Destroy(remove(pool))
+                end
+            end
+        end
+    end
+
+    if removeList then
+        for i = 1, #removeList do
+            _pool[removeList[i]] = nil
+        end
+    end
+end
 
 
 

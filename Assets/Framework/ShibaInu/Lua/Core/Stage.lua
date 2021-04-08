@@ -11,6 +11,7 @@ local remove = table.remove
 local floor = math.floor
 
 local Time = Time.uTime
+local TimeUtil = TimeUtil
 local stage = ShibaInu.Stage
 
 local cleanUI = stage.CleanUI

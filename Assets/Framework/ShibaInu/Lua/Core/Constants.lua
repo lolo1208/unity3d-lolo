@@ -88,7 +88,6 @@ local Constants = {
     -- 警告信息
     W1001 = "{1} 缓存池中实例数量过多！请尽量使用 Event.Get() 来获取实例，减少 {1}.New() 的使用。",
     W1002 = "Handler 缓存池中实例数量过多！请减少 Handler.New() 的使用。只会触发一次的回调，请使用 hander() 或 Handler.Once() 来获取 Handler 实例。",
-    W1003 = "PrefabPool 缓存池中 %s 的实例过多！请检查相关逻辑是否合理。",
 
 }
 
