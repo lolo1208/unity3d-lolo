@@ -101,7 +101,6 @@ function PrefabPool.ClearUnused()
     for path, pool in pairs(_pool) do
         if time - pool[1] > 300 then
             local count = ceil((#pool - 1) / 3) -- 每次清理 1/3
-            print(count, path, time)
             if count == 0 then
                 if removeList == nil then
                     removeList = {}
