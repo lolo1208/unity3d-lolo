@@ -68,7 +68,7 @@ end
 
 `游戏时间` 指的是基于 UnityEngine.Time. deltaTime 的时间，该时间与游戏进程（渲染进度）一致。
 
---
+---
 
 #### Handler
  - `NewHandler()` 获取一个会多次使用的 Handler 实例。
