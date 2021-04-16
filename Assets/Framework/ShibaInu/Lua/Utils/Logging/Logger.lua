@@ -111,7 +111,7 @@ end, true)
 ---@param fn fun() @ 传入的函数
 ---@param caller any @ -可选- self 对象，默认为 nil
 ---@vararg any @ -可选- 附带的参数
----@return boolean @ 调用函数是否成功（是否没有报错）
+---@return boolean, any @ 调用函数是否成功（是否没有报错），以及 fn 函数返回值
 if isLatestXpcall then
     Logger.TryCall = function(fn, caller, ...)
         if caller == nil then

@@ -37,7 +37,8 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   - `Assets/Framework/ShibaInu/Lua/Define/` 与 LuaAPI 目录类似。
 
 #### * 其他文档
-  - [NativeEvent / NativeHelper](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/NativeEvent.md)
+  - [NativeEvent / NativeHelper](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/NativeEvent-NativeHelper.md)
+  - [Handler / DelayedCall](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/Handler-DelayedCall.md)
 
 # 开发环境
 

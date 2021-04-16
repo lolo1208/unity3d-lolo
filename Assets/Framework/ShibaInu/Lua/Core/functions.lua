@@ -5,9 +5,10 @@
 --
 
 local type = type
+local pairs = pairs
 local setmetatable = setmetatable
 local remove = table.remove
-local sort = table.sort
+local unpack = unpack
 local getpeer = tolua.getpeer
 local setpeer = tolua.setpeer
 local _isnull = tolua.isnull
@@ -128,9 +129,9 @@ end
 ---  > InstantiateAsync("Prefabs/Test/Item2.prefab", "MyModuleName", handler, parentGO.transform)
 ---@param prefabPath string @ 预设路径
 ---@param groupName string @ 资源组名称
----@param handler Handler @ 异步加载完成，并创建实例成功后的回调
+---@param handlerRef HandlerRef @ 异步加载完成，并创建实例成功后的回调引用
 ---@param parent string | UnityEngine.Transform @ -可选- 图层名称 或 父节点(Transform)
-function InstantiateAsync(prefabPath, groupName, handler, parent)
+function InstantiateAsync(prefabPath, groupName, handlerRef, parent)
     ---@param event ResEvent
     local function loadResComplete(event)
         -- 加载预设资源完成
@@ -138,7 +139,7 @@ function InstantiateAsync(prefabPath, groupName, handler, parent)
             RemoveEventListener(Res, ResEvent.LOAD_COMPLETE, loadResComplete)
 
             -- 已经被取消了
-            if handler.callback == nil then
+            if not HasHandler(handlerRef) then
                 return
             end
 
@@ -151,7 +152,7 @@ function InstantiateAsync(prefabPath, groupName, handler, parent)
                 SetParent(go.transform, parent)
             end
 
-            handler:Execute(go)
+            CallHandler(handlerRef, go)
         end
     end
     AddEventListener(Res, ResEvent.LOAD_COMPLETE, loadResComplete)
@@ -391,21 +392,126 @@ end
 
 
 
---[ DelayedCall / CancelDelayedCall ]--
+-- [ Handler ] --
 
-local _dc_list = {} ---@type table<number, Handler>
-local _dc_addList = {} ---@type table<number, Handler>
-local _dc_removeList = {} ---@type table<Handler, boolean>
+---@type Handler[] @ 当前被使用的 HandlerRef 与 Handler 映射列表
+local _handlers = {}
 
--- Update 事件更新
+---@return Handler
+local function GetHandlerByRefID(refID)
+    local handler = _handlers[refID]
+    if handler == nil or handler.refID ~= refID then
+        _handlers[refID] = nil
+        if isEditor then
+            error(Constants.E1003)
+        end
+    end
+    return handler
+end
+
+--- 获取一个 [会多次使用] 的 Handler 实例。
+---@param callback fun() @ 回调函数
+---@param caller any @ -可选- 执行域（self）
+---@vararg any @ 附带的参数
+---@return HandlerRef
+function NewHandler(callback, caller, ...)
+    local handler = Handler.Get(callback, caller, false, ...)
+    _handlers[handler.refID] = handler
+    return handler.refID
+end
+
+--- 获取一个 [只会执行一次] 的 Handler 实例。
+---@param callback fun() @ 回调函数
+---@param caller any @ -可选- 执行域（self）
+---@vararg any @ 附带的参数
+---@return HandlerRef
+function handler(callback, caller, ...)
+    local handler = Handler.Get(callback, caller, true, ...)
+    _handlers[handler.refID] = handler
+    return handler.refID
+end
+
+---@return HandlerRef
+function OnceHandler(callback, caller, ...)
+    return handler(callback, caller, ...)
+end
+
+--- 执行回调。
+---@param refID HandlerRef @ 创建 Handler 时返回的引用 ID
+---@vararg any @ 附带的参数
+---@return any
+function CallHandler(refID, ...)
+    local handler = GetHandlerByRefID(refID)
+    if handler ~= nil then
+        if handler.once then
+            _handlers[refID] = nil
+        end
+        return handler:Execute(...)
+    end
+end
+
+--- 执行回调，并捕获回调函数中产生的错误
+---@param refID HandlerRef @ 创建 Handler 时返回的引用 ID
+---@vararg any @ 附带的参数
+---@return boolean, any @ 调用函数是否成功（是否没有报错），以及 callback 函数返回值。
+function TryCallHandler(refID, ...)
+    local handler = GetHandlerByRefID(refID)
+    if handler ~= nil then
+        if handler.once then
+            _handlers[refID] = nil
+        end
+        return trycall(handler.Execute, handler, ...)
+    end
+    return false
+end
+
+--- 取消回调，清除引用，并将 Handler 回收到池中。
+---@param refID HandlerRef @ 创建 Handler 时返回的引用 ID
+function CancelHandler(refID)
+    local handler = _handlers[refID]
+    if handler ~= nil and handler.refID == refID then
+        _handlers[refID] = nil
+        handler:Clean()
+    end
+end
+
+--- 回调是否可用（是否为 不是已被调用的单次回调，或没有被取消）
+---@param refID HandlerRef @ 创建 Handler 时返回的引用 ID
+---@return boolean
+function HasHandler(refID)
+    local handler = _handlers[refID]
+    return handler ~= nil or handler.refID == refID
+end
+
+--- 获取执行回调的匿名函数。
+---@return fun()
+function GetHandlerLambda(refID)
+    local handler = GetHandlerByRefID(refID)
+    if handler ~= nil then
+        return handler.lambda
+    end
+    return nil
+end
+
+--
+
+
+
+--[ DelayedCall ]--
+
+local _dc_runningList = {} ---@type HandlerRef[]
+local _dc_addList = {} ---@type table<HandlerRef, boolean>
+local _dc_removeList = {} ---@type table<HandlerRef, boolean>
+
+-- 更新延迟回调 Event.UPDATE
 local function UpdateDelayedCall(event)
-    local num = #_dc_list
+    local num = #_dc_runningList
 
-    -- 从 add 列表中取出，放到 call 列表中
-    local addListNum = #_dc_addList
-    for i = addListNum, 1, -1 do
+    -- 将 add 列表中标记的回调放到 running 列表中
+    for refID, flag in pairs(_dc_addList) do
         num = num + 1
-        _dc_list[num] = remove(_dc_addList, i)
+        _dc_addList[refID] = nil
+        _dc_runningList[num] = refID
     end
 
     -- 没有 delayed call
@@ -414,167 +520,140 @@ local function UpdateDelayedCall(event)
         return
     end
 
-    -- 按 delayedTime 升序
-    if addListNum > 0 then
-        sort(_dc_list, function(a, b)
-            -- 被 cancel 了，目前还在 _dc_list 中
-            if a.delayedTime == nil or b.delayedTime == nil then
-                return false
-            end
-            return a.delayedTime > b.delayedTime
-        end)
-    end
-
     local time = TimeUtil.time
     local totalDeltaTime = TimeUtil.totalDeltaTime
     local frameCount = TimeUtil.frameCount
     for i = num, 1, -1 do
-        local handler = _dc_list[i]
+        local refID = _dc_runningList[i]
+        local handler = _handlers[refID]
 
-        -- handler 在 remove 列表中
-        if _dc_removeList[handler] then
-            _dc_removeList[handler] = nil
-            remove(_dc_list, i)
-            handler:Recycle()
+        -- handler 在 remove 列表中 / handler 不存在 / refID 不匹配
+        if _dc_removeList[refID] or handler == nil or handler.refID ~= refID then
+            remove(_dc_runningList, i)
+            _dc_removeList[refID] = nil
+            CancelHandler(refID)
 
         elseif handler.delayedFrame ~= nil then
-            -- 帧数已满足，执行回调
+            -- 延迟帧数已满足，执行回调
             if frameCount - handler.delayedStartFrame >= handler.delayedFrame then
-                remove(_dc_list, i)
-                handler.delayedFrame = nil
-                trycall(handler.Execute, handler)
+                remove(_dc_runningList, i)
+                TryCallHandler(refID)
             end
 
         else
             if handler.useDeltaTime then
-                -- deltaTime 已满足，执行回调
+                -- 延迟游戏时间已满足，执行回调
                 if totalDeltaTime - handler.delayedStartTime >= handler.delayedTime then
-                    remove(_dc_list, i)
-                    handler.delayedTime = nil
-                    trycall(handler.Execute, handler)
+                    remove(_dc_runningList, i)
+                    TryCallHandler(refID)
                 end
             else
-                -- 时间已满足，执行回调
+                -- 延迟真实时间已满足，执行回调
                 if time - handler.delayedStartTime >= handler.delayedTime then
-                    remove(_dc_list, i)
-                    handler.delayedTime = nil
-                    trycall(handler.Execute, handler)
+                    remove(_dc_runningList, i)
+                    TryCallHandler(refID)
                 end
             end
         end
     end
 end
 
---- 延迟指定时间后，执行一次回调
+-- 更新 refID 对应的延迟回调在 add 或 remove 列表的标记
+local function MarkDelayedCallState(refID, isAdd)
+    if isAdd then
+        _dc_addList[refID] = true
+        _dc_removeList[refID] = nil
+    else
+        _dc_addList[refID] = nil
+        _dc_removeList[refID] = true
+    end
+end
+
+-- 创建一个延时回调
+local function CreateDelayedCall(callback, caller, delay, useDeltaTime, frameCount, ...)
+    local handler = Handler.Get(callback, caller, true, ...)
+    _handlers[handler.refID] = handler
+
+    handler.delayedFrame = frameCount
+    if frameCount then
+        handler.delayedStartFrame = TimeUtil.frameCount
+    else
+        handler.delayedTime = delay
+        handler.delayedStartTime = useDeltaTime and TimeUtil.totalDeltaTime or TimeUtil.time
+        handler.useDeltaTime = useDeltaTime
+    end
+
+    MarkDelayedCallState(handler.refID, true)
+    AddEventListener(Stage, Event.UPDATE, UpdateDelayedCall, nil, Constants.PRIORITY_HIGH)
+    return handler.refID
+end
+
+--- 在指定真实时间（自然时间）后执行回调。
+--- 该时间不受 timeScale，暂停，卡顿，切入后台 等因素的影响。
 ---@param delay number @ 延迟时间，秒
 ---@param callback fun() @ 回调函数
 ---@param caller any @ -可选- 执行域（self）
 ---@vararg any @ -可选- 附带的参数
----@return Handler
+---@return HandlerRef
+function DelayedRealTimeCall(delay, callback, caller, ...)
+    return CreateDelayedCall(callback, caller, delay, false, nil, ...)
+end
+
+--- 在指定游戏时间（deltaTime）后执行回调。
+--- 该时间是基于 UnityEngine.Time. deltaTime 的时间，与游戏进程一致。
+---@param delay number @ 延迟时间，秒
+---@param callback fun() @ 回调函数
+---@param caller any @ -可选- 执行域（self）
+---@vararg any @ -可选- 附带的参数
+---@return HandlerRef
 function DelayedCall(delay, callback, caller, ...)
-    local handler = Handler.Once(callback, caller)
-    handler.args = { ... }
-    handler.delayedTime = delay
-    handler.delayedStartTime = TimeUtil.time
-    handler.useDeltaTime = false
-    _dc_addList[#_dc_addList + 1] = handler
-    AddEventListener(Stage, Event.UPDATE, UpdateDelayedCall)
-    return handler
+    return CreateDelayedCall(callback, caller, delay, true, nil, ...)
 end
 
---- 延迟到下一帧后，执行一次回调
----@param callback fun() @ 回调函数
----@param caller any @ -可选- 执行域（self）
----@param frameCount number @ -可选- 延迟帧数，默认：1帧
----@vararg any @ -可选- 附带的参数
----@return Handler
-function DelayedFrameCall(callback, caller, frameCount, ...)
-    local handler = DelayedCall(0, callback, caller, ...)
-    handler.delayedFrame = frameCount or 1
-    handler.delayedStartFrame = TimeUtil.frameCount
-    return handler
-end
-
---- 延迟指定 deltaTime 后，执行一次回调。该时间会受到 timeScale，暂停，卡顿，切入后台 等因素等影响
----@param delay number @ 延迟时间，秒
----@param callback fun() @ 回调函数
----@param caller any @ -可选- 执行域（self）
----@vararg any @ -可选- 附带的参数
----@return Handler
+---@return HandlerRef
 function DelayedDeltaTimeCall(delay, callback, caller, ...)
-    local handler = DelayedCall(delay, callback, caller, ...)
-    handler.delayedStartTime = TimeUtil.totalDeltaTime
-    handler.useDeltaTime = true
-    return handler
+    return DelayedCall(delay, callback, caller, ...)
 end
 
---- 延迟指定 时间 或 deltaTime 后，如果 target 不为 null，执行一次回调（如果 target 为 null，将不会执行回调）
+--- 在指定游戏帧数后执行回调。
+---@param callback fun() @ 回调函数
+---@param caller any @ -可选- 执行域（self）
+---@param frameCount number @ -可选- 延迟帧数，默认：1
+---@vararg any @ -可选- 附带的参数
+---@return HandlerRef
+function DelayedFrameCall(callback, caller, frameCount, ...)
+    return CreateDelayedCall(callback, caller, nil, nil, frameCount or 1, ...)
+end
+
+--- 在指定 游戏时间（默认） 或 真实时间 后执行回调。
+--- 届时，如果指定的 target 值为 null，将会取消（不执行）回调。
 ---@param delay number @ 延迟时间，秒
 ---@param callback fun() @ 回调函数
 ---@param target any @ C# 对象
 ---@param caller any @ -可选- 执行域（self）
----@param useDeltaTime boolean @ -可选- 是否使用 deltaTime 来计算延时，默认：false
+---@param useDeltaTime boolean @ -可选- 是否使用 deltaTime 来计算延时，默认：true
 ---@vararg any @ -可选- 附带的参数
----@return Handler
+---@return HandlerRef
 function DelayedCallWithTarget(delay, callback, target, caller, useDeltaTime, ...)
-    local oHandler = Handler.Once(callback, caller)
-    oHandler.args = { ... }
+    local args = { ... }
     local checker = function()
         if not isnull(target) then
-            trycall(oHandler.Execute, oHandler)
+            trycall(callback, caller, unpack(args))
         end
     end
-
-    local handler = DelayedCall(delay, checker)
-    if useDeltaTime then
-        handler.delayedStartTime = TimeUtil.totalDeltaTime
-        handler.useDeltaTime = true
-    end
-    return handler
+    return CreateDelayedCall(checker, nil, delay, useDeltaTime ~= false, nil)
 end
 
---- 取消延迟回调
----@param handler Handler
----@return void
-function CancelDelayedCall(handler)
-    if handler == nil or (handler.delayedTime == nil and handler.delayedFrame == nil) then
-        return
+--- 取消延迟回调，清除引用，并将对应的 Handler 回收到池中。
+---@param refID HandlerRef
+function CancelDelayedCall(refID)
+    local handler = _handlers[refID]
+    if handler ~= nil and handler.refID == refID then
+        _handlers[refID] = nil
+        MarkDelayedCallState(refID, false)
+        handler:Clean()
     end
-    handler.delayedTime = nil
-    handler.delayedStartTime = nil
-    handler.delayedFrame = nil
-    handler.delayedStartFrame = nil
-    handler.once = false -- 避免立即回收到池，由 UpdateDelayedCall() 来调用 Recycle() 回收
-
-    -- handler 在 add 列表中
-    for i = 1, #_dc_addList do
-        if _dc_addList[i] == handler then
-            remove(_dc_addList, i)
-            return
-        end
-    end
-
-    _dc_removeList[handler] = true -- 标记为需移除
 end
-
---- 快速创建一个 指定执行域（self），携带参数的 Handler 对象
----@param callback fun() @ 回调函数
----@param caller any @ 执行域（self）
----@param once boolean @ 是否只用执行一次，默认：true
----@vararg any @ 附带的参数
----@return Handler
-function handler(callback, caller, once, ...)
-    if once == nil then
-        once = true
-    end
-
-    local handler = Handler.Once(callback, caller)
-    handler.once = once
-    handler.args = { ... }
-    return handler
-end
-
---
 
 
 

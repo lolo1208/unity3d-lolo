@@ -19,13 +19,13 @@ local round = MathUtil.Round
 ---@field delay number @ 切换间隔
 ---@field count number @ 总切换次数
 ---@field value number @ 对应的值
----@field callback Handler @ 完成时的回调
+---@field callback HandlerRef @ 完成时的回调
 ---@field formatText fun(value:number):string
 ---@field curValue number @ 递增过程中的当前值
 ---@field addValue number @ 每次递增的值
 ---@field isBlink boolean @ 是否闪烁
 ---@field isRoll boolean @ 是否滚动
----@field dc Handler
+---@field dc HandlerRef
 ---
 local NumberText = class("NumberText")
 
@@ -62,7 +62,7 @@ end
 function NumberText:SetValue(value, callback)
     if value == self.value then
         if callback ~= nil then
-            callback:Execute(self.value)
+            CallHandler(self.callback, self.value)
         end
         return
     end
@@ -75,7 +75,7 @@ function NumberText:SetValue(value, callback)
         self.value = value
         self:ShowText(value)
         if callback ~= nil then
-            callback:Execute(self.value)
+            CallHandler(self.callback, self.value)
         end
         return
     end
@@ -121,7 +121,7 @@ function NumberText:EffectEnd(isUp)
     local callback = self.callback
     self.callback = nil
     if callback ~= nil then
-        callback:Execute(self.value, isUp)
+        CallHandler(callback, self.value, isUp)
     end
 end
 

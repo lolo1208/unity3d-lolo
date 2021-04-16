@@ -24,7 +24,7 @@ local function TimerHandler()
     _text.text = fps .. " FPS,   " .. Stats.netDelay .. " ms"
 end
 
-local _timer = Timer.New(1, Handler.New(TimerHandler))
+local _timer = Timer.New(1, NewHandler(TimerHandler))
 
 --
 

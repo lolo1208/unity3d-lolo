@@ -14,7 +14,7 @@ local error = error
 ---@field url string @ 文件网络地址
 ---@field savePath string @ 本地保存路径
 ---@field timeout number @ 超时时间，默认值：5秒
----@field callback Handler @ 请求结束时的回调 callback(successful, errMsg)
+---@field callback HandlerRef @ 请求结束时的回调 callback(successful, errMsg)
 ---
 ---@field statusCode number @ 请求结束时的状态码
 ---@field successful boolean @ 请求是否成功（statusCode 介于 200 - 299 之间）
@@ -24,7 +24,7 @@ local error = error
 ---@field protected _proxyPort number @ 代理端口
 ---@field protected _speed number @ 下载结束时，记录的最终速度
 ---@field protected _download ShibaInu.HttpDownload
----@field protected _handler Handler
+---@field protected _handlerRef HandlerRef
 ---
 local HttpDownload = class("HttpDownload", EventDispatcher)
 
@@ -33,7 +33,7 @@ local HttpDownload = class("HttpDownload", EventDispatcher)
 --- 开始下载
 ---@param url string @ -可选- 文件网络地址
 ---@param savePath string @ -可选- 本地保存路径
----@param callback Handler @ -可选- 请求结束时的回调 callback(successful, errMsg)
+---@param callback HandlerRef @ -可选- 请求结束时的回调 callback(successful, errMsg)
 function HttpDownload:Start(url, savePath, callback)
     if callback ~= nil then
         self.callback = callback
@@ -45,9 +45,9 @@ function HttpDownload:Start(url, savePath, callback)
 
 
     -- 取消正在发送的请求
-    if self._handler ~= nil then
-        self._handler:Recycle()
-        self._handler = nil
+    if self._handlerRef ~= nil then
+        CancelHandler(self._handlerRef)
+        self._handlerRef = nil
     end
     local download = self._download
     if download ~= nil then
@@ -91,8 +91,8 @@ function HttpDownload:Start(url, savePath, callback)
     end
 
     -- 发送请求
-    self._handler = handler(self.EndedHandler, self)
-    download:SetLuaCallback(self._handler.lambda)
+    self._handlerRef = handler(self.EndedHandler, self)
+    download:SetLuaCallback(GetHandlerLambda(self._handlerRef))
     download:Start()
 end
 
@@ -102,7 +102,7 @@ end
 ---@param statusCode number
 ---@param errMsg string
 function HttpDownload:EndedHandler(statusCode, errMsg)
-    self._handler = nil
+    self._handlerRef = nil
     self._speed = self._download.speed
     self._download = nil
 
@@ -117,7 +117,7 @@ function HttpDownload:EndedHandler(statusCode, errMsg)
     local callback = self.callback
     if callback ~= nil then
         self.callback = nil
-        callback:Execute(self.successful, errMsg)
+        CallHandler(callback, self.successful, errMsg)
     end
 end
 

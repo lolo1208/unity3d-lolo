@@ -28,7 +28,7 @@ function Animation:Ctor(animator, defaultAniName)
     self.isDispatchEvent = false
 
     self.animator = animator
-    self.completeTimer = Timer.New(1, Handler.New(self.CompleteHandler, self))
+    self.completeTimer = Timer.New(1, NewHandler(self.CompleteHandler, self))
 
     if defaultAniName ~= nil then
         self:Play(defaultAniName)

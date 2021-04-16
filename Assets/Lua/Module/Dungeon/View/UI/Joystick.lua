@@ -72,7 +72,7 @@ function Joystick:Ctor(go)
     self._uiWidth = canvasRect.rect.width
     self._uiHeight = canvasRect.rect.height
 
-    self._angleTimer = Timer.New(CHANGE_ANGLE_DELAY, Handler.New(self.AngleTimerHandler, self))
+    self._angleTimer = Timer.New(CHANGE_ANGLE_DELAY, NewHandler(self.AngleTimerHandler, self))
     self._curAngle = 0
     self._tarAngle = 0
     self._moveing = false

@@ -16,7 +16,7 @@ local pairs = pairs
 ---@field filePath string @ 本地文件地址
 ---@field timeout number @ 超时时间，默认值：5秒
 ---@field postData table @ 要发送的 post 数据
----@field callback Handler @ 请求结束时的回调 callback(successful, content)
+---@field callback HandlerRef @ 请求结束时的回调 callback(successful, content)
 ---
 ---@field statusCode number @ 请求结束时的状态码
 ---@field successful boolean @ 请求是否成功（statusCode 介于 200 - 299 之间）
@@ -26,7 +26,7 @@ local pairs = pairs
 ---@field protected _proxyPort number @ 代理端口
 ---@field protected _speed number @ 上传结束时，记录的最终速度
 ---@field protected _upload ShibaInu.HttpUpload
----@field protected _handler Handler
+---@field protected _handlerRef HandlerRef
 ---
 local HttpUpload = class("HttpUpload", EventDispatcher)
 
@@ -35,7 +35,7 @@ local HttpUpload = class("HttpUpload", EventDispatcher)
 --- 开始上传
 ---@param url string @ -可选- 网络地址
 ---@param filePath string @ -可选- 本地文件地址
----@param callback Handler @ -可选- 请求结束时的回调 callback(successful, content)
+---@param callback HandlerRef @ -可选- 请求结束时的回调 callback(successful, content)
 ---@param postData table<string, string> @ -可选- 要发送的 post 数据列表
 function HttpUpload:Start(url, filePath, callback, postData)
     if callback ~= nil then
@@ -48,9 +48,9 @@ function HttpUpload:Start(url, filePath, callback, postData)
 
 
     -- 取消正在发送的请求
-    if self._handler ~= nil then
-        self._handler:Recycle()
-        self._handler = nil
+    if self._handlerRef ~= nil then
+        CancelHandler(self._handlerRef)
+        self._handlerRef = nil
     end
     local upload = self._upload
     if upload ~= nil then
@@ -106,8 +106,8 @@ function HttpUpload:Start(url, filePath, callback, postData)
     end
 
     -- 发送请求
-    self._handler = handler(self.EndedHandler, self)
-    upload:SetLuaCallback(self._handler.lambda)
+    self._handlerRef = handler(self.EndedHandler, self)
+    upload:SetLuaCallback(GetHandlerLambda(self._handlerRef))
     upload:Start()
 end
 
@@ -117,7 +117,7 @@ end
 ---@param statusCode number
 ---@param content string
 function HttpUpload:EndedHandler(statusCode, content)
-    self._handler = nil
+    self._handlerRef = nil
     self._speed = self._upload.speed
     self._upload = nil
 
@@ -132,7 +132,7 @@ function HttpUpload:EndedHandler(statusCode, content)
     local callback = self.callback
     if callback ~= nil then
         self.callback = nil
-        callback:Execute(self.successful, content)
+        CallHandler(callback, self.successful, content)
     end
 end
 

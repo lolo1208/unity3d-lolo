@@ -21,7 +21,7 @@ local tmpVec3 = Vector3.zero
 ---@field New fun():Effects.UI.FlyTo
 ---
 ---@field target UnityEngine.Transform @ 应用该效果的目标
----@field onComplete Handler @ 飘动结束后的回调。调用该方法时，将会传递一个boolean类型的参数，表示效果是否正常结束。onComplete(complete:boolean, flyTo:FlyTo)
+---@field onComplete HandlerRef @ 飘动结束后的回调。调用该方法时，将会传递一个boolean类型的参数，表示效果是否正常结束。onComplete(complete:boolean, flyTo:FlyTo)
 ---@field running boolean @ 是否正在运行中
 ---@field once boolean @ 是否只播放一次，播放完毕后，将会自动回收到池中
 ---@field recycleKey string @ 播放结束后，target 回收到 PrefabPool 时使用的 prefabPath（默认值：nil 不回收）
@@ -143,7 +143,7 @@ function FlyTo:End(complete)
     local handler = self.onComplete
     self.onComplete = nil
     if handler ~= nil then
-        handler:Execute(complete == true, self)
+        CallHandler(handler, complete == true, self)
     end
     self.target = nil
 end
@@ -160,7 +160,7 @@ end
 ---@param target UnityEngine.Transform @ -可选- 应用该效果的目标
 ---@param pos Vector3 @ -可选- 最终移动到该位置
 ---@param recycleKey string @ -可选- 播放结束后，target 回收到 PrefabPool 时使用的 prefabPath（默认值：nil 不回收）
----@param onComplete Handler @ -可选- 飘动结束后的回调。onComplete(complete:boolean, float:IFloat)
+---@param onComplete HandlerRef @ -可选- 飘动结束后的回调。onComplete(complete:boolean, float:IFloat)
 ---@param start boolean @ -可选- 是否立即开始播放。默认：true
 function FlyTo.Once(target, pos, recycleKey, onComplete, start)
     local count = #_pool

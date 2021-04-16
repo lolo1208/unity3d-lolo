@@ -11,12 +11,12 @@ local ceil = math.ceil
 
 --
 ---@class Countdown
----@field New fun(hander:Handler, totalTime:number, intervalTime:number):Countdown
+---@field New fun(handler:HandlerRef, totalTime:number, intervalTime:number):Countdown
 ---
 ---@field _totalTime number @ 倒计时总时间
 ---@field _intervalTime number @ 间隔时间
 ---@field _startTime number @ 倒计时开始时间（设置totalTime的那一刻）
----@field _hander Handler @ 定时器运行时的回调函数。回调时会传递一个 boolean 类型的参数，表示倒计时是否已经结束
+---@field _handler HandlerRef @ 定时器运行时的回调函数。回调时会传递一个 boolean 类型的参数，表示倒计时是否已经结束
 ---@field _running boolean @ 倒计时工具是否正在运行中
 ---@field _timer Timer @ 用于倒计时
 local Countdown = class("Countdown")
@@ -25,11 +25,11 @@ local Countdown = class("Countdown")
 --
 --- 创建一个 Handler 对象
 --- 如果 Handler 只需要被执行一次，推荐使用 Handler.create() 创建
----@param hander Handler @ 回调
+---@param handler HandlerRef @ 回调
 ---@param totalTime number @ 总时间
 ---@param intervalTime number @ 间隔时间。默认：1000
-function Countdown:Ctor(hander, totalTime, intervalTime)
-    self._hander = hander;
+function Countdown:Ctor(handler, totalTime, intervalTime)
+    self._handler = handler;
     self._intervalTime = intervalTime or 1000
     self:SetTotalTime(totalTime or 0)
 end
@@ -49,7 +49,7 @@ function Countdown:Start(totalTime)
 
     self._running = true
     if self._timer == nil then
-        self._timer = Timer.New(self._intervalTime / 1000, Handler.New(self.TimerHandler, self))
+        self._timer = Timer.New(self._intervalTime / 1000, NewHandler(self.TimerHandler, self))
     else
         self._timer:SetDelay(self._intervalTime / 1000)
     end
@@ -69,8 +69,8 @@ function Countdown:TimerHandler()
         self._timer:Stop()
     end
 
-    if self._hander ~= nil then
-        self._hander:Execute(isEnd)
+    if self._handler ~= nil then
+        CallHandler(self._handler, isEnd)
     end
 end
 
@@ -125,14 +125,14 @@ end
 --
 --- 定时器运行时的回调。
 --- 回调时会传递一个 boolean 类型的参数，表示倒计时是否已经结束
----@param value Handler
-function Countdown:SetHander(value)
-    self._hander = value
+---@param value HandlerRef
+function Countdown:SetHandler(value)
+    self._handler = value
 end
 
----@return Handler
-function Countdown:GetHander()
-    return self._hander
+---@return HandlerRef
+function Countdown:GetHandler()
+    return self._handler
 end
 
 

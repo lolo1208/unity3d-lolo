@@ -49,7 +49,7 @@ end
 function GpuAnimation:Ctor(go, assetDirPath)
     GpuAnimation.super.Ctor(self)
 
-    self.completeTimer = Timer.New(1, Handler.New(self.CompleteHandler, self))
+    self.completeTimer = Timer.New(1, NewHandler(self.CompleteHandler, self))
 
     self.go = go
     self.meshFilter = AddOrGetComponent(go, UnityEngine.MeshFilter)

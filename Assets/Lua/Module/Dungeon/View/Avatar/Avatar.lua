@@ -24,7 +24,7 @@ local DungeonData = require("Module.Dungeon.Model.DungeonData")
 ---@field aniSpeed number @ 当前动画播放速度。默认：1
 ---@field aniName string @ 当前动画名称
 ---@field aniLengthList table<string, number> @ 动画时长列表
----@field protected aniEndHandler Handler
+---@field protected aniEndHandler HandlerRef
 ---
 ---@field cc UnityEngine.CharacterController @
 ---@field cameraTra UnityEngine.Transform
@@ -164,7 +164,7 @@ end
 --
 --- 播放指定动画
 ---@param aniName string @ 要播放的动画名称
----@param callback Handler @ 动画播放完成的回调（会传回参数 aniName）
+---@param callback HandlerRef @ 动画播放完成的回调（会传回参数 aniName）
 ---@param transitionDuration number
 function Avatar:PlayAnimation(aniName, callback, transitionDuration)
     if self.animator == nil or aniName == self.aniName then
@@ -185,7 +185,7 @@ function Avatar:PlayAnimation(aniName, callback, transitionDuration)
         local aniLength = self.aniLengthList[aniName]
         self.aniEndHandler = DelayedCall(aniLength / self.aniSpeed, function()
             self.aniEndHandler = nil
-            callback:Execute(aniName)
+            CallHandler(callback, aniName)
         end)
     end
 end

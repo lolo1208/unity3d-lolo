@@ -11,7 +11,7 @@
 ---
 ---@field bar UnityEngine.UI.Image
 ---@field text UnityEngine.UI.Text
----@field dfcHide Handler
+---@field dfcHide HandlerRef
 ---
 local ProgressView = class("Core.ProgressView", View)
 

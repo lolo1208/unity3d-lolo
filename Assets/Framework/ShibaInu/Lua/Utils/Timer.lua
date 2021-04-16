@@ -10,34 +10,39 @@ local pairs = pairs
 local floor = math.floor
 local remove = table.remove
 
+
+--
 ---@class Timer
----@field New fun(delay:number, timerHander:Handler, repeatCount:number, timerCompleteHandler:Handler):Timer
+---@field New fun(delay:number, timerHandler:HandlerRef, repeatCount:number, timerCompleteHandler:HandlerRef):Timer
 ---
 ---@field running boolean @ 定时器是否正在运行中
 ---@field currentCount number @ 定时器当前已运行次数
 ---@field repeatCount number @ 定时器的总运行次数，默认值0，表示无限运行
 ---@field lastUpdateTime number @ 定时器上次触发时间
----@field timerHander Handler @ 每次达到间隔时的回调
----@field timerCompleteHandler Handler @ 定时器达到总运行次数时的回调
+---@field timerHandler HandlerRef @ 每次达到间隔时的回调
+---@field timerCompleteHandler HandlerRef @ 定时器达到总运行次数时的回调
 ---@field ignoreCount number @ 当某帧执行次数超过（>=）该数量时，将会被标记为只执行一次
 ---
 ---@field protected _key number @ 在列表中的key（ _list[delay].list[_key] = self ）
 ---@field protected _delay number @ 定时器间隔（秒）
+---
 local Timer = class("Timer")
 
+
+--
 --- Ctor
 ---@param delay number @ 定时器间隔（秒）
----@param timerHander Handler @ 每次达到间隔时的回调
+---@param timerHandler HandlerRef @ 每次达到间隔时的回调
 ---@param repeatCount number @ 定时器的总运行次数，默认值0，表示无限运行
----@param timerCompleteHandler Handler @ 定时器达到总运行次数时的回调
-function Timer:Ctor(delay, timerHander, repeatCount, timerCompleteHandler)
+---@param timerCompleteHandler HandlerRef @ 定时器达到总运行次数时的回调
+function Timer:Ctor(delay, timerHandler, repeatCount, timerCompleteHandler)
     Timer._onlyKey = Timer._onlyKey + 1
     self._key = Timer._onlyKey
 
     self.running = false
     self.currentCount = 0
     self.repeatCount = repeatCount or 0
-    self.timerHander = timerHander
+    self.timerHandler = timerHandler
     self.timerCompleteHandler = timerCompleteHandler
     self.ignoreCount = 999
 
@@ -106,15 +111,15 @@ local function UpdateTimer(event)
                     end
 
                     timer.currentCount = timer.currentCount + 1
-                    if timer.timerHander ~= nil then
-                        trycall(timer.timerHander.Execute, timer.timerHander)
+                    if timer.timerHandler ~= nil then
+                        TryCallHandler(timer.timerHandler)
                     end
 
                     -- 定时器已到达允许运行的最大次数
                     if timer.repeatCount ~= 0 and timer.currentCount >= timer.repeatCount then
                         timer:Stop()
                         if timer.timerCompleteHandler ~= nil then
-                            trycall(timer.timerCompleteHandler.Execute, timer.timerCompleteHandler)
+                            TryCallHandler(timer.timerCompleteHandler)
                         end
                         break -- 可以忽略后面的计次了
                     end

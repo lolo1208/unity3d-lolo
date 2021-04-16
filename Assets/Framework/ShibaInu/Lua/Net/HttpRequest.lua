@@ -19,7 +19,7 @@ local EncodeURI = StringUtil.EncodeURI
 ---@field timeout number @ 超时时间，默认值：5秒
 ---@field method string @ 请求方式，默认：如果有设置 post 数据，值为"POST"。否则"GET"
 ---@field postData table<string,string> | string @ 要发送的 post 数据
----@field callback Handler @ 请求结束时的回调 callback(successful, content)
+---@field callback HandlerRef @ 请求结束时的回调 callback(successful, content)
 ---
 ---@field statusCode number @ 请求结束时的状态码
 ---@field successful boolean @ 请求是否成功（statusCode 介于 200 - 299 之间）
@@ -28,7 +28,7 @@ local EncodeURI = StringUtil.EncodeURI
 ---@field protected _proxyHost string @ 代理地址
 ---@field protected _proxyPort number @ 代理端口
 ---@field protected _request ShibaInu.HttpRequest
----@field protected _handler Handler
+---@field protected _handlerRef HandlerRef
 ---
 local HttpRequest = class("HttpRequest", EventDispatcher)
 
@@ -36,7 +36,7 @@ local HttpRequest = class("HttpRequest", EventDispatcher)
 --
 --- 发送请求
 ---@param url string @ -可选- 网络地址
----@param callback Handler @ -可选- 请求结束时的回调 callback(successful, content)
+---@param callback HandlerRef @ -可选- 请求结束时的回调 callback(successful, content)
 ---@param postData table<string, string> @ -可选- 要发送的 post 数据列表
 function HttpRequest:Send(url, callback, postData)
     if callback ~= nil then
@@ -48,9 +48,9 @@ function HttpRequest:Send(url, callback, postData)
 
 
     -- 取消正在发送的请求
-    if self._handler ~= nil then
-        self._handler:Recycle()
-        self._handler = nil
+    if self._handlerRef ~= nil then
+        CancelHandler(self._handlerRef)
+        self._handlerRef = nil
     end
     local request = self._request --- @type ShibaInu.HttpRequest
     if request ~= nil then
@@ -114,8 +114,8 @@ function HttpRequest:Send(url, callback, postData)
     end
 
     -- 发送请求
-    self._handler = handler(self.EndedHandler, self)
-    request:SetLuaCallback(self._handler.lambda)
+    self._handlerRef = handler(self.EndedHandler, self)
+    request:SetLuaCallback(GetHandlerLambda(self._handlerRef))
     request:Send()
 end
 
@@ -125,7 +125,7 @@ end
 ---@param statusCode number
 ---@param content string
 function HttpRequest:EndedHandler(statusCode, content)
-    self._handler = nil
+    self._handlerRef = nil
     self._request = nil
 
     self.statusCode = statusCode
@@ -139,7 +139,7 @@ function HttpRequest:EndedHandler(statusCode, content)
     local callback = self.callback
     if callback ~= nil then
         self.callback = nil
-        callback:Execute(self.successful, content)
+        CallHandler(callback, self.successful, content)
     end
 end
 

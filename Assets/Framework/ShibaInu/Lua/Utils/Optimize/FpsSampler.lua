@@ -31,7 +31,7 @@ local _runningKeys = {} --- 正在运行的 key 列表
 
 --- Event.UPDATE
 ---@param event Event
-local function UpdateHander(event)
+local function UpdateHandler(event)
     _frame = _frame + 1
     if _frame < FpsSampler.frameRate then
         return
@@ -75,7 +75,7 @@ function FpsSampler.Start(key)
     _running = true
     _time = TimeUtil.time
     _frame = 0
-    AddEventListener(Stage, Event.UPDATE, UpdateHander)
+    AddEventListener(Stage, Event.UPDATE, UpdateHandler)
 end
 
 --
@@ -100,7 +100,7 @@ function FpsSampler.Stop(key)
     end
 
     _running = false
-    RemoveEventListener(Stage, Event.UPDATE, UpdateHander)
+    RemoveEventListener(Stage, Event.UPDATE, UpdateHandler)
 end
 
 

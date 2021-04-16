@@ -65,7 +65,7 @@ Stage.uiCanvasTra = stage.uiCanvasTra
 
 --
 
----@type Handler @ 异步加载场景的延时帧回调
+---@type HandlerRef @ 异步加载场景的延时帧回调
 local _dfcLoadScene
 
 

@@ -83,7 +83,7 @@ function PrefabPool.Clean(createGO)
         _container = go.transform
 
         if _clearTimer == nil then
-            _clearTimer = Timer.New(60, Handler.New(PrefabPool.ClearUnused))
+            _clearTimer = Timer.New(60, NewHandler(PrefabPool.ClearUnused))
             _clearTimer:Start()
         end
     else

@@ -13,7 +13,7 @@ local format = string.format
 ---
 ---@field gameObject UnityEngine.GameObject
 ---@field transform UnityEngine.Transform | UnityEngine.RectTransform
----@field asyncHandler Handler @ 异步初始化时，创建的回调
+---@field asyncHandlerRef HandlerRef @ 异步初始化时，创建的回调
 ---@field initShow boolean @ 初始化时是否直接显示（默认是否显示）。默认值：true
 ---@field showed boolean @ 是否已经显示。用于初始化显示时做判断
 ---@field visible boolean @ 当前是否可见
@@ -53,8 +53,8 @@ function View:Ctor(prefab, parent, groupName, isAsync)
     end
 
     if isAsync then
-        self.asyncHandler = handler(InitializeAsync, self)
-        InstantiateAsync(prefab, groupName, self.asyncHandler, parent)
+        self.asyncHandlerRef = handler(InitializeAsync, self)
+        InstantiateAsync(prefab, groupName, self.asyncHandlerRef, parent)
     else
         self.gameObject = Instantiate(prefab, parent, groupName)
         self:OnInitialize()
@@ -70,7 +70,7 @@ function View:OnInitialize()
         error(format(Constants.E2004, self.__classname))
     end
     self.initialized = true
-    self.asyncHandler = nil
+    self.asyncHandlerRef = nil
 
     self.visible = self.initShow
     if self.gameObject ~= nil then
@@ -182,9 +182,9 @@ end
 --- 子类重写 OnDestroy() 方法，将会自动调用 EnableDestroyListener() 设置监听
 function View:OnDestroy()
     self.destroyed = true
-    if self.asyncHandler ~= nil then
-        self.asyncHandler:Clean()
-        self.asyncHandler = nil
+    if self.asyncHandlerRef ~= nil then
+        CancelHandler(self.asyncHandlerRef)
+        self.asyncHandlerRef = nil
     end
 end
 
