@@ -480,7 +480,7 @@ end
 ---@return boolean
 function HasHandler(refID)
     local handler = _handlers[refID]
-    return handler ~= nil or handler.refID == refID
+    return handler ~= nil and handler.refID == refID
 end
 
 --- 获取执行回调的匿名函数。
