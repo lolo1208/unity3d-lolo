@@ -122,11 +122,11 @@ function Instantiate(prefab, parent, groupName)
 end
 
 --- 异步加载预设对象，然后创建一个预设的实例，并在回调中传回
---- 提示：在异步加载预设的过程中，可以调用参数 handler.Clean() 取消创建预设实例，以及取消触发回调
+--- 提示：在异步加载预设的过程中，可以调用参数 CancelHandler(handlerRef) 取消创建预设实例，以及取消触发回调
 --- 使用范例：
 ---  > function callback(go) self.gameObject = go end
----  > local handler = handler(callback, self)
----  > InstantiateAsync("Prefabs/Test/Item2.prefab", "MyModuleName", handler, parentGO.transform)
+---  > local handlerID = handler(callback, self)
+---  > InstantiateAsync("Prefabs/Test/Item2.prefab", "MyModuleName", handlerID, parentGO.transform)
 ---@param prefabPath string @ 预设路径
 ---@param groupName string @ 资源组名称
 ---@param handlerRef HandlerRef @ 异步加载完成，并创建实例成功后的回调引用
@@ -409,7 +409,7 @@ local function GetHandlerByRefID(refID)
     return handler
 end
 
---- 获取一个 [会多次使用] 的 Handler 实例。
+--- 获取一个 [会多次使用] 的 Handler 实例（引用）。
 ---@param callback fun() @ 回调函数
 ---@param caller any @ -可选- 执行域（self）
 ---@vararg any @ 附带的参数
@@ -420,7 +420,7 @@ function NewHandler(callback, caller, ...)
     return handler.refID
 end
 
---- 获取一个 [只会执行一次] 的 Handler 实例。
+--- 获取一个 [只会执行一次] 的 Handler 实例（引用）。
 ---@param callback fun() @ 回调函数
 ---@param caller any @ -可选- 执行域（self）
 ---@vararg any @ 附带的参数
@@ -450,10 +450,10 @@ function CallHandler(refID, ...)
     end
 end
 
---- 执行回调，并捕获回调函数中产生的错误
+--- 执行回调，并捕获回调函数中产生的错误。返回：调用函数是否成功（是否没有报错），以及 callback 函数返回值。
 ---@param refID HandlerRef @ 创建 Handler 时返回的引用 ID
 ---@vararg any @ 附带的参数
----@return boolean, any @ 调用函数是否成功（是否没有报错），以及 callback 函数返回值。
+---@return boolean, any
 function TryCallHandler(refID, ...)
     local handler = GetHandlerByRefID(refID)
     if handler ~= nil then
@@ -465,7 +465,7 @@ function TryCallHandler(refID, ...)
     return false
 end
 
---- 取消回调，清除引用，并将 Handler 回收到池中。
+--- 取消回调，清除引用，并将对应的 Handler 回收到池中。
 ---@param refID HandlerRef @ 创建 Handler 时返回的引用 ID
 function CancelHandler(refID)
     local handler = _handlers[refID]
@@ -475,7 +475,7 @@ function CancelHandler(refID)
     end
 end
 
---- 回调是否可用（是否为 不是已被调用的单次回调，或没有被取消）
+--- 回调是否可用（是否为 不是已被调用的单次回调，或没有被取消）。
 ---@param refID HandlerRef @ 创建 Handler 时返回的引用 ID
 ---@return boolean
 function HasHandler(refID)

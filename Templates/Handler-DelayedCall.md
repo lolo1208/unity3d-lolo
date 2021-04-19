@@ -71,14 +71,14 @@ end
 ---
 
 #### Handler
- - `NewHandler()` 获取一个会多次使用的 Handler 实例。
+ - `NewHandler()` 获取一个 [会多次使用] 的 Handler 实例（引用）。
 
- - `OnceHandler()` 获取一个只会执行一次的 Handler 实例。
+ - `OnceHandler()` 获取一个 [只会执行一次] 的 Handler 实例（引用）。
  - `handler()` OnceHandler() 的别名。
  - `CallHandler()` 执行回调。
- - `TryCallHandler()` 执行回调，并捕获回调函数中产生的错误，返回：调用函数是否成功（是否没有报错），以及 callback 函数返回值。
- - `CancelHandler()` 取消回调，清除引用，并将 Handler 回收到池中。
- - `HasHandler()` 返回：回调是否可用（是否为 不是已被调用的单次回调，或没有被取消）
+ - `TryCallHandler()` 执行回调，并捕获回调函数中产生的错误。返回：调用函数是否成功（是否没有报错），以及 callback 函数返回值。
+ - `CancelHandler()` 取消回调，清除引用，并将对应的 Handler 回收到池中。
+ - `HasHandler()` 回调是否可用（是否为 不是已被调用的单次回调，或没有被取消）。
  - `GetHandlerLambda()` 获取执行回调的匿名函数。
 
 #### DelayedCall
