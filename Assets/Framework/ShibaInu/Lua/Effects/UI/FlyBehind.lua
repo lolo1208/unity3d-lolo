@@ -108,7 +108,7 @@ function FlyBehind:Start()
     local x3 = x2 + op.x * self.step2_distance
     local y3 = y2 + op.y * self.step2_distance
 
-    self.targetCG = GetComponent.CanvasGroup(target.gameObject)
+    self.targetCG = GetComponent.CanvasGroup(target)
     local hasCanvasGroup = self.targetCG ~= nil
     if hasCanvasGroup then
         self.targetCG.alpha = 0

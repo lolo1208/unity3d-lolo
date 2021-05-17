@@ -10,13 +10,6 @@ public class ShibaInu_StageWrap
 		L.RegFunction("CleanUI", CleanUI);
 		L.RegFunction("AddDontDestroy", AddDontDestroy);
 		L.RegFunction("RemoveDontDestroy", RemoveDontDestroy);
-		L.RegFunction("LoadScene", LoadScene);
-		L.RegFunction("LoadSceneAsync", LoadSceneAsync);
-		L.RegFunction("LoadSubScene", LoadSubScene);
-		L.RegFunction("LoadSubSceneAsync", LoadSubSceneAsync);
-		L.RegFunction("GetProgress", GetProgress);
-		L.RegFunction("SetDontUnloadScene", SetDontUnloadScene);
-		L.RegFunction("ClearReference", ClearReference);
 		L.RegVar("uiCanvas", get_uiCanvas, set_uiCanvas);
 		L.RegVar("uiCanvasTra", get_uiCanvasTra, set_uiCanvasTra);
 		L.RegVar("sceneLayer", get_sceneLayer, set_sceneLayer);
@@ -26,8 +19,6 @@ public class ShibaInu_StageWrap
 		L.RegVar("alertLayer", get_alertLayer, set_alertLayer);
 		L.RegVar("guideLayer", get_guideLayer, set_guideLayer);
 		L.RegVar("topLayer", get_topLayer, set_topLayer);
-		L.RegVar("s_dontUnloadSceneNames", get_s_dontUnloadSceneNames, null);
-		L.RegVar("CurrentSceneName", get_CurrentSceneName, null);
 		L.EndStaticLibs();
 	}
 
@@ -70,118 +61,6 @@ public class ShibaInu_StageWrap
 			ToLua.CheckArgsCount(L, 1);
 			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
 			ShibaInu.Stage.RemoveDontDestroy(arg0);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int LoadScene(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			string arg0 = ToLua.CheckString(L, 1);
-			ShibaInu.Stage.LoadScene(arg0);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int LoadSceneAsync(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			string arg0 = ToLua.CheckString(L, 1);
-			ShibaInu.Stage.LoadSceneAsync(arg0);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int LoadSubScene(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			string arg0 = ToLua.CheckString(L, 1);
-			ShibaInu.Stage.LoadSubScene(arg0);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int LoadSubSceneAsync(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			string arg0 = ToLua.CheckString(L, 1);
-			ShibaInu.Stage.LoadSubSceneAsync(arg0);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetProgress(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 0);
-			float o = ShibaInu.Stage.GetProgress();
-			LuaDLL.lua_pushnumber(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SetDontUnloadScene(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 2);
-			string arg0 = ToLua.CheckString(L, 1);
-			bool arg1 = LuaDLL.luaL_checkboolean(L, 2);
-			ShibaInu.Stage.SetDontUnloadScene(arg0, arg1);
-			return 0;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ClearReference(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 0);
-			ShibaInu.Stage.ClearReference();
 			return 0;
 		}
 		catch (Exception e)
@@ -308,34 +187,6 @@ public class ShibaInu_StageWrap
 		try
 		{
 			ToLua.PushSealed(L, ShibaInu.Stage.topLayer);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_s_dontUnloadSceneNames(IntPtr L)
-	{
-		try
-		{
-			ToLua.PushObject(L, ShibaInu.Stage.s_dontUnloadSceneNames);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_CurrentSceneName(IntPtr L)
-	{
-		try
-		{
-			LuaDLL.lua_pushstring(L, ShibaInu.Stage.CurrentSceneName);
 			return 1;
 		}
 		catch (Exception e)

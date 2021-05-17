@@ -121,6 +121,7 @@ public static class CustomSettings
 
         #region ShibaInu
         _GT(typeof(Stage)),
+        _GT(typeof(SceneManager)),
         _GT(typeof(ResManager)),
         _GT(typeof(AudioManager)),
         _GT(typeof(NetHelper)),
@@ -232,7 +233,6 @@ public static class CustomSettings
         _GT(typeof(Toggle)),
         _GT(typeof(Shadow)),
         _GT(typeof(RawImage)),
-
 
 
         // Project

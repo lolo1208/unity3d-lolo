@@ -15,32 +15,19 @@ local TimeUtil = TimeUtil
 local stage = ShibaInu.Stage
 
 local cleanUI = stage.CleanUI
-local loadScene = stage.LoadScene
-local loadSceneAsync = stage.LoadSceneAsync
 
 
 --
 ---@class Stage
 local Stage = {}
 
---
-
---- Loading场景类
-Stage.loadingSceneClass = ""
---- 空场景名称
-Stage.emptySceneName = "Empty"
 
 --
-
 local _event = Event.New()
 local _ed = EventDispatcher.New()
 
-local _currentSceneClass ---@type Scene @ 当前正要进入的场景模块类
-local _prevSceneClass ---@type Scene @ 上一个场景模块类
-local _prevSceneName ---@type string @ 上一个场景模块名称
-local _loadingScene ---@type Scene @ Loading场景实例
-local _currentScene ---@type Scene @ 当前场景模块实例
-local _windowList = {} ---@type Window[] @ 当前已经显示的窗口列表
+---@type Window[] @ 当前已经显示的窗口列表
+local _windowList = {}
 
 ---@type UnityEngine.RectTransform[]
 local _layers = {
@@ -54,237 +41,14 @@ local _layers = {
 }
 
 Stage._ed = _ed
-Stage.LoadSubScene = stage.LoadSubScene
-Stage.LoadSubSceneAsync = stage.LoadSubSceneAsync
-Stage.SetDontUnloadScene = stage.SetDontUnloadScene
-Stage.GetProgress = stage.GetProgress
 Stage.AddDontDestroy = stage.AddDontDestroy
 Stage.RemoveDontDestroy = stage.RemoveDontDestroy
 Stage.uiCanvas = stage.uiCanvas
 Stage.uiCanvasTra = stage.uiCanvasTra
 
---
-
----@type HandlerRef @ 异步加载场景的延时帧回调
-local _dfcLoadScene
 
 
---=-----------------------------[ 场景 ]-----------------------------=--
-
---
---- 播放场景切换效果
----@param isStart boolean @ true：开始转场效果，false：结束转场效果
-function Stage.PlaySceneTransition(isStart)
-    if isStart then
-        Stage.DoShowScene()
-    end
-end
-
-
---
---- 抛出场景有改变事件
----@param scene Scene
-local function DispatchSceneChangedEvent(scene)
-    if scene.transitionEnabled and scene ~= _loadingScene then
-        Stage.PlaySceneTransition(false)
-    end
-
-    PrefabPool.Clean(true)
-    scene:OnInitialize()
-    SceneEvent.DispatchEvent(SceneEvent.CHANGED, scene.moduleName)
-end
-
-
---
---- 异步加载场景完成
----@param event SceneEvent
-local function LoadSceneCompleteHandler(event)
-    RemoveEventListener(Stage, SceneEvent.LOAD_COMPLETE, LoadSceneCompleteHandler)
-    if not _loadingScene.destroyed then
-        _loadingScene:OnDestroy()
-    end
-    _loadingScene = nil
-
-    if isDebug then
-        _dfcLoadScene = DelayedFrameCall(function()
-            _dfcLoadScene = nil
-            DispatchSceneChangedEvent(_currentScene)
-        end)
-    else
-        DispatchSceneChangedEvent(_currentScene)
-    end
-end
-
-
---
---- 异步加载场景 perfab 完成
----@param event ResEvent
-local function LoadResCompleteHandler(event)
-    if event.assetPath == _currentScene.prefabPath then
-        RemoveEventListener(Res, ResEvent.LOAD_COMPLETE, LoadResCompleteHandler)
-        _currentScene.gameObject = Instantiate(event.assetData, Constants.LAYER_SCENE)
-        DispatchSceneChangedEvent(_currentScene)
-    end
-end
-
-
---
---- 显示场景
----@param sceneClass any @ 场景类（不是类的实例）
----@param reload boolean @ -可选- 如果当前正在该场景，是否需要重新加载该场景。默认：false
-function Stage.ShowScene(sceneClass, reload)
-    if not reload and _currentScene ~= nil and _currentScene.__class == sceneClass.__class then
-        return -- 正在该场景中
-    end
-
-    if _dfcLoadScene ~= nil then
-        CancelDelayedCall(_dfcLoadScene)
-        _dfcLoadScene = nil
-    end
-    RemoveEventListener(Stage, SceneEvent.LOAD_COMPLETE, LoadSceneCompleteHandler)
-    RemoveEventListener(Res, ResEvent.LOAD_COMPLETE, LoadResCompleteHandler)
-
-    if _loadingScene ~= nil then
-        if not _loadingScene.destroyed then
-            _loadingScene:OnDestroy() -- 这里没有调用 Destroy()，后面 DoShowScene() 时，loadingScene 自然会被销毁
-        end
-        _loadingScene = nil
-    end
-
-    _currentSceneClass = sceneClass
-    if sceneClass.transitionEnabled then
-        Stage.PlaySceneTransition(true)
-    else
-        Stage.DoShowScene()
-    end
-end
-
---
---- 显示当前场景（在切换效果完全遮盖住镜头时调用）
-function Stage.DoShowScene()
-    -- 清理当前场景
-    if _currentScene ~= nil then
-        _prevSceneClass = _currentScene.__class
-        _prevSceneName = _currentScene.moduleName
-        if not _currentScene.destroyed then
-            _currentScene:OnDestroy()
-        end
-    end
-    Stage.Clean()
-
-    -- 显示新场景
-    _currentScene = _currentSceneClass.New()
-    if _currentScene.moduleName == nil then
-        error(format(Constants.E2002, _currentScene.__classname))
-    end
-
-    -- 独立场景
-    if _currentScene.prefabPath == nil then
-        if _currentScene.isAsync then
-            -- 先进入 Loading 场景
-            _loadingScene = Stage.loadingSceneClass.New()
-            loadScene(_loadingScene.assetName)
-            _dfcLoadScene = DelayedFrameCall(function()
-                _dfcLoadScene = nil
-                DispatchSceneChangedEvent(_loadingScene)
-
-                -- 异步加载目标场景
-                AddEventListener(Stage, SceneEvent.LOAD_COMPLETE, LoadSceneCompleteHandler)
-                loadSceneAsync(_currentScene.assetName)
-            end, nil, 2)
-        else
-            loadScene(_currentScene.assetName)
-            _dfcLoadScene = DelayedFrameCall(function()
-                _dfcLoadScene = nil
-                DispatchSceneChangedEvent(_currentScene)
-            end, nil, 2)
-        end
-
-        -- 预设场景（UICanvas）
-    else
-        -- 当前不在空场景中
-        if prevScene == nil or prevScene.prefabPath == nil then
-            loadScene(Stage.emptySceneName)
-        end
-
-        if _currentScene.isAsync then
-            AddEventListener(Res, ResEvent.LOAD_COMPLETE, LoadResCompleteHandler)
-            Res.LoadAssetAsync(_currentScene.prefabPath, _currentScene.assetName)
-        else
-            _currentScene.gameObject = Instantiate(Res.LoadAsset(_currentScene.prefabPath, _currentScene.assetName), Constants.LAYER_SCENE)
-            DispatchSceneChangedEvent(_currentScene)
-        end
-    end
-end
-
-
---
---- 显示上一个场景
-function Stage.ShowPrevScene()
-    if _prevSceneClass ~= nil then
-        Stage.ShowScene(_prevSceneClass)
-    end
-end
-
-
---
---- 获取当前场景
----@return Scene
-function Stage.GetCurrentScene()
-    return _loadingScene ~= nil and _loadingScene or _currentScene
-end
-
-
---
---- 获取当前场景名称
----@return string
-function Stage.GetCurrentSceneName()
-    return Stage.GetCurrentScene().moduleName
-end
-
-
---
---- 获取当前场景 对应的 assetGroup 名称
----@return string
-function Stage.GetCurrentAssetGroup()
-    return _currentScene.assetName
-end
-
-
---
---- 获取当前场景类
----@return Scene
-function Stage.GetCurrentSceneClass()
-    return _currentSceneClass
-end
-
-
---
---- 获取上一个场景类
----@return Scene
-function Stage.GetPrevSceneClass()
-    return _prevSceneClass
-end
-
-
---
---- 获取上一个场景模块名称
----@return string
-function Stage.GetPrevSceneName()
-    return _prevSceneName
-end
-
-
---
---- 清空场景
-function Stage.Clean()
-    cleanUI()
-    PrefabPool.Clean()
-    GpuAnimation.Clean()
-end
-
-
---=-----------------------------[ 窗口 ]-----------------------------=--
+--=[ 窗口 ]=--
 
 --- 打开指定的窗口
 ---@param window Window @ 窗口实例
@@ -365,7 +129,8 @@ function Stage.GetWindowList()
 end
 
 
---=-----------------------------[ 图层 ]-----------------------------=--
+
+--=[ 图层 ]=--
 
 --- 将 target 添加到指定图层中
 ---@param target UnityEngine.Transform
@@ -390,7 +155,7 @@ function Stage.GetLayer(layerName)
 end
 
 
---=----------------------------[ 全屏模态 ]----------------------------=--
+--=[ 全屏模态 ]=--
 
 local _modalGO = CreateGameObject("[Modal]", Stage.uiCanvasTra)
 local _modalTra = _modalGO.transform
@@ -431,7 +196,18 @@ function Stage.GetModal()
 end
 
 
---=----------------------------[ C#调用 ]----------------------------=--
+
+--
+--- 清空 UI 和 PrefabPool
+function Stage.Clean()
+    cleanUI()
+    PrefabPool.Clean()
+    GpuAnimation.Clean()
+end
+
+
+
+--=[ C#调用 ]=--
 
 --- Update / LateUpdate / FixedUpdate 回调。由 StageLooper.cs 调用
 --- 在全局变量 Stage 上抛出 Event.UPDATE / Event.LATE_UPDATE  / Event.FIXED_UPDATE 事件
@@ -458,6 +234,6 @@ end
 
 
 
-
 --
 return Stage
+

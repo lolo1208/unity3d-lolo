@@ -49,7 +49,7 @@ namespace ShibaInu
 
 
 
-        protected void MarkSceneDirty(bool isDirty = true)
+        public static void MarkSceneDirty(bool isDirty = true)
         {
             if (!Application.isPlaying && isDirty)
             {

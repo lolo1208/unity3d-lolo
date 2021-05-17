@@ -86,7 +86,7 @@ function FlyUp:Start()
     local y2 = ty + self.step2_y
     local y3 = ty + self.step3_y
 
-    self.targetCG = GetComponent.CanvasGroup(target.gameObject)
+    self.targetCG = GetComponent.CanvasGroup(target)
     local hasCanvasGroup = self.targetCG ~= nil
     if hasCanvasGroup then
         self.targetCG.alpha = 0

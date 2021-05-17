@@ -199,6 +199,7 @@ public static class LuaBinder
 		L.EndModule();
 		L.BeginModule("ShibaInu");
 		ShibaInu_StageWrap.Register(L);
+		ShibaInu_SceneManagerWrap.Register(L);
 		ShibaInu_ResManagerWrap.Register(L);
 		ShibaInu_AudioManagerWrap.Register(L);
 		ShibaInu_NetHelperWrap.Register(L);

@@ -31,8 +31,8 @@ namespace ShibaInu
 
         /// 不销毁的根节点名称
         public const string GameObjectName = "[ShibaInu]";
-        /// 启动场景的名称
-        public const string LauncherSceneName = "Launcher";
+        /// 场景根节点名称
+        public const string SceneRootName = "[Root]";
         /// 空场景的名称
         public const string EmptySceneName = "Empty";
         /// 版本信息文件名称
@@ -41,6 +41,8 @@ namespace ShibaInu
         public const string SvcFilePath = "Shaders/Shaders.shadervariants";
         /// 资源文件夹路径
         public const string ResDirPath = "Assets/Res/";
+        /// 默认资源组名称（仅在启动时使用，随后会销毁）
+        public const string DefaultAssetGroup = "Default";
         /// 核心资源组名称（不会被销毁）
         public const string CoreAssetGroup = "Core";
 
@@ -49,6 +51,8 @@ namespace ShibaInu
         // -- runtime errors --
         public const string E1002 = "[C# ERROR] lua 文件不存在: {0}";
         public const string E1003 = "[C# ERROR] 动画不存在，id: {0}";
+
+        public const string W1001 = "[C# WARNING] 在执行 {0} 函数时，Camera.main 的值为 null";
 
         // -- editor play mode errors --
         public const string E5001 = "[C# ERROR] 资源文件不存在: {0}";

@@ -34,7 +34,6 @@ namespace ShibaInu
 
         /// 核心场景列表
         private static readonly string[] CoreScenes = {
-            ResDir + "Scenes/" + Constants.LauncherSceneName + ".unity",
             ResDir + "Scenes/" + Constants.EmptySceneName + ".unity"
         };
 

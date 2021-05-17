@@ -75,21 +75,20 @@ end
 
 --
 --- 清空缓存池。切换到新场景时，会自动调用
----@field createGO boolean @ -可选- 是否创建 [PrefabPool] 节点，默认：false
-function PrefabPool.Clean(createGO)
-    if createGO then
-        local go = GameObject.New("[PrefabPool]")
-        go:SetActive(false)
-        _container = go.transform
-
-        if _clearTimer == nil then
-            _clearTimer = Timer.New(60, NewHandler(PrefabPool.ClearUnused))
-            _clearTimer:Start()
-        end
-    else
-        _container = nil
+function PrefabPool.Clean()
+    if not isnull(_container) then
+        Destroy(_container.gameObject)
     end
+
+    local go = GameObject.New("[PrefabPool]")
+    go:SetActive(false)
+    _container = go.transform
     _pool = {}
+
+    if _clearTimer == nil then
+        _clearTimer = Timer.New(60, NewHandler(PrefabPool.ClearUnused))
+        _clearTimer:Start()
+    end
 end
 
 

@@ -4,7 +4,6 @@
 -- Author LOLO
 --
 
-
 local DungeonData = require("Module.Dungeon.Model.DungeonData")
 local JoystickEvent = require("Module.Dungeon.Model.JoystickEvent")
 local Avatar = require("Module.Dungeon.View.Avatar.Avatar")
@@ -12,7 +11,6 @@ local Avatar = require("Module.Dungeon.View.Avatar.Avatar")
 
 --
 ---@class Dungeon.DungeonScene : Scene
----@field New fun():Dungeon.DungeonScene
 ---
 ---@field joystick Dungeon.Joystick
 ---@field avatarContainer UnityEngine.Transform @ avatar 容器
@@ -21,6 +19,7 @@ local Avatar = require("Module.Dungeon.View.Avatar.Avatar")
 ---@field tpc ShibaInu.ThirdPersonCamera
 ---
 local DungeonScene = class("Dungeon.DungeonScene", Scene)
+DungeonScene.SCENE_NAME = "Dungeon"
 
 local bornList = {
     Vector3.New(-55, 2, -40),
@@ -31,27 +30,15 @@ local bornList = {
     Vector3.New(-35, 2, 51),
 }
 
---
-function DungeonScene:Ctor()
-    --self.asyncSubScenes = { "Sub1", "Sub2" }
-    DungeonScene.super.Ctor(self, DungeonData.NAME, nil, true)
-    DungeonData.scene = self
-    --Stage.SetDontUnloadScene(self.moduleName, true)
-
-    --Preload({
-    --    "Prefabs/Test/TestTips.prefab",
-    --    "Prefabs/Dungeon/Skeleton/Skeleton.prefab",
-    --}, self.assetName)
-end
-
 
 --
 function DungeonScene:OnInitialize()
     DungeonScene.super.OnInitialize(self)
 
-    self.avatarContainer = GameObject.New("avatars").transform
+    DungeonData.scene = self
+    self.avatarContainer = CreateGameObject("avatars", self.transform, true).transform
 
-    local canvasTra = GameObject.Find("SceneUICanvas").transform
+    local canvasTra = self.transform:Find("SceneUICanvas")
     self.joystick = require("Module.Dungeon.View.UI.Joystick").New(canvasTra:Find("Joystick").gameObject)
     self.joystick:AddEventListener(JoystickEvent.STATE_CHANGED, self.JoystickEventHandler, self)
     self.joystick:AddEventListener(JoystickEvent.ANGLE_CHANGED, self.JoystickEventHandler, self)
@@ -59,7 +46,7 @@ function DungeonScene:OnInitialize()
     self.avatar = Avatar.New("Skeleton")
     self.avatar:SetPosition(bornList[1], nil, nil, true)
 
-    self.tpc = GetComponent.ThirdPersonCamera(Camera.main.gameObject)
+    self.tpc = GetComponent.ThirdPersonCamera(self.transform:Find("Main Camera"))
     self.tpc.target = self.avatar.transform
 
 
@@ -89,7 +76,7 @@ end
 --
 function DungeonScene:Click_BackBtn(event)
     CancelDelayedCall(self.testDC)
-    Stage.ShowScene(require("Module.Test.View.TestScene"))
+    SceneController.EnterTest()
 end
 
 --
@@ -147,6 +134,22 @@ function DungeonScene:JoystickEventHandler(event)
     else
         self.avatar:SetJoystickMoveing(event.using)
     end
+end
+
+
+
+--
+function DungeonScene:OnShow()
+    DungeonScene.super.OnShow(self)
+
+    self.joystick:SetEnabled(true)
+end
+
+--
+function DungeonScene:OnHide()
+    DungeonScene.super.OnHide(self)
+
+    self.joystick:SetEnabled(false)
 end
 
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
+using USceneMgr = UnityEngine.SceneManagement.SceneManager;
 
 
 namespace ShibaInu
@@ -41,9 +41,9 @@ namespace ShibaInu
         /// </summary>
         private IEnumerator Launch()
         {
-            // 先进入启动场景
-            if (SceneManager.GetActiveScene().name != Constants.LauncherSceneName)
-                SceneManager.LoadScene(Constants.LauncherSceneName);
+            // 重新进入 Empty 场景
+            USceneMgr.LoadScene(Constants.EmptySceneName);
+            ResManager.CurrentAssetGroup = Constants.DefaultAssetGroup;
             // 等之前场景的内容清除完毕
             yield return new WaitForEndOfFrame();
 
@@ -85,7 +85,7 @@ namespace ShibaInu
             Destroy(Stage.uiCanvas.gameObject);
 
             // clear reference
-            Stage.ClearReference();
+            SceneManager.ClearReference();
             AudioManager.ClearReference();
             SafeAreaLayout.ClearReference();
             LocalizationText.ClearReference();

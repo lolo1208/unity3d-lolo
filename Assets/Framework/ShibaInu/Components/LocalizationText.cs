@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Serialization;
 using UnityEngine.SceneManagement;
+using USceneMgr = UnityEngine.SceneManagement.SceneManager;
 
 using LuaInterface;
 
@@ -201,15 +202,16 @@ namespace ShibaInu
 
                 // 更新场景中所有的 LocalizationText
                 List<LocalizationText> list = new List<LocalizationText>();
-                Scene scene = SceneManager.GetActiveScene();
-                foreach (GameObject go in scene.GetRootGameObjects())
+                for (int n = 0; n < USceneMgr.sceneCount; ++n)
                 {
-                    list.AddRange(go.GetComponentsInChildren<LocalizationText>(true));
+                    Scene scene = USceneMgr.GetSceneAt(n);
+                    GameObject[] gameObjects = scene.GetRootGameObjects();
+                    foreach (GameObject go in gameObjects)
+                        list.AddRange(go.GetComponentsInChildren<LocalizationText>(true));
                 }
+
                 foreach (LocalizationText text in list)
-                {
                     text.DisplayContent();
-                }
 
                 return;
             }

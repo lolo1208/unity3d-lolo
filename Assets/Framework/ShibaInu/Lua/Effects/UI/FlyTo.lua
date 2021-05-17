@@ -81,7 +81,7 @@ function FlyTo:Start()
 
     local y1 = ty + self.step1_y
 
-    self.targetCG = GetComponent.CanvasGroup(target.gameObject)
+    self.targetCG = GetComponent.CanvasGroup(target)
     local hasCanvasGroup = self.targetCG ~= nil
     if hasCanvasGroup then
         self.targetCG.alpha = 0

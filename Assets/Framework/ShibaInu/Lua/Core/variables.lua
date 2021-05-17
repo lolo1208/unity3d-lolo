@@ -22,8 +22,8 @@ NetHelper = setmetatable({ _ed = EventDispatcher.New() }, { __index = ShibaInu.N
 ---@type App.LuaHelper
 LuaHelper = setmetatable({}, { __index = App.LuaHelper, __newindex = App.LuaHelper })
 --Stage = ShibaInu.Stage -- 已整合进 Stage.lua
+--SceneManager = ShibaInu.SceneManager -- 已整合进 SceneManager.lua
 --Logger = ShibaInu.Logger -- 已整合进 Logger.lua
-
 
 
 --[ UnityEngine ]--
@@ -134,6 +134,7 @@ TcpSocket = require("Net.TcpSocket")
 UdpSocket = require("Net.UdpSocket")
 
 Stage = require("Core.Stage")
+SceneManager = require("Core.SceneManager")
 View = require("Views.View")
 Module = require("Views.Module")
 Scene = require("Views.Scene")

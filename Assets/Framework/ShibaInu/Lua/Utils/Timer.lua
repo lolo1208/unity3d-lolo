@@ -23,7 +23,7 @@ local remove = table.remove
 ---@field timerCompleteHandler HandlerRef @ 定时器达到总运行次数时的回调
 ---@field ignoreCount number @ 当某帧执行次数超过（>=）该数量时，将会被标记为只执行一次
 ---
----@field protected _key number @ 在列表中的key（ _list[delay].list[_key] = self ）
+---@field protected _key number @ 在列表中的 key（ _list[delay].list[_key] = self ）
 ---@field protected _delay number @ 定时器间隔（秒）
 ---
 local Timer = class("Timer")

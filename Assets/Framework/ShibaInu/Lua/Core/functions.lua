@@ -104,9 +104,6 @@ end
 function Instantiate(prefab, parent, groupName)
     -- 传入的 prefab 是 预设路径
     if type(prefab) == "string" then
-        if groupName == nil then
-            groupName = Stage.GetCurrentAssetGroup()
-        end
         prefab = Res.LoadAsset(prefab, groupName)
     end
 
@@ -223,14 +220,14 @@ end
 GetComponent = {}
 
 --- 获取 gameObject 下的 UnityEngine.RectTransform 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return UnityEngine.RectTransform
 function GetComponent.RectTransform(go)
     return go:GetComponent(_typeof_class(UnityEngine.RectTransform))
 end
 
 --- 获取 gameObject 下的 UnityEngine.CanvasGroup 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return UnityEngine.CanvasGroup
 function GetComponent.CanvasGroup(go)
     return go:GetComponent(_typeof_class(UnityEngine.CanvasGroup))
@@ -239,70 +236,70 @@ end
 --
 
 --- 获取 gameObject 下的 ShibaInu.LocalizationText 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.LocalizationText
 function GetComponent.LocalizationText(go)
     return go:GetComponent(_typeof_class(ShibaInu.LocalizationText))
 end
 
 --- 获取 gameObject 下的 ShibaInu.BaseList 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.BaseList
 function GetComponent.BaseList(go)
     return go:GetComponent(_typeof_class(ShibaInu.BaseList))
 end
 
 --- 获取 gameObject 下的 ShibaInu.ScrollList 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.ScrollList
 function GetComponent.ScrollList(go)
     return go:GetComponent(_typeof_class(ShibaInu.ScrollList))
 end
 
 --- 获取 gameObject 下的 ShibaInu.PageList 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.PageList
 function GetComponent.PageList(go)
     return go:GetComponent(_typeof_class(ShibaInu.PageList))
 end
 
 --- 获取 gameObject 下的 ShibaInu.Picker 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.Picker
 function GetComponent.Picker(go)
     return go:GetComponent(_typeof_class(ShibaInu.Picker))
 end
 
 --- 获取 gameObject 下的 ShibaInu.ViewPager 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.ViewPager
 function GetComponent.ViewPager(go)
     return go:GetComponent(_typeof_class(ShibaInu.ViewPager))
 end
 
 --- 获取 gameObject 下的 ShibaInu.CircleImage 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.CircleImage
 function GetComponent.CircleImage(go)
     return go:GetComponent(_typeof_class(ShibaInu.CircleImage))
 end
 
 --- 获取 gameObject 下的 ShibaInu.PointerScaler 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.PointerScaler
 function GetComponent.PointerScaler(go)
     return go:GetComponent(_typeof_class(ShibaInu.PointerScaler))
 end
 
 --- 获取 gameObject 下的 ShibaInu.PointerEventPasser 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.PointerEventPasser
 function GetComponent.PointerEventPasser(go)
     return go:GetComponent(_typeof_class(ShibaInu.PointerEventPasser))
 end
 
 --- 获取 gameObject 下的 ShibaInu.ThirdPersonCamera 组件
----@param go UnityEngine.GameObject
+---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.ThirdPersonCamera
 function GetComponent.ThirdPersonCamera(go)
     return go:GetComponent(_typeof_class(ShibaInu.ThirdPersonCamera))
@@ -673,7 +670,6 @@ end
 ---@param paths string | string[] @ 要异步加载的资源路径，或路径列表
 ---@param groupName string @ -可选- 资源组名称。默认值为当前场景
 function PreloadAssets(paths, groupName)
-    groupName = groupName or Stage.GetCurrentAssetGroup()
     if type(paths) == "string" then
         Res.LoadAssetAsync(paths, groupName)
     else

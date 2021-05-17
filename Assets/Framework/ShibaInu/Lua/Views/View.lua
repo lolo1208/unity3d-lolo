@@ -8,6 +8,8 @@
 local error = error
 local format = string.format
 
+
+--
 ---@class View : EventDispatcher
 ---@field New fun(prefab:UnityEngine.GameObject | string, parent:string | UnityEngine.Transform, groupName:string, isAsync:boolean):View
 ---
@@ -106,10 +108,6 @@ end
 --- 设置是否可见
 ---@param value boolean
 function View:SetVisible(value)
-    if not self.initialized then
-        error(format(Constants.E2005, self.__classname))
-    end
-
     self.showed = value
     self.visible = value
     local go = self.gameObject
@@ -119,10 +117,12 @@ function View:SetVisible(value)
         go:SetActive(value)
     end
 
-    if value then
-        self:OnShow()
-    else
-        self:OnHide()
+    if self.initialized and not self.destroyed then
+        if value then
+            self:OnShow()
+        else
+            self:OnHide()
+        end
     end
 end
 
@@ -140,7 +140,7 @@ function View:Hide()
     end
 end
 
---- 显示／隐藏 gameObject
+--- 显示/隐藏 gameObject
 function View:ToggleVisibility()
     if self.visible then
         self:Hide()

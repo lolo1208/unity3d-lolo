@@ -7,8 +7,9 @@
 
 -- 预加载所有 Shader
 Res.PreloadShaders()
+Stage.Clean()
 
 
 --
-Stage.ShowScene(require("Module.Test.View.TestScene"))
---Stage.ShowScene(require("Module.Update.View.UpdateScene"))
+SceneController.EnterTest()
+

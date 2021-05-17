@@ -8,15 +8,11 @@
 local DungeonData = {}
 
 
--- 常量
-DungeonData.NAME = "Dungeon" -- 场景（模块）名称
-
-
 -- 引用
 DungeonData.scene = nil ---@type Dungeon.DungeonScene
 
 
 
-
 --
 return DungeonData
+

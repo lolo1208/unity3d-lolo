@@ -48,6 +48,22 @@ namespace ShibaInu
         private static LoadResEvent s_loadCompleteEvent = new LoadResEvent { type = EVENT_COMPLETE };
 
 
+        /// 当前默认使用的资源加载组名称
+        public static string CurrentAssetGroup
+        {
+            set
+            {
+                if (currentAssetGroup == Constants.DefaultAssetGroup && value != currentAssetGroup)
+                    Unload(currentAssetGroup);
+                currentAssetGroup = value;
+            }
+
+            get => currentAssetGroup;
+        }
+
+        private static string currentAssetGroup;
+
+
 
         #region 资源加载
 
@@ -60,7 +76,7 @@ namespace ShibaInu
         /// <typeparam name="T">The 1st type parameter.</typeparam>
         private static T LoadAssetWithType<T>(string path, string groupName) where T : UnityEngine.Object
         {
-            if (groupName == null) groupName = Stage.CurrentSceneName;
+            if (groupName == null) groupName = currentAssetGroup;
             string fullPath = Constants.ResDirPath + path;
 
 #if UNITY_EDITOR
@@ -94,9 +110,9 @@ namespace ShibaInu
         /// <param name="path">Path.</param>
         /// <param name="groupName">Group name.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        private static void LoadAssetAsyncWithType<T>(string path, string groupName) where T : UnityEngine.Object
+        private static void LoadAssetWithTypeAsync<T>(string path, string groupName) where T : UnityEngine.Object
         {
-            if (groupName == null) groupName = Stage.CurrentSceneName;
+            if (groupName == null) groupName = currentAssetGroup;
             string fullPath = Constants.ResDirPath + path;
 
 #if UNITY_EDITOR
@@ -418,7 +434,7 @@ namespace ShibaInu
         }
         public static void LoadAssetAsync(string path, string groupName = null)
         {
-            LoadAssetAsyncWithType<UnityEngine.Object>(path, groupName);
+            LoadAssetWithTypeAsync<UnityEngine.Object>(path, groupName);
         }
 
 
@@ -428,7 +444,7 @@ namespace ShibaInu
         }
         public static void LoadSpriteAsync(string path, string groupName = null)
         {
-            LoadAssetAsyncWithType<Sprite>(path, groupName);
+            LoadAssetWithTypeAsync<Sprite>(path, groupName);
         }
 
 
@@ -438,7 +454,7 @@ namespace ShibaInu
         }
         public static void LoadSpriteAtlasAsync(string path, string groupName = null)
         {
-            LoadAssetAsyncWithType<SpriteAtlas>(path, groupName);
+            LoadAssetWithTypeAsync<SpriteAtlas>(path, groupName);
         }
 
 
@@ -448,7 +464,7 @@ namespace ShibaInu
         }
         public static void LoadAnimationClipAsync(string path, string groupName = null)
         {
-            LoadAssetAsyncWithType<AnimationClip>(path, groupName);
+            LoadAssetWithTypeAsync<AnimationClip>(path, groupName);
         }
 
 
@@ -458,7 +474,7 @@ namespace ShibaInu
         }
         public static void LoadAnimatorControllerAsync(string path, string groupName = null)
         {
-            LoadAssetAsyncWithType<RuntimeAnimatorController>(path, groupName);
+            LoadAssetWithTypeAsync<RuntimeAnimatorController>(path, groupName);
         }
 
 
@@ -468,7 +484,7 @@ namespace ShibaInu
         }
         public static void LoadShaderAsync(string path, string groupName = null)
         {
-            LoadAssetAsyncWithType<Shader>(path, groupName);
+            LoadAssetWithTypeAsync<Shader>(path, groupName);
         }
 
 
@@ -478,7 +494,7 @@ namespace ShibaInu
         }
         public static void LoadAudioClipAsync(string path, string groupName = null)
         {
-            LoadAssetAsyncWithType<AudioClip>(path, groupName);
+            LoadAssetWithTypeAsync<AudioClip>(path, groupName);
         }
 
         #endregion

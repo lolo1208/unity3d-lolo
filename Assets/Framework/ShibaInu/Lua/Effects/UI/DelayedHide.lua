@@ -64,7 +64,7 @@ function DelayedHide:Start()
     end
 
     local target = self.target
-    self.targetCG = GetComponent.CanvasGroup(target.gameObject)
+    self.targetCG = GetComponent.CanvasGroup(target)
     self.targetCG.alpha = 0
 
     local tweener = DOTween.Sequence()

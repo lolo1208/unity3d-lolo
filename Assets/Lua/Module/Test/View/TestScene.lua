@@ -7,25 +7,25 @@
 
 --
 ---@class Test.TestScene : Scene
----@field New fun():Test.TestScene
 ---
 ---@field samples UnityEngine.GameObject
 ---@field backBtn UnityEngine.GameObject
 ---@field curSample View
 ---
 local TestScene = class("Test.TestScene", Scene)
+TestScene.SCENE_NAME = "Test"
 
-function TestScene:Ctor()
-    TestScene.super.Ctor(self, "Test")
-end
 
+
+--
 function TestScene:OnInitialize()
     TestScene.super.OnInitialize(self)
 
-    local uiCanvasTra = GameObject.Find("SceneUICanvas").transform
+    SceneManager.SetDontUnloadAssetBundle(self.sceneName, true)
+
+    local uiCanvasTra = self.transform:Find("SceneUICanvas")
     local samplesTra = uiCanvasTra:Find("Samples")
     self.samples = samplesTra.gameObject
-
 
     --
     local sampleNames = {
@@ -40,7 +40,6 @@ function TestScene:OnInitialize()
     end
     --
 
-
     local dungeonBtn = samplesTra:Find("dungeonBtn").gameObject
     AddEventListener(dungeonBtn, PointerEvent.CLICK, self.OnClick_dungeonBtn, self)
 
@@ -50,8 +49,6 @@ function TestScene:OnInitialize()
     self.backBtn:SetActive(false)
     AddEventListener(self.backBtn, PointerEvent.CLICK, self.OnClick_backBtn, self)
 end
-
-
 
 
 --
@@ -65,6 +62,7 @@ function TestScene:OnClick_ShowSample(event, sampleName)
     self.backBtn:SetActive(true)
 end
 
+
 --
 function TestScene:OnClick_backBtn(event)
     self.curSample:Destroy()
@@ -73,13 +71,10 @@ function TestScene:OnClick_backBtn(event)
 end
 
 
-
 --
 function TestScene:OnClick_dungeonBtn(event)
-    Stage.ShowScene(require("Module.Dungeon.View.DungeonScene"))
+    SceneController.EnterDungeon()
 end
-
-
 
 
 --
@@ -89,6 +84,6 @@ end
 
 
 
-
 --
 return TestScene
+

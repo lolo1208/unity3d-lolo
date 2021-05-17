@@ -4,6 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using USceneMgr = UnityEngine.SceneManagement.SceneManager;
 
 
 namespace ShibaInu
@@ -19,7 +20,7 @@ namespace ShibaInu
         [MenuItem("ShibaInu/Run the Application", false, 101)]
         private static void RunTheApplication()
         {
-            Scene scene = SceneManager.GetActiveScene();
+            Scene scene = USceneMgr.GetActiveScene();
             GameObject[] list = scene.GetRootGameObjects();
             bool hasMain = false;
             foreach (GameObject go in list)
@@ -27,13 +28,20 @@ namespace ShibaInu
                 hasMain = go.GetComponent<Main>() != null;
                 if (hasMain)
                 {
-                    go.SetActive(true);
+                    if (!go.activeSelf)
+                    {
+                        go.SetActive(true);
+                        BaseEditor.MarkSceneDirty();
+                    }
                     break;
                 }
             }
 
             if (!hasMain)
+            {
                 new GameObject("Main").AddComponent<Main>();
+                BaseEditor.MarkSceneDirty();
+            }
 
             EditorApplication.ExecuteMenuItem("Edit/Play");
         }

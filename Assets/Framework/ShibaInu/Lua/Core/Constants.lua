@@ -70,7 +70,7 @@ local Constants = {
     E2001 = "不存在的图层：%s",
     E2002 = "必须设定场景名称（moduleName）。className：%s",
     E2004 = "View 只能被初始化一次。className：%s",
-    E2005 = "View 还未被初始化。className：%s",
+    --E2005 = "View 还未被初始化。className：%s",
     E2006 = "View 实例.gameObject 值为 nil，不能监听（或取消监听）销毁事件。className：%s",
     E2007 = "gameObject 上未能找到组件 %s。gameObject.name：%s",
 

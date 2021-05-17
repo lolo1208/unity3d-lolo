@@ -4,16 +4,14 @@
 -- Author LOLO
 --
 
-
 --
----@class Core.ProgressView : View
+---@class Core.ProgressView : Effects.View.FadeView
 ---@field New fun():Core.ProgressView
 ---
 ---@field bar UnityEngine.UI.Image
 ---@field text UnityEngine.UI.Text
----@field dfcHide HandlerRef
 ---
-local ProgressView = class("Core.ProgressView", View)
+local ProgressView = class("Core.ProgressView", FadeView)
 
 local instance
 
@@ -32,7 +30,8 @@ end
 --
 function ProgressView:Ctor()
     self.initShow = false
-    ProgressView.super.Ctor(self, "Prefabs/Core/Progress.prefab", Constants.LAYER_SCENE, Constants.ASSET_GROUP_CORE)
+    self.show_duration = 0
+    ProgressView.super.Ctor(self, "Prefabs/Core/Progress.prefab", Constants.LAYER_UI_TOP, Constants.ASSET_GROUP_CORE)
 end
 
 
@@ -52,25 +51,7 @@ function ProgressView:Show()
         ProgressView.super.Show(self)
         self.bar.fillAmount = 0
         self.text.text = ""
-    end
-
-    if self.dfcHide ~= nil then
-        CancelDelayedCall(self.dfcHide)
-        self.dfcHide = nil
-    end
-end
-
-
---
-function ProgressView:Hide()
-    -- debug 模式下需要延迟一帧隐藏，不然 Loading 切换过程会有空白
-    if isDebug and self.dfcHide == nil then
-        self.dfcHide = DelayedFrameCall(function()
-            self.dfcHide = nil
-            ProgressView.super.Hide(self)
-        end)
-    else
-        ProgressView.super.Hide(self)
+        self.transform:SetAsLastSibling()
     end
 end
 

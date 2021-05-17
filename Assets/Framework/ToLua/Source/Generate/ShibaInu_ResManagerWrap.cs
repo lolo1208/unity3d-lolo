@@ -27,6 +27,7 @@ public class ShibaInu_ResManagerWrap
 		L.RegFunction("LoadAudioClipAsync", LoadAudioClipAsync);
 		L.RegFunction("GetProgress", GetProgress);
 		L.RegFunction("Unload", Unload);
+		L.RegVar("CurrentAssetGroup", get_CurrentAssetGroup, set_CurrentAssetGroup);
 		L.EndStaticLibs();
 	}
 
@@ -600,6 +601,35 @@ public class ShibaInu_ResManagerWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.ResManager.Unload");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_CurrentAssetGroup(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushstring(L, ShibaInu.ResManager.CurrentAssetGroup);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_CurrentAssetGroup(IntPtr L)
+	{
+		try
+		{
+			string arg0 = ToLua.CheckString(L, 2);
+			ShibaInu.ResManager.CurrentAssetGroup = arg0;
+			return 0;
 		}
 		catch (Exception e)
 		{
