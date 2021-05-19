@@ -336,6 +336,7 @@ namespace ShibaInu
         private bool AddAllComponents()
         {
             bool dirty = false;
+            GameObject viewport = transform.Find(ELEMENT_VIEWPORT).gameObject;
 
             if (gameObject.GetComponent<ScrollRect>() == null)
             {
@@ -343,10 +344,14 @@ namespace ShibaInu
                 dirty = true;
             }
 
-            GameObject viewport = transform.Find(ELEMENT_VIEWPORT).gameObject;
             if (viewport.GetComponent<RectMask2D>() == null)
             {
                 viewport.AddComponent<RectMask2D>();
+                dirty = true;
+            }
+            if (viewport.GetComponent<Image>() == null)
+            {
+                viewport.AddComponent<Image>().color = Color.clear;
                 dirty = true;
             }
 
