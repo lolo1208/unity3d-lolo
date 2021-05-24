@@ -39,6 +39,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
 #### * 其他文档
   - [NativeEvent / NativeHelper](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/NativeEvent-NativeHelper.md)
   - [Handler / DelayedCall](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/Handler-DelayedCall.md)
+  - [Logger](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/Logger.md)
 
 # 开发环境
 
@@ -57,7 +58,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
     *按钮在右上角放大镜图标左侧*
 
 ###### 最终配置结果如图：
-![](http://lolo.link/img/github/unity-framework/project-structure.jpg)
+![](https://blog.lolo.link/img/unity/unity-framework/project-structure.jpg)
 
 #### * C# -> Lua
 首先，将需要导出给 Lua 访问的 类，属性，方法 等添加到 `Assets/Framework/ToLua/Editor/CustomSettings.cs` 中。
@@ -85,7 +86,7 @@ Windows 为 `File`->`Settings`->`Plugins`
 然后选择 `Assets/LuaAPI` 目录。
 
 ###### 如图：
-![](http://lolo.link/img/github/unity-framework/libraries-luaapi.jpg)
+![](https://blog.lolo.link/img/unity/unity-framework/libraries-luaapi.jpg)
 
 自此，Lua 开发环境已全部配置完成。
 
@@ -93,7 +94,7 @@ Windows 为 `File`->`Settings`->`Plugins`
 打开 `Preferences`->`Editor`->`File Types` 窗口，在 `Ignore files and folders` 输入框中添加 **`*.meta;`** 即可忽略所有 meta 文件。
 
 ###### 如图：
-![](http://lolo.link/img/github/unity-framework/preferences-ignore-meta.jpg)
+![](https://blog.lolo.link/img/unity/unity-framework/preferences-ignore-meta.jpg)
 
 
 # Build
@@ -142,7 +143,7 @@ Unity Android 项目需要添加的配置和常见问题，可参考：Templates
 ***注意：打包前，请在 Unity Editor 中关闭当前项目。***
 
 ###### 打包进度与日志页面：
-![](http://lolo.link/img/github/unity-framework/build-web-page.jpg)
+![](https://blog.lolo.link/img/unity/unity-framework/build-web-page.jpg)
 
 #### * Unity Editor - `AssetBundle`
 
