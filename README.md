@@ -40,6 +40,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   - [NativeEvent / NativeHelper](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/NativeEvent-NativeHelper.md)
   - [Handler / DelayedCall](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/Handler-DelayedCall.md)
   - [Logger](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/Logger.md)
+  - [Language / LocalizationText](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/Language-LocalizationText.md)
 
 # 开发环境
 
