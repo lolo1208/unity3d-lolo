@@ -1,5 +1,4 @@
-## Unity XCode 项目相关笔记
-
+# Unity XCode 项目相关笔记
 
 ### 禁用 Bitcode
 报错如图：
