@@ -41,6 +41,8 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   - [Handler / DelayedCall](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/Handler-DelayedCall.md)
   - [Logger](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/Logger.md)
   - [Language / LocalizationText](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/Language-LocalizationText.md)
+  - [AndroidStudio Project Notes](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/AndroidStudio.md)
+  - [XCode Project Notes](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/XCode.md)
 
 # 开发环境
 
