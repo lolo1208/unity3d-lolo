@@ -138,7 +138,7 @@ end
 ---@param event DataEvent
 function BaseList:DataChanged(event)
     if event.index ~= -1 then
-        self:SetItemData(self:GetItemByIndex(event.index), event.newValue)
+        self:SetItemData(self:GetItemByIndex(event.index), event.newValue, event.oldValue)
     else
         self:Update()
     end
@@ -338,10 +338,11 @@ end
 --- 设置子项的数据，该方法会在调用 item.Update() 之前触发 item.OnRecycle()
 ---@param item ItemRenderer
 ---@param data any
-function BaseList:SetItemData(item, data)
+---@param oldData any
+function BaseList:SetItemData(item, data, oldData)
     if item ~= nil then
         item:OnRecycle()
-        item:Update(data, item:GetIndex())
+        item:Update(data, item:GetIndex(), oldData)
         self:DispatchListEvent(ListEvent.UPDATE, item)
     end
 end

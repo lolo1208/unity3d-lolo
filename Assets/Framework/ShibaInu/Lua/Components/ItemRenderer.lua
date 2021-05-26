@@ -36,7 +36,8 @@ end
 --- 更新内容
 ---@param data any
 ---@param index number
-function ItemRenderer:Update(data, index)
+---@param oldData any @ -可选- 只有在更新单条数据时，该参数才会有值
+function ItemRenderer:Update(data, index, oldData)
     self._data = data
     self._index = index
 end
