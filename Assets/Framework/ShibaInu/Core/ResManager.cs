@@ -99,7 +99,9 @@ namespace ShibaInu
                 AssetLoader.Load(info, groupName);
                 return info.ab.LoadAsset<T>(fullPath);
             }
-            throw new Exception(string.Format(Constants.E5001, path));
+
+            Debug.LogWarningFormat(Constants.E5001, path);
+            return null;
         }
 
 

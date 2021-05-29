@@ -55,7 +55,7 @@ namespace ShibaInu
         public const string W1001 = "[C# WARNING] 在执行 {0} 函数时，Camera.main 的值为 null";
 
         // -- editor play mode errors --
-        public const string E5001 = "[C# ERROR] 资源文件不存在: {0}";
+        public const string E5001 = "[C# ERROR] 资源文件不存在: {0}"; // editor error & runtime warning
         public const string E5002 = "[C# ERROR] 文件路径大小写不匹配: {0}";
 
 
