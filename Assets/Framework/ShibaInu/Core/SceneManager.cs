@@ -228,7 +228,7 @@ namespace ShibaInu
                 : Mathf.Min(s_aoScene.progress + 0.1f, 1f) * 0.1f + 0.9f;
             pScene = (pScene + pRes) / 2f;
 
-            if (!s_aoScene.isDone)
+            if (s_aoScene != null && !s_aoScene.isDone)
                 pScene -= 0.05f;
 
             if (s_totalCount == 0)
