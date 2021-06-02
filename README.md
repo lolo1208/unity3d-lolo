@@ -8,9 +8,9 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
 
 #### * 默认环境和版本
   - [Unity Editor 2018.4.25f1](https://unity3d.com/cn/unity/whats-new/2018.4.25) 可升级至任意版本
-  - [IntelliJ IDEA CE 2020.1.4](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
-  - [EmmyLua 1.3.3](https://emmylua.github.io) 该插件安装包放在 Templates/IntelliJ-EmmyLua-1.3.3.150-IDEA201.zip
-  - Visual Studio Community 2019 / 8.6.5 for Mac
+  - [IntelliJ IDEA CE 2021.1.1](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
+  - [EmmyLua 1.3.6.215](https://plugins.jetbrains.com/plugin/9768-emmylua/versions/stable) 该插件安装包放在 Templates/IntelliJ-EmmyLua-1.3.6.215-IDEA211.zip
+  - Visual Studio Community 2019 / 8.9.9 for Mac
   - [tolua 1.0.7](https://github.com/topameng/tolua), lua 5.1, [release encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
 
 #### * 特殊目录和文件
