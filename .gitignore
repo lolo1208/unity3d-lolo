@@ -3,6 +3,10 @@
 .vs
 .vsconfig
 
+*.csproj
+*.sln
+*.userprefs
+
 obj
 Library
 Packages
@@ -13,17 +17,19 @@ Logs
 
 Assets/StreamingAssets
 Assets/StreamingAssets.meta
-Assets/Framework/App/Core/AstMsgProtocol.cs
-Assets/Framework/App/Core/AstMsgProtocol.cs.meta
 Assets/Framework/3rdParty/StompyRobot
 Assets/Framework/3rdParty/StompyRobot.meta
 --Assets/Framework/ToLua/Source/Generate/*
 --!Assets/Framework/ToLua/Source/Generate/DelegateFactory.cs
 --!Assets/Framework/ToLua/Source/Generate/LuaBinder.cs
 
-*.csproj
-*.sln
-*.userprefs
+Assets/Framework/App/Core/AstMsgProtocol.cs
+Assets/Framework/App/Core/AstMsgProtocol.cs.meta
+Assets/Framework/App/Testing.cs
+Assets/Framework/App/Testing.cs.meta
+Assets/Framework/App/Utils.meta
+Assets/Framework/App/Utils/Manifest.cs
+Assets/Framework/App/Utils/Manifest.cs.meta
 
 Tools/tmp
 Tools/build
