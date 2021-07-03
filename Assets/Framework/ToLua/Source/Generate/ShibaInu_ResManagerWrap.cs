@@ -7,9 +7,8 @@ public class ShibaInu_ResManagerWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginStaticLibs("ResManager");
-		L.RegFunction("ResFileExists", ResFileExists);
-		L.RegFunction("LuaFileExists", LuaFileExists);
 		L.RegFunction("PreloadShaders", PreloadShaders);
+		L.RegFunction("GetProgress", GetProgress);
 		L.RegFunction("LoadText", LoadText);
 		L.RegFunction("LoadAsset", LoadAsset);
 		L.RegFunction("LoadAssetAsync", LoadAssetAsync);
@@ -25,44 +24,14 @@ public class ShibaInu_ResManagerWrap
 		L.RegFunction("LoadShaderAsync", LoadShaderAsync);
 		L.RegFunction("LoadAudioClip", LoadAudioClip);
 		L.RegFunction("LoadAudioClipAsync", LoadAudioClipAsync);
-		L.RegFunction("GetProgress", GetProgress);
 		L.RegFunction("Unload", Unload);
+		L.RegFunction("ResFileExists", ResFileExists);
+		L.RegFunction("LuaFileExists", LuaFileExists);
+		L.RegFunction("BytesFileExists", BytesFileExists);
+		L.RegFunction("GetBytesFilePath", GetBytesFilePath);
+		L.RegFunction("GetBytesFileContent", GetBytesFileContent);
 		L.RegVar("CurrentAssetGroup", get_CurrentAssetGroup, set_CurrentAssetGroup);
 		L.EndStaticLibs();
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int ResFileExists(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			string arg0 = ToLua.CheckString(L, 1);
-			bool o = ShibaInu.ResManager.ResFileExists(arg0);
-			LuaDLL.lua_pushboolean(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int LuaFileExists(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 1);
-			string arg0 = ToLua.CheckString(L, 1);
-			bool o = ShibaInu.ResManager.LuaFileExists(arg0);
-			LuaDLL.lua_pushboolean(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -73,6 +42,22 @@ public class ShibaInu_ResManagerWrap
 			ToLua.CheckArgsCount(L, 0);
 			ShibaInu.ResManager.PreloadShaders();
 			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetProgress(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			float o = ShibaInu.ResManager.GetProgress();
+			LuaDLL.lua_pushnumber(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -562,22 +547,6 @@ public class ShibaInu_ResManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int GetProgress(IntPtr L)
-	{
-		try
-		{
-			ToLua.CheckArgsCount(L, 0);
-			float o = ShibaInu.ResManager.GetProgress();
-			LuaDLL.lua_pushnumber(L, o);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int Unload(IntPtr L)
 	{
 		try
@@ -601,6 +570,91 @@ public class ShibaInu_ResManagerWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.ResManager.Unload");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ResFileExists(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			bool o = ShibaInu.ResManager.ResFileExists(arg0);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int LuaFileExists(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			bool o = ShibaInu.ResManager.LuaFileExists(arg0);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int BytesFileExists(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			bool o = ShibaInu.ResManager.BytesFileExists(arg0);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetBytesFilePath(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			string o = ShibaInu.ResManager.GetBytesFilePath(arg0);
+			LuaDLL.lua_pushstring(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetBytesFileContent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			byte[] o = ShibaInu.ResManager.GetBytesFileContent(arg0);
+			ToLua.Push(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{

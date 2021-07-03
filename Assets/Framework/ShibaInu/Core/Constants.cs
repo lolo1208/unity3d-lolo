@@ -26,6 +26,9 @@ namespace ShibaInu
 
         /// 进入 AssetBundle 模式的标志文件
         public static readonly string ABModeFilePath = Application.streamingAssetsPath + "/AssetBundleMode.flag";
+
+        /// StreamingAssets 文件夹路径
+        public const string StreamingAssetsDirPath = "Assets/StreamingAssets/";
 #endif
 
 
@@ -57,6 +60,7 @@ namespace ShibaInu
         // -- editor play mode errors --
         public const string E5001 = "[C# ERROR] 资源文件不存在: {0}"; // editor error & runtime warning
         public const string E5002 = "[C# ERROR] 文件路径大小写不匹配: {0}";
+        public const string E5003 = "[C# ERROR] Res 与 StreamingAssets 目录存在相同路径的文件: {0}";
 
 
     }

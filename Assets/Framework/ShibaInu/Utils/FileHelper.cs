@@ -106,8 +106,11 @@ namespace ShibaInu
             }
             else
             {
-                // 资源文件
-                curPath = Constants.ResDirPath;
+                // bytes 文件
+                if (path.StartsWith(Constants.ResDirPath) || path.StartsWith(Constants.StreamingAssetsDirPath))
+                    curPath = Directory.GetCurrentDirectory() + "/";
+                else
+                    curPath = Constants.ResDirPath;// 资源文件
             }
 
             string[] paths = path.Split('/');

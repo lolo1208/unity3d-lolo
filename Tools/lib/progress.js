@@ -17,10 +17,10 @@ let data = progress.data = {
     totalTime: 0,// 总耗时
     svn: [0, 0, 0],// 项目检出或更新，svn / git
     manifest: [0, 2, 0],// 0:未创建，1:已创建，2:已读取
-    lua: [0, 1, 0],
-    scene: [0, 1, 0],
-    ab: [0, 1, 0],
-    copyRes: [0, 1, 0],
+    lua: [0, 1, 0],// 0:已完成数，1:总数，2:已耗时
+    scene: [0, 1, 0],// ~~
+    ab: [0, 1, 0],// ~~
+    copyRes: [0, 1, 0],// ~~
     gpp: [0, 0, 0],// 0:未开始，1:已生成，2:已更新
     daz: [0, 2, 0],// 0:未开始，1:dest complete，2:pack zip complete
 };
@@ -109,7 +109,7 @@ progress.manifest = function (status) {
         data.lua[1] = manifestData.lua.length;
         data.scene[1] = manifestData.scene.length;
         data.ab[1] = manifestData.ab.length;
-        data.copyRes[1] = data.lua[1] + data.scene[1] + data.ab[1];
+        data.copyRes[1] = data.lua[1] + data.scene[1] + data.ab[1] + manifestData.bytes.length;
         if (common.generatePlatformProject) data.gpp[1] = 2;// GPP 共两步
     }
     update();

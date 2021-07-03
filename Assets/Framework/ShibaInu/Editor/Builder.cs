@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace ShibaInu
 {
+
     /// <summary>
     /// Asset bundle info.
     /// </summary>
@@ -20,12 +21,14 @@ namespace ShibaInu
     }
 
 
-
     public static class Builder
     {
+        #region 常量 / 变量
 
         /// 资源根目录
         private const string ResDir = "Assets/Res/";
+        /// StreamingAssets 根目录
+        private const string StreamingAssetsDir = "Assets/StreamingAssets/";
         /// AssetBundle 文件后缀
         private const string ABExtName = ".ab";
 
@@ -49,23 +52,37 @@ namespace ShibaInu
         private static readonly List<AssetBundleInfo> s_abiList = new List<AssetBundleInfo>();
         /// abi 映射，路径（资源目录路径，不是 ab 文件路径）为 key
         private static readonly Dictionary<string, AssetBundleInfo> s_abiMap = new Dictionary<string, AssetBundleInfo>();
+        /// Res 目录下需要被拷贝的文件列表
+        private static readonly HashSet<string> s_bytesFiles = new HashSet<string>();
+        /// StreamingAssets 目录下需要被拷贝的文件列表
+        private static readonly HashSet<string> s_assetsFiles = new HashSet<string>();
 
         /// 打包规则 - 需要被忽略的目录列表
         private static readonly HashSet<string> s_ignoreRules = new HashSet<string>();
-        /// 打包规则 - 子目录需要被合并打包的目录列表
-        private static readonly HashSet<string> s_combineRules = new HashSet<string>();
-        /// 打包规则 - 所有文件需要被单独打包的目录列表
-        private static readonly HashSet<string> s_singleRules = new HashSet<string>();
-
         /// 打包规则 - 需要被忽略的后缀名列表
         private static readonly HashSet<string> s_ignoreExtNames = new HashSet<string>();
+        /// 打包规则 - 子目录需要被合并打包的目录列表
+        private static readonly HashSet<string> s_combineRules = new HashSet<string>();
         /// 打包规则 - 需要被合并的后缀名列表
         private static readonly HashSet<string> s_combineExtNames = new HashSet<string>();
+        /// 打包规则 - 所有文件需要被单独打包的目录列表
+        private static readonly HashSet<string> s_singleRules = new HashSet<string>();
         /// 打包规则 - 需要单独打包的后缀名列表
         private static readonly HashSet<string> s_singleExtNames = new HashSet<string>();
+        /// 打包规则 - 需要直接拷贝的文件的目录列表
+        private static readonly HashSet<string> s_bytesRules = new HashSet<string>();
+        /// 打包规则 - 需要直接拷贝的文件后缀名列表
+        private static readonly HashSet<string> s_bytesExtNames = new HashSet<string>();
+        /// 打包规则 - StreamingAssets 目录下不被排除的目录列表
+        private static readonly HashSet<string> s_assetsRules = new HashSet<string>();
+        /// 打包规则 - StreamingAssets 目录下不被排除的后缀名列表
+        private static readonly HashSet<string> s_assetsExtNames = new HashSet<string>();
+
+        #endregion
 
 
 
+        #region 生成 Build 清单
 
         /// <summary>
         /// 生成需要 build 的文件清单
@@ -73,21 +90,27 @@ namespace ShibaInu
         private static void GenerateBuildManifest()
         {
             string manifestPath = GetCmdLineArg("-manifestPath");
-            //string manifestPath = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/log/0/manifest.log";
+            //string manifestPath = Path.Combine(Directory.GetCurrentDirectory(), "Tools/build/log/0/manifest.log");
 
             ShibaInuMenu.ClearAllAssetBundleNames();
 
             s_abiList.Clear();
             s_abiMap.Clear();
+            s_bytesFiles.Clear();
+            s_assetsFiles.Clear();
+
             s_ignoreRules.Clear();
-            s_combineRules.Clear();
-            s_singleRules.Clear();
             s_ignoreExtNames.Clear();
+            s_combineRules.Clear();
             s_combineExtNames.Clear();
+            s_singleRules.Clear();
             s_singleExtNames.Clear();
+            s_bytesRules.Clear();
+            s_bytesExtNames.Clear();
+            s_assetsRules.Clear();
+            s_assetsExtNames.Clear();
 
             ParseBuildRules();
-
 
             // lua 列表
             List<string> luaList = new List<string>();
@@ -101,8 +124,7 @@ namespace ShibaInu
             string[] typeDirs = Directory.GetDirectories(ResDir);
             foreach (string typeDir in typeDirs)
             {
-                if (typeDir.EndsWith(".svn", StringComparison.Ordinal))
-                    continue;
+                if (IsIgnoreDir(typeDir)) continue;
 
                 // 场景资源
                 if (Path.GetFileName(typeDir) == "Scenes")
@@ -132,22 +154,32 @@ namespace ShibaInu
                 }
             }
 
+            // 遍历 StreamingAssets 目录
+            if (Directory.Exists(StreamingAssetsDir))
+                ParseStreamingAssetsDir(StreamingAssetsDir);
 
             // 写入打包清单文件
             CreateDirectory(manifestPath);
             using (StreamWriter writer = new StreamWriter(File.Open(manifestPath, FileMode.Create)))
             {
-                // 写入 lua 信息
+                // 1.写入 lua 信息
                 writer.WriteLine(luaList.Count);// [W] lua 数量
                 foreach (string luaPath in luaList)
                     writer.WriteLine(luaPath);// [W] lua 文件路径
 
-                // 写入场景信息
+                // 2.写入 Res 与 StreamingAssets 目录下需直接拷贝的文件信息
+                writer.WriteLine(s_bytesFiles.Count + s_assetsFiles.Count);// [W] 文件数量
+                foreach (string bytesPath in s_bytesFiles)
+                    writer.WriteLine(bytesPath);// [W] 文件路径
+                foreach (string assetsPath in s_assetsFiles)
+                    writer.WriteLine(assetsPath);// [W] 文件路径
+
+                // 3.写入场景信息
                 writer.WriteLine(sceneList.Count);// [W] 场景数量
                 foreach (string scenePath in sceneList)
                     writer.WriteLine(scenePath);// [W] 场景文件路径
 
-                // 写入 AssetBundle 信息
+                // 4.写入 AssetBundle 信息
                 foreach (AssetBundleInfo abi in s_abiList)
                 {
                     if (abi.assets.Count == 0) continue;
@@ -161,10 +193,11 @@ namespace ShibaInu
 
 
         /// <summary>
-        /// 解析资源文件夹
+        /// 遍历 Res 目录
         /// </summary>
-        /// <param name="dir">Dir.</param>
-        private static void ParseResDir(string dir)
+        /// <param name="dir">目录路径</param>
+        /// <param name="isBytes">是否为需要直接拷贝文件的目录</param>
+        private static void ParseResDir(string dir, bool isBytes = false)
         {
             dir = dir.Replace("\\", "/");
 
@@ -176,22 +209,31 @@ namespace ShibaInu
                 if (rulePath.StartsWith(d, StringComparison.Ordinal))
                     return;
 
+            // 是需直接拷贝文件的目录
+            if (!isBytes)
+            {
+                foreach (string d in s_bytesRules)
+                    if (rulePath.StartsWith(d, StringComparison.Ordinal))
+                    {
+                        isBytes = true;
+                        break;
+                    }
+            }
+
             // 遍历目录下的文件
             string[] files = Directory.GetFiles(dir);
             foreach (string file in files)
             {
-                if (file.EndsWith(".meta", StringComparison.Ordinal) || file.EndsWith(".DS_Store", StringComparison.Ordinal))
-                    continue;
-                AppendFile(file.Replace("\\", "/"), dir);
+                if (IsIgnoreFile(file)) continue;
+                AppendFile(file.Replace("\\", "/"), dir, isBytes);
             }
 
             // 递归子目录
             string[] dirs = Directory.GetDirectories(dir);
             foreach (string d in dirs)
             {
-                if (d.EndsWith(".svn", StringComparison.Ordinal))
-                    continue;
-                ParseResDir(d);
+                if (IsIgnoreDir(d)) continue;
+                ParseResDir(d, isBytes);
             }
         }
 
@@ -201,13 +243,22 @@ namespace ShibaInu
         /// </summary>
         /// <param name="file">File.</param>
         /// <param name="abDir">Ab dir.</param>
-        private static void AppendFile(string file, string abDir)
+        /// <param name="isBytes">是否为需要直接拷贝的文件</param>
+        private static void AppendFile(string file, string abDir, bool isBytes = false)
         {
             string extName = Path.GetExtension(file);
 
             // 是要被忽略的文件
             if (s_ignoreExtNames.Contains(extName))
                 return;
+
+            // 是需直接拷贝的文件
+            if (!isBytes) isBytes = s_bytesExtNames.Contains(extName);
+            if (isBytes)
+            {
+                s_bytesFiles.Add(file);
+                return;
+            }
 
             // 是要合并的文件
             if (s_combineExtNames.Contains(extName))
@@ -252,24 +303,75 @@ namespace ShibaInu
 
 
         /// <summary>
-        /// 将 dirPath 目录下的所有 lua 文件添加到 list 中，并递归子目录
+        /// 将 dir 目录下的所有 lua 文件添加到 list 中，并递归子目录
         /// </summary>
-        /// <param name="dirPath">Dir path.</param>
+        /// <param name="dir"></param>
         /// <param name="list">List.</param>
-        private static void AppendLuaFiles(string dirPath, List<string> list)
+        private static void AppendLuaFiles(string dir, List<string> list)
         {
-            string[] files = Directory.GetFiles(dirPath);
+            string[] files = Directory.GetFiles(dir);
             foreach (string file in files)
             {
                 if (file.EndsWith(".lua", StringComparison.Ordinal))
                     list.Add(file.Replace("\\", "/"));
             }
 
-            string[] dirs = Directory.GetDirectories(dirPath);
-            foreach (string dir in dirs)
+            string[] dirs = Directory.GetDirectories(dir);
+            foreach (string d in dirs)
             {
-                if (!dir.EndsWith(".svn", StringComparison.Ordinal))
-                    AppendLuaFiles(dir, list);
+                if (IsIgnoreDir(d)) continue;
+                AppendLuaFiles(d, list);
+            }
+        }
+
+
+        /// <summary>
+        /// 解析 StreamingAssets 目录
+        /// </summary>
+        /// <param name="dir"></param>
+        private static void ParseStreamingAssetsDir(string dir)
+        {
+            // 遍历目录下的文件
+            string[] files = Directory.GetFiles(dir);
+            foreach (string file in files)
+            {
+                if (IsIgnoreFile(file)) continue;
+                bool isMatched = false;
+
+                string extName = Path.GetExtension(file);
+                if (s_assetsExtNames.Contains(extName))
+                {
+                    // 后缀匹配
+                    isMatched = true;
+                }
+                else
+                {
+                    // 目录匹配
+                    string rulePath = dir.Replace(StreamingAssetsDir, "");
+                    if (!rulePath.EndsWith("/", StringComparison.Ordinal)) rulePath += "/";
+                    foreach (string d in s_assetsRules)
+                        if (rulePath.StartsWith(d, StringComparison.Ordinal))
+                        {
+                            isMatched = true;
+                            break;
+                        }
+                }
+                if (isMatched)
+                {
+                    string filePath = file.Replace("\\", "/");
+                    // Res 目录下已有同路径文件
+                    if (s_bytesFiles.Contains(Path.Combine(ResDir, filePath.Replace(StreamingAssetsDir, ""))))
+                        throw new Exception("[StreamingAssets & Res] Repeat file path: " + filePath);
+                    s_assetsFiles.Add(filePath);
+                }
+            }
+
+            // 递归子目录
+            string[] dirs = Directory.GetDirectories(dir);
+            foreach (string d in dirs)
+            {
+                if (IsIgnoreDir(d)) continue;
+                ParseStreamingAssetsDir(d);
             }
         }
 
@@ -284,9 +386,10 @@ namespace ShibaInu
                 string line;
                 HashSet<string> rules = null;
                 HashSet<string> extNames = null;
+
                 while ((line = file.ReadLine()) != null)
                 {
-                    if (line == "") continue;
+                    if (string.IsNullOrEmpty(line.Trim())) continue;
                     if (line.StartsWith("//", StringComparison.Ordinal)) continue;
 
                     if (line.StartsWith("-ignore", StringComparison.Ordinal))
@@ -307,6 +410,18 @@ namespace ShibaInu
                         extNames = s_singleExtNames;
                         continue;
                     }
+                    if (line.StartsWith("-bytes", StringComparison.Ordinal))
+                    {
+                        rules = s_bytesRules;
+                        extNames = s_bytesExtNames;
+                        continue;
+                    }
+                    if (line.StartsWith("-assets", StringComparison.Ordinal))
+                    {
+                        rules = s_assetsRules;
+                        extNames = s_assetsExtNames;
+                        continue;
+                    }
 
                     line = line.Replace("\\", "/");
                     if (line.StartsWith("*.", StringComparison.Ordinal))
@@ -323,8 +438,11 @@ namespace ShibaInu
             }
         }
 
+        #endregion
 
 
+
+        #region 打包场景和 AssetBundle
 
         /// <summary>
         /// 打包（生成）场景和 AssetBundle 资源
@@ -334,14 +452,15 @@ namespace ShibaInu
             string targetPlatform = GetCmdLineArg("-targetPlatform");
             string manifestPath = GetCmdLineArg("-manifestPath");
             string outputDir = GetCmdLineArg("-outputDir");
-            string scenes = GetCmdLineArg("-scenes");
             string outFilePath = GetCmdLineArg("-logFile").Replace("unity.log", "unity.out");
+            string scenes = GetCmdLineArg("-scenes");
 
             //string targetPlatform = "android";
-            //string manifestPath = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/log/0/manifest.log";
-            //string outputDir = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/ShibaInu/cache/";
-            //string scenes = "2,3";
-            //string outFilePath = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/log/0/unity.out";
+            //string manifestPath = Path.Combine(Directory.GetCurrentDirectory(), "Tools/build/log/0/manifest.log");
+            //string outputDir = Path.Combine(Directory.GetCurrentDirectory(), "Tools/build/ShibaInu/cache/");
+            //string outFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Tools/build/log/0/unity.out");
+            //string scenes = "1,2";
+
 
             // 需要打包的场景索引列表
             string[] buildScenes = scenes.Split(',');
@@ -377,10 +496,14 @@ namespace ShibaInu
                 {
                     switch (phase)
                     {
-                        // lua
+                        // lua & bytes
                         case 1:
+                        case 2:
                             if (count == 0)
+                            {
                                 count = int.Parse(line);
+                                if (count == 0) phase++;
+                            }
                             else
                             {
                                 if (++index == count)
@@ -392,7 +515,7 @@ namespace ShibaInu
                             break;
 
                         // scene
-                        case 2:
+                        case 3:
                             if (count == 0)
                                 count = int.Parse(line);
                             else
@@ -407,7 +530,7 @@ namespace ShibaInu
                             break;
 
                         // AssetBundle
-                        case 3:
+                        case 4:
                             if (count == 0)
                             {
                                 count = int.Parse(line);
@@ -511,8 +634,11 @@ namespace ShibaInu
             //
         }
 
+        #endregion
 
 
+
+        #region 生成 Platform 项目
 
         /// <summary>
         /// 生成目标平台项 Android / iOS
@@ -524,7 +650,7 @@ namespace ShibaInu
             string development = GetCmdLineArg("-development");
 
             //string targetPlatform = "android";
-            //string outputDir = "/Users/limylee/LOLO/unity/projects/ShibaInu/Tools/build/ShibaInu/platform/tmp/";
+            //string outputDir = Path.Combine(Directory.GetCurrentDirectory(), "Tools/build/ShibaInu/platform/tmp/");
 
             BuildTarget buildTarget;
             if (targetPlatform == "ios")
@@ -557,7 +683,34 @@ namespace ShibaInu
             BuildPipeline.BuildPlayer(CoreScenes, outputDir, buildTarget, options);
         }
 
+        #endregion
 
+
+
+        #region 其他
+
+        /// <summary>
+        /// 是否为可忽略的目录
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private static bool IsIgnoreDir(string path)
+        {
+            return path.EndsWith(".svn", StringComparison.Ordinal)
+                || path.EndsWith(".git", StringComparison.Ordinal);
+        }
+
+
+        /// <summary>
+        /// 是否为可忽略的文件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private static bool IsIgnoreFile(string path)
+        {
+            return path.EndsWith(".meta", StringComparison.Ordinal)
+                || path.EndsWith(".DS_Store", StringComparison.Ordinal);
+        }
 
 
         /// <summary>
@@ -579,9 +732,7 @@ namespace ShibaInu
         private static void WriteOut(string filePath, string line)
         {
             using (StreamWriter sw = File.AppendText(filePath))
-            {
                 sw.WriteLine(line);
-            }
         }
 
 
@@ -608,13 +759,15 @@ namespace ShibaInu
             return "";
         }
 
+        /*
+        [MenuItem("ShibaInu/Test Build", false, 1)]
+        private static void TestGenerateBuildManifest()
+        {
+            GenerateBuildManifest();
+        }
+        */
 
-
-        //[MenuItem("ShibaInu/Test Build", false, 1)]
-        //private static void Test()
-        //{
-        //    GenerateBuildManifest();
-        //}
+        #endregion
 
 
         //

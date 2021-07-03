@@ -1,10 +1,8 @@
 
-
 // 无需打包 AssetBundle 的目录，包括子目录的内容
 // 或指定后缀名，例：*.txt
 -ignore
 Ignores
-
 
 
 // 目录下的的所有文件将会打包成一个 AssetBundle，包括子目录的内容
@@ -20,4 +18,21 @@ Shaders
 Fonts
 Audios
 *.prefab
+
+
+// 在执行该规则前，-ignore 规则会先执行
+// 目录下的每个文件都[不会]被打成 AssetBundle，包括子目录的内容
+// 或指定后缀名，例：*.txt
+// 文件将会被直接拷贝，并打入包中，不会被加工处理
+-bytes
+Bytes
+
+
+// "Assets/StreamingAssets" 目录下的文件将会按照 -bytes 规则进行打包，并忽略 -ignore 规则
+// 默认[所有文件]都[不会]打进包里，只有规则中指定的目录，或指定后缀的文件才会打进包里
+// 访问路径保持不变，例：
+//     "Assets/StreamingAssets/myAudio.bank"，访问路径为："myAudio.bank"
+//     "Assets/StreamingAssets/Dir2/Test File.binary"，访问路径为："Dir2/Test File.binary"
+-assets
+*.bank
 

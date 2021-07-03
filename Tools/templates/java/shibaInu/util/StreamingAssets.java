@@ -34,6 +34,7 @@ public final class StreamingAssets {
             String[] list = sAssetMgr.list("");
             for (String item : list) {
                 if (item.endsWith(".lua")
+                        || item.endsWith(".bytes")
                         || item.endsWith(".ab")
                         || item.endsWith(".scene")
                         || item.endsWith(".cfg")

@@ -27,8 +27,12 @@ namespace ShibaInu
 
     public static class ResManager
     {
-        /// lua 列表[ key = 文件原始路径（不带框架路径和后缀），value = 资源文件名 ]
+        #region 常量/ 变量
+
+        /// lua 列表[ key = 文件原始路径（不带框架路径和后缀），value = 包内文件名 ]
         private static readonly Dictionary<string, string> s_luaMap = new Dictionary<string, string>();
+        /// 直接拷贝的文件列表[ key = 文件原始路径（不带 Assets/Res 或 Assets/StreamingAssets），value = 包内文件名 ]
+        private static readonly Dictionary<string, string> s_bytesMap = new Dictionary<string, string>();
         /// 场景列表[ key = 场景名称（不带路径和后缀），value = AssetInfo 对象 ]
         private static readonly Dictionary<string, AssetInfo> s_sceneMap = new Dictionary<string, AssetInfo>();
         /// AssetInfo 列表[ key = AB文件名，value = AssetInfo 对象 ]
@@ -62,6 +66,156 @@ namespace ShibaInu
         }
 
         private static string currentAssetGroup;
+
+        #endregion
+
+
+
+        #region 初始化 / 预加载
+
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        [NoToLua]
+        public static void Initialize()
+        {
+            if (Common.IsDebug) return;
+
+            // 获取版本信息文件路径
+            string verCfgFilePath = Constants.UpdateDir + Constants.VerCfgFileName;
+            bool hasUpdate = FileHelper.Exists(verCfgFilePath);// 是否有更新过
+            if (!hasUpdate)// 从未更新过
+                verCfgFilePath = Constants.PackageDir + Constants.VerCfgFileName;
+
+
+            // 获取并解析版本号
+            string fullVersion = FileHelper.GetText(verCfgFilePath);
+            Debug.Log("[ResManager] Version: " + fullVersion);
+            Common.VersionInfo.FullVersion = fullVersion;
+
+            string[] verStrArr = fullVersion.Split('.');
+            Common.VersionInfo.PackID = verStrArr[verStrArr.Length - 1];
+            Common.VersionInfo.BuildNumber = verStrArr[verStrArr.Length - 2];
+
+            Common.VersionInfo.ResVersion = "";
+            for (int i = 0; i < verStrArr.Length - 2; i++)
+            {
+                if (i != 0) Common.VersionInfo.ResVersion += ".";
+                Common.VersionInfo.ResVersion += verStrArr[i];
+            }
+
+
+            // 解析资源清单文件
+            string manifestFilePath = (hasUpdate ? Constants.UpdateDir : Constants.PackageDir) + fullVersion + ".manifest";
+            using (StreamReader file = new StreamReader(new MemoryStream(FileHelper.GetBytes(manifestFilePath))))
+            {
+                string line;
+                AssetInfo info = new AssetInfo("");
+                int phase = 1, index = 0, count = 0;
+                while ((line = file.ReadLine()) != null)
+                {
+                    switch (phase)
+                    {
+                        // lua
+                        case 1:
+                            if (count == 0)
+                                count = int.Parse(line);
+                            else
+                            {
+                                s_luaMap.Add(line, file.ReadLine());
+                                if (++index == count)
+                                {
+                                    count = index = 0;
+                                    phase++;
+                                }
+                            }
+                            break;
+
+                        // bytes
+                        case 2:
+                            if (count == 0)
+                            {
+                                count = int.Parse(line);
+                                if (count == 0) phase++;
+                            }
+                            else
+                            {
+                                s_bytesMap.Add(line, file.ReadLine());
+                                if (++index == count)
+                                {
+                                    count = index = 0;
+                                    phase++;
+                                }
+                            }
+                            break;
+
+                        // scene
+                        case 3:
+                            if (count == 0)
+                                count = int.Parse(line);
+                            else
+                            {
+                                s_sceneMap.Add(line, new AssetInfo(file.ReadLine()));
+                                if (++index == count)
+                                {
+                                    count = index = 0;
+                                    phase++;
+                                }
+                            }
+                            break;
+
+                        // AssetBundle（只能放在最后阶段）
+                        case 4:
+                            if (count == 0)
+                            {
+                                count = int.Parse(line);
+                            }
+                            else
+                            {
+                                if (index == 0)
+                                {
+                                    info = new AssetInfo(line);
+                                    s_infoMap.Add(info.name, info);
+
+                                    // 解析依赖列表
+                                    int num = int.Parse(file.ReadLine());
+                                    for (int i = 0; i < num; i++)
+                                        info.pedList.Add(file.ReadLine());
+                                }
+                                else
+                                {
+                                    s_resMap.Add(line, info);
+                                }
+
+                                if (++index == count)
+                                {
+                                    count = index = 0;
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 预加载所有 Shader
+        /// </summary>
+        public static void PreloadShaders()
+        {
+            if (Common.IsDebug) return;
+
+            DateTime dateTime = DateTime.Now;
+            AssetInfo info = GetAssetInfoWithAssetPath(Constants.SvcFilePath);
+            AssetLoader.Load(info, Constants.CoreAssetGroup);
+            info.ab.LoadAllAssets();
+            ShaderVariantCollection svc = info.ab.LoadAsset<ShaderVariantCollection>(Constants.ResDirPath + Constants.SvcFilePath);
+            svc.WarmUp();
+            Debug.Log("[ResManager] Shaders Preload and WarmUp: " + (DateTime.Now - dateTime).Milliseconds / 1000f);
+        }
+
+        #endregion
 
 
 
@@ -103,7 +257,6 @@ namespace ShibaInu
             Debug.LogWarningFormat(Constants.E5001, path);
             return null;
         }
-
 
 
         /// <summary>
@@ -183,245 +336,21 @@ namespace ShibaInu
 
 #endif
 
+
+        /// <summary>
+        /// 获取当前异步加载总进度 0~1
+        /// </summary>
+        /// <returns>The progress.</returns>
+        public static float GetProgress()
+        {
+            return AssetLoader.GetProgress();
+        }
+
         #endregion
 
 
 
-        /// <summary>
-        /// 返回：path 对应的资源文件是否存在
-        /// </summary>
-        /// <param name="path">资源路径。例："Prefabs/Core/UICanvas.prefab"</param>
-        /// <returns></returns>
-        public static bool ResFileExists(string path)
-        {
-            string fullPath = Constants.ResDirPath + path;
-#if UNITY_EDITOR
-            if (Common.IsDebug)
-            {
-                if (!File.Exists(fullPath)) return false;
-
-                if (!FileHelper.IsPathCaseMatch(path))
-                    throw new Exception(string.Format(Constants.E5002, path));
-
-                return true;
-            }
-#endif
-            return s_resMap.ContainsKey(path);
-        }
-
-
-        /// <summary>
-        /// 返回：path 对应的 lua 文件是否存在
-        /// </summary>
-        /// <param name="path">lua 路径。例："Module.Core.launcher" 或 "Module/Core/launcher"</param>
-        /// <returns></returns>
-        public static bool LuaFileExists(string path)
-        {
-            string fullPath = path.Replace(".", "/");
-#if UNITY_EDITOR
-            if (Common.IsDebug)
-            {
-                fullPath = LuaFileUtils.Instance.FindFile(fullPath); // value: "Module/Core/launcher.lua"
-                if (string.IsNullOrEmpty(fullPath) || !File.Exists(fullPath)) return false;
-
-                if (!FileHelper.IsPathCaseMatch(fullPath))
-                    throw new Exception(string.Format(Constants.E5002, path.Replace(".", "/") + ".lua"));
-
-                return true;
-            }
-#endif
-            return s_luaMap.ContainsKey(fullPath);
-        }
-
-
-        /// <summary>
-        /// 通过 AssetBundle 的文件名来获取对应的 AssetInfo
-        /// </summary>
-        /// <returns>The AssetInfo with AssetBundle file name.</returns>
-        /// <param name="fileName">File name.</param>
-        [NoToLua]
-        public static AssetInfo GetAssetInfoWithABName(string fileName)
-        {
-            s_infoMap.TryGetValue(fileName, out AssetInfo info);
-            return info;
-        }
-
-
-        /// <summary>
-        /// 通过 资源路径 来获取对应的 AssetInfo
-        /// </summary>
-        /// <returns>The AssetInfo with asset path.</returns>
-        /// <param name="path">资源路径。例："Prefabs/Core/UICanvas.prefab"</param>
-        [NoToLua]
-        public static AssetInfo GetAssetInfoWithAssetPath(string path)
-        {
-            s_resMap.TryGetValue(path, out AssetInfo info);
-            return info;
-        }
-
-
-        /// <summary>
-        /// 通过 场景名称 来获取对应的 AssetInfo
-        /// </summary>
-        /// <returns>The AssetInfo with scene name.</returns>
-        /// <param name="sceneName">Scene name.</param>
-        [NoToLua]
-        public static AssetInfo GetAssetInfoWithSceneName(string sceneName)
-        {
-            s_sceneMap.TryGetValue(sceneName, out AssetInfo info);
-            return info;
-        }
-
-
-
-        /// <summary>
-        /// 获取 Lua 文件的字节内容
-        /// </summary>
-        /// <returns>The lua file bytes.</returns>
-        /// <param name="path">lua 路径（不带后缀）。例："Module/Core/launcher"</param>
-        [NoToLua]
-        public static byte[] GetLuaFileBytes(string path)
-        {
-            // 不需要后缀名
-            path = path.Replace(".lua", "");
-
-            if (s_luaMap.TryGetValue(path, out string fileName))
-            {
-                return FileHelper.GetBytes(AssetLoader.GetFilePath(fileName));
-            }
-
-            throw new Exception(string.Format(Constants.E1002, path));
-        }
-
-
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        [NoToLua]
-        public static void Initialize()
-        {
-            if (Common.IsDebug) return;
-
-            // 获取版本信息文件路径
-            string VerCfgFilePath = Constants.UpdateDir + Constants.VerCfgFileName;
-            bool hasUpdate = FileHelper.Exists(VerCfgFilePath);// 是否有更新过
-            if (!hasUpdate)// 从未更新过
-                VerCfgFilePath = Constants.PackageDir + Constants.VerCfgFileName;
-
-
-            // 获取并解析版本号
-            string fullVersion = FileHelper.GetText(VerCfgFilePath);
-            Debug.Log("[ResManager] Version: " + fullVersion);
-            Common.VersionInfo.FullVersion = fullVersion;
-
-            string[] verStrArr = fullVersion.Split('.');
-            Common.VersionInfo.PackID = verStrArr[verStrArr.Length - 1];
-            Common.VersionInfo.BuildNumber = verStrArr[verStrArr.Length - 2];
-
-            Common.VersionInfo.ResVersion = "";
-            for (int i = 0; i < verStrArr.Length - 2; i++)
-            {
-                if (i != 0) Common.VersionInfo.ResVersion += ".";
-                Common.VersionInfo.ResVersion += verStrArr[i];
-            }
-
-
-            // 解析资源清单文件
-            string manifestFilePath = (hasUpdate ? Constants.UpdateDir : Constants.PackageDir) + fullVersion + ".manifest";
-            using (StreamReader file = new StreamReader(new MemoryStream(FileHelper.GetBytes(manifestFilePath))))
-            {
-                string line;
-                AssetInfo info = new AssetInfo("");
-                int phase = 1, index = 0, count = 0;
-                while ((line = file.ReadLine()) != null)
-                {
-                    switch (phase)
-                    {
-                        // lua
-                        case 1:
-                            if (count == 0)
-                                count = int.Parse(line);
-                            else
-                            {
-                                s_luaMap.Add(line, file.ReadLine());
-                                if (++index == count)
-                                {
-                                    count = index = 0;
-                                    phase++;
-                                }
-                            }
-                            break;
-
-                        // scene
-                        case 2:
-                            if (count == 0)
-                                count = int.Parse(line);
-                            else
-                            {
-                                s_sceneMap.Add(line, new AssetInfo(file.ReadLine()));
-                                if (++index == count)
-                                {
-                                    count = index = 0;
-                                    phase++;
-                                }
-                            }
-                            break;
-
-                        // AssetBundle
-                        case 3:
-                            if (count == 0)
-                            {
-                                count = int.Parse(line);
-                            }
-                            else
-                            {
-                                if (index == 0)
-                                {
-                                    info = new AssetInfo(line);
-                                    s_infoMap.Add(info.name, info);
-
-                                    // 解析依赖列表
-                                    int num = int.Parse(file.ReadLine());
-                                    for (int i = 0; i < num; i++)
-                                        info.pedList.Add(file.ReadLine());
-                                }
-                                else
-                                {
-                                    s_resMap.Add(line, info);
-                                }
-
-                                if (++index == count)
-                                {
-                                    count = index = 0;
-                                }
-                            }
-                            break;
-                    }
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// 预加载所有 Shader
-        /// </summary>
-        public static void PreloadShaders()
-        {
-            if (Common.IsDebug) return;
-
-            DateTime dateTime = DateTime.Now;
-            AssetInfo info = GetAssetInfoWithAssetPath(Constants.SvcFilePath);
-            AssetLoader.Load(info, Constants.CoreAssetGroup);
-            info.ab.LoadAllAssets();
-            ShaderVariantCollection svc = info.ab.LoadAsset<ShaderVariantCollection>(Constants.ResDirPath + Constants.SvcFilePath);
-            svc.WarmUp();
-            Debug.Log("[ResManager] Shaders Preload and WarmUp: " + (DateTime.Now - dateTime).Milliseconds / 1000f);
-        }
-
-
-
-        #region 同步/异步 加载资源的对外实现
+        #region 同步 / 异步 加载资源的对外实现
 
         public static string LoadText(string path, string groupName = null)
         {
@@ -503,19 +432,6 @@ namespace ShibaInu
 
 
 
-
-        /// <summary>
-        /// 获取当前异步加载总进度 0~1
-        /// </summary>
-        /// <returns>The progress.</returns>
-        public static float GetProgress()
-        {
-            return AssetLoader.GetProgress();
-        }
-
-
-
-
         #region 卸载资源
 
         /// <summary>
@@ -548,6 +464,190 @@ namespace ShibaInu
                 s_delayedUnloadList.Remove(groupName);
                 AssetLoader.RemoveReference(groupName);
             }
+        }
+
+        #endregion
+
+
+
+        #region 其他
+
+        /// <summary>
+        /// 返回：path 对应的资源文件是否存在
+        /// </summary>
+        /// <param name="path">资源路径。例："Prefabs/Core/UICanvas.prefab"</param>
+        /// <returns></returns>
+        public static bool ResFileExists(string path)
+        {
+            string fullPath = Constants.ResDirPath + path;
+#if UNITY_EDITOR
+            if (Common.IsDebug)
+            {
+                if (!File.Exists(fullPath)) return false;
+
+                if (!FileHelper.IsPathCaseMatch(path))
+                    throw new Exception(string.Format(Constants.E5002, path));
+
+                return true;
+            }
+#endif
+            return s_resMap.ContainsKey(path);
+        }
+
+        /// <summary>
+        /// 通过 AssetBundle 的文件名来获取对应的 AssetInfo
+        /// </summary>
+        /// <returns>The AssetInfo with AssetBundle file name.</returns>
+        /// <param name="fileName">File name.</param>
+        [NoToLua]
+        public static AssetInfo GetAssetInfoWithABName(string fileName)
+        {
+            s_infoMap.TryGetValue(fileName, out AssetInfo info);
+            return info;
+        }
+
+        /// <summary>
+        /// 通过 资源路径 来获取对应的 AssetInfo
+        /// </summary>
+        /// <returns>The AssetInfo with asset path.</returns>
+        /// <param name="path">资源路径。例："Prefabs/Core/UICanvas.prefab"</param>
+        [NoToLua]
+        public static AssetInfo GetAssetInfoWithAssetPath(string path)
+        {
+            s_resMap.TryGetValue(path, out AssetInfo info);
+            return info;
+        }
+
+        /// <summary>
+        /// 通过 场景名称 来获取对应的 AssetInfo
+        /// </summary>
+        /// <returns>The AssetInfo with scene name.</returns>
+        /// <param name="sceneName">Scene name.</param>
+        [NoToLua]
+        public static AssetInfo GetAssetInfoWithSceneName(string sceneName)
+        {
+            s_sceneMap.TryGetValue(sceneName, out AssetInfo info);
+            return info;
+        }
+
+
+
+        /// <summary>
+        /// 返回：path 对应的 lua 文件是否存在
+        /// </summary>
+        /// <param name="path">lua 路径。例："Module.Core.launcher" 或 "Module/Core/launcher"</param>
+        /// <returns></returns>
+        public static bool LuaFileExists(string path)
+        {
+            string fullPath = path.Replace(".", "/");
+#if UNITY_EDITOR
+            if (Common.IsDebug)
+            {
+                fullPath = LuaFileUtils.Instance.FindFile(fullPath); // value: "Module/Core/launcher.lua"
+                if (string.IsNullOrEmpty(fullPath) || !File.Exists(fullPath)) return false;
+
+                if (!FileHelper.IsPathCaseMatch(fullPath))
+                    throw new Exception(string.Format(Constants.E5002, path.Replace(".", "/") + ".lua"));
+
+                return true;
+            }
+#endif
+            return s_luaMap.ContainsKey(fullPath);
+        }
+
+        /// <summary>
+        /// 获取 Lua 文件的字节内容
+        /// </summary>
+        /// <returns>The lua file bytes.</returns>
+        /// <param name="path">lua 路径（不带后缀）。例："Module/Core/launcher"</param>
+        [NoToLua]
+        public static byte[] GetLuaFileBytes(string path)
+        {
+            // 不需要后缀名
+            path = path.Replace(".lua", "");
+
+            if (s_luaMap.TryGetValue(path, out string fileName))
+                return FileHelper.GetBytes(AssetLoader.GetFilePath(fileName));
+
+            throw new Exception(string.Format(Constants.E1002, path));
+        }
+
+
+
+        /// <summary>
+        /// 返回：path 对应的 Bytes 文件是否存在
+        /// </summary>
+        /// <param name="path">Res 或 StreamingAssets 目录下的文件路径。例："Prefabs/Config.binary" 或 "myAudio.bank"</param>
+        /// <returns></returns>
+        public static bool BytesFileExists(string path)
+        {
+#if UNITY_EDITOR
+            if (Common.IsDebug)
+            {
+                string resPath = Constants.ResDirPath + path;
+                string saPath = Constants.StreamingAssetsDirPath + path;
+                bool isResExists = File.Exists(resPath);
+                bool isSAExists = File.Exists(saPath);
+                if (!isResExists && !isSAExists) return false;
+
+                if (isResExists && isSAExists)
+                    throw new Exception(string.Format(Constants.E5003, path));
+
+                if ((isResExists && !FileHelper.IsPathCaseMatch(resPath))
+                    || (isSAExists && !FileHelper.IsPathCaseMatch(saPath)))
+                    throw new Exception(string.Format(Constants.E5002, path));
+
+                return true;
+            }
+#endif
+            return s_bytesMap.ContainsKey(path);
+        }
+
+        /// <summary>
+        /// 获取 Bytes 文件的路径。
+        /// 在 Unity Editor，将返回传入的 path。
+        /// 在设备上（AB 模式），将返回完整真实路径（已确定文件在 原始包目录 还是 更新目录）。
+        /// 如果文件不存在，将返回 null。
+        /// </summary>
+        /// <param name="path">Res 或 StreamingAssets 目录下的文件路径。例："Prefabs/Config.binary" 或 "myAudio.bank"</param>
+        /// <returns></returns>
+        public static string GetBytesFilePath(string path)
+        {
+#if UNITY_EDITOR
+            if (Common.IsDebug)
+                return BytesFileExists(path) ? path : null;
+#endif
+            string fileName;
+            if (!s_bytesMap.TryGetValue(path, out fileName))
+                return null;
+
+            string fullPath = Constants.PackageDir + fileName;
+            if (!FileHelper.Exists(fullPath))
+                fullPath = Constants.UpdateDir + fileName;
+            return fullPath;
+        }
+
+        /// <summary>
+        /// 或取 Bytes 文件的字节内容
+        /// </summary>
+        /// <param name="path">Res 或 StreamingAssets 目录下的文件路径。例："Prefabs/Config.binary" 或 "myAudio.bank"</param>
+        /// <returns></returns>
+        public static byte[] GetBytesFileContent(string path)
+        {
+#if UNITY_EDITOR
+            if (Common.IsDebug)
+            {
+                if (!BytesFileExists(path)) return null;
+
+                string resPath = Constants.ResDirPath + path;
+                if (File.Exists(resPath)) return File.ReadAllBytes(resPath);
+
+                return File.ReadAllBytes(Constants.StreamingAssetsDirPath + path);
+            }
+#endif
+            if (!s_bytesMap.ContainsKey(path)) return null;
+
+            return FileHelper.GetBytes(GetBytesFilePath(path));
         }
 
         #endregion
@@ -625,6 +725,7 @@ namespace ShibaInu
             s_dispatchEvent = null;
             s_delayedUnloadList.Clear();
             s_luaMap.Clear();
+            s_bytesMap.Clear();
             s_sceneMap.Clear();
             s_infoMap.Clear();
             s_resMap.Clear();

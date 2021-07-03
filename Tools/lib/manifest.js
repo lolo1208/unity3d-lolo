@@ -42,7 +42,7 @@ let generate = function (callback) {
  */
 let read = function (callback) {
     logger.append("- 开始读取打包清单");
-    let data = manifest.data = {lua: [], scene: [], ab: []};
+    let data = manifest.data = {lua: [], bytes: [], scene: [], ab: []};
     let [phase, count, index] = [1, 0, 0];
     let rl = readline.createInterface({input: fs.createReadStream(common.manifestFile), crlfDelay: Infinity});
 
@@ -62,8 +62,22 @@ let read = function (callback) {
                 }
                 break;
 
-            // 读取场景列表
+            // Res 与 StreamingAssets 目录下需要被拷贝的文件列表
             case 2:
+                if (count === 0) {
+                    count = parseInt(line);
+                    if (count === 0) phase++;// 可能没有需要直接拷贝的文件
+                } else {
+                    data.bytes.push(line);
+                    if (++index === count) {
+                        count = index = 0;
+                        phase++;
+                    }
+                }
+                break;
+
+            // 读取场景列表
+            case 3:
                 if (count === 0)
                     count = parseInt(line);
                 else {
@@ -75,8 +89,8 @@ let read = function (callback) {
                 }
                 break;
 
-            // 读取 AssetBundle 信息
-            case 3:
+            // 读取 AssetBundle 信息（读取 AB 信息只能放在最后一个阶段，不能再升阶）
+            case 4:
                 if (count === 0)
                     count = parseInt(line);
                 else {
@@ -84,8 +98,9 @@ let read = function (callback) {
                         data.ab.push({name: line, assets: []});
                     else
                         data.ab[data.ab.length - 1].assets.push(line);
-                    if (++index === count)
+                    if (++index === count) {
                         count = index = 0;
+                    }
                 }
                 break;
         }

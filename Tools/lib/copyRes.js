@@ -17,6 +17,7 @@ const copyRes = module.exports = {};
 const EXT_LUA = '.lua';
 const EXT_SCENE = '.scene';
 const EXT_AB = '.ab';
+const EXT_BYTES = '.bytes';
 
 
 let resIndex = 0;// 当前已拷贝完成资源数
@@ -56,7 +57,7 @@ let copyLua = function () {
     // 拷贝下一个 lua 文件
     let next = () => {
         if (++index === count) {
-            copyScene();
+            copyBytes();
             return;
         }
 
@@ -77,6 +78,50 @@ let copyLua = function () {
             .replace('Assets/Framework/ToLua/Lua/', '')
             .replace('Assets/Lua/', '')
             .replace('.lua', '');
+        dest = dest.replace(common.resDir, '');
+        resMap[src] = dest;
+        if (isNew) newResList.push(src);
+        resManifest.push(src, dest);
+        resList.push(dest);
+        progress.copyRes(++resIndex);
+        next();
+    };
+    next();
+};
+
+
+/**
+ * 拷贝其他文件
+ */
+let copyBytes = function () {
+    let list = manifest.data.bytes;
+    let count = list.length;
+    let index = -1;
+    let src, dest, isNew;
+    resManifest.push(count);
+
+    // 拷贝下一个文件
+    let next = () => {
+        if (++index === count) {
+            copyScene();
+            return;
+        }
+
+        src = common.projectDir + list[index];
+        common.getFileMD5(src, (md5) => {
+            dest = common.resDir + md5 + EXT_BYTES;
+            isNew = !fs.existsSync(dest);
+            if (isNew)
+                fs.copyFileSync(src, dest);
+            copyComplete();
+        });
+    };
+
+    // 拷贝文件完成
+    let copyComplete = () => {
+        src = src.replace(common.projectDir, '')
+            .replace('Assets/StreamingAssets/', '')
+            .replace('Assets/Res/', '');
         dest = dest.replace(common.resDir, '');
         resMap[src] = dest;
         if (isNew) newResList.push(src);

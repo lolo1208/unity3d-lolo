@@ -91,11 +91,11 @@ common.sourceDir = `${common.projectBuildDir}source/`;
 common.sourceProjectDir = `${common.sourceDir}project/`;
 // 缓存目录
 common.cacheDir = `${common.projectBuildDir}cache/`;
-// lua 缓存目录
+// lua （Encode 完成后的）缓存目录
 common.luaCacheDir = `${common.cacheDir}lua/`;
-// 场景缓存目录
+// 场景（打包完成后的）缓存目录
 common.sceneCacheDir = `${common.cacheDir}scene/${common.targetPlatform}/`;
-// AssetBundle 缓存目录
+// AssetBundle （打包完成后的）缓存目录
 common.abCacheDir = `${common.cacheDir}assetbundle/${common.targetPlatform}/`;
 // 平台项目根目录
 common.platformDir = `${common.projectBuildDir}platform/`;

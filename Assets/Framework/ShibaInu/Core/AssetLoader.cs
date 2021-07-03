@@ -9,6 +9,8 @@ namespace ShibaInu
 
     public static class AssetLoader
     {
+        #region 常量/ 变量
+
         /// groupName 引用的 AssetInfo 列表
         private static readonly Dictionary<string, HashSet<AssetInfo>> s_groupMap = new Dictionary<string, HashSet<AssetInfo>>();
         /// 需要被卸载的 groupName 列表
@@ -30,6 +32,8 @@ namespace ShibaInu
         private static AssetBundleRequest s_abr;
         /// 需要加载的资源总数
         public static int assetCount;
+
+        #endregion
 
 
 
@@ -230,7 +234,7 @@ namespace ShibaInu
 
 
         /// <summary>
-        /// 获取文件的完整真实路径（已确定文件在原始包目录还是更新目录）
+        /// 获取文件的完整真实路径（已确定文件在 原始包目录 还是 更新目录）
         /// </summary>
         /// <param name="info">Info.</param>
         public static string GetFilePath(AssetInfo info)
