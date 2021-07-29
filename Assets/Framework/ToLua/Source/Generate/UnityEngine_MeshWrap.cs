@@ -7,6 +7,11 @@ public class UnityEngine_MeshWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.Mesh), typeof(UnityEngine.Object));
+		L.RegFunction("SetIndexBufferParams", SetIndexBufferParams);
+		L.RegFunction("GetVertexAttribute", GetVertexAttribute);
+		L.RegFunction("HasVertexAttribute", HasVertexAttribute);
+		L.RegFunction("GetVertexAttributeDimension", GetVertexAttributeDimension);
+		L.RegFunction("GetVertexAttributeFormat", GetVertexAttributeFormat);
 		L.RegFunction("GetNativeVertexBufferPtr", GetNativeVertexBufferPtr);
 		L.RegFunction("GetNativeIndexBufferPtr", GetNativeIndexBufferPtr);
 		L.RegFunction("ClearBlendShapes", ClearBlendShapes);
@@ -16,6 +21,12 @@ public class UnityEngine_MeshWrap
 		L.RegFunction("GetBlendShapeFrameWeight", GetBlendShapeFrameWeight);
 		L.RegFunction("GetBlendShapeFrameVertices", GetBlendShapeFrameVertices);
 		L.RegFunction("AddBlendShapeFrame", AddBlendShapeFrame);
+		L.RegFunction("SetBoneWeights", SetBoneWeights);
+		L.RegFunction("GetAllBoneWeights", GetAllBoneWeights);
+		L.RegFunction("GetBonesPerVertex", GetBonesPerVertex);
+		L.RegFunction("SetSubMesh", SetSubMesh);
+		L.RegFunction("GetSubMesh", GetSubMesh);
+		L.RegFunction("MarkModified", MarkModified);
 		L.RegFunction("GetUVDistributionMetric", GetUVDistributionMetric);
 		L.RegFunction("GetVertices", GetVertices);
 		L.RegFunction("SetVertices", SetVertices);
@@ -27,6 +38,11 @@ public class UnityEngine_MeshWrap
 		L.RegFunction("SetColors", SetColors);
 		L.RegFunction("SetUVs", SetUVs);
 		L.RegFunction("GetUVs", GetUVs);
+		L.RegFunction("GetVertexAttributes", GetVertexAttributes);
+		L.RegFunction("SetVertexBufferParams", SetVertexBufferParams);
+		L.RegFunction("AcquireReadOnlyMeshData", AcquireReadOnlyMeshData);
+		L.RegFunction("AllocateWritableMeshData", AllocateWritableMeshData);
+		L.RegFunction("ApplyAndDisposeWritableMeshData", ApplyAndDisposeWritableMeshData);
 		L.RegFunction("GetTriangles", GetTriangles);
 		L.RegFunction("GetIndices", GetIndices);
 		L.RegFunction("GetIndexStart", GetIndexStart);
@@ -34,14 +50,20 @@ public class UnityEngine_MeshWrap
 		L.RegFunction("GetBaseVertex", GetBaseVertex);
 		L.RegFunction("SetTriangles", SetTriangles);
 		L.RegFunction("SetIndices", SetIndices);
+		L.RegFunction("SetSubMeshes", SetSubMeshes);
 		L.RegFunction("GetBindposes", GetBindposes);
 		L.RegFunction("GetBoneWeights", GetBoneWeights);
 		L.RegFunction("Clear", Clear);
 		L.RegFunction("RecalculateBounds", RecalculateBounds);
 		L.RegFunction("RecalculateNormals", RecalculateNormals);
 		L.RegFunction("RecalculateTangents", RecalculateTangents);
+		L.RegFunction("RecalculateUVDistributionMetric", RecalculateUVDistributionMetric);
+		L.RegFunction("RecalculateUVDistributionMetrics", RecalculateUVDistributionMetrics);
 		L.RegFunction("MarkDynamic", MarkDynamic);
 		L.RegFunction("UploadMeshData", UploadMeshData);
+		L.RegFunction("Optimize", Optimize);
+		L.RegFunction("OptimizeIndexBuffers", OptimizeIndexBuffers);
+		L.RegFunction("OptimizeReorderVertexBuffer", OptimizeReorderVertexBuffer);
 		L.RegFunction("GetTopology", GetTopology);
 		L.RegFunction("CombineMeshes", CombineMeshes);
 		L.RegFunction("New", _CreateUnityEngine_Mesh);
@@ -50,7 +72,6 @@ public class UnityEngine_MeshWrap
 		L.RegVar("indexFormat", get_indexFormat, set_indexFormat);
 		L.RegVar("vertexBufferCount", get_vertexBufferCount, null);
 		L.RegVar("blendShapeCount", get_blendShapeCount, null);
-		L.RegVar("boneWeights", get_boneWeights, set_boneWeights);
 		L.RegVar("bindposes", get_bindposes, set_bindposes);
 		L.RegVar("isReadable", get_isReadable, null);
 		L.RegVar("vertexCount", get_vertexCount, null);
@@ -69,7 +90,9 @@ public class UnityEngine_MeshWrap
 		L.RegVar("uv8", get_uv8, set_uv8);
 		L.RegVar("colors", get_colors, set_colors);
 		L.RegVar("colors32", get_colors32, set_colors32);
+		L.RegVar("vertexAttributeCount", get_vertexAttributeCount, null);
 		L.RegVar("triangles", get_triangles, set_triangles);
+		L.RegVar("boneWeights", get_boneWeights, set_boneWeights);
 		L.EndClass();
 	}
 
@@ -90,6 +113,96 @@ public class UnityEngine_MeshWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to ctor method: UnityEngine.Mesh.New");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetIndexBufferParams(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Rendering.IndexFormat arg1 = (UnityEngine.Rendering.IndexFormat)ToLua.CheckObject(L, 3, typeof(UnityEngine.Rendering.IndexFormat));
+			obj.SetIndexBufferParams(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetVertexAttribute(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Rendering.VertexAttributeDescriptor o = obj.GetVertexAttribute(arg0);
+			ToLua.PushValue(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int HasVertexAttribute(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			UnityEngine.Rendering.VertexAttribute arg0 = (UnityEngine.Rendering.VertexAttribute)ToLua.CheckObject(L, 2, typeof(UnityEngine.Rendering.VertexAttribute));
+			bool o = obj.HasVertexAttribute(arg0);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetVertexAttributeDimension(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			UnityEngine.Rendering.VertexAttribute arg0 = (UnityEngine.Rendering.VertexAttribute)ToLua.CheckObject(L, 2, typeof(UnityEngine.Rendering.VertexAttribute));
+			int o = obj.GetVertexAttributeDimension(arg0);
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetVertexAttributeFormat(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			UnityEngine.Rendering.VertexAttribute arg0 = (UnityEngine.Rendering.VertexAttribute)ToLua.CheckObject(L, 2, typeof(UnityEngine.Rendering.VertexAttribute));
+			UnityEngine.Rendering.VertexAttributeFormat o = obj.GetVertexAttributeFormat(arg0);
+			ToLua.Push(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -264,6 +377,127 @@ public class UnityEngine_MeshWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetBoneWeights(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			Unity.Collections.NativeArray<byte> arg0 = StackTraits<Unity.Collections.NativeArray<byte>>.Check(L, 2);
+			Unity.Collections.NativeArray<UnityEngine.BoneWeight1> arg1 = StackTraits<Unity.Collections.NativeArray<UnityEngine.BoneWeight1>>.Check(L, 3);
+			obj.SetBoneWeights(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetAllBoneWeights(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			Unity.Collections.NativeArray<UnityEngine.BoneWeight1> o = obj.GetAllBoneWeights();
+			ToLua.PushValue(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetBonesPerVertex(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			Unity.Collections.NativeArray<byte> o = obj.GetBonesPerVertex();
+			ToLua.PushValue(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetSubMesh(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 3)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Rendering.SubMeshDescriptor arg1 = StackTraits<UnityEngine.Rendering.SubMeshDescriptor>.Check(L, 3);
+				obj.SetSubMesh(arg0, arg1);
+				return 0;
+			}
+			else if (count == 4)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Rendering.SubMeshDescriptor arg1 = StackTraits<UnityEngine.Rendering.SubMeshDescriptor>.Check(L, 3);
+				UnityEngine.Rendering.MeshUpdateFlags arg2 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.CheckObject(L, 4, typeof(UnityEngine.Rendering.MeshUpdateFlags));
+				obj.SetSubMesh(arg0, arg1, arg2);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.SetSubMesh");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetSubMesh(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Rendering.SubMeshDescriptor o = obj.GetSubMesh(arg0);
+			ToLua.PushValue(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int MarkModified(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			obj.MarkModified();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int GetUVDistributionMetric(IntPtr L)
 	{
 		try
@@ -303,11 +537,64 @@ public class UnityEngine_MeshWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-			System.Collections.Generic.List<UnityEngine.Vector3> arg0 = (System.Collections.Generic.List<UnityEngine.Vector3>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<UnityEngine.Vector3>));
-			obj.SetVertices(arg0);
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector3>>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Vector3> arg0 = (System.Collections.Generic.List<UnityEngine.Vector3>)ToLua.ToObject(L, 2);
+				obj.SetVertices(arg0);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Vector3[]>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Vector3[] arg0 = ToLua.ToStructArray<UnityEngine.Vector3>(L, 2);
+				obj.SetVertices(arg0);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector3>, int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Vector3> arg0 = (System.Collections.Generic.List<UnityEngine.Vector3>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetVertices(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<UnityEngine.Vector3[], int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Vector3[] arg0 = ToLua.ToStructArray<UnityEngine.Vector3>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetVertices(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector3>, int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Vector3> arg0 = (System.Collections.Generic.List<UnityEngine.Vector3>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetVertices(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<UnityEngine.Vector3[], int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Vector3[] arg0 = ToLua.ToStructArray<UnityEngine.Vector3>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetVertices(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.SetVertices");
+			}
 		}
 		catch (Exception e)
 		{
@@ -337,11 +624,64 @@ public class UnityEngine_MeshWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-			System.Collections.Generic.List<UnityEngine.Vector3> arg0 = (System.Collections.Generic.List<UnityEngine.Vector3>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<UnityEngine.Vector3>));
-			obj.SetNormals(arg0);
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector3>>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Vector3> arg0 = (System.Collections.Generic.List<UnityEngine.Vector3>)ToLua.ToObject(L, 2);
+				obj.SetNormals(arg0);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Vector3[]>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Vector3[] arg0 = ToLua.ToStructArray<UnityEngine.Vector3>(L, 2);
+				obj.SetNormals(arg0);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector3>, int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Vector3> arg0 = (System.Collections.Generic.List<UnityEngine.Vector3>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetNormals(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<UnityEngine.Vector3[], int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Vector3[] arg0 = ToLua.ToStructArray<UnityEngine.Vector3>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetNormals(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector3>, int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Vector3> arg0 = (System.Collections.Generic.List<UnityEngine.Vector3>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetNormals(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<UnityEngine.Vector3[], int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Vector3[] arg0 = ToLua.ToStructArray<UnityEngine.Vector3>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetNormals(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.SetNormals");
+			}
 		}
 		catch (Exception e)
 		{
@@ -371,11 +711,64 @@ public class UnityEngine_MeshWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-			System.Collections.Generic.List<UnityEngine.Vector4> arg0 = (System.Collections.Generic.List<UnityEngine.Vector4>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<UnityEngine.Vector4>));
-			obj.SetTangents(arg0);
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector4>>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Vector4> arg0 = (System.Collections.Generic.List<UnityEngine.Vector4>)ToLua.ToObject(L, 2);
+				obj.SetTangents(arg0);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Vector4[]>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Vector4[] arg0 = ToLua.ToStructArray<UnityEngine.Vector4>(L, 2);
+				obj.SetTangents(arg0);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector4>, int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Vector4> arg0 = (System.Collections.Generic.List<UnityEngine.Vector4>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetTangents(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<UnityEngine.Vector4[], int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Vector4[] arg0 = ToLua.ToStructArray<UnityEngine.Vector4>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetTangents(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector4>, int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Vector4> arg0 = (System.Collections.Generic.List<UnityEngine.Vector4>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetTangents(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<UnityEngine.Vector4[], int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Vector4[] arg0 = ToLua.ToStructArray<UnityEngine.Vector4>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetTangents(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.SetTangents");
+			}
 		}
 		catch (Exception e)
 		{
@@ -429,11 +822,101 @@ public class UnityEngine_MeshWrap
 				obj.SetColors(arg0);
 				return 0;
 			}
+			else if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Color[]>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Color[] arg0 = ToLua.ToStructArray<UnityEngine.Color>(L, 2);
+				obj.SetColors(arg0);
+				return 0;
+			}
 			else if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Color32>>(L, 2))
 			{
 				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
 				System.Collections.Generic.List<UnityEngine.Color32> arg0 = (System.Collections.Generic.List<UnityEngine.Color32>)ToLua.ToObject(L, 2);
 				obj.SetColors(arg0);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Color32[]>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Color32[] arg0 = ToLua.ToStructArray<UnityEngine.Color32>(L, 2);
+				obj.SetColors(arg0);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Color>, int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Color> arg0 = (System.Collections.Generic.List<UnityEngine.Color>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetColors(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<UnityEngine.Color[], int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Color[] arg0 = ToLua.ToStructArray<UnityEngine.Color>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetColors(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Color32>, int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Color32> arg0 = (System.Collections.Generic.List<UnityEngine.Color32>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetColors(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<UnityEngine.Color32[], int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Color32[] arg0 = ToLua.ToStructArray<UnityEngine.Color32>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetColors(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Color>, int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Color> arg0 = (System.Collections.Generic.List<UnityEngine.Color>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetColors(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<UnityEngine.Color[], int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Color[] arg0 = ToLua.ToStructArray<UnityEngine.Color>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetColors(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Color32>, int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Color32> arg0 = (System.Collections.Generic.List<UnityEngine.Color32>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetColors(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<UnityEngine.Color32[], int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Color32[] arg0 = ToLua.ToStructArray<UnityEngine.Color32>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetColors(arg0, arg1, arg2, arg3);
 				return 0;
 			}
 			else
@@ -476,6 +959,156 @@ public class UnityEngine_MeshWrap
 				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 				System.Collections.Generic.List<UnityEngine.Vector4> arg1 = (System.Collections.Generic.List<UnityEngine.Vector4>)ToLua.ToObject(L, 3);
 				obj.SetUVs(arg0, arg1);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Vector2[]>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Vector2[] arg1 = ToLua.ToStructArray<UnityEngine.Vector2>(L, 3);
+				obj.SetUVs(arg0, arg1);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Vector3[]>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Vector3[] arg1 = ToLua.ToStructArray<UnityEngine.Vector3>(L, 3);
+				obj.SetUVs(arg0, arg1);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Vector4[]>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Vector4[] arg1 = ToLua.ToStructArray<UnityEngine.Vector4>(L, 3);
+				obj.SetUVs(arg0, arg1);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector2>, int, int>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				System.Collections.Generic.List<UnityEngine.Vector2> arg1 = (System.Collections.Generic.List<UnityEngine.Vector2>)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetUVs(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector3>, int, int>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				System.Collections.Generic.List<UnityEngine.Vector3> arg1 = (System.Collections.Generic.List<UnityEngine.Vector3>)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetUVs(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<UnityEngine.Vector3[], int, int>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Vector3[] arg1 = ToLua.ToStructArray<UnityEngine.Vector3>(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetUVs(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector4>, int, int>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				System.Collections.Generic.List<UnityEngine.Vector4> arg1 = (System.Collections.Generic.List<UnityEngine.Vector4>)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetUVs(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<UnityEngine.Vector4[], int, int>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Vector4[] arg1 = ToLua.ToStructArray<UnityEngine.Vector4>(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetUVs(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<UnityEngine.Vector2[], int, int>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Vector2[] arg1 = ToLua.ToStructArray<UnityEngine.Vector2>(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetUVs(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<UnityEngine.Vector3[], int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Vector3[] arg1 = ToLua.ToStructArray<UnityEngine.Vector3>(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				UnityEngine.Rendering.MeshUpdateFlags arg4 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 6);
+				obj.SetUVs(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector4>, int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				System.Collections.Generic.List<UnityEngine.Vector4> arg1 = (System.Collections.Generic.List<UnityEngine.Vector4>)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				UnityEngine.Rendering.MeshUpdateFlags arg4 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 6);
+				obj.SetUVs(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector3>, int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				System.Collections.Generic.List<UnityEngine.Vector3> arg1 = (System.Collections.Generic.List<UnityEngine.Vector3>)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				UnityEngine.Rendering.MeshUpdateFlags arg4 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 6);
+				obj.SetUVs(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Vector2>, int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				System.Collections.Generic.List<UnityEngine.Vector2> arg1 = (System.Collections.Generic.List<UnityEngine.Vector2>)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				UnityEngine.Rendering.MeshUpdateFlags arg4 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 6);
+				obj.SetUVs(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<UnityEngine.Vector2[], int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Vector2[] arg1 = ToLua.ToStructArray<UnityEngine.Vector2>(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				UnityEngine.Rendering.MeshUpdateFlags arg4 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 6);
+				obj.SetUVs(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<UnityEngine.Vector4[], int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Vector4[] arg1 = ToLua.ToStructArray<UnityEngine.Vector4>(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				UnityEngine.Rendering.MeshUpdateFlags arg4 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 6);
+				obj.SetUVs(arg0, arg1, arg2, arg3, arg4);
 				return 0;
 			}
 			else
@@ -532,6 +1165,200 @@ public class UnityEngine_MeshWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetVertexAttributes(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Rendering.VertexAttributeDescriptor[] o = obj.GetVertexAttributes();
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Rendering.VertexAttributeDescriptor[]>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Rendering.VertexAttributeDescriptor[] arg0 = ToLua.ToStructArray<UnityEngine.Rendering.VertexAttributeDescriptor>(L, 2);
+				int o = obj.GetVertexAttributes(arg0);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Rendering.VertexAttributeDescriptor>>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Rendering.VertexAttributeDescriptor> arg0 = (System.Collections.Generic.List<UnityEngine.Rendering.VertexAttributeDescriptor>)ToLua.ToObject(L, 2);
+				int o = obj.GetVertexAttributes(arg0);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.GetVertexAttributes");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetVertexBufferParams(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 3 && TypeChecker.CheckTypes<Unity.Collections.NativeArray<UnityEngine.Rendering.VertexAttributeDescriptor>>(L, 3))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				Unity.Collections.NativeArray<UnityEngine.Rendering.VertexAttributeDescriptor> arg1 = StackTraits<Unity.Collections.NativeArray<UnityEngine.Rendering.VertexAttributeDescriptor>>.To(L, 3);
+				obj.SetVertexBufferParams(arg0, arg1);
+				return 0;
+			}
+			else if (TypeChecker.CheckTypes<UnityEngine.Mesh, int>(L, 1) && TypeChecker.CheckParamsType<UnityEngine.Rendering.VertexAttributeDescriptor>(L, 3, count - 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				UnityEngine.Rendering.VertexAttributeDescriptor[] arg1 = ToLua.ToParamsObject<UnityEngine.Rendering.VertexAttributeDescriptor>(L, 3, count - 2);
+				obj.SetVertexBufferParams(arg0, arg1);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.SetVertexBufferParams");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int AcquireReadOnlyMeshData(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1 && TypeChecker.CheckTypes<UnityEngine.Mesh>(L, 1))
+			{
+				UnityEngine.Mesh arg0 = (UnityEngine.Mesh)ToLua.ToObject(L, 1);
+				UnityEngine.Mesh.MeshDataArray o = UnityEngine.Mesh.AcquireReadOnlyMeshData(arg0);
+				ToLua.PushValue(L, o);
+				return 1;
+			}
+			else if (count == 1 && TypeChecker.CheckTypes<UnityEngine.Mesh[]>(L, 1))
+			{
+				UnityEngine.Mesh[] arg0 = ToLua.ToObjectArray<UnityEngine.Mesh>(L, 1);
+				UnityEngine.Mesh.MeshDataArray o = UnityEngine.Mesh.AcquireReadOnlyMeshData(arg0);
+				ToLua.PushValue(L, o);
+				return 1;
+			}
+			else if (count == 1 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Mesh>>(L, 1))
+			{
+				System.Collections.Generic.List<UnityEngine.Mesh> arg0 = (System.Collections.Generic.List<UnityEngine.Mesh>)ToLua.ToObject(L, 1);
+				UnityEngine.Mesh.MeshDataArray o = UnityEngine.Mesh.AcquireReadOnlyMeshData(arg0);
+				ToLua.PushValue(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.AcquireReadOnlyMeshData");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int AllocateWritableMeshData(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 1);
+			UnityEngine.Mesh.MeshDataArray o = UnityEngine.Mesh.AllocateWritableMeshData(arg0);
+			ToLua.PushValue(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ApplyAndDisposeWritableMeshData(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Mesh>(L, 2))
+			{
+				UnityEngine.Mesh.MeshDataArray arg0 = StackTraits<UnityEngine.Mesh.MeshDataArray>.Check(L, 1);
+				UnityEngine.Mesh arg1 = (UnityEngine.Mesh)ToLua.ToObject(L, 2);
+				UnityEngine.Mesh.ApplyAndDisposeWritableMeshData(arg0, arg1);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Mesh[]>(L, 2))
+			{
+				UnityEngine.Mesh.MeshDataArray arg0 = StackTraits<UnityEngine.Mesh.MeshDataArray>.Check(L, 1);
+				UnityEngine.Mesh[] arg1 = ToLua.ToObjectArray<UnityEngine.Mesh>(L, 2);
+				UnityEngine.Mesh.ApplyAndDisposeWritableMeshData(arg0, arg1);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Mesh>>(L, 2))
+			{
+				UnityEngine.Mesh.MeshDataArray arg0 = StackTraits<UnityEngine.Mesh.MeshDataArray>.Check(L, 1);
+				System.Collections.Generic.List<UnityEngine.Mesh> arg1 = (System.Collections.Generic.List<UnityEngine.Mesh>)ToLua.ToObject(L, 2);
+				UnityEngine.Mesh.ApplyAndDisposeWritableMeshData(arg0, arg1);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Mesh, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh.MeshDataArray arg0 = StackTraits<UnityEngine.Mesh.MeshDataArray>.Check(L, 1);
+				UnityEngine.Mesh arg1 = (UnityEngine.Mesh)ToLua.ToObject(L, 2);
+				UnityEngine.Rendering.MeshUpdateFlags arg2 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 3);
+				UnityEngine.Mesh.ApplyAndDisposeWritableMeshData(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Mesh[], UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh.MeshDataArray arg0 = StackTraits<UnityEngine.Mesh.MeshDataArray>.Check(L, 1);
+				UnityEngine.Mesh[] arg1 = ToLua.ToObjectArray<UnityEngine.Mesh>(L, 2);
+				UnityEngine.Rendering.MeshUpdateFlags arg2 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 3);
+				UnityEngine.Mesh.ApplyAndDisposeWritableMeshData(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Mesh>, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh.MeshDataArray arg0 = StackTraits<UnityEngine.Mesh.MeshDataArray>.Check(L, 1);
+				System.Collections.Generic.List<UnityEngine.Mesh> arg1 = (System.Collections.Generic.List<UnityEngine.Mesh>)ToLua.ToObject(L, 2);
+				UnityEngine.Rendering.MeshUpdateFlags arg2 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 3);
+				UnityEngine.Mesh.ApplyAndDisposeWritableMeshData(arg0, arg1, arg2);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.ApplyAndDisposeWritableMeshData");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int GetTriangles(IntPtr L)
 	{
 		try
@@ -563,12 +1390,29 @@ public class UnityEngine_MeshWrap
 				obj.GetTriangles(arg0, arg1);
 				return 0;
 			}
-			else if (count == 4)
+			else if (count == 3 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int>(L, 2))
 			{
 				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<int>));
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				obj.GetTriangles(arg0, arg1);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				bool arg2 = LuaDLL.lua_toboolean(L, 4);
+				obj.GetTriangles(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				bool arg2 = LuaDLL.lua_toboolean(L, 4);
 				obj.GetTriangles(arg0, arg1, arg2);
 				return 0;
 			}
@@ -615,12 +1459,29 @@ public class UnityEngine_MeshWrap
 				obj.GetIndices(arg0, arg1);
 				return 0;
 			}
-			else if (count == 4)
+			else if (count == 3 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int>(L, 2))
 			{
 				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<int>));
-				int arg1 = (int)LuaDLL.luaL_checknumber(L, 3);
-				bool arg2 = LuaDLL.luaL_checkboolean(L, 4);
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				obj.GetIndices(arg0, arg1);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				bool arg2 = LuaDLL.lua_toboolean(L, 4);
+				obj.GetIndices(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				bool arg2 = LuaDLL.lua_toboolean(L, 4);
 				obj.GetIndices(arg0, arg1, arg2);
 				return 0;
 			}
@@ -704,6 +1565,22 @@ public class UnityEngine_MeshWrap
 				obj.SetTriangles(arg0, arg1);
 				return 0;
 			}
+			else if (count == 3 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				obj.SetTriangles(arg0, arg1);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<ushort[], int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				obj.SetTriangles(arg0, arg1);
+				return 0;
+			}
 			else if (count == 3 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, int>(L, 2))
 			{
 				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
@@ -721,6 +1598,24 @@ public class UnityEngine_MeshWrap
 				obj.SetTriangles(arg0, arg1, arg2);
 				return 0;
 			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				bool arg2 = LuaDLL.lua_toboolean(L, 4);
+				obj.SetTriangles(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<ushort[], int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				bool arg2 = LuaDLL.lua_toboolean(L, 4);
+				obj.SetTriangles(arg0, arg1, arg2);
+				return 0;
+			}
 			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, int, bool>(L, 2))
 			{
 				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
@@ -730,12 +1625,22 @@ public class UnityEngine_MeshWrap
 				obj.SetTriangles(arg0, arg1, arg2);
 				return 0;
 			}
-			else if (count == 5 && TypeChecker.CheckTypes<int[], int, bool, int>(L, 2))
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int, bool, int>(L, 2))
 			{
 				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
 				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
 				bool arg2 = LuaDLL.lua_toboolean(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetTriangles(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, int, int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
 				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
 				obj.SetTriangles(arg0, arg1, arg2, arg3);
 				return 0;
@@ -748,6 +1653,148 @@ public class UnityEngine_MeshWrap
 				bool arg2 = LuaDLL.lua_toboolean(L, 4);
 				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
 				obj.SetTriangles(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<ushort[], int, int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetTriangles(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<ushort[], int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				bool arg2 = LuaDLL.lua_toboolean(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetTriangles(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<int[], int, int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetTriangles(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<int[], int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				bool arg2 = LuaDLL.lua_toboolean(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetTriangles(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int, int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetTriangles(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<ushort[], int, int, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				bool arg4 = LuaDLL.lua_toboolean(L, 6);
+				obj.SetTriangles(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, int, int, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				bool arg4 = LuaDLL.lua_toboolean(L, 6);
+				obj.SetTriangles(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<int[], int, int, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				bool arg4 = LuaDLL.lua_toboolean(L, 6);
+				obj.SetTriangles(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int, int, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				bool arg4 = LuaDLL.lua_toboolean(L, 6);
+				obj.SetTriangles(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 7 && TypeChecker.CheckTypes<ushort[], int, int, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				bool arg4 = LuaDLL.lua_toboolean(L, 6);
+				int arg5 = (int)LuaDLL.lua_tonumber(L, 7);
+				obj.SetTriangles(arg0, arg1, arg2, arg3, arg4, arg5);
+				return 0;
+			}
+			else if (count == 7 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, int, int, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				bool arg4 = LuaDLL.lua_toboolean(L, 6);
+				int arg5 = (int)LuaDLL.lua_tonumber(L, 7);
+				obj.SetTriangles(arg0, arg1, arg2, arg3, arg4, arg5);
+				return 0;
+			}
+			else if (count == 7 && TypeChecker.CheckTypes<int[], int, int, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				bool arg4 = LuaDLL.lua_toboolean(L, 6);
+				int arg5 = (int)LuaDLL.lua_tonumber(L, 7);
+				obj.SetTriangles(arg0, arg1, arg2, arg3, arg4, arg5);
+				return 0;
+			}
+			else if (count == 7 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int, int, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				bool arg4 = LuaDLL.lua_toboolean(L, 6);
+				int arg5 = (int)LuaDLL.lua_tonumber(L, 7);
+				obj.SetTriangles(arg0, arg1, arg2, arg3, arg4, arg5);
 				return 0;
 			}
 			else
@@ -768,39 +1815,359 @@ public class UnityEngine_MeshWrap
 		{
 			int count = LuaDLL.lua_gettop(L);
 
-			if (count == 4)
+			if (count == 4 && TypeChecker.CheckTypes<int[], UnityEngine.MeshTopology, int>(L, 2))
 			{
 				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-				int[] arg0 = ToLua.CheckNumberArray<int>(L, 2);
-				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.CheckObject(L, 3, typeof(UnityEngine.MeshTopology));
-				int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
+				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
 				obj.SetIndices(arg0, arg1, arg2);
 				return 0;
 			}
-			else if (count == 5)
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, UnityEngine.MeshTopology, int>(L, 2))
 			{
 				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-				int[] arg0 = ToLua.CheckNumberArray<int>(L, 2);
-				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.CheckObject(L, 3, typeof(UnityEngine.MeshTopology));
-				int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
-				bool arg3 = LuaDLL.luaL_checkboolean(L, 5);
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetIndices(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, UnityEngine.MeshTopology, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetIndices(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<ushort[], UnityEngine.MeshTopology, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetIndices(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<int[], UnityEngine.MeshTopology, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				bool arg3 = LuaDLL.lua_toboolean(L, 5);
 				obj.SetIndices(arg0, arg1, arg2, arg3);
 				return 0;
 			}
-			else if (count == 6)
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, UnityEngine.MeshTopology, int, bool>(L, 2))
 			{
 				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-				int[] arg0 = ToLua.CheckNumberArray<int>(L, 2);
-				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.CheckObject(L, 3, typeof(UnityEngine.MeshTopology));
-				int arg2 = (int)LuaDLL.luaL_checknumber(L, 4);
-				bool arg3 = LuaDLL.luaL_checkboolean(L, 5);
-				int arg4 = (int)LuaDLL.luaL_checknumber(L, 6);
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				bool arg3 = LuaDLL.lua_toboolean(L, 5);
+				obj.SetIndices(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<ushort[], UnityEngine.MeshTopology, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				bool arg3 = LuaDLL.lua_toboolean(L, 5);
+				obj.SetIndices(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, UnityEngine.MeshTopology, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				bool arg3 = LuaDLL.lua_toboolean(L, 5);
+				obj.SetIndices(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, UnityEngine.MeshTopology, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				bool arg3 = LuaDLL.lua_toboolean(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
 				obj.SetIndices(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, int, int, UnityEngine.MeshTopology, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, UnityEngine.MeshTopology, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				bool arg3 = LuaDLL.lua_toboolean(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<ushort[], int, int, UnityEngine.MeshTopology, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<ushort[], UnityEngine.MeshTopology, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				bool arg3 = LuaDLL.lua_toboolean(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<int[], int, int, UnityEngine.MeshTopology, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<int[], UnityEngine.MeshTopology, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				UnityEngine.MeshTopology arg1 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				bool arg3 = LuaDLL.lua_toboolean(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 6 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int, int, UnityEngine.MeshTopology, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4);
+				return 0;
+			}
+			else if (count == 7 && TypeChecker.CheckTypes<ushort[], int, int, UnityEngine.MeshTopology, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				bool arg5 = LuaDLL.lua_toboolean(L, 7);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4, arg5);
+				return 0;
+			}
+			else if (count == 7 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, int, int, UnityEngine.MeshTopology, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				bool arg5 = LuaDLL.lua_toboolean(L, 7);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4, arg5);
+				return 0;
+			}
+			else if (count == 7 && TypeChecker.CheckTypes<int[], int, int, UnityEngine.MeshTopology, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				bool arg5 = LuaDLL.lua_toboolean(L, 7);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4, arg5);
+				return 0;
+			}
+			else if (count == 7 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int, int, UnityEngine.MeshTopology, int, bool>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				bool arg5 = LuaDLL.lua_toboolean(L, 7);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4, arg5);
+				return 0;
+			}
+			else if (count == 8 && TypeChecker.CheckTypes<ushort[], int, int, UnityEngine.MeshTopology, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				ushort[] arg0 = ToLua.ToNumberArray<ushort>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				bool arg5 = LuaDLL.lua_toboolean(L, 7);
+				int arg6 = (int)LuaDLL.lua_tonumber(L, 8);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+				return 0;
+			}
+			else if (count == 8 && TypeChecker.CheckTypes<System.Collections.Generic.List<int>, int, int, UnityEngine.MeshTopology, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<int> arg0 = (System.Collections.Generic.List<int>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				bool arg5 = LuaDLL.lua_toboolean(L, 7);
+				int arg6 = (int)LuaDLL.lua_tonumber(L, 8);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+				return 0;
+			}
+			else if (count == 8 && TypeChecker.CheckTypes<int[], int, int, UnityEngine.MeshTopology, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int[] arg0 = ToLua.ToNumberArray<int>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				bool arg5 = LuaDLL.lua_toboolean(L, 7);
+				int arg6 = (int)LuaDLL.lua_tonumber(L, 8);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+				return 0;
+			}
+			else if (count == 8 && TypeChecker.CheckTypes<System.Collections.Generic.List<ushort>, int, int, UnityEngine.MeshTopology, int, bool, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<ushort> arg0 = (System.Collections.Generic.List<ushort>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.MeshTopology arg3 = (UnityEngine.MeshTopology)ToLua.ToObject(L, 5);
+				int arg4 = (int)LuaDLL.lua_tonumber(L, 6);
+				bool arg5 = LuaDLL.lua_toboolean(L, 7);
+				int arg6 = (int)LuaDLL.lua_tonumber(L, 8);
+				obj.SetIndices(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
 				return 0;
 			}
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.SetIndices");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetSubMeshes(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Rendering.SubMeshDescriptor[]>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Rendering.SubMeshDescriptor[] arg0 = ToLua.ToStructArray<UnityEngine.Rendering.SubMeshDescriptor>(L, 2);
+				obj.SetSubMeshes(arg0);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor>>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor> arg0 = (System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor>)ToLua.ToObject(L, 2);
+				obj.SetSubMeshes(arg0);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Rendering.SubMeshDescriptor[], UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Rendering.SubMeshDescriptor[] arg0 = ToLua.ToStructArray<UnityEngine.Rendering.SubMeshDescriptor>(L, 2);
+				UnityEngine.Rendering.MeshUpdateFlags arg1 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 3);
+				obj.SetSubMeshes(arg0, arg1);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor>, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor> arg0 = (System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor>)ToLua.ToObject(L, 2);
+				UnityEngine.Rendering.MeshUpdateFlags arg1 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 3);
+				obj.SetSubMeshes(arg0, arg1);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<UnityEngine.Rendering.SubMeshDescriptor[], int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Rendering.SubMeshDescriptor[] arg0 = ToLua.ToStructArray<UnityEngine.Rendering.SubMeshDescriptor>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetSubMeshes(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor>, int, int>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor> arg0 = (System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				obj.SetSubMeshes(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<UnityEngine.Rendering.SubMeshDescriptor[], int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Rendering.SubMeshDescriptor[] arg0 = ToLua.ToStructArray<UnityEngine.Rendering.SubMeshDescriptor>(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetSubMeshes(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor>, int, int, UnityEngine.Rendering.MeshUpdateFlags>(L, 2))
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor> arg0 = (System.Collections.Generic.List<UnityEngine.Rendering.SubMeshDescriptor>)ToLua.ToObject(L, 2);
+				int arg1 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Rendering.MeshUpdateFlags arg3 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.ToObject(L, 5);
+				obj.SetSubMeshes(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.SetSubMeshes");
 			}
 		}
 		catch (Exception e)
@@ -879,10 +2246,25 @@ public class UnityEngine_MeshWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
-			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-			obj.RecalculateBounds();
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				obj.RecalculateBounds();
+				return 0;
+			}
+			else if (count == 2)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Rendering.MeshUpdateFlags arg0 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.CheckObject(L, 2, typeof(UnityEngine.Rendering.MeshUpdateFlags));
+				obj.RecalculateBounds(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.RecalculateBounds");
+			}
 		}
 		catch (Exception e)
 		{
@@ -895,10 +2277,25 @@ public class UnityEngine_MeshWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
-			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-			obj.RecalculateNormals();
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				obj.RecalculateNormals();
+				return 0;
+			}
+			else if (count == 2)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Rendering.MeshUpdateFlags arg0 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.CheckObject(L, 2, typeof(UnityEngine.Rendering.MeshUpdateFlags));
+				obj.RecalculateNormals(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.RecalculateNormals");
+			}
 		}
 		catch (Exception e)
 		{
@@ -911,10 +2308,89 @@ public class UnityEngine_MeshWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
-			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
-			obj.RecalculateTangents();
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				obj.RecalculateTangents();
+				return 0;
+			}
+			else if (count == 2)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				UnityEngine.Rendering.MeshUpdateFlags arg0 = (UnityEngine.Rendering.MeshUpdateFlags)ToLua.CheckObject(L, 2, typeof(UnityEngine.Rendering.MeshUpdateFlags));
+				obj.RecalculateTangents(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.RecalculateTangents");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int RecalculateUVDistributionMetric(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				obj.RecalculateUVDistributionMetric(arg0);
+				return 0;
+			}
+			else if (count == 3)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+				float arg1 = (float)LuaDLL.luaL_checknumber(L, 3);
+				obj.RecalculateUVDistributionMetric(arg0, arg1);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.RecalculateUVDistributionMetric");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int RecalculateUVDistributionMetrics(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				obj.RecalculateUVDistributionMetrics();
+				return 0;
+			}
+			else if (count == 2)
+			{
+				UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+				float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+				obj.RecalculateUVDistributionMetrics(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Mesh.RecalculateUVDistributionMetrics");
+			}
 		}
 		catch (Exception e)
 		{
@@ -947,6 +2423,54 @@ public class UnityEngine_MeshWrap
 			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
 			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
 			obj.UploadMeshData(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int Optimize(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			obj.Optimize();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OptimizeIndexBuffers(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			obj.OptimizeIndexBuffers();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int OptimizeReorderVertexBuffer(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)ToLua.CheckObject(L, 1, typeof(UnityEngine.Mesh));
+			obj.OptimizeReorderVertexBuffer();
 			return 0;
 		}
 		catch (Exception e)
@@ -1097,25 +2621,6 @@ public class UnityEngine_MeshWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index blendShapeCount on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_boneWeights(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			UnityEngine.Mesh obj = (UnityEngine.Mesh)o;
-			UnityEngine.BoneWeight[] ret = obj.boneWeights;
-			ToLua.Push(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index boneWeights on a nil value");
 		}
 	}
 
@@ -1462,6 +2967,25 @@ public class UnityEngine_MeshWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_vertexAttributeCount(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)o;
+			int ret = obj.vertexAttributeCount;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index vertexAttributeCount on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_triangles(IntPtr L)
 	{
 		object o = null;
@@ -1481,6 +3005,25 @@ public class UnityEngine_MeshWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_boneWeights(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)o;
+			UnityEngine.BoneWeight[] ret = obj.boneWeights;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index boneWeights on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_indexFormat(IntPtr L)
 	{
 		object o = null;
@@ -1496,25 +3039,6 @@ public class UnityEngine_MeshWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index indexFormat on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_boneWeights(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			UnityEngine.Mesh obj = (UnityEngine.Mesh)o;
-			UnityEngine.BoneWeight[] arg0 = ToLua.CheckStructArray<UnityEngine.BoneWeight>(L, 2);
-			obj.boneWeights = arg0;
-			return 0;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index boneWeights on a nil value");
 		}
 	}
 
@@ -1838,6 +3362,25 @@ public class UnityEngine_MeshWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index triangles on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_boneWeights(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Mesh obj = (UnityEngine.Mesh)o;
+			UnityEngine.BoneWeight[] arg0 = ToLua.CheckStructArray<UnityEngine.BoneWeight>(L, 2);
+			obj.boneWeights = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index boneWeights on a nil value");
 		}
 	}
 }

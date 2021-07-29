@@ -10,6 +10,7 @@ public class UnityEngine_PhysicsWrap
 		L.RegFunction("IgnoreCollision", IgnoreCollision);
 		L.RegFunction("IgnoreLayerCollision", IgnoreLayerCollision);
 		L.RegFunction("GetIgnoreLayerCollision", GetIgnoreLayerCollision);
+		L.RegFunction("GetIgnoreCollision", GetIgnoreCollision);
 		L.RegFunction("Raycast", Raycast);
 		L.RegFunction("Linecast", Linecast);
 		L.RegFunction("CapsuleCast", CapsuleCast);
@@ -37,6 +38,7 @@ public class UnityEngine_PhysicsWrap
 		L.RegFunction("BoxCastAll", BoxCastAll);
 		L.RegFunction("OverlapCapsuleNonAlloc", OverlapCapsuleNonAlloc);
 		L.RegFunction("RebuildBroadphaseRegions", RebuildBroadphaseRegions);
+		L.RegFunction("BakeMesh", BakeMesh);
 		L.RegConstant("IgnoreRaycastLayer", 4);
 		L.RegConstant("DefaultRaycastLayers", -5);
 		L.RegConstant("AllLayers", -1);
@@ -46,8 +48,10 @@ public class UnityEngine_PhysicsWrap
 		L.RegVar("queriesHitTriggers", get_queriesHitTriggers, set_queriesHitTriggers);
 		L.RegVar("queriesHitBackfaces", get_queriesHitBackfaces, set_queriesHitBackfaces);
 		L.RegVar("bounceThreshold", get_bounceThreshold, set_bounceThreshold);
+		L.RegVar("defaultMaxDepenetrationVelocity", get_defaultMaxDepenetrationVelocity, set_defaultMaxDepenetrationVelocity);
 		L.RegVar("defaultSolverIterations", get_defaultSolverIterations, set_defaultSolverIterations);
 		L.RegVar("defaultSolverVelocityIterations", get_defaultSolverVelocityIterations, set_defaultSolverVelocityIterations);
+		L.RegVar("defaultMaxAngularSpeed", get_defaultMaxAngularSpeed, set_defaultMaxAngularSpeed);
 		L.RegVar("defaultPhysicsScene", get_defaultPhysicsScene, null);
 		L.RegVar("autoSimulation", get_autoSimulation, set_autoSimulation);
 		L.RegVar("autoSyncTransforms", get_autoSyncTransforms, set_autoSyncTransforms);
@@ -55,6 +59,7 @@ public class UnityEngine_PhysicsWrap
 		L.RegVar("interCollisionDistance", get_interCollisionDistance, set_interCollisionDistance);
 		L.RegVar("interCollisionStiffness", get_interCollisionStiffness, set_interCollisionStiffness);
 		L.RegVar("interCollisionSettingsToggle", get_interCollisionSettingsToggle, set_interCollisionSettingsToggle);
+		L.RegVar("clothGravity", get_clothGravity, set_clothGravity);
 		L.EndStaticLibs();
 	}
 
@@ -133,6 +138,24 @@ public class UnityEngine_PhysicsWrap
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 1);
 			int arg1 = (int)LuaDLL.luaL_checknumber(L, 2);
 			bool o = UnityEngine.Physics.GetIgnoreLayerCollision(arg0, arg1);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetIgnoreCollision(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Collider arg0 = (UnityEngine.Collider)ToLua.CheckObject<UnityEngine.Collider>(L, 1);
+			UnityEngine.Collider arg1 = (UnityEngine.Collider)ToLua.CheckObject<UnityEngine.Collider>(L, 2);
+			bool o = UnityEngine.Physics.GetIgnoreCollision(arg0, arg1);
 			LuaDLL.lua_pushboolean(L, o);
 			return 1;
 		}
@@ -2033,6 +2056,23 @@ public class UnityEngine_PhysicsWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int BakeMesh(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 1);
+			bool arg1 = LuaDLL.luaL_checkboolean(L, 2);
+			UnityEngine.Physics.BakeMesh(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_gravity(IntPtr L)
 	{
 		try
@@ -2117,6 +2157,20 @@ public class UnityEngine_PhysicsWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_defaultMaxDepenetrationVelocity(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushnumber(L, UnityEngine.Physics.defaultMaxDepenetrationVelocity);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_defaultSolverIterations(IntPtr L)
 	{
 		try
@@ -2136,6 +2190,20 @@ public class UnityEngine_PhysicsWrap
 		try
 		{
 			LuaDLL.lua_pushinteger(L, UnityEngine.Physics.defaultSolverVelocityIterations);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_defaultMaxAngularSpeed(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushnumber(L, UnityEngine.Physics.defaultMaxAngularSpeed);
 			return 1;
 		}
 		catch (Exception e)
@@ -2243,6 +2311,20 @@ public class UnityEngine_PhysicsWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_clothGravity(IntPtr L)
+	{
+		try
+		{
+			ToLua.Push(L, UnityEngine.Physics.clothGravity);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_gravity(IntPtr L)
 	{
 		try
@@ -2333,6 +2415,21 @@ public class UnityEngine_PhysicsWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_defaultMaxDepenetrationVelocity(IntPtr L)
+	{
+		try
+		{
+			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Physics.defaultMaxDepenetrationVelocity = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int set_defaultSolverIterations(IntPtr L)
 	{
 		try
@@ -2354,6 +2451,21 @@ public class UnityEngine_PhysicsWrap
 		{
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 			UnityEngine.Physics.defaultSolverVelocityIterations = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_defaultMaxAngularSpeed(IntPtr L)
+	{
+		try
+		{
+			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Physics.defaultMaxAngularSpeed = arg0;
 			return 0;
 		}
 		catch (Exception e)
@@ -2444,6 +2556,21 @@ public class UnityEngine_PhysicsWrap
 		{
 			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
 			UnityEngine.Physics.interCollisionSettingsToggle = arg0;
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_clothGravity(IntPtr L)
+	{
+		try
+		{
+			UnityEngine.Vector3 arg0 = ToLua.ToVector3(L, 2);
+			UnityEngine.Physics.clothGravity = arg0;
 			return 0;
 		}
 		catch (Exception e)

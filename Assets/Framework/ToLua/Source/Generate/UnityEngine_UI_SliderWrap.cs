@@ -8,6 +8,7 @@ public class UnityEngine_UI_SliderWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.UI.Slider), typeof(UnityEngine.UI.Selectable));
+		L.RegFunction("SetValueWithoutNotify", SetValueWithoutNotify);
 		L.RegFunction("Rebuild", Rebuild);
 		L.RegFunction("LayoutComplete", LayoutComplete);
 		L.RegFunction("GraphicUpdateComplete", GraphicUpdateComplete);
@@ -33,6 +34,23 @@ public class UnityEngine_UI_SliderWrap
 		L.RegVar("normalizedValue", get_normalizedValue, set_normalizedValue);
 		L.RegVar("onValueChanged", get_onValueChanged, set_onValueChanged);
 		L.EndClass();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetValueWithoutNotify(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.UI.Slider obj = (UnityEngine.UI.Slider)ToLua.CheckObject<UnityEngine.UI.Slider>(L, 1);
+			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+			obj.SetValueWithoutNotify(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]

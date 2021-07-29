@@ -27,9 +27,10 @@ end
 
 -- 将数据加只读保护
 local setreadonly = function(data)
-    -- setmetatable(data, { __newindex = readonly }) 只能阻止创建新 key，不能阻止修改原 key 对应的值
-    -- 返回新的空表，目的是防止修改原 key 对应的值
-    return setmetatable({ }, { __readonly = true, __index = data, __newindex = readonly })
+    data.__index = data
+    data.__newindex = readonly
+    data.__readonly = true
+    return setmetatable({}, data)
 end
 
 -- 将表与字段描述加只读保护

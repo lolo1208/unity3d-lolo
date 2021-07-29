@@ -21,6 +21,7 @@ public class UnityEngine_MaterialWrap
 		L.RegFunction("Lerp", Lerp);
 		L.RegFunction("SetPass", SetPass);
 		L.RegFunction("CopyPropertiesFromMaterial", CopyPropertiesFromMaterial);
+		L.RegFunction("ComputeCRC", ComputeCRC);
 		L.RegFunction("GetTexturePropertyNames", GetTexturePropertyNames);
 		L.RegFunction("GetTexturePropertyNameIDs", GetTexturePropertyNameIDs);
 		L.RegFunction("SetFloat", SetFloat);
@@ -30,6 +31,7 @@ public class UnityEngine_MaterialWrap
 		L.RegFunction("SetMatrix", SetMatrix);
 		L.RegFunction("SetTexture", SetTexture);
 		L.RegFunction("SetBuffer", SetBuffer);
+		L.RegFunction("SetConstantBuffer", SetConstantBuffer);
 		L.RegFunction("SetFloatArray", SetFloatArray);
 		L.RegFunction("SetColorArray", SetColorArray);
 		L.RegFunction("SetVectorArray", SetVectorArray);
@@ -384,6 +386,23 @@ public class UnityEngine_MaterialWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ComputeCRC(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+			int o = obj.ComputeCRC();
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int GetTexturePropertyNames(IntPtr L)
 	{
 		try
@@ -640,6 +659,24 @@ public class UnityEngine_MaterialWrap
 				obj.SetTexture(arg0, arg1);
 				return 0;
 			}
+			else if (count == 4 && TypeChecker.CheckTypes<string, UnityEngine.RenderTexture, UnityEngine.Rendering.RenderTextureSubElement>(L, 2))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				string arg0 = ToLua.ToString(L, 2);
+				UnityEngine.RenderTexture arg1 = (UnityEngine.RenderTexture)ToLua.ToObject(L, 3);
+				UnityEngine.Rendering.RenderTextureSubElement arg2 = (UnityEngine.Rendering.RenderTextureSubElement)ToLua.ToObject(L, 4);
+				obj.SetTexture(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<int, UnityEngine.RenderTexture, UnityEngine.Rendering.RenderTextureSubElement>(L, 2))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				UnityEngine.RenderTexture arg1 = (UnityEngine.RenderTexture)ToLua.ToObject(L, 3);
+				UnityEngine.Rendering.RenderTextureSubElement arg2 = (UnityEngine.Rendering.RenderTextureSubElement)ToLua.ToObject(L, 4);
+				obj.SetTexture(arg0, arg1, arg2);
+				return 0;
+			}
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Material.SetTexture");
@@ -674,9 +711,83 @@ public class UnityEngine_MaterialWrap
 				obj.SetBuffer(arg0, arg1);
 				return 0;
 			}
+			else if (count == 3 && TypeChecker.CheckTypes<string, UnityEngine.GraphicsBuffer>(L, 2))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				string arg0 = ToLua.ToString(L, 2);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 3);
+				obj.SetBuffer(arg0, arg1);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<int, UnityEngine.GraphicsBuffer>(L, 2))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 3);
+				obj.SetBuffer(arg0, arg1);
+				return 0;
+			}
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Material.SetBuffer");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetConstantBuffer(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 5 && TypeChecker.CheckTypes<string, UnityEngine.ComputeBuffer, int, int>(L, 2))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				string arg0 = ToLua.ToString(L, 2);
+				UnityEngine.ComputeBuffer arg1 = (UnityEngine.ComputeBuffer)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<int, UnityEngine.ComputeBuffer, int, int>(L, 2))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				UnityEngine.ComputeBuffer arg1 = (UnityEngine.ComputeBuffer)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<string, UnityEngine.GraphicsBuffer, int, int>(L, 2))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				string arg0 = ToLua.ToString(L, 2);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<int, UnityEngine.GraphicsBuffer, int, int>(L, 2))
+			{
+				UnityEngine.Material obj = (UnityEngine.Material)ToLua.CheckObject<UnityEngine.Material>(L, 1);
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Material.SetConstantBuffer");
 			}
 		}
 		catch (Exception e)

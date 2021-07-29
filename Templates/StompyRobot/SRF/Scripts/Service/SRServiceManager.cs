@@ -16,11 +16,41 @@ namespace SRF.Service
     [AddComponentMenu(ComponentMenuPaths.SRServiceManager)]
     public class SRServiceManager : SRAutoSingleton<SRServiceManager>
     {
+        public static Func<string> GetPlayerData;
 #if SRDEBUG
 		public const bool EnableLogging = true;
 #else
         public const bool EnableLogging = false;
 #endif
+
+#if (!UNITY_2017 && !UNITY_2018 && !UNITY_2019) || UNITY_2019_3_OR_NEWER
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        public static void RuntimeInitialize()
+        {
+            // To handle entering play mode without a domain reload, need to reset the state of the service manager.
+            _hasQuit = false;
+        }
+#endif
+
+        /// <summary>
+        /// Register the assembly that contains type <typeparamref name="TType"/> with the service manager.
+        /// </summary>
+        /// <typeparam name="TType"></typeparam>
+        public static void RegisterAssembly<TType>()
+        {
+#if NETFX_CORE
+            var assembly = typeof(TType).GetTypeInfo().Assembly;
+#else
+            var assembly = typeof(TType).Assembly;
+#endif
+
+            if (_assemblies.Contains(assembly))
+            {
+                return;
+            }
+
+            _assemblies.Add(assembly);
+        }
 
         /// <summary>
         /// Is there a service loading?
@@ -214,6 +244,8 @@ namespace SRF.Service
             }
         }
 
+        private static readonly List<Assembly> _assemblies = new List<Assembly>(2);
+
         private readonly SRList<Service> _services = new SRList<Service>();
 
         private List<ServiceStub> _serviceStubs;
@@ -236,15 +268,13 @@ namespace SRF.Service
                 return;
             }
 
+            RegisterAssembly<SRServiceManager>();
+          
             _serviceStubs = new List<ServiceStub>();
 
             var types = new List<Type>();
 
-#if NETFX_CORE
-            var assembly = typeof(SRServiceManager).GetTypeInfo().Assembly;
-#else
-            var assembly = typeof(SRServiceManager).Assembly;
-#endif
+            foreach (var assembly in _assemblies)
             {
                 try
                 {
@@ -347,7 +377,7 @@ namespace SRF.Service
             return Activator.CreateInstance(implType);
         }
 
-        #region Type Scanning
+#region Type Scanning
 
         private void ScanType(Type type)
         {
@@ -451,9 +481,9 @@ namespace SRF.Service
             }
         }
 
-        #endregion
+#endregion
 
-        #region Reflection
+#region Reflection
 
         private static MethodInfo[] GetStaticMethods(Type t)
         {
@@ -464,6 +494,6 @@ namespace SRF.Service
 #endif
         }
 
-        #endregion
+#endregion
     }
 }

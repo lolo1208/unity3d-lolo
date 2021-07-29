@@ -11,6 +11,7 @@ public class UnityEngine_MeshRendererWrap
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("additionalVertexStreams", get_additionalVertexStreams, set_additionalVertexStreams);
+		L.RegVar("enlightenVertexStream", get_enlightenVertexStream, set_enlightenVertexStream);
 		L.RegVar("subMeshStartIndex", get_subMeshStartIndex, null);
 		L.EndClass();
 	}
@@ -77,6 +78,25 @@ public class UnityEngine_MeshRendererWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_enlightenVertexStream(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.MeshRenderer obj = (UnityEngine.MeshRenderer)o;
+			UnityEngine.Mesh ret = obj.enlightenVertexStream;
+			ToLua.PushSealed(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index enlightenVertexStream on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_subMeshStartIndex(IntPtr L)
 	{
 		object o = null;
@@ -111,6 +131,25 @@ public class UnityEngine_MeshRendererWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index additionalVertexStreams on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_enlightenVertexStream(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.MeshRenderer obj = (UnityEngine.MeshRenderer)o;
+			UnityEngine.Mesh arg0 = (UnityEngine.Mesh)ToLua.CheckObject(L, 2, typeof(UnityEngine.Mesh));
+			obj.enlightenVertexStream = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index enlightenVertexStream on a nil value");
 		}
 	}
 }

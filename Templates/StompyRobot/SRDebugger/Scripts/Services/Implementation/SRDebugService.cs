@@ -12,6 +12,14 @@
     [Service(typeof (IDebugService))]
     public class SRDebugService : IDebugService
     {
+        public IDockConsoleService DockConsole
+        {
+            get { return Service.DockConsole; }
+        }
+
+        public event VisibilityChangedDelegate PanelVisibilityChanged;
+        public event PinnedUiCanvasCreated PinnedUiCanvasCreated;
+
         private readonly IDebugPanelService _debugPanelService;
         private readonly IDebugTriggerService _debugTrigger;
         private readonly ISystemInformationService _informationService;
@@ -34,7 +42,21 @@
             _debugTrigger = SRServiceManager.GetService<IDebugTriggerService>();
 
             _informationService = SRServiceManager.GetService<ISystemInformationService>();
+
             _pinnedUiService = SRServiceManager.GetService<IPinnedUIService>();
+            _pinnedUiService.OptionsCanvasCreated += transform =>
+            {
+                if (PinnedUiCanvasCreated == null) return;
+                try
+                {
+                    PinnedUiCanvasCreated(transform);
+                }
+                catch(Exception e)
+                {
+                    Debug.LogException(e);
+                }
+            };
+
             _optionsService = SRServiceManager.GetService<IOptionsService>();
 
             // Create debug panel service (this does not actually load any UI resources until opened)
@@ -64,6 +86,10 @@
             // Ensure that root object cannot be destroyed on scene loads
             var srDebuggerParent = Hierarchy.Get("SRDebugger");
             Object.DontDestroyOnLoad(srDebuggerParent.gameObject);
+
+            // Add any options containers that were created on init
+            var internalRegistry = SRServiceManager.GetService<InternalOptionsRegistry>();
+            internalRegistry.SetHandler(_optionsService.AddContainer);
         }
 
         public Settings Settings
@@ -192,6 +218,7 @@
         #endregion
 
         #region Bug Reporter
+
         public void ShowBugReportSheet(ActionCompleteCallback onComplete = null, bool takeScreenshot = true,
             string descriptionContent = null)
         {
@@ -212,13 +239,6 @@
         }
 
         #endregion
-
-        public IDockConsoleService DockConsole
-        {
-            get { return Service.DockConsole; }
-        }
-
-        public event VisibilityChangedDelegate PanelVisibilityChanged;
 
         private void DebugPanelServiceOnVisibilityChanged(IDebugPanelService debugPanelService, bool b)
         {

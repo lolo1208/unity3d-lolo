@@ -21,6 +21,9 @@
         IReadOnlyList<ConsoleEntry> AllEntries { get; }
 
         event ConsoleUpdatedEventHandler Updated;
+
+        event ConsoleUpdatedEventHandler Error;
+
         void Clear();
     }
 

@@ -17,7 +17,8 @@ var LOG_TYPE = {
 // 在 Unity log 中需要标红的报错关键字
 var failedKeys = [
     "Error", "Exception", "Script asset",
-    "not supported", "Unrecognized assets"
+    "not supported", "Unrecognized assets",
+    "Usage Description is empty"
 ];
 
 
@@ -125,7 +126,14 @@ function showLog(element) {
                         endIdx = data.indexOf('<br/>', idx);
                         var errStr = data.substring(startIdx, endIdx);
                         if (errStr.indexOf('Socket: connect failed') == -1
+                            && errStr.indexOf('[LicensingClient]') == -1
+                            && errStr.indexOf('[usbmuxd] Error') == -1
+                            && errStr.indexOf('Debug:LogError') == -1
                             && errStr.indexOf('LuaException.cs') == -1
+                            && errStr.indexOf('fmod_Errors.cs') == -1
+                            && errStr.indexOf('was thrown') == -1
+                            && errStr.indexOf('/MaterialError') == -1
+                            && errStr.indexOf('/FallbackError') == -1
                         ) {
                             data = insert(data, startIdx + 5,
                                 '<span id="errorAnchor' + startIdx + '" class="fail-color">'

@@ -15,11 +15,7 @@
 
         public StandardConsoleService()
         {
-#if UNITY_5 || UNITY_5_3_OR_NEWER
             Application.logMessageReceivedThreaded += UnityLogCallback;
-#else
-			Application.RegisterLogCallbackThreaded(UnityLogCallback);
-#endif
 
             SRServiceManager.RegisterService<IConsoleService>(this);
             _collapseEnabled = Settings.Instance.CollapseDuplicateLogEntries;
@@ -31,6 +27,7 @@
         public int InfoCount { get; private set; }
 
         public event ConsoleUpdatedEventHandler Updated;
+        public event ConsoleUpdatedEventHandler Error;
 
         public IReadOnlyList<ConsoleEntry> Entries
         {
@@ -129,10 +126,11 @@
 
             lock (_threadLock)
             {
-
                 var prevMessage = _collapseEnabled && _allConsoleEntries.Count > 0
                     ? _allConsoleEntries[_allConsoleEntries.Count - 1]
                     : null;
+
+                AdjustCounter(type, 1);
 
                 if (prevMessage != null && prevMessage.LogType == type && prevMessage.Message == condition &&
                     prevMessage.StackTrace == stackTrace)
@@ -150,8 +148,6 @@
 
                     OnEntryAdded(newEntry);
                 }
-
-                AdjustCounter(type, 1);
             }
         }
 
@@ -163,6 +159,11 @@
                 case LogType.Error:
                 case LogType.Exception:
                     ErrorCount += amount;
+
+                    if (Error != null)
+                    {
+                        Error.Invoke(this);
+                    }
                     break;
 
                 case LogType.Warning:

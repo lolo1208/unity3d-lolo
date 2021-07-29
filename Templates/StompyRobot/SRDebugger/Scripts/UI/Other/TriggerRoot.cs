@@ -14,6 +14,8 @@
 
         [RequiredField] public RectTransform TriggerTransform;
 
+        [RequiredField] public ErrorNotifier ErrorNotifier;
+
         [RequiredField] [FormerlySerializedAs("TriggerButton")] public MultiTapButton TripleTapButton;
     }
 }

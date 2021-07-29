@@ -1,8 +1,12 @@
-﻿namespace SRDebugger
+﻿using UnityEngine;
+
+namespace SRDebugger
 {
     public delegate void VisibilityChangedDelegate(bool isVisible);
 
     public delegate void ActionCompleteCallback(bool success);
+
+    public delegate void PinnedUiCanvasCreated(RectTransform canvasTransform);
 }
 
 namespace SRDebugger.Services
@@ -118,6 +122,8 @@ namespace SRDebugger.Services
         /// Event invoked whenever the debug panel opens or closes
         /// </summary>
         event VisibilityChangedDelegate PanelVisibilityChanged;
+
+        event PinnedUiCanvasCreated PinnedUiCanvasCreated;
 
         /// <summary>
         /// ADVANCED FEATURE. This will convert the debug panel to a world space object and return the RectTransform.

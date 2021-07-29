@@ -17,6 +17,7 @@ public class UnityEngine_EventSystems_PointerEventDataWrap
 		L.RegVar("lastPress", get_lastPress, null);
 		L.RegVar("rawPointerPress", get_rawPointerPress, set_rawPointerPress);
 		L.RegVar("pointerDrag", get_pointerDrag, set_pointerDrag);
+		L.RegVar("pointerClick", get_pointerClick, set_pointerClick);
 		L.RegVar("pointerCurrentRaycast", get_pointerCurrentRaycast, set_pointerCurrentRaycast);
 		L.RegVar("pointerPressRaycast", get_pointerPressRaycast, set_pointerPressRaycast);
 		L.RegVar("eligibleForClick", get_eligibleForClick, set_eligibleForClick);
@@ -204,6 +205,25 @@ public class UnityEngine_EventSystems_PointerEventDataWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index pointerDrag on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_pointerClick(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.EventSystems.PointerEventData obj = (UnityEngine.EventSystems.PointerEventData)o;
+			UnityEngine.GameObject ret = obj.pointerClick;
+			ToLua.PushSealed(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index pointerClick on a nil value");
 		}
 	}
 
@@ -584,6 +604,25 @@ public class UnityEngine_EventSystems_PointerEventDataWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index pointerDrag on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_pointerClick(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.EventSystems.PointerEventData obj = (UnityEngine.EventSystems.PointerEventData)o;
+			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 2, typeof(UnityEngine.GameObject));
+			obj.pointerClick = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index pointerClick on a nil value");
 		}
 	}
 

@@ -1,4 +1,6 @@
-﻿namespace SRDebugger.UI.Controls.Data
+﻿using System.Globalization;
+
+namespace SRDebugger.UI.Controls.Data
 {
     using System;
     using System.Collections.Generic;
@@ -52,7 +54,7 @@
         {
             try
             {
-                var num = Convert.ChangeType(newValue, _type);
+                var num = Convert.ChangeType(newValue, _type, CultureInfo.InvariantCulture);
                 UpdateValue(num);
             }
             catch (Exception)
@@ -79,7 +81,7 @@
                 throw new ArgumentException("Type must be one of expected types", "t");
             }
 
-            var rangeAttrib = Property.GetAttribute<SROptions.NumberRangeAttribute>();
+            var rangeAttrib = Property.GetAttribute<NumberRangeAttribute>();
 
             NumberSpinner.MaxValue = GetMaxValue(t);
             NumberSpinner.MinValue = GetMinValue(t);
@@ -90,7 +92,7 @@
                 NumberSpinner.MinValue = Math.Max(rangeAttrib.Min, NumberSpinner.MinValue);
             }
 
-            var incrementAttribute = Property.GetAttribute<SROptions.IncrementAttribute>();
+            var incrementAttribute = Property.GetAttribute<IncrementAttribute>();
 
             if (incrementAttribute != null)
             {
@@ -120,7 +122,7 @@
 
         protected override void OnValueUpdated(object newValue)
         {
-            var value = Convert.ToDecimal(newValue).ToString();
+            var value = Convert.ToDecimal(newValue, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture);
 
             if (value != _lastValue)
             {

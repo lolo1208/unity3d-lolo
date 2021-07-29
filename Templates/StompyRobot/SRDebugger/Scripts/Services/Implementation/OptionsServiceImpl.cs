@@ -15,7 +15,7 @@
 
         public ICollection<OptionDefinition> Options
         {
-            get { return _optionsReadonly; }
+            get { return _options; }
         }
 
         private readonly Dictionary<object, ICollection<OptionDefinition>> _optionContainerLookup = new Dictionary<object, ICollection<OptionDefinition>>();
@@ -25,9 +25,6 @@
         public OptionsServiceImpl()
         {
             _optionsReadonly = new ReadOnlyCollection<OptionDefinition>(_options);
-
-            Scan(SROptions.Current);
-            SROptions.Current.PropertyChanged += OnSROptionsPropertyChanged;
         }
 
         public void Scan(object obj)
@@ -88,12 +85,8 @@
                 OptionsValueUpdated(this, propertyChangedEventArgs);
             }
         }
-        private void OnSROptionsPropertyChanged(object sender, string propertyName)
-        {
-            OnPropertyChanged(sender, new PropertyChangedEventArgs(propertyName));
-        }
 
-        private void OnOptionsUpdated()
+        public void OnOptionsUpdated()
         {
             if (OptionsUpdated != null)
             {

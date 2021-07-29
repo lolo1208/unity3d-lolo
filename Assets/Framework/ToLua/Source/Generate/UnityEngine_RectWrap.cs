@@ -339,6 +339,15 @@ public class UnityEngine_RectWrap
 				LuaDLL.lua_pushstring(L, o);
 				return 1;
 			}
+			else if (count == 3)
+			{
+				UnityEngine.Rect obj = (UnityEngine.Rect)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rect));
+				string arg0 = ToLua.CheckString(L, 2);
+				System.IFormatProvider arg1 = (System.IFormatProvider)ToLua.CheckObject<System.IFormatProvider>(L, 3);
+				string o = obj.ToString(arg0, arg1);
+				LuaDLL.lua_pushstring(L, o);
+				return 1;
+			}
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Rect.ToString");

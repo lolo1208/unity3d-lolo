@@ -24,6 +24,11 @@ public class UnityEngine_RuntimePlatformWrap
 		L.RegVar("tvOS", get_tvOS, null);
 		L.RegVar("Switch", get_Switch, null);
 		L.RegVar("Lumin", get_Lumin, null);
+		L.RegVar("Stadia", get_Stadia, null);
+		L.RegVar("CloudRendering", get_CloudRendering, null);
+		L.RegVar("GameCoreXboxSeries", get_GameCoreXboxSeries, null);
+		L.RegVar("GameCoreXboxOne", get_GameCoreXboxOne, null);
+		L.RegVar("PS5", get_PS5, null);
 		L.RegFunction("IntToEnum", IntToEnum);
 		L.EndEnum();
 		TypeTraits<UnityEngine.RuntimePlatform>.Check = CheckType;
@@ -156,6 +161,41 @@ public class UnityEngine_RuntimePlatformWrap
 	static int get_Lumin(IntPtr L)
 	{
 		ToLua.Push(L, UnityEngine.RuntimePlatform.Lumin);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_Stadia(IntPtr L)
+	{
+		ToLua.Push(L, UnityEngine.RuntimePlatform.Stadia);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_CloudRendering(IntPtr L)
+	{
+		ToLua.Push(L, UnityEngine.RuntimePlatform.CloudRendering);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_GameCoreXboxSeries(IntPtr L)
+	{
+		ToLua.Push(L, UnityEngine.RuntimePlatform.GameCoreXboxSeries);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_GameCoreXboxOne(IntPtr L)
+	{
+		ToLua.Push(L, UnityEngine.RuntimePlatform.GameCoreXboxOne);
+		return 1;
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_PS5(IntPtr L)
+	{
+		ToLua.Push(L, UnityEngine.RuntimePlatform.PS5);
 		return 1;
 	}
 

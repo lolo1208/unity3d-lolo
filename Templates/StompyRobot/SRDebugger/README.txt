@@ -1,5 +1,5 @@
 =====================
-SRDebugger - (C) Stompy Robot LTD 2018
+SRDebugger - (C) Stompy Robot LTD 2020
 =====================
 
 Visit https://www.stompyrobot.uk/tools/srdebugger/documentation for more detailed documentation.
@@ -10,19 +10,10 @@ Open StompyRobot/SRDebugger/Scenes/Sample.unity for a simple example scene.
 
 ## Setup
 
-### Unity 5+
+### Unity 2017 / 2018 / 2019
 
-No setup is required. SRDebugger will automatically load at runtime unless "Auto Load" is disabled in settings. 
+No setup is required. SRDebugger will automatically load at runtime unless disabled in settings. 
 By default, the trigger to open the debug panel is attached to the top-left of the game view. Triple-tap there to open the panel. (This can be changed in the settings)
-If Auto Load is disabled, follow the instructions for Unity 4.
-
-### Unity 4
-
-Drag the SRDebugger.Init prefab from the SRDebugger folder into your scene. Once loaded, the debug panel will be available in any scene during that play session.
-By default, the trigger to open the debug panel is attached to the top-left of the game view. Triple-tap there to open the panel.
-Recommended usage is to put the SRDebugger.Init prefab in the first scene that your game loads. 
-This way, the debugger can pick up the maximum number of console messages from the initialisation stage of your game, and will be available to any subsequent scenes. 
-Due to limitations in Unity, console messages from before SRDebugger loads are unable to be gathered.
 
 ## Configuration
 
@@ -46,6 +37,91 @@ For documentation on other features, including the options tab, bug reporter, pr
 - Source Code Pro font provided by Adobe (github.com/adobe-fonts/source-code-pro) (Open Font License 1.1)
 
 # Change Log
+
+1.9.1
+----------
+
+Fixed:
+- No longer auto-initializes when auto-initialization is disabled. 
+- Improved support for higher levels of 'managed stripping' in AOT compiled platforms (IL2CPP)
+- Fix error notifier calling native Unity methods from background thread.
+- Fix number increment/decrement issues on non-english language platforms.
+
+1.9.0
+----------
+
+Attention: If upgrading from a previous version, please see upgrade notes below.
+
+New:
+- Added a notification to the trigger whenever an error is added to the console log (disable in settings).
+
+Changed:
+- Converted to asmdef packages.
+- Added note to auto-created event system to inform that it is created by SRDebugger and how to disable it.
+
+Fixed:
+- Support Domain Reload in 2019.3
+- Fix settings window display in 2019.3
+
+
+Upgrade Notes:
+
+This package now uses assembly definition files (asmdef) to isolate the script assets. 
+Please import this new version over your existing implementation and overwrite any modified files.
+
+For more information on assembly definition files, see the Unity docs: 
+https://docs.unity3d.com/Manual/ScriptCompilationAssemblyDefinitionFiles.html
+
+The options panel (SROptions) has required some changes to support asmdef, however most user code interacting with SROptions should not require any changes.
+
+For assistance please contact us at contact@stompyrobot.uk or post on the forums.
+
+1.8.4
+----------
+
+New:
+- Support for 2019.3.
+- Added option to completely unload the debug panel whenever it is closed.
+
+Changed:
+- Use https for bug reporter on all platforms.
+
+Fixed:
+- Console not clearing correctly after the first time.
+- Obsolete API warnings.
+- Incorrect layout on options tab when running on Unity 2019.1
+
+1.8.2
+----------
+
+Fixed:
+- Exception during bug report when no logs exist.
+
+1.8.1
+----------
+
+Fixed:
+- Fixed warning from using an obsolete Unity API on 2018.2.
+- Welcome/Settings screen sizing on high dpi displays.
+
+1.8.0
+----------
+
+Note: Minimum supported Unity version is now 5.6.
+
+New:
+- Profiler support for scriptable render pipelines.
+
+Changed:
+- Adjusted profiler to improve performance. V-Sync delay is now in "Other" category.
+- Updated bug reporter to use UnityWebRequest.
+- Removed "Prefab" initialization mode because Unity 4 is no longer supported.
+	- If you had "Prefab" mode enabled then you will be switched to "Automatic" mode.
+- Console logs are now gathered from a earlier point in initialization.
+
+Fixed:
+- Time.timeScale set to 0 would break profiler.
+- Fix errors when changing UI scale after ending play mode.
 
 1.7.1
 ----------

@@ -1,4 +1,4 @@
-﻿#if UNITY_5 || UNITY_5_3_OR_NEWER
+﻿using System.ComponentModel;
 
 namespace SRDebugger.Editor
 {
@@ -107,13 +107,14 @@ namespace SRDebugger.Editor
                 kv.Value.Sort((d1, d2) => d1.SortPriority.CompareTo(d2.SortPriority));
             }
 
-            SROptions.Current.PropertyChanged += OnOptionsPropertyChanged;
+            Service.Options.OptionsValueUpdated += OptionsOnOptionsValueUpdated;
         }
 
-        private void OnOptionsPropertyChanged(object sender, string propertyName)
+        private void OptionsOnOptionsValueUpdated(object sender, PropertyChangedEventArgs e)
         {
             _queueRefresh = true;
         }
+
 
         void OnGUI()
         {
@@ -258,7 +259,7 @@ namespace SRDebugger.Editor
 
         void OnGUI_Int(OptionDefinition op)
         {
-            var range = op.Property.GetAttribute<SROptions.NumberRangeAttribute>();
+            var range = op.Property.GetAttribute<NumberRangeAttribute>();
 
             int newValue;
 
@@ -281,7 +282,7 @@ namespace SRDebugger.Editor
 
         void OnGUI_Float(OptionDefinition op)
         {
-            var range = op.Property.GetAttribute<SROptions.NumberRangeAttribute>();
+            var range = op.Property.GetAttribute<NumberRangeAttribute>();
 
             float newValue;
 
@@ -304,7 +305,7 @@ namespace SRDebugger.Editor
 
         void OnGUI_Double(OptionDefinition op)
         {
-            var range = op.Property.GetAttribute<SROptions.NumberRangeAttribute>();
+            var range = op.Property.GetAttribute<NumberRangeAttribute>();
 
             double newValue;
 
@@ -347,7 +348,7 @@ namespace SRDebugger.Editor
                 return;
             }
 
-            var userRange = op.Property.GetAttribute<SROptions.NumberRangeAttribute>();
+            var userRange = op.Property.GetAttribute<NumberRangeAttribute>();
 
             EditorGUI.BeginChangeCheck();
 
@@ -386,5 +387,3 @@ namespace SRDebugger.Editor
         }
     }
 }
-
-#endif

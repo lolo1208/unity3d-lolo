@@ -4,7 +4,8 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -12,11 +13,11 @@ MonoBehaviour:
   m_Name: Settings
   m_EditorClassIdentifier: 
   _isEnabled: 1
-  _autoLoad: 1
-  _defaultTab: 0
+  _defaultTab: 1
   _triggerEnableMode: 0
   _triggerBehaviour: 0
-  _enableKeyboardShortcuts: 1
+  _errorNotification: 0
+  _enableKeyboardShortcuts: 0
   _keyboardShortcuts: []
   _newKeyboardShortcuts:
   - Action: 1
@@ -48,18 +49,19 @@ MonoBehaviour:
   _richTextInConsole: 1
   _requireEntryCode: 0
   _requireEntryCodeEveryTime: 0
-  _entryCode: 00000000000000000000000000000000
+  _entryCode: 04000000080000000900000001000000
   _useDebugCamera: 0
   _debugLayer: 5
   _debugCameraDepth: 100
-  _apiKey: 
+  _apiKey: 1885f27393d046f5b2bb1a5b180a4c87
   _enableBugReporter: 0
   _disabledTabs: 
   _profilerAlignment: 2
   _optionsAlignment: 3
   _consoleAlignment: 0
-  _triggerPosition: 0
+  _triggerPosition: 1
   _maximumConsoleEntries: 1500
-  _enableEventSystemCreation: 1
+  _enableEventSystemCreation: 0
   _automaticShowCursor: 1
   _uiScale: 1
+  _unloadOnClose: 0

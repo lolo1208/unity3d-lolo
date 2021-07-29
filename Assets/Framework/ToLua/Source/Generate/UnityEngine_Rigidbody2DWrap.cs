@@ -8,6 +8,7 @@ public class UnityEngine_Rigidbody2DWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.Rigidbody2D), typeof(UnityEngine.Component));
+		L.RegFunction("SetRotation", SetRotation);
 		L.RegFunction("MovePosition", MovePosition);
 		L.RegFunction("MoveRotation", MoveRotation);
 		L.RegFunction("IsSleeping", IsSleeping);
@@ -18,6 +19,7 @@ public class UnityEngine_Rigidbody2DWrap
 		L.RegFunction("IsTouchingLayers", IsTouchingLayers);
 		L.RegFunction("OverlapPoint", OverlapPoint);
 		L.RegFunction("Distance", Distance);
+		L.RegFunction("ClosestPoint", ClosestPoint);
 		L.RegFunction("AddForce", AddForce);
 		L.RegFunction("AddRelativeForce", AddRelativeForce);
 		L.RegFunction("AddForceAtPosition", AddForceAtPosition);
@@ -93,6 +95,38 @@ public class UnityEngine_Rigidbody2DWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetRotation(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<float>(L, 2))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				float arg0 = (float)LuaDLL.lua_tonumber(L, 2);
+				obj.SetRotation(arg0);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Quaternion>(L, 2))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				UnityEngine.Quaternion arg0 = ToLua.ToQuaternion(L, 2);
+				obj.SetRotation(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Rigidbody2D.SetRotation");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int MovePosition(IntPtr L)
 	{
 		try
@@ -114,11 +148,26 @@ public class UnityEngine_Rigidbody2DWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
-			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
-			obj.MoveRotation(arg0);
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<float>(L, 2))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				float arg0 = (float)LuaDLL.lua_tonumber(L, 2);
+				obj.MoveRotation(arg0);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Quaternion>(L, 2))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				UnityEngine.Quaternion arg0 = ToLua.ToQuaternion(L, 2);
+				obj.MoveRotation(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Rigidbody2D.MoveRotation");
+			}
 		}
 		catch (Exception e)
 		{
@@ -296,6 +345,24 @@ public class UnityEngine_Rigidbody2DWrap
 			UnityEngine.Collider2D arg0 = (UnityEngine.Collider2D)ToLua.CheckObject<UnityEngine.Collider2D>(L, 2);
 			UnityEngine.ColliderDistance2D o = obj.Distance(arg0);
 			ToLua.PushValue(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int ClosestPoint(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+			UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
+			UnityEngine.Vector2 o = obj.ClosestPoint(arg0);
+			ToLua.Push(L, o);
 			return 1;
 		}
 		catch (Exception e)
@@ -551,13 +618,30 @@ public class UnityEngine_Rigidbody2DWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 3);
-			UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
-			UnityEngine.ContactFilter2D arg0 = StackTraits<UnityEngine.ContactFilter2D>.Check(L, 2);
-			UnityEngine.Collider2D[] arg1 = null;
-			int o = obj.OverlapCollider(arg0, arg1);
-			LuaDLL.lua_pushinteger(L, o);
-			return 1;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 3 && TypeChecker.CheckTypes<LuaInterface.LuaOut<UnityEngine.Collider2D>>(L, 3))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				UnityEngine.ContactFilter2D arg0 = StackTraits<UnityEngine.ContactFilter2D>.Check(L, 2);
+				UnityEngine.Collider2D[] arg1 = null;
+				int o = obj.OverlapCollider(arg0, arg1);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Collider2D>>(L, 3))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				UnityEngine.ContactFilter2D arg0 = StackTraits<UnityEngine.ContactFilter2D>.Check(L, 2);
+				System.Collections.Generic.List<UnityEngine.Collider2D> arg1 = (System.Collections.Generic.List<UnityEngine.Collider2D>)ToLua.ToObject(L, 3);
+				int o = obj.OverlapCollider(arg0, arg1);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Rigidbody2D.OverlapCollider");
+			}
 		}
 		catch (Exception e)
 		{
@@ -580,10 +664,26 @@ public class UnityEngine_Rigidbody2DWrap
 				LuaDLL.lua_pushinteger(L, o);
 				return 1;
 			}
+			else if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.ContactPoint2D>>(L, 2))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				System.Collections.Generic.List<UnityEngine.ContactPoint2D> arg0 = (System.Collections.Generic.List<UnityEngine.ContactPoint2D>)ToLua.ToObject(L, 2);
+				int o = obj.GetContacts(arg0);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
 			else if (count == 2 && TypeChecker.CheckTypes<UnityEngine.Collider2D[]>(L, 2))
 			{
 				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
 				UnityEngine.Collider2D[] arg0 = ToLua.ToObjectArray<UnityEngine.Collider2D>(L, 2);
+				int o = obj.GetContacts(arg0);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Collider2D>>(L, 2))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				System.Collections.Generic.List<UnityEngine.Collider2D> arg0 = (System.Collections.Generic.List<UnityEngine.Collider2D>)ToLua.ToObject(L, 2);
 				int o = obj.GetContacts(arg0);
 				LuaDLL.lua_pushinteger(L, o);
 				return 1;
@@ -597,11 +697,29 @@ public class UnityEngine_Rigidbody2DWrap
 				LuaDLL.lua_pushinteger(L, o);
 				return 1;
 			}
+			else if (count == 3 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.ContactPoint2D>>(L, 3))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				UnityEngine.ContactFilter2D arg0 = StackTraits<UnityEngine.ContactFilter2D>.Check(L, 2);
+				System.Collections.Generic.List<UnityEngine.ContactPoint2D> arg1 = (System.Collections.Generic.List<UnityEngine.ContactPoint2D>)ToLua.ToObject(L, 3);
+				int o = obj.GetContacts(arg0, arg1);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
 			else if (count == 3 && TypeChecker.CheckTypes<UnityEngine.Collider2D[]>(L, 3))
 			{
 				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
 				UnityEngine.ContactFilter2D arg0 = StackTraits<UnityEngine.ContactFilter2D>.Check(L, 2);
 				UnityEngine.Collider2D[] arg1 = ToLua.ToObjectArray<UnityEngine.Collider2D>(L, 3);
+				int o = obj.GetContacts(arg0, arg1);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Collider2D>>(L, 3))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				UnityEngine.ContactFilter2D arg0 = StackTraits<UnityEngine.ContactFilter2D>.Check(L, 2);
+				System.Collections.Generic.List<UnityEngine.Collider2D> arg1 = (System.Collections.Generic.List<UnityEngine.Collider2D>)ToLua.ToObject(L, 3);
 				int o = obj.GetContacts(arg0, arg1);
 				LuaDLL.lua_pushinteger(L, o);
 				return 1;
@@ -622,12 +740,28 @@ public class UnityEngine_Rigidbody2DWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
-			UnityEngine.Collider2D[] arg0 = null;
-			int o = obj.GetAttachedColliders(arg0);
-			LuaDLL.lua_pushinteger(L, o);
-			return 1;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2 && TypeChecker.CheckTypes<LuaInterface.LuaOut<UnityEngine.Collider2D>>(L, 2))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				UnityEngine.Collider2D[] arg0 = null;
+				int o = obj.GetAttachedColliders(arg0);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.Collider2D>>(L, 2))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				System.Collections.Generic.List<UnityEngine.Collider2D> arg0 = (System.Collections.Generic.List<UnityEngine.Collider2D>)ToLua.ToObject(L, 2);
+				int o = obj.GetAttachedColliders(arg0);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Rigidbody2D.GetAttachedColliders");
+			}
 		}
 		catch (Exception e)
 		{
@@ -642,11 +776,20 @@ public class UnityEngine_Rigidbody2DWrap
 		{
 			int count = LuaDLL.lua_gettop(L);
 
-			if (count == 3)
+			if (count == 3 && TypeChecker.CheckTypes<UnityEngine.RaycastHit2D[]>(L, 3))
 			{
 				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
-				UnityEngine.RaycastHit2D[] arg1 = ToLua.CheckStructArray<UnityEngine.RaycastHit2D>(L, 3);
+				UnityEngine.RaycastHit2D[] arg1 = ToLua.ToStructArray<UnityEngine.RaycastHit2D>(L, 3);
+				int o = obj.Cast(arg0, arg1);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.RaycastHit2D>>(L, 3))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
+				System.Collections.Generic.List<UnityEngine.RaycastHit2D> arg1 = (System.Collections.Generic.List<UnityEngine.RaycastHit2D>)ToLua.ToObject(L, 3);
 				int o = obj.Cast(arg0, arg1);
 				LuaDLL.lua_pushinteger(L, o);
 				return 1;
@@ -656,6 +799,16 @@ public class UnityEngine_Rigidbody2DWrap
 				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				UnityEngine.RaycastHit2D[] arg1 = ToLua.ToStructArray<UnityEngine.RaycastHit2D>(L, 3);
+				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
+				int o = obj.Cast(arg0, arg1, arg2);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.RaycastHit2D>, float>(L, 3))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
+				System.Collections.Generic.List<UnityEngine.RaycastHit2D> arg1 = (System.Collections.Generic.List<UnityEngine.RaycastHit2D>)ToLua.ToObject(L, 3);
 				float arg2 = (float)LuaDLL.lua_tonumber(L, 4);
 				int o = obj.Cast(arg0, arg1, arg2);
 				LuaDLL.lua_pushinteger(L, o);
@@ -671,13 +824,24 @@ public class UnityEngine_Rigidbody2DWrap
 				LuaDLL.lua_pushinteger(L, o);
 				return 1;
 			}
-			else if (count == 5)
+			else if (count == 5 && TypeChecker.CheckTypes<UnityEngine.RaycastHit2D[], float>(L, 4))
 			{
 				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
 				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
 				UnityEngine.ContactFilter2D arg1 = StackTraits<UnityEngine.ContactFilter2D>.Check(L, 3);
-				UnityEngine.RaycastHit2D[] arg2 = ToLua.CheckStructArray<UnityEngine.RaycastHit2D>(L, 4);
-				float arg3 = (float)LuaDLL.luaL_checknumber(L, 5);
+				UnityEngine.RaycastHit2D[] arg2 = ToLua.ToStructArray<UnityEngine.RaycastHit2D>(L, 4);
+				float arg3 = (float)LuaDLL.lua_tonumber(L, 5);
+				int o = obj.Cast(arg0, arg1, arg2, arg3);
+				LuaDLL.lua_pushinteger(L, o);
+				return 1;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<System.Collections.Generic.List<UnityEngine.RaycastHit2D>, float>(L, 4))
+			{
+				UnityEngine.Rigidbody2D obj = (UnityEngine.Rigidbody2D)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rigidbody2D));
+				UnityEngine.Vector2 arg0 = ToLua.ToVector2(L, 2);
+				UnityEngine.ContactFilter2D arg1 = StackTraits<UnityEngine.ContactFilter2D>.Check(L, 3);
+				System.Collections.Generic.List<UnityEngine.RaycastHit2D> arg2 = (System.Collections.Generic.List<UnityEngine.RaycastHit2D>)ToLua.ToObject(L, 4);
+				float arg3 = (float)LuaDLL.lua_tonumber(L, 5);
 				int o = obj.Cast(arg0, arg1, arg2, arg3);
 				LuaDLL.lua_pushinteger(L, o);
 				return 1;

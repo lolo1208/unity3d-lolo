@@ -10,6 +10,7 @@ public class UnityEngine_UI_ToggleWrap
 		L.RegFunction("Rebuild", Rebuild);
 		L.RegFunction("LayoutComplete", LayoutComplete);
 		L.RegFunction("GraphicUpdateComplete", GraphicUpdateComplete);
+		L.RegFunction("SetIsOnWithoutNotify", SetIsOnWithoutNotify);
 		L.RegFunction("OnPointerClick", OnPointerClick);
 		L.RegFunction("OnSubmit", OnSubmit);
 		L.RegFunction("__eq", op_Equality);
@@ -63,6 +64,23 @@ public class UnityEngine_UI_ToggleWrap
 			ToLua.CheckArgsCount(L, 1);
 			UnityEngine.UI.Toggle obj = (UnityEngine.UI.Toggle)ToLua.CheckObject<UnityEngine.UI.Toggle>(L, 1);
 			obj.GraphicUpdateComplete();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetIsOnWithoutNotify(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.UI.Toggle obj = (UnityEngine.UI.Toggle)ToLua.CheckObject<UnityEngine.UI.Toggle>(L, 1);
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.SetIsOnWithoutNotify(arg0);
 			return 0;
 		}
 		catch (Exception e)

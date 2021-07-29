@@ -49,7 +49,7 @@ android.injected.testOnly=false
 
 
 ##### Settings:
-Preferences > External Tools > Android SDK / NDK
+[Unity] `Preferences` > `External Tools` > `Android SDK / NDK`
 
 ---
 

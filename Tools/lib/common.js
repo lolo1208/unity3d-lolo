@@ -110,6 +110,8 @@ common.tmpPlatformDir = `${common.platformDir}tmp/`;
 
 // Android 平台的 Java 代码目录
 common.androidJavaDir = `${common.rootDir}templates/java/`;
+// iOS 平台的 Object-C 代码目录
+common.iOSObjCDir = `${common.rootDir}templates/objc/`;
 
 
 // lua 编码工具路径
@@ -277,6 +279,7 @@ common.removeDir = function (dirPath) {
 
 /**
  * 拷贝目录，包括文件和子目录
+ * 添加新增文件，覆盖已有文件
  * @param oldDir
  * @param newDir
  */
@@ -299,8 +302,20 @@ common.copyDir = function (oldDir, newDir) {
 
 
 /**
+ * 移动目录
+ * 如果目标目录已存在，则先删除目标目录
+ * @param srcDir 源目录
+ * @param destDir 目标目录
+ */
+common.moveDir = function (srcDir, destDir) {
+    common.removeDir(destDir);
+    fs.renameSync(srcDir, destDir);
+}
+
+
+/**
  * 合并两个目录
- * 更新有变化的文件，添加新增文件，源目录删除不存在的文件
+ * 添加新增文件，更新有变化的文件，（在源目录内）删除已不存在的文件
  * @param srcDir 源目录
  * @param destDir 目标目录
  * @param callback 合并完成时的回调

@@ -8,8 +8,8 @@ public class UnityEngine_Audio_AudioMixerWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.Audio.AudioMixer), typeof(UnityEngine.Object));
-		L.RegFunction("FindMatchingGroups", FindMatchingGroups);
 		L.RegFunction("FindSnapshot", FindSnapshot);
+		L.RegFunction("FindMatchingGroups", FindMatchingGroups);
 		L.RegFunction("TransitionToSnapshots", TransitionToSnapshots);
 		L.RegFunction("SetFloat", SetFloat);
 		L.RegFunction("ClearFloat", ClearFloat);
@@ -35,14 +35,14 @@ public class UnityEngine_Audio_AudioMixerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int FindMatchingGroups(IntPtr L)
+	static int FindSnapshot(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 2);
 			UnityEngine.Audio.AudioMixer obj = (UnityEngine.Audio.AudioMixer)ToLua.CheckObject<UnityEngine.Audio.AudioMixer>(L, 1);
 			string arg0 = ToLua.CheckString(L, 2);
-			UnityEngine.Audio.AudioMixerGroup[] o = obj.FindMatchingGroups(arg0);
+			UnityEngine.Audio.AudioMixerSnapshot o = obj.FindSnapshot(arg0);
 			ToLua.Push(L, o);
 			return 1;
 		}
@@ -53,14 +53,14 @@ public class UnityEngine_Audio_AudioMixerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int FindSnapshot(IntPtr L)
+	static int FindMatchingGroups(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 2);
 			UnityEngine.Audio.AudioMixer obj = (UnityEngine.Audio.AudioMixer)ToLua.CheckObject<UnityEngine.Audio.AudioMixer>(L, 1);
 			string arg0 = ToLua.CheckString(L, 2);
-			UnityEngine.Audio.AudioMixerSnapshot o = obj.FindSnapshot(arg0);
+			UnityEngine.Audio.AudioMixerGroup[] o = obj.FindMatchingGroups(arg0);
 			ToLua.Push(L, o);
 			return 1;
 		}

@@ -152,8 +152,8 @@ namespace SRDebugger
         public void Clear()
         {
             _count = 0;
-            _end = 0;
             _start = 0;
+            _end = 0;
         }
 
         #region IEnumerable<T> implementation
@@ -357,7 +357,7 @@ namespace SRDebugger
 
         private ArraySegment<T> ArrayOne()
         {
-            if (_start < _end)
+            if (_start <= _end)
             {
                 return new ArraySegment<T>(_buffer, _start, _end - _start);
             }

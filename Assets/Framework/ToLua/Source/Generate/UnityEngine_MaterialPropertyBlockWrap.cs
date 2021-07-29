@@ -15,6 +15,7 @@ public class UnityEngine_MaterialPropertyBlockWrap
 		L.RegFunction("SetMatrix", SetMatrix);
 		L.RegFunction("SetBuffer", SetBuffer);
 		L.RegFunction("SetTexture", SetTexture);
+		L.RegFunction("SetConstantBuffer", SetConstantBuffer);
 		L.RegFunction("SetFloatArray", SetFloatArray);
 		L.RegFunction("SetVectorArray", SetVectorArray);
 		L.RegFunction("SetMatrixArray", SetMatrixArray);
@@ -268,6 +269,22 @@ public class UnityEngine_MaterialPropertyBlockWrap
 				obj.SetBuffer(arg0, arg1);
 				return 0;
 			}
+			else if (count == 3 && TypeChecker.CheckTypes<string, UnityEngine.GraphicsBuffer>(L, 2))
+			{
+				UnityEngine.MaterialPropertyBlock obj = (UnityEngine.MaterialPropertyBlock)ToLua.CheckObject(L, 1, typeof(UnityEngine.MaterialPropertyBlock));
+				string arg0 = ToLua.ToString(L, 2);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 3);
+				obj.SetBuffer(arg0, arg1);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<int, UnityEngine.GraphicsBuffer>(L, 2))
+			{
+				UnityEngine.MaterialPropertyBlock obj = (UnityEngine.MaterialPropertyBlock)ToLua.CheckObject(L, 1, typeof(UnityEngine.MaterialPropertyBlock));
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 3);
+				obj.SetBuffer(arg0, arg1);
+				return 0;
+			}
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.MaterialPropertyBlock.SetBuffer");
@@ -302,9 +319,85 @@ public class UnityEngine_MaterialPropertyBlockWrap
 				obj.SetTexture(arg0, arg1);
 				return 0;
 			}
+			else if (count == 4 && TypeChecker.CheckTypes<string, UnityEngine.RenderTexture, UnityEngine.Rendering.RenderTextureSubElement>(L, 2))
+			{
+				UnityEngine.MaterialPropertyBlock obj = (UnityEngine.MaterialPropertyBlock)ToLua.CheckObject(L, 1, typeof(UnityEngine.MaterialPropertyBlock));
+				string arg0 = ToLua.ToString(L, 2);
+				UnityEngine.RenderTexture arg1 = (UnityEngine.RenderTexture)ToLua.ToObject(L, 3);
+				UnityEngine.Rendering.RenderTextureSubElement arg2 = (UnityEngine.Rendering.RenderTextureSubElement)ToLua.ToObject(L, 4);
+				obj.SetTexture(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<int, UnityEngine.RenderTexture, UnityEngine.Rendering.RenderTextureSubElement>(L, 2))
+			{
+				UnityEngine.MaterialPropertyBlock obj = (UnityEngine.MaterialPropertyBlock)ToLua.CheckObject(L, 1, typeof(UnityEngine.MaterialPropertyBlock));
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				UnityEngine.RenderTexture arg1 = (UnityEngine.RenderTexture)ToLua.ToObject(L, 3);
+				UnityEngine.Rendering.RenderTextureSubElement arg2 = (UnityEngine.Rendering.RenderTextureSubElement)ToLua.ToObject(L, 4);
+				obj.SetTexture(arg0, arg1, arg2);
+				return 0;
+			}
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.MaterialPropertyBlock.SetTexture");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetConstantBuffer(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 5 && TypeChecker.CheckTypes<string, UnityEngine.ComputeBuffer, int, int>(L, 2))
+			{
+				UnityEngine.MaterialPropertyBlock obj = (UnityEngine.MaterialPropertyBlock)ToLua.CheckObject(L, 1, typeof(UnityEngine.MaterialPropertyBlock));
+				string arg0 = ToLua.ToString(L, 2);
+				UnityEngine.ComputeBuffer arg1 = (UnityEngine.ComputeBuffer)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<int, UnityEngine.ComputeBuffer, int, int>(L, 2))
+			{
+				UnityEngine.MaterialPropertyBlock obj = (UnityEngine.MaterialPropertyBlock)ToLua.CheckObject(L, 1, typeof(UnityEngine.MaterialPropertyBlock));
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				UnityEngine.ComputeBuffer arg1 = (UnityEngine.ComputeBuffer)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<string, UnityEngine.GraphicsBuffer, int, int>(L, 2))
+			{
+				UnityEngine.MaterialPropertyBlock obj = (UnityEngine.MaterialPropertyBlock)ToLua.CheckObject(L, 1, typeof(UnityEngine.MaterialPropertyBlock));
+				string arg0 = ToLua.ToString(L, 2);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 5 && TypeChecker.CheckTypes<int, UnityEngine.GraphicsBuffer, int, int>(L, 2))
+			{
+				UnityEngine.MaterialPropertyBlock obj = (UnityEngine.MaterialPropertyBlock)ToLua.CheckObject(L, 1, typeof(UnityEngine.MaterialPropertyBlock));
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 2);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 3);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 4);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 5);
+				obj.SetConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.MaterialPropertyBlock.SetConstantBuffer");
 			}
 		}
 		catch (Exception e)

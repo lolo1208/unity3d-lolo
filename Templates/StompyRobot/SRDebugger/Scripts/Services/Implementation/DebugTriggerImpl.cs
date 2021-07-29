@@ -1,8 +1,4 @@
-﻿#if !(UNITY_4_6 || UNITY_4_7  || UNITY_5_0 || UNITY_5_1 || UNITY_5_2 || UNITY_5_3)
-#define USE_NEW_SCENE_MANAGEMENT
-#endif
-
-namespace SRDebugger.Services.Implementation
+﻿namespace SRDebugger.Services.Implementation
 {
     using System;
     using Internal;
@@ -16,7 +12,7 @@ namespace SRDebugger.Services.Implementation
     {
         private PinAlignment _position;
         private TriggerRoot _trigger;
-
+        private IConsoleService _consoleService;
         public bool IsEnabled
         {
             get { return _trigger != null && _trigger.CachedGameObject.activeSelf; }
@@ -34,7 +30,6 @@ namespace SRDebugger.Services.Implementation
                 }
             }
         }
-
         public PinAlignment Position
         {
             get { return _position; }
@@ -48,7 +43,6 @@ namespace SRDebugger.Services.Implementation
                 _position = value;
             }
         }
-
         protected override void Awake()
         {
             base.Awake();
@@ -57,6 +51,14 @@ namespace SRDebugger.Services.Implementation
             CachedTransform.SetParent(Hierarchy.Get("SRDebugger"), true);
 
             name = "Trigger";
+        }
+
+        private void OnError(IConsoleService console)
+        {
+            if (_trigger != null)
+            {
+                _trigger.ErrorNotifier.ShowErrorWarning();
+            }
         }
 
         private void CreateTrigger()
@@ -107,35 +109,41 @@ namespace SRDebugger.Services.Implementation
             
             SRDebuggerUtil.EnsureEventSystemExists();
 
-#if USE_NEW_SCENE_MANAGEMENT
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnActiveSceneChanged;
-#endif
+
+            if (Settings.Instance.ErrorNotification)
+            {
+                _consoleService = SRServiceManager.GetService<IConsoleService>();
+                _consoleService.Error += OnError;
+            }
         }
-
-
-#if USE_NEW_SCENE_MANAGEMENT
         protected override void OnDestroy()
         {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+
+            if (_consoleService != null)
+            {
+                _consoleService.Error -= OnError;
+            }
+
             base.OnDestroy();
         }
-
         private static void OnActiveSceneChanged(UnityEngine.SceneManagement.Scene s1, UnityEngine.SceneManagement.Scene s2)
         {
             SRDebuggerUtil.EnsureEventSystemExists();
         }
-#endif
-
-#if !USE_NEW_SCENE_MANAGEMENT
-        private void OnLevelWasLoaded(int level)
-        {
-            SRDebuggerUtil.EnsureEventSystemExists();
-        }
-#endif
-
+        
         private void OnTriggerButtonClick()
         {
-            SRDebug.Instance.ShowDebugPanel();
+            if (_trigger.ErrorNotifier.IsVisible)
+            {
+                // Open into console if there is an error.
+                SRDebug.Instance.ShowDebugPanel(DefaultTabs.Console);
+            }
+            else
+            {
+                SRDebug.Instance.ShowDebugPanel();
+            }
         }
 
         private static void SetTriggerPosition(RectTransform t, PinAlignment position)

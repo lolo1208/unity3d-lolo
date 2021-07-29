@@ -20,6 +20,7 @@ public class UnityEngine_SpriteWrap
 		L.RegVar("border", get_border, null);
 		L.RegVar("texture", get_texture, null);
 		L.RegVar("pixelsPerUnit", get_pixelsPerUnit, null);
+		L.RegVar("spriteAtlasTextureScale", get_spriteAtlasTextureScale, null);
 		L.RegVar("associatedAlphaSplitTexture", get_associatedAlphaSplitTexture, null);
 		L.RegVar("pivot", get_pivot, null);
 		L.RegVar("packed", get_packed, null);
@@ -319,6 +320,25 @@ public class UnityEngine_SpriteWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index pixelsPerUnit on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_spriteAtlasTextureScale(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Sprite obj = (UnityEngine.Sprite)o;
+			float ret = obj.spriteAtlasTextureScale;
+			LuaDLL.lua_pushnumber(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index spriteAtlasTextureScale on a nil value");
 		}
 	}
 

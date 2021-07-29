@@ -133,9 +133,9 @@ namespace App
             //    可使用 ASTC_6x6 来代替这两个值，Unity 会自动判定 alpha 来做压缩。
             bool isAndroid = platform == PLATFORM_ANDROID;
             if (importer.DoesSourceTextureHaveAlpha())
-                settings.format = isAndroid ? TextureImporterFormat.ETC2_RGBA8 : TextureImporterFormat.ASTC_RGBA_6x6;
+                settings.format = isAndroid ? TextureImporterFormat.ETC2_RGBA8 : TextureImporterFormat.ASTC_6x6;
             else
-                settings.format = isAndroid ? TextureImporterFormat.ETC2_RGB4 : TextureImporterFormat.ASTC_RGB_6x6;
+                settings.format = isAndroid ? TextureImporterFormat.ETC2_RGB4 : TextureImporterFormat.ASTC_6x6;
             importer.SetPlatformTextureSettings(settings);
         }
 
@@ -204,7 +204,8 @@ namespace App
             importer.meshCompression = ModelImporterMeshCompression.Medium;
             //importer.importNormals = ModelImporterNormals.None;
             //importer.importMaterials = false;
-            importer.optimizeMesh = true;
+            importer.optimizeMeshPolygons = true;
+            importer.optimizeMeshVertices = true;
             //importer.optimizeGameObjects = true;
             importer.isReadable = false;
             MarkImported();

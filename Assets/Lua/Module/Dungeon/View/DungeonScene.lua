@@ -53,76 +53,14 @@ function DungeonScene:OnInitialize()
     -- test
     local testBtns = canvasTra:Find("TestBtns")
     local backBtn = testBtns:Find("backBtn").gameObject
-    local mosaicBtn = testBtns:Find("mosaicBtn").gameObject
-    local radialBlurBtn = testBtns:Find("radialBlurBtn").gameObject
-    local doubleImageShakeBtn = testBtns:Find("doubleImageShakeBtn").gameObject
-
-    local hide = function()
-        mosaicBtn:SetActive(false)
-        radialBlurBtn:SetActive(false)
-        backBtn:SetActive(true)
-    end
-    backBtn:SetActive(false)
-
     AddEventListener(backBtn, PointerEvent.CLICK, self.Click_BackBtn, self)
-    AddEventListener(mosaicBtn, PointerEvent.CLICK, self.Click_TestBtn, self, 0, self.PlayMosaic, hide)
-    AddEventListener(radialBlurBtn, PointerEvent.CLICK, self.Click_TestBtn, self, 0, self.PlayRadialBlur, hide)
-    AddEventListener(doubleImageShakeBtn, PointerEvent.CLICK, function()
-        LuaHelper.PlayDoubleImageShake(1.5)
-    end)
 end
 
 
 --
 function DungeonScene:Click_BackBtn(event)
-    CancelDelayedCall(self.testDC)
     SceneController.EnterTest()
 end
-
---
-function DungeonScene:Click_TestBtn(event, fn, hide)
-    fn(self)
-    hide()
-end
-
---
-function DungeonScene:PlayMosaic()
-    self.testDC = DelayedCall(1.5, function()
-        LuaHelper.PlayMosaic(0.06, 0.5, function()
-            self.avatar:SetPosition(bornList[math.random(#bornList)], nil, nil, true)
-            self.testDC = DelayedCall(0.1, function()
-                LuaHelper.PlayMosaic(0, 0.5, function()
-                    self:PlayMosaic()
-                end)
-            end)
-        end)
-    end)
-
-    --self.testDC = DelayedCall(2, function()
-    --    LuaHelper.SetGaussianBlurEnabled(true)
-    --    self.testDC = DelayedCall(2, function()
-    --        LuaHelper.SetGaussianBlurEnabled(false)
-    --        self.testDC = DelayedCall(2, function()
-    --            self:PlayMosaic()
-    --        end)
-    --    end)
-    --end)
-end
-
---
-function DungeonScene:PlayRadialBlur()
-    self.testDC = DelayedCall(1.5, function()
-        LuaHelper.PlayRadialBlur(30, 0.5, function()
-            self.avatar:SetPosition(bornList[math.random(#bornList)], nil, nil, true)
-            self.testDC = DelayedCall(0.1, function()
-                LuaHelper.PlayRadialBlur(0, 0.5, function()
-                    self:PlayRadialBlur()
-                end)
-            end)
-        end)
-    end)
-end
-
 
 
 

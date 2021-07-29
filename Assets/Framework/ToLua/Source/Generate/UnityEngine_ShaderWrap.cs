@@ -13,6 +13,8 @@ public class UnityEngine_ShaderWrap
 		L.RegFunction("IsKeywordEnabled", IsKeywordEnabled);
 		L.RegFunction("WarmupAllShaders", WarmupAllShaders);
 		L.RegFunction("PropertyToID", PropertyToID);
+		L.RegFunction("GetDependency", GetDependency);
+		L.RegFunction("FindPassTagValue", FindPassTagValue);
 		L.RegFunction("SetGlobalFloat", SetGlobalFloat);
 		L.RegFunction("SetGlobalInt", SetGlobalInt);
 		L.RegFunction("SetGlobalVector", SetGlobalVector);
@@ -20,6 +22,7 @@ public class UnityEngine_ShaderWrap
 		L.RegFunction("SetGlobalMatrix", SetGlobalMatrix);
 		L.RegFunction("SetGlobalTexture", SetGlobalTexture);
 		L.RegFunction("SetGlobalBuffer", SetGlobalBuffer);
+		L.RegFunction("SetGlobalConstantBuffer", SetGlobalConstantBuffer);
 		L.RegFunction("SetGlobalFloatArray", SetGlobalFloatArray);
 		L.RegFunction("SetGlobalVectorArray", SetGlobalVectorArray);
 		L.RegFunction("SetGlobalMatrixArray", SetGlobalMatrixArray);
@@ -32,6 +35,20 @@ public class UnityEngine_ShaderWrap
 		L.RegFunction("GetGlobalFloatArray", GetGlobalFloatArray);
 		L.RegFunction("GetGlobalVectorArray", GetGlobalVectorArray);
 		L.RegFunction("GetGlobalMatrixArray", GetGlobalMatrixArray);
+		L.RegFunction("GetPropertyCount", GetPropertyCount);
+		L.RegFunction("FindPropertyIndex", FindPropertyIndex);
+		L.RegFunction("GetPropertyName", GetPropertyName);
+		L.RegFunction("GetPropertyNameId", GetPropertyNameId);
+		L.RegFunction("GetPropertyType", GetPropertyType);
+		L.RegFunction("GetPropertyDescription", GetPropertyDescription);
+		L.RegFunction("GetPropertyFlags", GetPropertyFlags);
+		L.RegFunction("GetPropertyAttributes", GetPropertyAttributes);
+		L.RegFunction("GetPropertyDefaultFloatValue", GetPropertyDefaultFloatValue);
+		L.RegFunction("GetPropertyDefaultVectorValue", GetPropertyDefaultVectorValue);
+		L.RegFunction("GetPropertyRangeLimits", GetPropertyRangeLimits);
+		L.RegFunction("GetPropertyTextureDimension", GetPropertyTextureDimension);
+		L.RegFunction("GetPropertyTextureDefaultName", GetPropertyTextureDefaultName);
+		L.RegFunction("FindTextureStack", FindTextureStack);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("maximumLOD", get_maximumLOD, set_maximumLOD);
@@ -39,6 +56,7 @@ public class UnityEngine_ShaderWrap
 		L.RegVar("isSupported", get_isSupported, null);
 		L.RegVar("globalRenderPipeline", get_globalRenderPipeline, set_globalRenderPipeline);
 		L.RegVar("renderQueue", get_renderQueue, null);
+		L.RegVar("passCount", get_passCount, null);
 		L.EndClass();
 	}
 
@@ -132,6 +150,43 @@ public class UnityEngine_ShaderWrap
 			string arg0 = ToLua.CheckString(L, 1);
 			int o = UnityEngine.Shader.PropertyToID(arg0);
 			LuaDLL.lua_pushinteger(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetDependency(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			string arg0 = ToLua.CheckString(L, 2);
+			UnityEngine.Shader o = obj.GetDependency(arg0);
+			ToLua.PushSealed(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int FindPassTagValue(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Rendering.ShaderTagId arg1 = StackTraits<UnityEngine.Rendering.ShaderTagId>.Check(L, 3);
+			UnityEngine.Rendering.ShaderTagId o = obj.FindPassTagValue(arg0, arg1);
+			ToLua.PushValue(L, o);
 			return 1;
 		}
 		catch (Exception e)
@@ -321,6 +376,22 @@ public class UnityEngine_ShaderWrap
 				UnityEngine.Shader.SetGlobalTexture(arg0, arg1);
 				return 0;
 			}
+			else if (count == 3 && TypeChecker.CheckTypes<string, UnityEngine.RenderTexture, UnityEngine.Rendering.RenderTextureSubElement>(L, 1))
+			{
+				string arg0 = ToLua.ToString(L, 1);
+				UnityEngine.RenderTexture arg1 = (UnityEngine.RenderTexture)ToLua.ToObject(L, 2);
+				UnityEngine.Rendering.RenderTextureSubElement arg2 = (UnityEngine.Rendering.RenderTextureSubElement)ToLua.ToObject(L, 3);
+				UnityEngine.Shader.SetGlobalTexture(arg0, arg1, arg2);
+				return 0;
+			}
+			else if (count == 3 && TypeChecker.CheckTypes<int, UnityEngine.RenderTexture, UnityEngine.Rendering.RenderTextureSubElement>(L, 1))
+			{
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 1);
+				UnityEngine.RenderTexture arg1 = (UnityEngine.RenderTexture)ToLua.ToObject(L, 2);
+				UnityEngine.Rendering.RenderTextureSubElement arg2 = (UnityEngine.Rendering.RenderTextureSubElement)ToLua.ToObject(L, 3);
+				UnityEngine.Shader.SetGlobalTexture(arg0, arg1, arg2);
+				return 0;
+			}
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Shader.SetGlobalTexture");
@@ -353,9 +424,77 @@ public class UnityEngine_ShaderWrap
 				UnityEngine.Shader.SetGlobalBuffer(arg0, arg1);
 				return 0;
 			}
+			else if (count == 2 && TypeChecker.CheckTypes<string, UnityEngine.GraphicsBuffer>(L, 1))
+			{
+				string arg0 = ToLua.ToString(L, 1);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 2);
+				UnityEngine.Shader.SetGlobalBuffer(arg0, arg1);
+				return 0;
+			}
+			else if (count == 2 && TypeChecker.CheckTypes<int, UnityEngine.GraphicsBuffer>(L, 1))
+			{
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 1);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 2);
+				UnityEngine.Shader.SetGlobalBuffer(arg0, arg1);
+				return 0;
+			}
 			else
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Shader.SetGlobalBuffer");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetGlobalConstantBuffer(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 4 && TypeChecker.CheckTypes<string, UnityEngine.ComputeBuffer, int, int>(L, 1))
+			{
+				string arg0 = ToLua.ToString(L, 1);
+				UnityEngine.ComputeBuffer arg1 = (UnityEngine.ComputeBuffer)ToLua.ToObject(L, 2);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Shader.SetGlobalConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<int, UnityEngine.ComputeBuffer, int, int>(L, 1))
+			{
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 1);
+				UnityEngine.ComputeBuffer arg1 = (UnityEngine.ComputeBuffer)ToLua.ToObject(L, 2);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Shader.SetGlobalConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<string, UnityEngine.GraphicsBuffer, int, int>(L, 1))
+			{
+				string arg0 = ToLua.ToString(L, 1);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 2);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Shader.SetGlobalConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else if (count == 4 && TypeChecker.CheckTypes<int, UnityEngine.GraphicsBuffer, int, int>(L, 1))
+			{
+				int arg0 = (int)LuaDLL.lua_tonumber(L, 1);
+				UnityEngine.GraphicsBuffer arg1 = (UnityEngine.GraphicsBuffer)ToLua.ToObject(L, 2);
+				int arg2 = (int)LuaDLL.lua_tonumber(L, 3);
+				int arg3 = (int)LuaDLL.lua_tonumber(L, 4);
+				UnityEngine.Shader.SetGlobalConstantBuffer(arg0, arg1, arg2, arg3);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.Shader.SetGlobalConstantBuffer");
 			}
 		}
 		catch (Exception e)
@@ -833,6 +972,261 @@ public class UnityEngine_ShaderWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyCount(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int o = obj.GetPropertyCount();
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int FindPropertyIndex(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			string arg0 = ToLua.CheckString(L, 2);
+			int o = obj.FindPropertyIndex(arg0);
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyName(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			string o = obj.GetPropertyName(arg0);
+			LuaDLL.lua_pushstring(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyNameId(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			int o = obj.GetPropertyNameId(arg0);
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyType(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Rendering.ShaderPropertyType o = obj.GetPropertyType(arg0);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyDescription(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			string o = obj.GetPropertyDescription(arg0);
+			LuaDLL.lua_pushstring(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyFlags(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Rendering.ShaderPropertyFlags o = obj.GetPropertyFlags(arg0);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyAttributes(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			string[] o = obj.GetPropertyAttributes(arg0);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyDefaultFloatValue(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			float o = obj.GetPropertyDefaultFloatValue(arg0);
+			LuaDLL.lua_pushnumber(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyDefaultVectorValue(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Vector4 o = obj.GetPropertyDefaultVectorValue(arg0);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyRangeLimits(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Vector2 o = obj.GetPropertyRangeLimits(arg0);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyTextureDimension(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			UnityEngine.Rendering.TextureDimension o = obj.GetPropertyTextureDimension(arg0);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetPropertyTextureDefaultName(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			string o = obj.GetPropertyTextureDefaultName(arg0);
+			LuaDLL.lua_pushstring(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int FindTextureStack(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 4);
+			UnityEngine.Shader obj = (UnityEngine.Shader)ToLua.CheckObject(L, 1, typeof(UnityEngine.Shader));
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
+			string arg1 = null;
+			int arg2;
+			bool o = obj.FindTextureStack(arg0, out arg1, out arg2);
+			LuaDLL.lua_pushboolean(L, o);
+			LuaDLL.lua_pushstring(L, arg1);
+			LuaDLL.lua_pushinteger(L, arg2);
+			return 3;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int op_Equality(IntPtr L)
 	{
 		try
@@ -932,6 +1326,25 @@ public class UnityEngine_ShaderWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index renderQueue on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_passCount(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Shader obj = (UnityEngine.Shader)o;
+			int ret = obj.passCount;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index passCount on a nil value");
 		}
 	}
 

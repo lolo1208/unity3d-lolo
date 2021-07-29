@@ -16,7 +16,14 @@
 
         public void Close()
         {
-            SRServiceManager.GetService<IDebugService>().HideDebugPanel();
+            if (Settings.Instance.UnloadOnClose)
+            {
+                SRServiceManager.GetService<IDebugService>().DestroyDebugPanel();
+            }
+            else
+            {
+                SRServiceManager.GetService<IDebugService>().HideDebugPanel();
+            }
         }
 
         public void CloseAndDestroy()

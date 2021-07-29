@@ -128,7 +128,7 @@
 
             EditorGUILayout.LabelField(SRDebugStrings.Current.SettingsRateBoxContents, EditorStyles.miniLabel);
 
-            SRDebugEditorUtil.DrawFooterLayout(Screen.width);
+            SRDebugEditorUtil.DrawFooterLayout(position.width);
 
             if (GUI.changed)
             {
@@ -156,46 +156,21 @@
             if (GUILayout.Toggle(!Settings.Instance.IsEnabled, "Disabled", SRDebugEditorUtil.Styles.RadioButton))
             {
                 Settings.Instance.IsEnabled = false;
-                Settings.Instance.AutoLoad = false;
             }
 
             GUILayout.Label("Do not load SRDebugger until a manual call to <i>SRDebug.Init()</i>.",
                 SRDebugEditorUtil.Styles.RadioButtonDescription);
 
-            var autoLoadEnabled = Settings.Instance.AutoLoad;
-#if !UNITY_5 && !UNITY_5_3_OR_NEWER
-            autoLoadEnabled = false;
-#endif
-
-            if (GUILayout.Toggle(Settings.Instance.IsEnabled && !autoLoadEnabled, "Prefab",
-                SRDebugEditorUtil.Styles.RadioButton))
-            {
-                Settings.Instance.IsEnabled = true;
-                autoLoadEnabled = Settings.Instance.AutoLoad = false;
-            }
-
-            GUILayout.Label("Load SRDebugger from the <i>SRDebugger.Init</i> prefab.",
-                SRDebugEditorUtil.Styles.RadioButtonDescription);
-
             var msg = "Automatic (recommended)";
-#if !UNITY_5 && !UNITY_5_3_OR_NEWER
-            EditorGUI.BeginDisabledGroup(true);
-			msg = "Automatic (Unity 5 only)";
-#endif
-
-            if (GUILayout.Toggle(Settings.Instance.IsEnabled && autoLoadEnabled, msg,
+            
+            if (GUILayout.Toggle(Settings.Instance.IsEnabled, msg,
                 SRDebugEditorUtil.Styles.RadioButton))
             {
                 Settings.Instance.IsEnabled = true;
-                Settings.Instance.AutoLoad = true;
             }
 
             GUILayout.Label("SRDebugger loads automatically when your game starts.",
                 SRDebugEditorUtil.Styles.RadioButtonDescription);
-
-#if !UNITY_5 && !UNITY_5_3_OR_NEWER
-            EditorGUI.EndDisabledGroup();
-#endif
 
             EditorGUILayout.EndVertical();
 
@@ -215,6 +190,12 @@
                     EditorGUILayout.EnumPopup(new GUIContent("Trigger Behaviour"),
                         Settings.Instance.TriggerBehaviour);
 
+            Settings.Instance.ErrorNotification =
+                EditorGUILayout.Toggle(
+                    new GUIContent("Error Notification",
+                        "Display a notification on the panel trigger when an error is printed to the log."),
+                    Settings.Instance.ErrorNotification);
+            
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.Space();
@@ -234,7 +215,7 @@
 
             EditorGUI.BeginDisabledGroup(!Settings.Instance.RequireCode);
 
-            Settings.Instance.RequireEntryCodeEveryTime = EditorGUILayout.Toggle(new GUIContent("...Every Time"),
+            Settings.Instance.RequireEntryCodeEveryTime = EditorGUILayout.Toggle(new GUIContent("...Every Time", "Require the user to enter the PIN every time they access the debug panel."),
                 Settings.Instance.RequireEntryCodeEveryTime);
 
             EditorGUILayout.EndHorizontal();
@@ -257,11 +238,15 @@
 
             EditorGUI.EndDisabledGroup();
 
+            EditorGUILayout.Space();
+
             Settings.Instance.AutomaticallyShowCursor =
                 EditorGUILayout.Toggle(
                     new GUIContent("Show Cursor",
                         "Automatically set the cursor to visible when the debug panel is opened, and revert when closed."),
                     Settings.Instance.AutomaticallyShowCursor);
+
+
 
             // Expand content area to fit all available space
             GUILayout.FlexibleSpace();
@@ -443,10 +428,10 @@
 
             EditorGUILayout.Space();
 
-            GUILayout.Label("Invoice Number", EditorStyles.boldLabel);
+            GUILayout.Label("Invoice/Order Number", EditorStyles.boldLabel);
 
             GUILayout.Label(
-                "Enter the invoice number from your Asset Store purchase invoice.",
+                "Enter the order number from your Asset Store purchase email.",
                 EditorStyles.miniLabel);
 
             _invoiceNumber = EditorGUILayout.TextField(_invoiceNumber);
@@ -607,9 +592,9 @@
             }
 
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, false, false,
-                GUILayout.Width(Screen.width - 11));
+                GUILayout.Width(position.width - 11));
 
-            EditorGUILayout.BeginVertical(GUILayout.Width(Screen.width - 30));
+            EditorGUILayout.BeginVertical(GUILayout.Width(position.width - 30));
 
             _keyboardShortcutList.DoLayoutList();
 
@@ -737,6 +722,15 @@
             EditorGUILayout.Toggle(
                 new GUIContent("Automatic Event System", "Automatically create a UGUI EventSystem if none is found in the scene."),
                 Settings.Instance.EnableEventSystemGeneration);
+
+            Settings.Instance.UnloadOnClose =
+            EditorGUILayout.Toggle(
+                new GUIContent("Unload When Closed", "Unload the debug panel from the scene when it is closed."),
+                Settings.Instance.UnloadOnClose);
+
+            EditorGUILayout.HelpBox(
+                "The panel loads again automatically when opened. You can always unload the panel by holding down the close button.",
+                MessageType.Info);
 
             EditorGUILayout.Separator();
 

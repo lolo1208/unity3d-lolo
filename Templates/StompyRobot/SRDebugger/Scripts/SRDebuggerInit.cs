@@ -1,4 +1,6 @@
-﻿namespace SRDebugger
+﻿using System;
+
+namespace SRDebugger
 {
     using SRF;
     using UnityEngine;
@@ -9,7 +11,8 @@
     /// It is recommended to add this to the very first scene in your game. This will ensure the console log
     /// will hold useful information about your game initialization.
     /// </summary>
-    [AddComponentMenu("SRDebugger Init")]
+    [AddComponentMenu("")]
+    [Obsolete("No longer required, use Automatic initialization mode or call SRDebug.Init() manually.")]
     public class SRDebuggerInit : SRMonoBehaviourEx
     {
         protected override void Awake()

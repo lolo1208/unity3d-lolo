@@ -189,14 +189,6 @@ namespace SRDebugger
 #endif
         }
 
-        public bool AutoLoad
-        {
-            get { return _autoLoad; }
-#if UNITY_EDITOR
-            set { _autoLoad = value; }
-#endif
-        }
-
         public DefaultTabs DefaultTab
         {
             get { return _defaultTab; }
@@ -224,6 +216,17 @@ namespace SRDebugger
             get { return _triggerBehaviour; }
 #if UNITY_EDITOR
             set { _triggerBehaviour = value; }
+#endif
+        }
+
+        /// <summary>
+        /// Enable a notification when a new error is logged.
+        /// </summary>
+        public bool ErrorNotification
+        {
+            get { return _errorNotification; }
+#if UNITY_EDITOR
+            set { _errorNotification = value; }
 #endif
         }
 
@@ -513,19 +516,30 @@ namespace SRDebugger
             }
         }
 
+        public bool UnloadOnClose
+        {
+            get { return _unloadOnClose; }
+#if UNITY_EDITOR
+            set
+            {
+                _unloadOnClose = value;
+            }
+#endif
+        }
+
         #endregion
 
         #region Serialization
 
         [SerializeField] private bool _isEnabled = true;
 
-        [SerializeField] private bool _autoLoad = true;
-
         [SerializeField] private DefaultTabs _defaultTab = DefaultTabs.SystemInformation;
 
         [SerializeField] private TriggerEnableModes _triggerEnableMode = TriggerEnableModes.Enabled;
 
         [SerializeField] private TriggerBehaviours _triggerBehaviour = TriggerBehaviours.TripleTap;
+
+        [SerializeField] private bool _errorNotification = true;
 
         [SerializeField] private bool _enableKeyboardShortcuts = true;
 
@@ -582,6 +596,8 @@ namespace SRDebugger
         [SerializeField] private bool _automaticShowCursor = true;
 
         [SerializeField] private float _uiScale = 1;
+
+        [SerializeField] private bool _unloadOnClose = false;
 
         #endregion
 

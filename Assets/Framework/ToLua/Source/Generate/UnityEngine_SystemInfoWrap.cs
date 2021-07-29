@@ -10,7 +10,11 @@ public class UnityEngine_SystemInfoWrap
 		L.RegFunction("SupportsRenderTextureFormat", SupportsRenderTextureFormat);
 		L.RegFunction("SupportsBlendingOnRenderTextureFormat", SupportsBlendingOnRenderTextureFormat);
 		L.RegFunction("SupportsTextureFormat", SupportsTextureFormat);
+		L.RegFunction("SupportsVertexAttributeFormat", SupportsVertexAttributeFormat);
 		L.RegFunction("IsFormatSupported", IsFormatSupported);
+		L.RegFunction("GetCompatibleFormat", GetCompatibleFormat);
+		L.RegFunction("GetGraphicsFormat", GetGraphicsFormat);
+		L.RegFunction("GetRenderTextureSupportedMSAASampleCount", GetRenderTextureSupportedMSAASampleCount);
 		L.RegFunction("New", _CreateUnityEngine_SystemInfo);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("unsupportedIdentifier", get_unsupportedIdentifier, null);
@@ -41,36 +45,61 @@ public class UnityEngine_SystemInfoWrap
 		L.RegVar("graphicsDeviceVersion", get_graphicsDeviceVersion, null);
 		L.RegVar("graphicsShaderLevel", get_graphicsShaderLevel, null);
 		L.RegVar("graphicsMultiThreaded", get_graphicsMultiThreaded, null);
+		L.RegVar("renderingThreadingMode", get_renderingThreadingMode, null);
 		L.RegVar("hasHiddenSurfaceRemovalOnGPU", get_hasHiddenSurfaceRemovalOnGPU, null);
 		L.RegVar("hasDynamicUniformArrayIndexingInFragmentShaders", get_hasDynamicUniformArrayIndexingInFragmentShaders, null);
 		L.RegVar("supportsShadows", get_supportsShadows, null);
 		L.RegVar("supportsRawShadowDepthSampling", get_supportsRawShadowDepthSampling, null);
 		L.RegVar("supportsMotionVectors", get_supportsMotionVectors, null);
-		L.RegVar("supportsRenderToCubemap", get_supportsRenderToCubemap, null);
-		L.RegVar("supportsImageEffects", get_supportsImageEffects, null);
 		L.RegVar("supports3DTextures", get_supports3DTextures, null);
+		L.RegVar("supportsCompressed3DTextures", get_supportsCompressed3DTextures, null);
 		L.RegVar("supports2DArrayTextures", get_supports2DArrayTextures, null);
 		L.RegVar("supports3DRenderTextures", get_supports3DRenderTextures, null);
 		L.RegVar("supportsCubemapArrayTextures", get_supportsCubemapArrayTextures, null);
 		L.RegVar("copyTextureSupport", get_copyTextureSupport, null);
 		L.RegVar("supportsComputeShaders", get_supportsComputeShaders, null);
+		L.RegVar("supportsConservativeRaster", get_supportsConservativeRaster, null);
+		L.RegVar("supportsMultiview", get_supportsMultiview, null);
+		L.RegVar("supportsGeometryShaders", get_supportsGeometryShaders, null);
+		L.RegVar("supportsTessellationShaders", get_supportsTessellationShaders, null);
+		L.RegVar("supportsRenderTargetArrayIndexFromVertexShader", get_supportsRenderTargetArrayIndexFromVertexShader, null);
 		L.RegVar("supportsInstancing", get_supportsInstancing, null);
 		L.RegVar("supportsHardwareQuadTopology", get_supportsHardwareQuadTopology, null);
 		L.RegVar("supports32bitsIndexBuffer", get_supports32bitsIndexBuffer, null);
 		L.RegVar("supportsSparseTextures", get_supportsSparseTextures, null);
 		L.RegVar("supportedRenderTargetCount", get_supportedRenderTargetCount, null);
 		L.RegVar("supportsSeparatedRenderTargetsBlend", get_supportsSeparatedRenderTargetsBlend, null);
+		L.RegVar("supportedRandomWriteTargetCount", get_supportedRandomWriteTargetCount, null);
 		L.RegVar("supportsMultisampledTextures", get_supportsMultisampledTextures, null);
+		L.RegVar("supportsMultisampled2DArrayTextures", get_supportsMultisampled2DArrayTextures, null);
 		L.RegVar("supportsMultisampleAutoResolve", get_supportsMultisampleAutoResolve, null);
 		L.RegVar("supportsTextureWrapMirrorOnce", get_supportsTextureWrapMirrorOnce, null);
 		L.RegVar("usesReversedZBuffer", get_usesReversedZBuffer, null);
 		L.RegVar("npotSupport", get_npotSupport, null);
 		L.RegVar("maxTextureSize", get_maxTextureSize, null);
 		L.RegVar("maxCubemapSize", get_maxCubemapSize, null);
+		L.RegVar("maxComputeBufferInputsVertex", get_maxComputeBufferInputsVertex, null);
+		L.RegVar("maxComputeBufferInputsFragment", get_maxComputeBufferInputsFragment, null);
+		L.RegVar("maxComputeBufferInputsGeometry", get_maxComputeBufferInputsGeometry, null);
+		L.RegVar("maxComputeBufferInputsDomain", get_maxComputeBufferInputsDomain, null);
+		L.RegVar("maxComputeBufferInputsHull", get_maxComputeBufferInputsHull, null);
+		L.RegVar("maxComputeBufferInputsCompute", get_maxComputeBufferInputsCompute, null);
+		L.RegVar("maxComputeWorkGroupSize", get_maxComputeWorkGroupSize, null);
+		L.RegVar("maxComputeWorkGroupSizeX", get_maxComputeWorkGroupSizeX, null);
+		L.RegVar("maxComputeWorkGroupSizeY", get_maxComputeWorkGroupSizeY, null);
+		L.RegVar("maxComputeWorkGroupSizeZ", get_maxComputeWorkGroupSizeZ, null);
 		L.RegVar("supportsAsyncCompute", get_supportsAsyncCompute, null);
-		L.RegVar("supportsGPUFence", get_supportsGPUFence, null);
+		L.RegVar("supportsGpuRecorder", get_supportsGpuRecorder, null);
+		L.RegVar("supportsGraphicsFence", get_supportsGraphicsFence, null);
 		L.RegVar("supportsAsyncGPUReadback", get_supportsAsyncGPUReadback, null);
+		L.RegVar("supportsRayTracing", get_supportsRayTracing, null);
+		L.RegVar("supportsSetConstantBuffer", get_supportsSetConstantBuffer, null);
+		L.RegVar("constantBufferOffsetAlignment", get_constantBufferOffsetAlignment, null);
+		L.RegVar("hasMipMaxLevel", get_hasMipMaxLevel, null);
 		L.RegVar("supportsMipStreaming", get_supportsMipStreaming, null);
+		L.RegVar("usesLoadStoreActions", get_usesLoadStoreActions, null);
+		L.RegVar("hdrDisplaySupportFlags", get_hdrDisplaySupportFlags, null);
+		L.RegVar("supportsStoreAndResolveAction", get_supportsStoreAndResolveAction, null);
 		L.EndClass();
 	}
 
@@ -150,6 +179,24 @@ public class UnityEngine_SystemInfoWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SupportsVertexAttributeFormat(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Rendering.VertexAttributeFormat arg0 = (UnityEngine.Rendering.VertexAttributeFormat)ToLua.CheckObject(L, 1, typeof(UnityEngine.Rendering.VertexAttributeFormat));
+			int arg1 = (int)LuaDLL.luaL_checknumber(L, 2);
+			bool o = UnityEngine.SystemInfo.SupportsVertexAttributeFormat(arg0, arg1);
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int IsFormatSupported(IntPtr L)
 	{
 		try
@@ -159,6 +206,58 @@ public class UnityEngine_SystemInfoWrap
 			UnityEngine.Experimental.Rendering.FormatUsage arg1 = (UnityEngine.Experimental.Rendering.FormatUsage)ToLua.CheckObject(L, 2, typeof(UnityEngine.Experimental.Rendering.FormatUsage));
 			bool o = UnityEngine.SystemInfo.IsFormatSupported(arg0, arg1);
 			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetCompatibleFormat(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.Experimental.Rendering.GraphicsFormat arg0 = (UnityEngine.Experimental.Rendering.GraphicsFormat)ToLua.CheckObject(L, 1, typeof(UnityEngine.Experimental.Rendering.GraphicsFormat));
+			UnityEngine.Experimental.Rendering.FormatUsage arg1 = (UnityEngine.Experimental.Rendering.FormatUsage)ToLua.CheckObject(L, 2, typeof(UnityEngine.Experimental.Rendering.FormatUsage));
+			UnityEngine.Experimental.Rendering.GraphicsFormat o = UnityEngine.SystemInfo.GetCompatibleFormat(arg0, arg1);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetGraphicsFormat(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.Experimental.Rendering.DefaultFormat arg0 = (UnityEngine.Experimental.Rendering.DefaultFormat)ToLua.CheckObject(L, 1, typeof(UnityEngine.Experimental.Rendering.DefaultFormat));
+			UnityEngine.Experimental.Rendering.GraphicsFormat o = UnityEngine.SystemInfo.GetGraphicsFormat(arg0);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetRenderTextureSupportedMSAASampleCount(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.RenderTextureDescriptor arg0 = StackTraits<UnityEngine.RenderTextureDescriptor>.Check(L, 1);
+			int o = UnityEngine.SystemInfo.GetRenderTextureSupportedMSAASampleCount(arg0);
+			LuaDLL.lua_pushinteger(L, o);
 			return 1;
 		}
 		catch (Exception e)
@@ -560,6 +659,20 @@ public class UnityEngine_SystemInfoWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_renderingThreadingMode(IntPtr L)
+	{
+		try
+		{
+			ToLua.Push(L, UnityEngine.SystemInfo.renderingThreadingMode);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_hasHiddenSurfaceRemovalOnGPU(IntPtr L)
 	{
 		try
@@ -630,39 +743,25 @@ public class UnityEngine_SystemInfoWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_supportsRenderToCubemap(IntPtr L)
-	{
-		try
-		{
-			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsRenderToCubemap);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_supportsImageEffects(IntPtr L)
-	{
-		try
-		{
-			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsImageEffects);
-			return 1;
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_supports3DTextures(IntPtr L)
 	{
 		try
 		{
 			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supports3DTextures);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsCompressed3DTextures(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsCompressed3DTextures);
 			return 1;
 		}
 		catch (Exception e)
@@ -733,6 +832,76 @@ public class UnityEngine_SystemInfoWrap
 		try
 		{
 			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsComputeShaders);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsConservativeRaster(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsConservativeRaster);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsMultiview(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsMultiview);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsGeometryShaders(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsGeometryShaders);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsTessellationShaders(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsTessellationShaders);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsRenderTargetArrayIndexFromVertexShader(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsRenderTargetArrayIndexFromVertexShader);
 			return 1;
 		}
 		catch (Exception e)
@@ -826,11 +995,39 @@ public class UnityEngine_SystemInfoWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportedRandomWriteTargetCount(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.supportedRandomWriteTargetCount);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_supportsMultisampledTextures(IntPtr L)
 	{
 		try
 		{
 			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.supportsMultisampledTextures);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsMultisampled2DArrayTextures(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsMultisampled2DArrayTextures);
 			return 1;
 		}
 		catch (Exception e)
@@ -924,6 +1121,146 @@ public class UnityEngine_SystemInfoWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_maxComputeBufferInputsVertex(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.maxComputeBufferInputsVertex);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_maxComputeBufferInputsFragment(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.maxComputeBufferInputsFragment);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_maxComputeBufferInputsGeometry(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.maxComputeBufferInputsGeometry);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_maxComputeBufferInputsDomain(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.maxComputeBufferInputsDomain);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_maxComputeBufferInputsHull(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.maxComputeBufferInputsHull);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_maxComputeBufferInputsCompute(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.maxComputeBufferInputsCompute);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_maxComputeWorkGroupSize(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.maxComputeWorkGroupSize);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_maxComputeWorkGroupSizeX(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.maxComputeWorkGroupSizeX);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_maxComputeWorkGroupSizeY(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.maxComputeWorkGroupSizeY);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_maxComputeWorkGroupSizeZ(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.maxComputeWorkGroupSizeZ);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_supportsAsyncCompute(IntPtr L)
 	{
 		try
@@ -938,11 +1275,25 @@ public class UnityEngine_SystemInfoWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_supportsGPUFence(IntPtr L)
+	static int get_supportsGpuRecorder(IntPtr L)
 	{
 		try
 		{
-			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsGPUFence);
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsGpuRecorder);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsGraphicsFence(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsGraphicsFence);
 			return 1;
 		}
 		catch (Exception e)
@@ -966,11 +1317,109 @@ public class UnityEngine_SystemInfoWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsRayTracing(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsRayTracing);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsSetConstantBuffer(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsSetConstantBuffer);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_constantBufferOffsetAlignment(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.SystemInfo.constantBufferOffsetAlignment);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_hasMipMaxLevel(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.hasMipMaxLevel);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_supportsMipStreaming(IntPtr L)
 	{
 		try
 		{
 			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsMipStreaming);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_usesLoadStoreActions(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.usesLoadStoreActions);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_hdrDisplaySupportFlags(IntPtr L)
+	{
+		try
+		{
+			ToLua.Push(L, UnityEngine.SystemInfo.hdrDisplaySupportFlags);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_supportsStoreAndResolveAction(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushboolean(L, UnityEngine.SystemInfo.supportsStoreAndResolveAction);
 			return 1;
 		}
 		catch (Exception e)

@@ -13,11 +13,8 @@ public static class SRDebug
 
     public static void Init()
     {
-        if (!SRServiceManager.HasService<IConsoleService>())
-        {
-            // Force console service to be created early, so it catches more of the initialization log.
-            new StandardConsoleService();
-        }
+        // Initialize console if it hasn't already initialized.
+        SRServiceManager.GetService<IConsoleService>();
 
         // Load the debug service
         SRServiceManager.GetService<IDebugService>();

@@ -35,6 +35,7 @@
         }
 
         public event Action<OptionDefinition, bool> OptionPinStateChanged;
+        public event Action<RectTransform> OptionsCanvasCreated;
 
         public bool IsProfilerPinned
         {
@@ -150,6 +151,11 @@
 
             Service.Options.OptionsUpdated += OnOptionsUpdated;
             Service.Options.OptionsValueUpdated += OptionsOnPropertyChanged;
+
+            if (OptionsCanvasCreated != null)
+            {
+                OptionsCanvasCreated(_uiRoot.Canvas.GetComponent<RectTransform>());
+            }
         }
 
         private void UpdateAnchors()

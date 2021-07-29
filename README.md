@@ -7,11 +7,12 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
 也可在场景中的任意 GameObject 上 `Add Component`->`Main`，然后点击 `Play` 按钮运行项目。
 
 #### * 默认环境和版本
-  - [Unity Editor 2018.4.25f1](https://unity3d.com/cn/unity/whats-new/2018.4.25) 可升级至任意版本
+  - [Unity Editor 2020.3.12f1](https://unity3d.com/cn/unity/whats-new/2020.3.12) 可升级至任意版本
   - [IntelliJ IDEA CE 2021.1.1](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
   - [EmmyLua 1.3.6.215](https://plugins.jetbrains.com/plugin/9768-emmylua/versions/stable) 该插件安装包放在 Templates/IntelliJ-EmmyLua-1.3.6.215-IDEA211.zip
   - [Visual Studio Community](https://visualstudio.microsoft.com/zh-hans/free-developer-offers) 2019 / 8.9.9 for Mac
   - [tolua 1.0.7](https://github.com/topameng/tolua), lua 5.1, [release encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
+  - 其他：[ndk-r19](https://dl.google.com/android/repository/android-ndk-r19-darwin-x86_64.zip), [Universal Render Pipeline](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@10.5/manual/index.html)
 
 #### * 特殊目录和文件
   - `Assets/Framework/ShibaInu/` 核心框架代码目录，包含 C# 和 Lua 代码。
@@ -22,19 +23,19 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   - `Assets/Res/Scenes/` 场景资源目录。
     在该目录下的 *.unity 文件（不包括子目录中的 *.unity 文件）在打包时会被打包成 AssetBundle。
     会被打入底包的场景有 Launcher.unity（启动场景）和 Empty.unity（空场景）。
-  - `Assets/Res/BuildRules.txt` 打包规则配置文件，包含 忽略，合并，拆分 三种规则。
+  - `Assets/Res/BuildRules.txt` 打包规则配置文件，包含 忽略，合并，拆分以及直接拷贝 几种规则。
   - `Assets/Res/Shaders/Shaders.shadervariants` 需要被预热的 Shader 变体。
     默认会在游戏启动时（launcher.lua 中）调用 [Lua]Res.PreloadShaders() 加载所有 Shader 和预热该文件中包含的变体。
   - `Templates/` 项目用到的模版和说明文档，以及其他杂项。
   - `Templates/EmptyProject_Assets/` 如果你想打出一个不包含任何资源文件的 XCode 或 AndroidStudio 项目，可以将 Assets/Lua 和 Assets/Res 目录删除，然后将该目录下的内容拷贝到 Assets 目录下，再进行打包操作。
   - `Tools/` 工具目录，目前主要包含了打包相关工具。你可以在 Build 段落看到详解。
-  - `Tools/templates/java/` 框架包含的 Java 代码，打包 Andorid 时，会自动拷贝到 Android 项目中。
+  - `Tools/templates` 框架包含的 Java / OC 代码，打包 Andorid / XCode 项目时，会自动拷贝到 Android / XCode 项目中。
   - `Logs/Running.log` 运行时产生的日志。详细介绍可查看 Templates/Logger.docx
   - `LuaAPI/` 该目录内生成了提供给 Lua 访问的 C# 类，属性，方法等，
   配合 EmmyLua 插件可在 IDEA 中实现 代码提示，快速访问，查看数据，参数类型，注释等。
   可在菜单栏中点击 `ShibaInu`->`Generate Lua API` 自动生成。
   该目录内的 Lua 文件不会被 require()，也不会参与打包，仅用于代码提示。
-  - `Assets/Framework/ShibaInu/Lua/Define/` 与 LuaAPI 目录类似。
+  - `Assets/Framework/ShibaInu/Lua/Define` 与 LuaAPI 目录类似。
 
 #### * 其他文档
   - [NativeEvent / NativeHelper](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/NativeEvent-NativeHelper.md)

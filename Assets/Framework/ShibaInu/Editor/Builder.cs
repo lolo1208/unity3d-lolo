@@ -361,7 +361,7 @@ namespace ShibaInu
                     string filePath = file.Replace("\\", "/");
                     // Res 目录下已有同路径文件
                     if (s_bytesFiles.Contains(Path.Combine(ResDir, filePath.Replace(StreamingAssetsDir, ""))))
-                        throw new Exception("[StreamingAssets & Res] Repeat file path: " + filePath);
+                        throw new Exception("[StreamingAssets & Res] 文件路径重复: " + filePath);
                     s_assetsFiles.Add(filePath);
                 }
             }
@@ -680,7 +680,12 @@ namespace ShibaInu
                 ? BuildOptions.AllowDebugging | BuildOptions.Development | BuildOptions.ConnectWithProfiler
                 : BuildOptions.None;
 #endif
-            BuildPipeline.BuildPlayer(CoreScenes, outputDir, buildTarget, options);
+            BuildReport report = BuildPipeline.BuildPlayer(CoreScenes, outputDir, buildTarget, options);
+            BuildSummary summary = report.summary;
+            if (summary.result == BuildResult.Succeeded)
+                Debug.Log("Build Succeeded: " + (Mathf.Round(summary.totalSize / 1024 * 100) / 100) + " MB");
+            else if (summary.result == BuildResult.Failed)
+                throw new Exception("[ShibaInu] 生成 " + targetPlatform + " 项目出错！");
         }
 
         #endregion

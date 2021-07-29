@@ -1,0 +1,8 @@
+{
+    "name": "StompyRobot.SRDebugger",
+    "references": [
+        "StompyRobot.SRF"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}

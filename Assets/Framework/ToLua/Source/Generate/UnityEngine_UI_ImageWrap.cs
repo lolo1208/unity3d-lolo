@@ -8,6 +8,7 @@ public class UnityEngine_UI_ImageWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.UI.Image), typeof(UnityEngine.UI.MaskableGraphic));
+		L.RegFunction("DisableSpriteOptimizations", DisableSpriteOptimizations);
 		L.RegFunction("OnBeforeSerialize", OnBeforeSerialize);
 		L.RegFunction("OnAfterDeserialize", OnAfterDeserialize);
 		L.RegFunction("SetNativeSize", SetNativeSize);
@@ -35,6 +36,7 @@ public class UnityEngine_UI_ImageWrap
 		L.RegVar("defaultETC1GraphicMaterial", get_defaultETC1GraphicMaterial, null);
 		L.RegVar("mainTexture", get_mainTexture, null);
 		L.RegVar("hasBorder", get_hasBorder, null);
+		L.RegVar("pixelsPerUnitMultiplier", get_pixelsPerUnitMultiplier, set_pixelsPerUnitMultiplier);
 		L.RegVar("pixelsPerUnit", get_pixelsPerUnit, null);
 		L.RegVar("material", get_material, set_material);
 		L.RegVar("minWidth", get_minWidth, null);
@@ -45,6 +47,22 @@ public class UnityEngine_UI_ImageWrap
 		L.RegVar("flexibleHeight", get_flexibleHeight, null);
 		L.RegVar("layoutPriority", get_layoutPriority, null);
 		L.EndClass();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int DisableSpriteOptimizations(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.UI.Image obj = (UnityEngine.UI.Image)ToLua.CheckObject<UnityEngine.UI.Image>(L, 1);
+			obj.DisableSpriteOptimizations();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -572,6 +590,25 @@ public class UnityEngine_UI_ImageWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_pixelsPerUnitMultiplier(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.UI.Image obj = (UnityEngine.UI.Image)o;
+			float ret = obj.pixelsPerUnitMultiplier;
+			LuaDLL.lua_pushnumber(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index pixelsPerUnitMultiplier on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_pixelsPerUnit(IntPtr L)
 	{
 		object o = null;
@@ -948,6 +985,25 @@ public class UnityEngine_UI_ImageWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index useSpriteMesh on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_pixelsPerUnitMultiplier(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.UI.Image obj = (UnityEngine.UI.Image)o;
+			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
+			obj.pixelsPerUnitMultiplier = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index pixelsPerUnitMultiplier on a nil value");
 		}
 	}
 

@@ -22,12 +22,12 @@ let isAndroidUnity2019 = false;
 // 需要合并的文件夹
 const combineDirs = {
     android: {
-        copy: ['libs/', 'src/main/jniLibs/'],
+        move: ['libs/', 'src/main/jniLibs/', 'src/main/jniStaticLibs/', 'src/main/Il2CppOutputProject/'],
         merge: ['src/main/assets/', 'src/main/java/shibaInu/'],
         res: 'src/main/assets/',// 打包生成的所有资源存放目录
     },
     ios: {
-        copy: [],
+        move: [],
         merge: ['Data/', 'Classes/', 'Libraries/'],
         res: 'Data/Raw/',
     },
@@ -88,6 +88,10 @@ let generateComplete = function () {
         // 拷贝框架 java 代码
         common.copyDir(common.androidJavaDir, `${common.tmpPlatformDir}src/main/java/`);
     }
+    else {
+        // 拷贝框架 Object-C 代码
+        common.copyDir(common.iOSObjCDir, `${common.tmpPlatformDir}Sources/`);
+    }
 
     let resDir = combineDirs[common.targetPlatform].res;
     let androidResBinDir = `${common.tmpPlatformDir}${resDir}bin/`;
@@ -128,10 +132,11 @@ let updatePlatformProject = function () {
         let dirs = combineDirs[common.targetPlatform];
         common.removeDir(common.targetPlatformDir + dirParent + dirs.res);
 
-        // 拷贝目录
-        for (let i = 0; i < dirs.copy.length; i++) {
-            let dirName = dirParent + dirs.copy[i];
-            common.copyDir(common.tmpPlatformDir + dirName, common.targetPlatformDir + dirName);
+        // 移动目录
+        for (let i = 0; i < dirs.move.length; i++) {
+            let dirName = dirParent + dirs.move[i];
+            if (fs.existsSync(common.tmpPlatformDir + dirName))
+                common.moveDir(common.tmpPlatformDir + dirName, common.targetPlatformDir + dirName);
         }
 
         // 合并目录

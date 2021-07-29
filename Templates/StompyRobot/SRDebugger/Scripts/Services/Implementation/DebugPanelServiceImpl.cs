@@ -16,11 +16,9 @@
         private bool _isVisible;
 
         private bool? _cursorWasVisible;
-#if UNITY_4_7
-        private bool? _cursorWasLocked;
-#else
+
         private CursorLockMode? _cursorLockMode;
-#endif
+
 
         public DebugPanelRoot RootObject
         {
@@ -54,22 +52,13 @@
                     _debugPanelRootObject.CanvasGroup.alpha = 1.0f;
                     _debugPanelRootObject.CanvasGroup.interactable = true;
                     _debugPanelRootObject.CanvasGroup.blocksRaycasts = true;
-#if !UNITY_4_7
                     _cursorWasVisible = Cursor.visible;
                     _cursorLockMode = Cursor.lockState;
-#else
-					_cursorWasVisible = Screen.showCursor;
-                    _cursorWasLocked = Screen.lockCursor;
-#endif
+
                     if (Settings.Instance.AutomaticallyShowCursor)
                     {
-#if !UNITY_4_7
                         Cursor.visible = true;
                         Cursor.lockState = CursorLockMode.None;
-#else
-                        Screen.showCursor = true;
-                        Screen.lockCursor = false;
-#endif
                     }
                 }
                 else
@@ -81,29 +70,17 @@
                         _debugPanelRootObject.CanvasGroup.blocksRaycasts = false;
                     }
 
-#if UNITY_4_7
-                    if (_cursorWasVisible.HasValue)
-                    {
-                        Screen.showCursor = _cursorWasVisible.Value;
-                        _cursorWasVisible = null;
-                    }
-                    if (_cursorWasLocked.HasValue)
-                    {
-                        Screen.lockCursor = _cursorWasLocked.Value;
-                        _cursorWasLocked = null;
-                    }
-#else
                     if (_cursorWasVisible.HasValue)
                     {
                         Cursor.visible = _cursorWasVisible.Value;
                         _cursorWasVisible = null;
                     }
+
                     if (_cursorLockMode.HasValue)
                     {
                         Cursor.lockState = _cursorLockMode.Value;
                         _cursorLockMode = null;
                     }
-#endif
                 }
 
                 _isVisible = value;

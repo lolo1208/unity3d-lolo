@@ -46,8 +46,11 @@ namespace ShibaInu
         public static byte[] GetBytes(string path)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            if (path.StartsWith (Constants.PackageDir))
-                return m_androidStreamingAssets.CallStatic<byte[]> ("getBytes", path.Replace (Constants.PackageDir, ""));
+            if (path.StartsWith(Constants.PackageDir))
+            {
+                sbyte[] sbytes = m_androidStreamingAssets.CallStatic<sbyte[]>("getBytes", path.Replace(Constants.PackageDir, ""));
+                return (byte[])(Array)sbytes;
+            }
             else
                 return File.ReadAllBytes (path);
 

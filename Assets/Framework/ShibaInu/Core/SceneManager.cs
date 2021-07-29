@@ -11,6 +11,7 @@ namespace ShibaInu
 
     public static class SceneManager
     {
+        private const string MainCameraName = "Main Camera";
 
         /// 已加载 或 正在加载 的场景列表
         private static readonly List<string> s_scenes = new List<string>();
@@ -27,6 +28,9 @@ namespace ShibaInu
         private static AssetBundleCreateRequest s_crScene;
         /// 异步载入场景的操作对象
         private static AsyncOperation s_aoScene;
+
+        /// Empty 场景下的 "Main Camera" 节点，用于挂载一个空（不渲染）Camera 和一个 AudioListener 组件
+        private static GameObject s_emptyCam;
 
 
 
@@ -116,6 +120,12 @@ namespace ShibaInu
         {
             if (s_scenes.Contains(sceneName))
             {
+                // 隐藏 Empty 场景的相机
+                if (s_emptyCam == null)
+                    s_emptyCam = LuaHelper.FindRootObjectInScene(Constants.EmptySceneName, MainCameraName);
+                if (s_emptyCam != null && s_emptyCam.activeSelf)
+                    s_emptyCam.SetActive(false);
+
                 // 创建 root 节点
                 Scene scene = USceneMgr.GetSceneByName(sceneName);
                 GameObject rootGO = new GameObject(Constants.SceneRootName);
@@ -162,7 +172,20 @@ namespace ShibaInu
                 yield return new WaitForEndOfFrame();
             if (HasScene(sceneName)) yield break;// 场景又被加载了
 
-            yield return USceneMgr.UnloadSceneAsync(sceneName);// 先异步卸载场景
+            // 没有已加载的场景，显示 Empty 场景的相机
+            if (s_scenes.Count == 0 && s_emptyCam != null && !s_emptyCam.activeSelf)
+                s_emptyCam.SetActive(true);
+
+            // 销毁场景中的 MainCamera 节点
+            GameObject goRoot = LuaHelper.FindRootObjectInScene(sceneName, Constants.SceneRootName);
+            if (goRoot != null)
+            {
+                Transform traCam = goRoot.transform.Find(MainCameraName);
+                if (traCam != null)
+                    Object.Destroy(traCam.gameObject);
+            }
+
+            yield return USceneMgr.UnloadSceneAsync(sceneName);// 异步卸载场景
 
             if (!Common.IsDebug)
             {
@@ -306,6 +329,7 @@ namespace ShibaInu
             s_needLoadScenes.Clear();
             s_dontUnloadSceneNames.Clear();
             s_dispatchEvent = null;
+            s_emptyCam = null;
 
             if (s_coScene != null)
             {

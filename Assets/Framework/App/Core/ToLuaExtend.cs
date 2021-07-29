@@ -10,6 +10,8 @@ namespace App
     {
 
 
+#if UNITY_EDITOR
+
         /// <summary>
         /// 在生成 Wraps 时，需要排除的内容
         /// </summary>
@@ -70,12 +72,20 @@ namespace App
             "ParticleSystem.SetJob",
             "Type.IsSZArray",
 
-            // Custom
-            "ParticleSystem.subEmitters", // 2019.09 iOS
-            "ParticleSystem.SetParticles", // 2018.4.25f1
+            // Upgrade Unity
+            "ParticleSystem.SetParticles", // 2018.4.25
             "ParticleSystem.GetParticles",
-            "Font.GetPathsToOSFonts", // 更新到 2018.4.26 才可用
+            "Font.GetPathsToOSFonts", // 2018.4.26
+            "ParticleSystem.subEmitters", // 2019.09
+            "LineRenderer.GetPositions", // 2020.3.12
+            "TrailRenderer.GetPositions",
+            "TrailRenderer.AddPositions",
+            "MeshRenderer.scaleInLightmap",
+            "MeshRenderer.stitchLightmapSeams",
+            "MeshRenderer.receiveGI",
         };
+
+#endif
 
 
         //

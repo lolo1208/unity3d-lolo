@@ -16,6 +16,7 @@ namespace SRDebugger.UI.Other
 
         private float _originalScale;
         private float _lastSetScale;
+        private Settings _settings;
 
         private void Start()
         {
@@ -24,13 +25,19 @@ namespace SRDebugger.UI.Other
 
             SRDebuggerUtil.ConfigureCanvas(_canvas);
 
+            _settings = SRDebug.Instance.Settings;
             _originalScale = _canvasScaler.scaleFactor;
-            _canvasScaler.scaleFactor = _originalScale * SRDebug.Instance.Settings.UIScale;
+            _canvasScaler.scaleFactor = _originalScale * _settings.UIScale;
 
             // Track the last set scale in case it is modified by the retina scaler.
             _lastSetScale = _canvasScaler.scaleFactor;
 
-            SRDebug.Instance.Settings.PropertyChanged += SettingsOnPropertyChanged;
+            _settings.PropertyChanged += SettingsOnPropertyChanged;
+        }
+
+        private void OnDestroy()
+        {
+            _settings.PropertyChanged -= SettingsOnPropertyChanged;
         }
 
         private void SettingsOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -39,7 +46,7 @@ namespace SRDebugger.UI.Other
             // Treat the new value as the original scale.
             if (_canvasScaler.scaleFactor != _lastSetScale) _originalScale = _canvasScaler.scaleFactor;
 
-            _canvasScaler.scaleFactor = _originalScale * SRDebug.Instance.Settings.UIScale;
+            _canvasScaler.scaleFactor = _originalScale * _settings.UIScale;
             _lastSetScale = _canvasScaler.scaleFactor;
         }
     }

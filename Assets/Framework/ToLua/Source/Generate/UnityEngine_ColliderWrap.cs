@@ -15,6 +15,7 @@ public class UnityEngine_ColliderWrap
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("enabled", get_enabled, set_enabled);
 		L.RegVar("attachedRigidbody", get_attachedRigidbody, null);
+		L.RegVar("attachedArticulationBody", get_attachedArticulationBody, null);
 		L.RegVar("isTrigger", get_isTrigger, set_isTrigger);
 		L.RegVar("contactOffset", get_contactOffset, set_contactOffset);
 		L.RegVar("bounds", get_bounds, null);
@@ -157,6 +158,25 @@ public class UnityEngine_ColliderWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index attachedRigidbody on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_attachedArticulationBody(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Collider obj = (UnityEngine.Collider)o;
+			UnityEngine.ArticulationBody ret = obj.attachedArticulationBody;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index attachedArticulationBody on a nil value");
 		}
 	}
 

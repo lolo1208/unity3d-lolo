@@ -7,6 +7,7 @@ public class UnityEngine_UI_InputFieldWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.UI.InputField), typeof(UnityEngine.UI.Selectable));
+		L.RegFunction("SetTextWithoutNotify", SetTextWithoutNotify);
 		L.RegFunction("MoveTextEnd", MoveTextEnd);
 		L.RegFunction("MoveTextStart", MoveTextStart);
 		L.RegFunction("OnBeginDrag", OnBeginDrag);
@@ -30,6 +31,7 @@ public class UnityEngine_UI_InputFieldWrap
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.RegVar("shouldHideMobileInput", get_shouldHideMobileInput, set_shouldHideMobileInput);
+		L.RegVar("shouldActivateOnSelect", get_shouldActivateOnSelect, set_shouldActivateOnSelect);
 		L.RegVar("text", get_text, set_text);
 		L.RegVar("isFocused", get_isFocused, null);
 		L.RegVar("caretBlinkRate", get_caretBlinkRate, set_caretBlinkRate);
@@ -65,6 +67,23 @@ public class UnityEngine_UI_InputFieldWrap
 		L.RegVar("layoutPriority", get_layoutPriority, null);
 		L.RegFunction("OnValidateInput", UnityEngine_UI_InputField_OnValidateInput);
 		L.EndClass();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SetTextWithoutNotify(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			UnityEngine.UI.InputField obj = (UnityEngine.UI.InputField)ToLua.CheckObject<UnityEngine.UI.InputField>(L, 1);
+			string arg0 = ToLua.CheckString(L, 2);
+			obj.SetTextWithoutNotify(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -434,6 +453,25 @@ public class UnityEngine_UI_InputFieldWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index shouldHideMobileInput on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_shouldActivateOnSelect(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.UI.InputField obj = (UnityEngine.UI.InputField)o;
+			bool ret = obj.shouldActivateOnSelect;
+			LuaDLL.lua_pushboolean(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index shouldActivateOnSelect on a nil value");
 		}
 	}
 
@@ -1080,6 +1118,25 @@ public class UnityEngine_UI_InputFieldWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index shouldHideMobileInput on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_shouldActivateOnSelect(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.UI.InputField obj = (UnityEngine.UI.InputField)o;
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.shouldActivateOnSelect = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index shouldActivateOnSelect on a nil value");
 		}
 	}
 

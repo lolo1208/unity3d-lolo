@@ -157,7 +157,7 @@ namespace SRDebugger.Editor
                 "If you have any questions or concerns please do not hesitate to get in touch with us via email or the Unity forums.",
                 SRDebugEditorUtil.Styles.ParagraphLabel);
 
-            SRDebugEditorUtil.DrawFooterLayout(Screen.width - 15);
+            SRDebugEditorUtil.DrawFooterLayout(position.width - 15);
 
             EditorGUILayout.EndScrollView();
 

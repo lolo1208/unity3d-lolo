@@ -39,6 +39,8 @@
         
         private void OnPreCull()
         {
+            UnityEngine.Debug.Log("OnPreCull");
+
             if (!isActiveAndEnabled)
             {
                 return;
@@ -49,6 +51,7 @@
 
         private void OnPostRender()
         {
+            UnityEngine.Debug.Log("OnPostRender");
             if (!isActiveAndEnabled)
             {
                 return;

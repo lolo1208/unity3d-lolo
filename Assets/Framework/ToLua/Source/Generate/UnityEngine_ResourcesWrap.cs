@@ -14,6 +14,8 @@ public class UnityEngine_ResourcesWrap
 		L.RegFunction("GetBuiltinResource", GetBuiltinResource);
 		L.RegFunction("UnloadAsset", UnloadAsset);
 		L.RegFunction("UnloadUnusedAssets", UnloadUnusedAssets);
+		L.RegFunction("InstanceIDToObject", InstanceIDToObject);
+		L.RegFunction("InstanceIDToObjectList", InstanceIDToObjectList);
 		L.EndStaticLibs();
 	}
 
@@ -176,6 +178,40 @@ public class UnityEngine_ResourcesWrap
 			UnityEngine.AsyncOperation o = UnityEngine.Resources.UnloadUnusedAssets();
 			ToLua.PushObject(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int InstanceIDToObject(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			int arg0 = (int)LuaDLL.luaL_checknumber(L, 1);
+			UnityEngine.Object o = UnityEngine.Resources.InstanceIDToObject(arg0);
+			ToLua.Push(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int InstanceIDToObjectList(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			Unity.Collections.NativeArray<int> arg0 = StackTraits<Unity.Collections.NativeArray<int>>.Check(L, 1);
+			System.Collections.Generic.List<UnityEngine.Object> arg1 = (System.Collections.Generic.List<UnityEngine.Object>)ToLua.CheckObject(L, 2, typeof(System.Collections.Generic.List<UnityEngine.Object>));
+			UnityEngine.Resources.InstanceIDToObjectList(arg0, arg1);
+			return 0;
 		}
 		catch (Exception e)
 		{

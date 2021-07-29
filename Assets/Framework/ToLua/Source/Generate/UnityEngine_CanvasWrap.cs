@@ -30,8 +30,10 @@ public class UnityEngine_CanvasWrap
 		L.RegVar("additionalShaderChannels", get_additionalShaderChannels, set_additionalShaderChannels);
 		L.RegVar("sortingLayerName", get_sortingLayerName, set_sortingLayerName);
 		L.RegVar("rootCanvas", get_rootCanvas, null);
+		L.RegVar("renderingDisplaySize", get_renderingDisplaySize, null);
 		L.RegVar("worldCamera", get_worldCamera, set_worldCamera);
 		L.RegVar("normalizedSortingGridSize", get_normalizedSortingGridSize, set_normalizedSortingGridSize);
+		L.RegVar("preWillRenderCanvases", get_preWillRenderCanvases, set_preWillRenderCanvases);
 		L.RegVar("willRenderCanvases", get_willRenderCanvases, set_willRenderCanvases);
 		L.RegFunction("WillRenderCanvases", UnityEngine_Canvas_WillRenderCanvases);
 		L.EndClass();
@@ -450,6 +452,25 @@ public class UnityEngine_CanvasWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_renderingDisplaySize(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.Canvas obj = (UnityEngine.Canvas)o;
+			UnityEngine.Vector2 ret = obj.renderingDisplaySize;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index renderingDisplaySize on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_worldCamera(IntPtr L)
 	{
 		object o = null;
@@ -485,6 +506,13 @@ public class UnityEngine_CanvasWrap
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index normalizedSortingGridSize on a nil value");
 		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_preWillRenderCanvases(IntPtr L)
+	{
+		ToLua.Push(L, new EventObject(typeof(UnityEngine.Canvas.WillRenderCanvases)));
+		return 1;
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -757,6 +785,41 @@ public class UnityEngine_CanvasWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index normalizedSortingGridSize on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_preWillRenderCanvases(IntPtr L)
+	{
+		try
+		{
+			EventObject arg0 = null;
+
+			if (LuaDLL.lua_isuserdata(L, 2) != 0)
+			{
+				arg0 = (EventObject)ToLua.ToObject(L, 2);
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "The event 'UnityEngine.Canvas.preWillRenderCanvases' can only appear on the left hand side of += or -= when used outside of the type 'UnityEngine.Canvas'");
+			}
+
+			if (arg0.op == EventOp.Add)
+			{
+				UnityEngine.Canvas.WillRenderCanvases ev = (UnityEngine.Canvas.WillRenderCanvases)arg0.func;
+				UnityEngine.Canvas.preWillRenderCanvases += ev;
+			}
+			else if (arg0.op == EventOp.Sub)
+			{
+				UnityEngine.Canvas.WillRenderCanvases ev = (UnityEngine.Canvas.WillRenderCanvases)arg0.func;
+				UnityEngine.Canvas.preWillRenderCanvases -= ev;
+			}
+
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
 		}
 	}
 

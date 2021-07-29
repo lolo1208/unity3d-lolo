@@ -1,4 +1,9 @@
 ﻿
+using System.IO;
+using System.Text;
+using SRF.Service;
+using UnityEngine.Networking;
+
 #if NETFX_CORE
 using UnityEngine.Windows;
 #endif
@@ -8,7 +13,6 @@ namespace SRDebugger.Internal
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Text;
     using Services;
     using SRF;
     using UnityEngine;
@@ -18,7 +22,8 @@ namespace SRDebugger.Internal
         private readonly string _apiKey;
         private readonly BugReport _bugReport;
         private bool _isBusy;
-        private WWW _www;
+
+        private UnityWebRequest _webRequest;
 
         public BugReportApi(BugReport report, string apiKey)
         {
@@ -34,12 +39,12 @@ namespace SRDebugger.Internal
         {
             get
             {
-                if (_www == null)
+                if (_webRequest == null)
                 {
                     return 0;
                 }
 
-                return Mathf.Clamp01(_www.progress + _www.uploadProgress);
+                return Mathf.Clamp01(_webRequest.uploadProgress);
             }
         }
 
@@ -57,57 +62,83 @@ namespace SRDebugger.Internal
             ErrorMessage = "";
             IsComplete = false;
             WasSuccessful = false;
-            _www = null;
+            _webRequest = null;
+
+            string json;
+            byte[] jsonBytes;
 
             try
             {
-                var json = BuildJsonRequest(_bugReport);
-
-                var jsonBytes = Encoding.UTF8.GetBytes(json);
-
-                var headers = new Dictionary<string, string>();
-                headers["Content-Type"] = "application/json";
-                headers["Accept"] = "application/json";
-                headers["Method"] = "POST";
-                headers["X-ApiKey"] = _apiKey;
-
-                _www = new WWW(SRDebugApi.BugReportEndPoint, jsonBytes, headers);
+                json = BuildJsonRequest(_bugReport);
+                jsonBytes = Encoding.UTF8.GetBytes(json);
             }
             catch (Exception e)
             {
-                ErrorMessage = e.Message;
+                ErrorMessage = "Error building bug report.";
+                Debug.LogError(e);
+                SetCompletionState(false);
+                yield break;
             }
 
-            if (_www == null)
+            try
+            {
+                const string jsonContentType = "application/json";
+
+                _webRequest = new UnityWebRequest(SRDebugApi.BugReportEndPoint, UnityWebRequest.kHttpVerbPOST,
+                    new DownloadHandlerBuffer(), new UploadHandlerRaw(jsonBytes)
+                    {
+                        contentType = jsonContentType
+                    });
+
+                _webRequest.SetRequestHeader("Accept", jsonContentType);
+                _webRequest.SetRequestHeader("X-ApiKey", _apiKey);
+            }
+            catch (Exception e)
+            {
+                ErrorMessage = "Error building bug report request.";
+                Debug.LogError(e);
+
+                if (_webRequest != null)
+                {
+                    _webRequest.Dispose();
+                }
+
+                SetCompletionState(false);
+            }
+            
+            if (_webRequest == null)
             {
                 SetCompletionState(false);
                 yield break;
             }
 
-            yield return _www;
+#if !UNITY_2017_2_OR_NEWER
+            yield return _webRequest.Send();
+#else
+            yield return _webRequest.SendWebRequest();
+#endif
 
-            if (!string.IsNullOrEmpty(_www.error))
+#if !UNITY_2017_1_OR_NEWER
+            if(_webRequest.isError)
+#else
+                if (_webRequest.isNetworkError)
+#endif
             {
-                ErrorMessage = _www.error;
+                ErrorMessage = "Request Error: " + _webRequest.error;
                 SetCompletionState(false);
-
+                _webRequest.Dispose();
                 yield break;
             }
 
-            if (!_www.responseHeaders.ContainsKey("X-STATUS"))
+            long responseCode = _webRequest.responseCode;
+            var responseJson = _webRequest.downloadHandler.text;
+
+            _webRequest.Dispose();
+
+            if (responseCode != 200)
             {
-                ErrorMessage = "Completion State Unknown";
+                ErrorMessage = "Server: " + SRDebugApiUtil.ParseErrorResponse(responseJson, "Unknown response from server");
                 SetCompletionState(false);
-                yield break;
-            }
-
-            var status = _www.responseHeaders["X-STATUS"];
-
-            if (!status.Contains("200"))
-            {
-                ErrorMessage = SRDebugApiUtil.ParseErrorResponse(_www.text, status);
-                SetCompletionState(false);
-
                 yield break;
             }
 
@@ -135,8 +166,12 @@ namespace SRDebugger.Internal
             ht.Add("userDescription", report.UserDescription);
 
             ht.Add("console", CreateConsoleDump());
-            ht.Add("systemInformation", report.SystemInformation);
 
+            var d = new Dictionary<string, object> {{"", SRServiceManager.GetPlayerData.Invoke()}};
+            report.SystemInformation.Add("PlayerData", d);
+
+            ht.Add("systemInformation", report.SystemInformation);
+            
             if (report.ScreenshotData != null)
             {
                 ht.Add("screenshot", Convert.ToBase64String(report.ScreenshotData));
@@ -151,7 +186,7 @@ namespace SRDebugger.Internal
         {
             var list = new List<IList<string>>();
 
-            var consoleLog = Service.Console.Entries;
+            var consoleLog = Service.Console.AllEntries;
 
             foreach (var consoleEntry in consoleLog)
             {

@@ -1,5 +1,30 @@
-﻿namespace SRDebugger.Services
+﻿
+namespace SRDebugger.Services
 {
+    using System;
+    using Profiler;
+    using SRF.Service;
+#if UNITY_2018_1_OR_NEWER
+    using UnityEngine.Rendering;
+    using UnityEngine.Experimental.Rendering;
+#endif
+
+    public static class ProfilerServiceSelector
+    {
+        [ServiceSelector(typeof(IProfilerService))]
+        public static Type GetProfilerServiceType()
+        {
+#if UNITY_2018_1_OR_NEWER
+            if(GraphicsSettings.renderPipelineAsset != null)
+            {
+                return typeof(SRPProfilerService);
+            }
+#endif
+
+            return typeof(ProfilerServiceImpl);
+        }
+    }
+
     public struct ProfilerFrame
     {
         public double FrameTime;

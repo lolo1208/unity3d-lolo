@@ -1,9 +1,9 @@
 ﻿using System;
 
-public partial class SROptions
+namespace SRDebugger
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public sealed class NumberRangeAttribute : Attribute
+    public class NumberRangeAttribute : Attribute
     {
         public readonly double Max;
         public readonly double Min;
@@ -16,7 +16,7 @@ public partial class SROptions
     }
 
     [AttributeUsage(AttributeTargets.Property)]
-    public sealed class IncrementAttribute : Attribute
+    public class IncrementAttribute : Attribute
     {
         public readonly double Increment;
 
@@ -27,7 +27,7 @@ public partial class SROptions
     }
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
-    public sealed class SortAttribute : Attribute
+    public class SortAttribute : Attribute
     {
         public readonly int SortPriority;
 
@@ -36,37 +36,4 @@ public partial class SROptions
             SortPriority = priority;
         }
     }
-
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
-    public sealed class DisplayNameAttribute : Attribute
-    {
-        public readonly string Name;
-
-        public DisplayNameAttribute(string name)
-        {
-            Name = name;
-        }
-    }
 }
-
-#if NETFX_CORE
-
-namespace System.ComponentModel
-{
-
-	[AttributeUsage(AttributeTargets.All)]
-	public sealed class CategoryAttribute : Attribute
-	{
-
-		public readonly string Category;
-
-		public CategoryAttribute(string category)
-		{
-			Category = category;
-		}
-
-	}
-
-}
-
-#endif

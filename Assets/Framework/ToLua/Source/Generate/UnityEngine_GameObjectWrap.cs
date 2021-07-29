@@ -14,6 +14,7 @@ public class UnityEngine_GameObjectWrap
 		L.RegFunction("GetComponents", GetComponents);
 		L.RegFunction("GetComponentsInChildren", GetComponentsInChildren);
 		L.RegFunction("GetComponentsInParent", GetComponentsInParent);
+		L.RegFunction("TryGetComponent", TryGetComponent);
 		L.RegFunction("FindWithTag", FindWithTag);
 		L.RegFunction("SetActive", SetActive);
 		L.RegFunction("CompareTag", CompareTag);
@@ -34,6 +35,7 @@ public class UnityEngine_GameObjectWrap
 		L.RegVar("isStatic", get_isStatic, set_isStatic);
 		L.RegVar("tag", get_tag, set_tag);
 		L.RegVar("scene", get_scene, null);
+		L.RegVar("sceneCullingMask", get_sceneCullingMask, null);
 		L.RegVar("gameObject", get_gameObject, null);
 		L.EndClass();
 	}
@@ -168,12 +170,29 @@ public class UnityEngine_GameObjectWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 2);
-			UnityEngine.GameObject obj = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
-			System.Type arg0 = ToLua.CheckMonoType(L, 2);
-			UnityEngine.Component o = obj.GetComponentInParent(arg0);
-			ToLua.Push(L, o);
-			return 1;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 2)
+			{
+				UnityEngine.GameObject obj = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+				System.Type arg0 = ToLua.CheckMonoType(L, 2);
+				UnityEngine.Component o = obj.GetComponentInParent(arg0);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				UnityEngine.GameObject obj = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+				System.Type arg0 = ToLua.CheckMonoType(L, 2);
+				bool arg1 = LuaDLL.luaL_checkboolean(L, 3);
+				UnityEngine.Component o = obj.GetComponentInParent(arg0, arg1);
+				ToLua.Push(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.GameObject.GetComponentInParent");
+			}
 		}
 		catch (Exception e)
 		{
@@ -278,6 +297,26 @@ public class UnityEngine_GameObjectWrap
 			{
 				return LuaDLL.luaL_throw(L, "invalid arguments to method: UnityEngine.GameObject.GetComponentsInParent");
 			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int TryGetComponent(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 3);
+			UnityEngine.GameObject obj = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
+			System.Type arg0 = ToLua.CheckMonoType(L, 2);
+			UnityEngine.Component arg1 = null;
+			bool o = obj.TryGetComponent(arg0, out arg1);
+			LuaDLL.lua_pushboolean(L, o);
+			ToLua.Push(L, arg1);
+			return 2;
 		}
 		catch (Exception e)
 		{
@@ -864,6 +903,25 @@ public class UnityEngine_GameObjectWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index scene on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_sceneCullingMask(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.GameObject obj = (UnityEngine.GameObject)o;
+			ulong ret = obj.sceneCullingMask;
+			LuaDLL.tolua_pushuint64(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index sceneCullingMask on a nil value");
 		}
 	}
 

@@ -106,6 +106,10 @@ function main() {
         common.exit(0);
     };
 
+
+    let nowDate = new Date();
+    logger.append(`> ${nowDate.toLocaleDateString()} ${nowDate.toLocaleTimeString()}`);
+
     svn_git();
 }
 

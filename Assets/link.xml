@@ -4,5 +4,8 @@
         <type fullname="UnityEngine.EllipsoidParticleEmitter" preserve="all"/>
         <type fullname="UnityEngine.ParticleRenderer" preserve="all"/>
         <type fullname="UnityEngine.ParticleSystemRenderer" preserve="all"/>
+
+        <type fullname="UnityEngine.FlareLayer" preserve="all"/>
+        <type fullname="UnityEngine.AudioListener" preserve="all"/>
     </assembly>
 </linker>

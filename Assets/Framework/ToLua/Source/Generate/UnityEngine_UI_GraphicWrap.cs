@@ -36,6 +36,7 @@ public class UnityEngine_UI_GraphicWrap
 		L.RegVar("defaultGraphicMaterial", get_defaultGraphicMaterial, null);
 		L.RegVar("color", get_color, set_color);
 		L.RegVar("raycastTarget", get_raycastTarget, set_raycastTarget);
+		L.RegVar("raycastPadding", get_raycastPadding, set_raycastPadding);
 		L.RegVar("depth", get_depth, null);
 		L.RegVar("rectTransform", get_rectTransform, null);
 		L.RegVar("canvas", get_canvas, null);
@@ -534,6 +535,25 @@ public class UnityEngine_UI_GraphicWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_raycastPadding(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.UI.Graphic obj = (UnityEngine.UI.Graphic)o;
+			UnityEngine.Vector4 ret = obj.raycastPadding;
+			ToLua.Push(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index raycastPadding on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int get_depth(IntPtr L)
 	{
 		object o = null;
@@ -720,6 +740,25 @@ public class UnityEngine_UI_GraphicWrap
 		catch(Exception e)
 		{
 			return LuaDLL.toluaL_exception(L, e, o, "attempt to index raycastTarget on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_raycastPadding(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			UnityEngine.UI.Graphic obj = (UnityEngine.UI.Graphic)o;
+			UnityEngine.Vector4 arg0 = ToLua.ToVector4(L, 2);
+			obj.raycastPadding = arg0;
+			return 0;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index raycastPadding on a nil value");
 		}
 	}
 

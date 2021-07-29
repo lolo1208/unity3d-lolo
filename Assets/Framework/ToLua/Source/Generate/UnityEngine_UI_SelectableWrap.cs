@@ -7,6 +7,7 @@ public class UnityEngine_UI_SelectableWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginClass(typeof(UnityEngine.UI.Selectable), typeof(UnityEngine.EventSystems.UIBehaviour));
+		L.RegFunction("AllSelectablesNoAlloc", AllSelectablesNoAlloc);
 		L.RegFunction("IsInteractable", IsInteractable);
 		L.RegFunction("FindSelectable", FindSelectable);
 		L.RegFunction("FindSelectableOnLeft", FindSelectableOnLeft);
@@ -23,7 +24,8 @@ public class UnityEngine_UI_SelectableWrap
 		L.RegFunction("Select", Select);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
-		L.RegVar("allSelectables", get_allSelectables, null);
+		L.RegVar("allSelectablesArray", get_allSelectablesArray, null);
+		L.RegVar("allSelectableCount", get_allSelectableCount, null);
 		L.RegVar("navigation", get_navigation, set_navigation);
 		L.RegVar("transition", get_transition, set_transition);
 		L.RegVar("colors", get_colors, set_colors);
@@ -34,6 +36,23 @@ public class UnityEngine_UI_SelectableWrap
 		L.RegVar("image", get_image, set_image);
 		L.RegVar("animator", get_animator, null);
 		L.EndClass();
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int AllSelectablesNoAlloc(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			UnityEngine.UI.Selectable[] arg0 = ToLua.CheckObjectArray<UnityEngine.UI.Selectable>(L, 1);
+			int o = UnityEngine.UI.Selectable.AllSelectablesNoAlloc(arg0);
+			LuaDLL.lua_pushinteger(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -293,11 +312,25 @@ public class UnityEngine_UI_SelectableWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_allSelectables(IntPtr L)
+	static int get_allSelectablesArray(IntPtr L)
 	{
 		try
 		{
-			ToLua.PushSealed(L, UnityEngine.UI.Selectable.allSelectables);
+			ToLua.Push(L, UnityEngine.UI.Selectable.allSelectablesArray);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_allSelectableCount(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushinteger(L, UnityEngine.UI.Selectable.allSelectableCount);
 			return 1;
 		}
 		catch (Exception e)
