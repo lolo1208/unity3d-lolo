@@ -8,6 +8,7 @@
 *.userprefs
 
 obj
+Backup
 Library
 UnityPackageManager
 Temp

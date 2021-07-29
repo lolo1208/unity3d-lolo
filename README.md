@@ -35,7 +35,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   配合 EmmyLua 插件可在 IDEA 中实现 代码提示，快速访问，查看数据，参数类型，注释等。
   可在菜单栏中点击 `ShibaInu`->`Generate Lua API` 自动生成。
   该目录内的 Lua 文件不会被 require()，也不会参与打包，仅用于代码提示。
-  - `Assets/Framework/ShibaInu/Lua/Define` 与 LuaAPI 目录类似。
+  - `Assets/Framework/ShibaInu/Lua/Define/` 与 LuaAPI 目录类似。
 
 #### * 其他文档
   - [NativeEvent / NativeHelper](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/NativeEvent-NativeHelper.md)
