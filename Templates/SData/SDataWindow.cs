@@ -18,7 +18,7 @@ namespace GodEditor
      */
     public class SDataWindow : EditorWindow
     {
-        private static readonly Rect WND_RECT = new Rect(0, 0, 510, 490);
+        private static readonly Rect WND_RECT = new Rect(0, 0, 510, 500);
         private const string WND_DIR = "Assets/Editor/SData/";
         private const string CONFIG_FILE_PATH = WND_DIR + "Setting.cfg";
         private const string LUA_DIR = "Assets/Lua/Data/SData/";
