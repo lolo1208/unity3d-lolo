@@ -3,7 +3,7 @@
 // Created by LOLO on 2021/03/15.
 //
 
-#import "NativeHelper.h"
+#import "NativeUtil.h"
 #import "UnityAppController.h"
 #import "AppControllerProtocol.h"
 

@@ -7,7 +7,7 @@
 #import "UIKit/UIFeedbackGenerator.h"
 #import "AudioToolbox/AudioServices.h"
 #import "UnityAppController.h"
-#import "NativeHelper.h"
+#import "NativeUtil.h"
 
 
 
