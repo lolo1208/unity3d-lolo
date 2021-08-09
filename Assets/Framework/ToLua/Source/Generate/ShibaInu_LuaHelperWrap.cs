@@ -11,7 +11,12 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("GetVersionInfo", GetVersionInfo);
 		L.RegFunction("SendMessageToNative", SendMessageToNative);
 		L.RegFunction("DeviceVibrate", DeviceVibrate);
-		L.RegFunction("Relaunch", Relaunch);
+		L.RegFunction("HasCameraAuthorization", HasCameraAuthorization);
+		L.RegFunction("HasMicrophoneAuthorization", HasMicrophoneAuthorization);
+		L.RegFunction("GetBatteryLevel", GetBatteryLevel);
+		L.RegFunction("IsReachableNetwork", IsReachableNetwork);
+		L.RegFunction("IsReachableViaLocalAreaNetwork", IsReachableViaLocalAreaNetwork);
+		L.RegFunction("IsReachableViaCarrierDataNetwork", IsReachableViaCarrierDataNetwork);
 		L.RegFunction("CreateGameObject", CreateGameObject);
 		L.RegFunction("SetLayerRecursively", SetLayerRecursively);
 		L.RegFunction("DestroyChildren", DestroyChildren);
@@ -21,12 +26,13 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("GetShader", GetShader);
 		L.RegFunction("AddOrGetComponent", AddOrGetComponent);
 		L.RegFunction("GetMarkPointGameObject", GetMarkPointGameObject);
-		L.RegFunction("SendHttpRequest", SendHttpRequest);
 		L.RegFunction("AddDestroyEvent", AddDestroyEvent);
 		L.RegFunction("AddPointerEvent", AddPointerEvent);
 		L.RegFunction("AddDragDropEvent", AddDragDropEvent);
 		L.RegFunction("AddAvailabilityEvent", AddAvailabilityEvent);
 		L.RegFunction("AddTriggerEvent", AddTriggerEvent);
+		L.RegFunction("SendHttpRequest", SendHttpRequest);
+		L.RegFunction("Relaunch", Relaunch);
 		L.RegFunction("New", _CreateShibaInu_LuaHelper);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.EndClass();
@@ -122,13 +128,94 @@ public class ShibaInu_LuaHelperWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int Relaunch(IntPtr L)
+	static int HasCameraAuthorization(IntPtr L)
 	{
 		try
 		{
 			ToLua.CheckArgsCount(L, 0);
-			ShibaInu.LuaHelper.Relaunch();
-			return 0;
+			bool o = ShibaInu.LuaHelper.HasCameraAuthorization();
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int HasMicrophoneAuthorization(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			bool o = ShibaInu.LuaHelper.HasMicrophoneAuthorization();
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int GetBatteryLevel(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			float o = ShibaInu.LuaHelper.GetBatteryLevel();
+			LuaDLL.lua_pushnumber(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int IsReachableNetwork(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			bool o = ShibaInu.LuaHelper.IsReachableNetwork();
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int IsReachableViaLocalAreaNetwork(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			bool o = ShibaInu.LuaHelper.IsReachableViaLocalAreaNetwork();
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int IsReachableViaCarrierDataNetwork(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			bool o = ShibaInu.LuaHelper.IsReachableViaCarrierDataNetwork();
+			LuaDLL.lua_pushboolean(L, o);
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -310,48 +397,6 @@ public class ShibaInu_LuaHelperWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int SendHttpRequest(IntPtr L)
-	{
-		try
-		{
-			int count = LuaDLL.lua_gettop(L);
-
-			if (count == 1)
-			{
-				string arg0 = ToLua.CheckString(L, 1);
-				ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0);
-				ToLua.PushObject(L, o);
-				return 1;
-			}
-			else if (count == 2)
-			{
-				string arg0 = ToLua.CheckString(L, 1);
-				string arg1 = ToLua.CheckString(L, 2);
-				ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1);
-				ToLua.PushObject(L, o);
-				return 1;
-			}
-			else if (count == 3)
-			{
-				string arg0 = ToLua.CheckString(L, 1);
-				string arg1 = ToLua.CheckString(L, 2);
-				LuaFunction arg2 = ToLua.CheckLuaFunction(L, 3);
-				ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1, arg2);
-				ToLua.PushObject(L, o);
-				return 1;
-			}
-			else
-			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.LuaHelper.SendHttpRequest");
-			}
-		}
-		catch (Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e);
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static int AddDestroyEvent(IntPtr L)
 	{
 		try
@@ -428,6 +473,63 @@ public class ShibaInu_LuaHelperWrap
 			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 1, typeof(UnityEngine.GameObject));
 			LuaTable arg1 = ToLua.CheckLuaTable(L, 2);
 			ShibaInu.LuaHelper.AddTriggerEvent(arg0, arg1);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int SendHttpRequest(IntPtr L)
+	{
+		try
+		{
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 1)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 2)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				string arg1 = ToLua.CheckString(L, 2);
+				ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else if (count == 3)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				string arg1 = ToLua.CheckString(L, 2);
+				LuaFunction arg2 = ToLua.CheckLuaFunction(L, 3);
+				ShibaInu.HttpRequest o = ShibaInu.LuaHelper.SendHttpRequest(arg0, arg1, arg2);
+				ToLua.PushObject(L, o);
+				return 1;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.LuaHelper.SendHttpRequest");
+			}
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int Relaunch(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 0);
+			ShibaInu.LuaHelper.Relaunch();
 			return 0;
 		}
 		catch (Exception e)

@@ -84,12 +84,60 @@ namespace ShibaInu
 
 
         /// <summary>
-        /// 重启项目（动更完成后）
+        /// 是否有相机权限
         /// </summary>
-        public static void Relaunch()
+        /// <returns></returns>
+        public static bool HasCameraAuthorization()
         {
-            DOTween.KillAll();
-            Common.go.AddComponent<Launcher>();
+            return Application.HasUserAuthorization(UserAuthorization.WebCam);
+        }
+
+
+        /// <summary>
+        /// 是否有麦克风权限
+        /// </summary>
+        /// <returns></returns>
+        public static bool HasMicrophoneAuthorization()
+        {
+            return Application.HasUserAuthorization(UserAuthorization.Microphone);
+        }
+
+
+        /// <summary>
+        /// 获取电量（百分比）
+        /// </summary>
+        /// <returns></returns>
+        public static float GetBatteryLevel()
+        {
+            return (int)(SystemInfo.batteryLevel * 100);
+        }
+
+
+        /// <summary>
+        /// 是否可使用网络（WIFI 或 移动网络）
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsReachableNetwork()
+        {
+            return Application.internetReachability != NetworkReachability.NotReachable;
+        }
+
+        /// <summary>
+        /// 是否正在使用 WIFI 网络
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsReachableViaLocalAreaNetwork()
+        {
+            return Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
+        }
+
+        /// <summary>
+        /// 是否正在使用 移动网络
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsReachableViaCarrierDataNetwork()
+        {
+            return Application.internetReachability == NetworkReachability.ReachableViaCarrierDataNetwork;
         }
 
         #endregion
@@ -281,36 +329,6 @@ namespace ShibaInu
 
 
 
-        #region 其他
-
-        /// <summary>
-        /// 发送一条 http 请求，并返回对应 HttpRequest 实例
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="postData"></param>
-        /// <param name="callback"></param>
-        /// <returns></returns>
-        public static HttpRequest SendHttpRequest(string url, string postData = null, LuaFunction callback = null)
-        {
-            HttpRequest req = new HttpRequest { url = url };
-
-            if (postData != null)
-            {
-                req.method = HttpRequestMethod.POST;
-                req.postData = postData;
-            }
-
-            if (callback != null)
-                req.SetLuaCallback(callback);
-
-            req.Send();
-            return req;
-        }
-
-        #endregion
-
-
-
         #region Behaviours
 
         /// <summary>
@@ -385,6 +403,46 @@ namespace ShibaInu
             if (dispatcher == null)
                 dispatcher = go.AddComponent<TriggerEventDispatcher>();
             dispatcher.ed = ed;
+        }
+
+        #endregion
+
+
+
+        #region 其他
+
+        /// <summary>
+        /// 发送一条 http 请求，并返回对应 HttpRequest 实例
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="postData"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public static HttpRequest SendHttpRequest(string url, string postData = null, LuaFunction callback = null)
+        {
+            HttpRequest req = new HttpRequest { url = url };
+
+            if (postData != null)
+            {
+                req.method = HttpRequestMethod.POST;
+                req.postData = postData;
+            }
+
+            if (callback != null)
+                req.SetLuaCallback(callback);
+
+            req.Send();
+            return req;
+        }
+
+
+        /// <summary>
+        /// 重启项目（动更完成后）
+        /// </summary>
+        public static void Relaunch()
+        {
+            DOTween.KillAll();
+            Common.go.AddComponent<Launcher>();
         }
 
         #endregion

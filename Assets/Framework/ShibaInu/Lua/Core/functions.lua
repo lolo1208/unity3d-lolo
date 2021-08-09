@@ -400,7 +400,7 @@ local function GetHandlerByRefID(refID)
     if handler == nil or handler.refID ~= refID then
         _handlers[refID] = nil
         if isEditor then
-            error(Constants.E1003)
+            logWarning(Constants.W1003)
         end
     end
     return handler

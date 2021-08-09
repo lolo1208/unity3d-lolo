@@ -1,21 +1,16 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+
 
 namespace ShibaInu
 {
     public static class Constants
     {
-
-
-#if UNITY_ANDROID && !UNITY_EDITOR
-        /// APP 包体内容根目录 - Android
-        public static readonly string PackageDir = Application.dataPath + "!assets/";
-#else
         /// APP 包体内容根目录
         public static readonly string PackageDir = Application.streamingAssetsPath + "/";
-#endif
         /// 更新内容根目录
         public static readonly string UpdateDir = Application.persistentDataPath + "/update/";
+        /// 更新包储存目录
+        public static readonly string PatchDir = Application.persistentDataPath + "/patch/";
 
 
 #if UNITY_EDITOR
@@ -51,9 +46,17 @@ namespace ShibaInu
 
 
 
+        // 资源后缀
+        public const string EXT_LUA = ".lua";
+        public const string EXT_SCENE = ".scene";
+        public const string EXT_AB = ".ab";
+        public const string EXT_BYTES = ".bytes";
+
+
         // -- runtime errors --
         public const string E1002 = "[C# ERROR] lua 文件不存在: {0}";
         public const string E1003 = "[C# ERROR] 动画不存在，id: {0}";
+        public const string E1004 = "[C# ERROR] 文件不存在: {0}";
 
         public const string W1001 = "[C# WARNING] 在执行 {0} 函数时，Camera.main 的值为 null";
 

@@ -162,6 +162,10 @@ namespace ShibaInu
 
             try
             {
+                // 先创建对应的文件夹
+                DirectoryInfo dirInfo = new FileInfo(savePath).Directory;
+                if (!dirInfo.Exists) dirInfo.Create();
+
                 using (FileStream fs = new FileStream(savePath, FileMode.OpenOrCreate, FileAccess.Write))
                 {
                     m_bytesLoaded = fs.Length;
@@ -265,7 +269,6 @@ namespace ShibaInu
             if (m_request != null)
                 m_request.Abort();
         }
-
 
 
         //

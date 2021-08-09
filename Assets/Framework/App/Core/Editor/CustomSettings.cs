@@ -124,6 +124,7 @@ public static class CustomSettings
         _GT(typeof(SceneManager)),
         _GT(typeof(ResManager)),
         _GT(typeof(AudioManager)),
+        _GT(typeof(UpdateManager)),
         _GT(typeof(NetHelper)),
 
         _GT(typeof(HttpRequest)),

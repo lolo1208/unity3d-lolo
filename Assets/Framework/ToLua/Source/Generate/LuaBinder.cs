@@ -202,6 +202,7 @@ public static class LuaBinder
 		ShibaInu_SceneManagerWrap.Register(L);
 		ShibaInu_ResManagerWrap.Register(L);
 		ShibaInu_AudioManagerWrap.Register(L);
+		ShibaInu_UpdateManagerWrap.Register(L);
 		ShibaInu_NetHelperWrap.Register(L);
 		ShibaInu_HttpRequestWrap.Register(L);
 		ShibaInu_HttpDownloadWrap.Register(L);
