@@ -5,8 +5,8 @@
 --
 
 
--- 预加载所有 Shader
-Res.PreloadShaders()
+-- 预热 Shaders
+Res.WarmUpShaders()
 Stage.Clean()
 
 

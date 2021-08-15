@@ -7,7 +7,7 @@ public class ShibaInu_ResManagerWrap
 	public static void Register(LuaState L)
 	{
 		L.BeginStaticLibs("ResManager");
-		L.RegFunction("PreloadShaders", PreloadShaders);
+		L.RegFunction("WarmUpShaders", WarmUpShaders);
 		L.RegFunction("GetProgress", GetProgress);
 		L.RegFunction("LoadText", LoadText);
 		L.RegFunction("LoadAsset", LoadAsset);
@@ -35,13 +35,27 @@ public class ShibaInu_ResManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int PreloadShaders(IntPtr L)
+	static int WarmUpShaders(IntPtr L)
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 0);
-			ShibaInu.ResManager.PreloadShaders();
-			return 0;
+			int count = LuaDLL.lua_gettop(L);
+
+			if (count == 0)
+			{
+				ShibaInu.ResManager.WarmUpShaders();
+				return 0;
+			}
+			else if (count == 1)
+			{
+				string arg0 = ToLua.CheckString(L, 1);
+				ShibaInu.ResManager.WarmUpShaders(arg0);
+				return 0;
+			}
+			else
+			{
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.ResManager.WarmUpShaders");
+			}
 		}
 		catch (Exception e)
 		{

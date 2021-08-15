@@ -200,14 +200,14 @@ namespace ShibaInu
 
 
         /// <summary>
-        /// 预加载所有 Shader
+        /// 预热 Shaders
         /// </summary>
-        public static void PreloadShaders()
+        public static void WarmUpShaders(string svcPath = Constants.SvcFilePath)
         {
             if (Common.IsDebug) return;
 
             DateTime dateTime = DateTime.Now;
-            AssetInfo info = GetAssetInfoWithAssetPath(Constants.SvcFilePath);
+            AssetInfo info = GetAssetInfoWithAssetPath(svcPath);
             AssetLoader.Load(info, Constants.CoreAssetGroup);
             info.ab.LoadAllAssets();
             ShaderVariantCollection svc = info.ab.LoadAsset<ShaderVariantCollection>(Constants.ResDirPath + Constants.SvcFilePath);
