@@ -13,13 +13,15 @@ public class ShibaInu_HttpDownloadWrap
 		L.RegFunction("Abort", Abort);
 		L.RegFunction("New", _CreateShibaInu_HttpDownload);
 		L.RegFunction("__tostring", ToLua.op_ToString);
-		L.RegVar("url", get_url, set_url);
-		L.RegVar("savePath", get_savePath, set_savePath);
-		L.RegVar("timeout", get_timeout, set_timeout);
-		L.RegVar("callback", get_callback, set_callback);
-		L.RegVar("downloading", get_downloading, null);
-		L.RegVar("speed", get_speed, null);
-		L.RegVar("progress", get_progress, null);
+		L.RegVar("Url", get_Url, set_Url);
+		L.RegVar("SavePath", get_SavePath, set_SavePath);
+		L.RegVar("Timeout", get_Timeout, set_Timeout);
+		L.RegVar("Callback", get_Callback, set_Callback);
+		L.RegVar("BytesLoaded", get_BytesLoaded, null);
+		L.RegVar("BytesTotal", get_BytesTotal, null);
+		L.RegVar("Progress", get_Progress, null);
+		L.RegVar("Speed", get_Speed, null);
+		L.RegVar("Downloading", get_Downloading, null);
 		L.EndClass();
 	}
 
@@ -115,7 +117,7 @@ public class ShibaInu_HttpDownloadWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_url(IntPtr L)
+	static int get_Url(IntPtr L)
 	{
 		object o = null;
 
@@ -123,18 +125,18 @@ public class ShibaInu_HttpDownloadWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
-			string ret = obj.url;
+			string ret = obj.Url;
 			LuaDLL.lua_pushstring(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index url on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Url on a nil value");
 		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_savePath(IntPtr L)
+	static int get_SavePath(IntPtr L)
 	{
 		object o = null;
 
@@ -142,18 +144,18 @@ public class ShibaInu_HttpDownloadWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
-			string ret = obj.savePath;
+			string ret = obj.SavePath;
 			LuaDLL.lua_pushstring(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index savePath on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index SavePath on a nil value");
 		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_timeout(IntPtr L)
+	static int get_Timeout(IntPtr L)
 	{
 		object o = null;
 
@@ -161,18 +163,18 @@ public class ShibaInu_HttpDownloadWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
-			int ret = obj.timeout;
+			int ret = obj.Timeout;
 			LuaDLL.lua_pushinteger(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index timeout on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Timeout on a nil value");
 		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_callback(IntPtr L)
+	static int get_Callback(IntPtr L)
 	{
 		object o = null;
 
@@ -180,18 +182,18 @@ public class ShibaInu_HttpDownloadWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
-			System.Action<int,string> ret = obj.callback;
+			System.Action<int,string> ret = obj.Callback;
 			ToLua.Push(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index callback on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Callback on a nil value");
 		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_downloading(IntPtr L)
+	static int get_BytesLoaded(IntPtr L)
 	{
 		object o = null;
 
@@ -199,56 +201,94 @@ public class ShibaInu_HttpDownloadWrap
 		{
 			o = ToLua.ToObject(L, 1);
 			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
-			bool ret = obj.downloading;
+			int ret = obj.BytesLoaded;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index BytesLoaded on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_BytesTotal(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
+			int ret = obj.BytesTotal;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index BytesTotal on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_Progress(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
+			float ret = obj.Progress;
+			LuaDLL.lua_pushnumber(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Progress on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_Speed(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
+			int ret = obj.Speed;
+			LuaDLL.lua_pushinteger(L, ret);
+			return 1;
+		}
+		catch(Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Speed on a nil value");
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_Downloading(IntPtr L)
+	{
+		object o = null;
+
+		try
+		{
+			o = ToLua.ToObject(L, 1);
+			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
+			bool ret = obj.Downloading;
 			LuaDLL.lua_pushboolean(L, ret);
 			return 1;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index downloading on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Downloading on a nil value");
 		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_speed(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
-			uint ret = obj.speed;
-			LuaDLL.lua_pushnumber(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index speed on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_progress(IntPtr L)
-	{
-		object o = null;
-
-		try
-		{
-			o = ToLua.ToObject(L, 1);
-			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
-			float ret = obj.progress;
-			LuaDLL.lua_pushnumber(L, ret);
-			return 1;
-		}
-		catch(Exception e)
-		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index progress on a nil value");
-		}
-	}
-
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_url(IntPtr L)
+	static int set_Url(IntPtr L)
 	{
 		object o = null;
 
@@ -257,17 +297,17 @@ public class ShibaInu_HttpDownloadWrap
 			o = ToLua.ToObject(L, 1);
 			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
 			string arg0 = ToLua.CheckString(L, 2);
-			obj.url = arg0;
+			obj.Url = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index url on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Url on a nil value");
 		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_savePath(IntPtr L)
+	static int set_SavePath(IntPtr L)
 	{
 		object o = null;
 
@@ -276,17 +316,17 @@ public class ShibaInu_HttpDownloadWrap
 			o = ToLua.ToObject(L, 1);
 			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
 			string arg0 = ToLua.CheckString(L, 2);
-			obj.savePath = arg0;
+			obj.SavePath = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index savePath on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index SavePath on a nil value");
 		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_timeout(IntPtr L)
+	static int set_Timeout(IntPtr L)
 	{
 		object o = null;
 
@@ -295,17 +335,17 @@ public class ShibaInu_HttpDownloadWrap
 			o = ToLua.ToObject(L, 1);
 			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
 			int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
-			obj.timeout = arg0;
+			obj.Timeout = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index timeout on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Timeout on a nil value");
 		}
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int set_callback(IntPtr L)
+	static int set_Callback(IntPtr L)
 	{
 		object o = null;
 
@@ -314,12 +354,12 @@ public class ShibaInu_HttpDownloadWrap
 			o = ToLua.ToObject(L, 1);
 			ShibaInu.HttpDownload obj = (ShibaInu.HttpDownload)o;
 			System.Action<int,string> arg0 = (System.Action<int,string>)ToLua.CheckDelegate<System.Action<int,string>>(L, 2);
-			obj.callback = arg0;
+			obj.Callback = arg0;
 			return 0;
 		}
 		catch(Exception e)
 		{
-			return LuaDLL.toluaL_exception(L, e, o, "attempt to index callback on a nil value");
+			return LuaDLL.toluaL_exception(L, e, o, "attempt to index Callback on a nil value");
 		}
 	}
 }

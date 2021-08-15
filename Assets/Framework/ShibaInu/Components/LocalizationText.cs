@@ -72,6 +72,9 @@ namespace ShibaInu
             if (m_languageKey == "")
                 return;
 
+            if (Application.isPlaying && m_text == null)
+                return;
+
             if (langeuage == null)
                 RefreshLanguage();
             string value = null;

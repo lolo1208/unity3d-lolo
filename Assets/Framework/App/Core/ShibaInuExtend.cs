@@ -15,7 +15,7 @@ namespace App
         /// </summary>
         public static void BeforeLaunch()
         {
-            Common.VersionInfo.CoreVersion = "0.0.2";
+            Common.VersionInfo.CoreVersion = "0.0.0.1";
 
             Common.FixedValue = 640;
             Common.IsFixedWidth = false;

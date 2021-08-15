@@ -18,13 +18,13 @@ namespace ShibaInu
 
 
         /// 文件网络地址
-        public string url;
+        public string Url;
         /// 本地保存路径
-        public string savePath;
+        public string SavePath;
         /// 下载超时时限（毫秒）
-        public int timeout = 5000;
+        public int Timeout = 5000;
         /// 下载成功或失败的回调函数 (状态码, 错误信息)
-        public Action<int, string> callback;
+        public Action<int, string> Callback;
 
         /// 已下载字节数
         private long m_bytesLoaded;
@@ -40,24 +40,20 @@ namespace ShibaInu
         private int m_proxyPort;
 
 
+        /// 已下载，字节
+        public int BytesLoaded { get { return (int)m_bytesLoaded; } }
 
-        /// 是否正在下载中
-        public bool downloading { get; private set; }
+        /// 总大小，字节
+        public int BytesTotal { get { return (int)m_bytesTotal; } }
 
+        /// 下载进度（0 ~ 1）
+        public float Progress { get { return (float)m_bytesLoaded / m_bytesTotal; } }
 
         /// 下载速度，字节/秒
-        public uint speed { get; private set; }
+        public int Speed { get; private set; }
 
-
-        /// 下载进度
-        public float progress
-        {
-            get
-            {
-                return (float)m_bytesLoaded / m_bytesTotal;
-            }
-        }
-
+        /// 是否正在下载中
+        public bool Downloading { get; private set; }
 
 
 
@@ -79,7 +75,7 @@ namespace ShibaInu
         /// <param name="callback">Callback.</param>
         public void SetLuaCallback(LuaFunction callback)
         {
-            this.callback = (int statusCode, string errMsg) =>
+            Callback = (int statusCode, string errMsg) =>
             {
                 callback.BeginPCall();
                 callback.Push(statusCode);
@@ -97,13 +93,13 @@ namespace ShibaInu
         /// </summary>
         public void Start()
         {
-            if (downloading || url == null || savePath == null)
+            if (Downloading || Url == null || SavePath == null)
                 return;
 
-            downloading = true;
+            Downloading = true;
             m_bytesLoaded = 0;
             m_bytesTotal = 1;
-            speed = 0;
+            Speed = 0;
 
             try
             {
@@ -123,7 +119,7 @@ namespace ShibaInu
         private void DoDownload(object stateInfo)
         {
             // 被取消了
-            if (!downloading)
+            if (!Downloading)
             {
                 InvokeCallback(HttpExceptionStatusCode.ABORTED);
                 return;
@@ -132,10 +128,10 @@ namespace ShibaInu
             try
             {
                 // 先使用 HEAD 模式获取文件大小
-                m_request = (HttpWebRequest)WebRequest.Create(url);
+                m_request = (HttpWebRequest)WebRequest.Create(Url);
                 m_request.ServicePoint.ConnectionLimit = 10;
                 m_request.Method = HttpRequestMethod.HEAD;
-                m_request.Timeout = timeout;
+                m_request.Timeout = Timeout;
                 if (m_proxyHost != null)
                     m_request.Proxy = new WebProxy(m_proxyHost, m_proxyPort);
 
@@ -153,7 +149,7 @@ namespace ShibaInu
 
 
             // 被取消了
-            if (!downloading)
+            if (!Downloading)
             {
                 InvokeCallback(HttpExceptionStatusCode.ABORTED);
                 return;
@@ -163,10 +159,10 @@ namespace ShibaInu
             try
             {
                 // 先创建对应的文件夹
-                DirectoryInfo dirInfo = new FileInfo(savePath).Directory;
+                DirectoryInfo dirInfo = new FileInfo(SavePath).Directory;
                 if (!dirInfo.Exists) dirInfo.Create();
 
-                using (FileStream fs = new FileStream(savePath, FileMode.OpenOrCreate, FileAccess.Write))
+                using (FileStream fs = new FileStream(SavePath, FileMode.OpenOrCreate, FileAccess.Write))
                 {
                     m_bytesLoaded = fs.Length;
                     m_lastTime = 0f;
@@ -177,10 +173,10 @@ namespace ShibaInu
                     {
                         fs.Seek(m_bytesLoaded, SeekOrigin.Begin);
 
-                        m_request = (HttpWebRequest)WebRequest.Create(url);
+                        m_request = (HttpWebRequest)WebRequest.Create(Url);
                         m_request.ServicePoint.ConnectionLimit = 10;
                         m_request.AddRange((int)m_bytesLoaded);
-                        m_request.Timeout = timeout;
+                        m_request.Timeout = Timeout;
                         if (m_proxyHost != null)
                             m_request.Proxy = new WebProxy(m_proxyHost, m_proxyPort);
 
@@ -188,7 +184,7 @@ namespace ShibaInu
                         {
 
                             // 被取消了
-                            if (!downloading)
+                            if (!Downloading)
                             {
                                 InvokeCallback(HttpExceptionStatusCode.ABORTED);
                                 return;
@@ -202,7 +198,7 @@ namespace ShibaInu
                                 while ((len = responseStream.Read(buffer, 0, buffer.Length)) > 0)
                                 {
                                     // 被取消了
-                                    if (!downloading)
+                                    if (!Downloading)
                                     {
                                         InvokeCallback(HttpExceptionStatusCode.ABORTED);
                                         return;
@@ -215,7 +211,7 @@ namespace ShibaInu
                                     float time = TimeUtil.timeSec - m_lastTime;
                                     if (time >= 0.5)
                                     {
-                                        speed = (uint)((m_bytesLoaded - m_lastBytes) / time);
+                                        Speed = (int)((m_bytesLoaded - m_lastBytes) / time);
                                         m_lastTime = TimeUtil.timeSec;
                                         m_lastBytes = m_bytesLoaded;
                                     }
@@ -248,13 +244,13 @@ namespace ShibaInu
                 m_request.Abort();
                 m_request = null;
             }
-            downloading = false;
+            Downloading = false;
 
-            if (callback != null)
+            if (Callback != null)
             {
                 Common.looper.AddNetAction(() =>
                 {
-                    callback(statusCode, errMsg);
+                    Callback(statusCode, errMsg);
                 });
             }
         }
@@ -265,7 +261,7 @@ namespace ShibaInu
         /// </summary>
         public void Abort()
         {
-            downloading = false;
+            Downloading = false;
             if (m_request != null)
                 m_request.Abort();
         }

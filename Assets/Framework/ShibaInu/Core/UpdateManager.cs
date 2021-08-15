@@ -22,7 +22,7 @@ namespace ShibaInu
         /// 状态 - 解压缩中
         public static readonly int STATE_EXTRACTING = 1;
         /// 状态 - 解压缩完成
-        public static readonly int STATE_EXTRACT_COMPLETEED = 2;
+        public static readonly int STATE_EXTRACT_COMPLETED = 2;
         /// 状态 - 解压缩过程中被取消
         public static readonly int STATE_EXTRACT_ABORT = 3;
         /// 状态 - 解压缩出错
@@ -89,8 +89,9 @@ namespace ShibaInu
             try
             {
                 // 创建更新文件目录
-                if (!Directory.Exists(Constants.UpdateDir))
-                    Directory.CreateDirectory(Constants.UpdateDir);
+                DirectoryInfo updateDir = new DirectoryInfo(Constants.UpdateDir);
+                if (!updateDir.Exists)
+                    updateDir.Create();
 
                 // 获取总文件数
                 using (ZipFile zipFile = new ZipFile(s_zipPath))
@@ -102,6 +103,9 @@ namespace ShibaInu
                     ZipEntry entry;
                     while ((entry = zip.GetNextEntry()) != null && State == STATE_EXTRACTING)
                     {
+                        s_extractNum++;
+                        if (entry.Name == "./") continue;
+
                         if (entry.Name == Constants.VerCfgFileName)
                         {
                             // 版本号文件（version.cfg）的内容先记录下来，解压全部完成后，再写入文件中
@@ -120,7 +124,6 @@ namespace ShibaInu
                                     fs.Write(buffer, 0, len);
                             }
                         }
-                        s_extractNum++;
                     }
                 }
                 // 被取消或出错了
@@ -131,7 +134,7 @@ namespace ShibaInu
                     sw.Write(version);
 
                 // complete
-                State = STATE_EXTRACT_COMPLETEED;
+                State = STATE_EXTRACT_COMPLETED;
                 ClearCache();
                 File.Delete(s_zipPath);// 删除更新包文件
             }

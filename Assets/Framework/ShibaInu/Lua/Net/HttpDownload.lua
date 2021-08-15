@@ -43,7 +43,6 @@ function HttpDownload:Start(url, savePath, callback)
     self.successful = false
     self._speed = nil
 
-
     -- 取消正在发送的请求
     if self._handlerRef ~= nil then
         CancelHandler(self._handlerRef)
@@ -55,7 +54,6 @@ function HttpDownload:Start(url, savePath, callback)
         self._download = nil
     end
 
-
     -- url 验证
     if url ~= nil then
         self.url = url
@@ -63,7 +61,6 @@ function HttpDownload:Start(url, savePath, callback)
     if self.url == nil then
         error(Constants.E3006)
     end
-
 
     -- savePath 验证
     if savePath ~= nil then
@@ -73,16 +70,15 @@ function HttpDownload:Start(url, savePath, callback)
         error(Constants.E3007)
     end
 
-
     -- 创建 ShibaInu.HttpDownload
     download = ShibaInu.HttpDownload.New()
     self._download = download
-    download.url = self.url
-    download.savePath = self.savePath
+    download.Url = self.url
+    download.SavePath = self.savePath
 
     -- 有指定超时时间
     if self.timeout ~= nil then
-        download.timeout = self.timeout
+        download.Timeout = self.timeout
     end
 
     -- 有设置代理
@@ -98,12 +94,12 @@ end
 
 
 --
---- HTTP 请求已结束
+--- 下载请求已结束
 ---@param statusCode number
 ---@param errMsg string
 function HttpDownload:EndedHandler(statusCode, errMsg)
     self._handlerRef = nil
-    self._speed = self._download.speed
+    self._speed = self._download.Speed
     self._download = nil
 
     self.statusCode = statusCode
@@ -113,7 +109,7 @@ function HttpDownload:EndedHandler(statusCode, errMsg)
     -- 抛出 HttpEvent.ENDED 事件
     self:DispatchEvent(Event.Get(HttpEvent, HttpEvent.ENDED))
 
-    -- 执行 callback
+    -- 执行回调
     local callback = self.callback
     if callback ~= nil then
         self.callback = nil
@@ -123,7 +119,7 @@ end
 
 
 --
---- 取消正在发送的请求
+--- 取消正在下载的请求
 function HttpDownload:Abort()
     if self._download ~= nil then
         self._download:Abort()
@@ -134,7 +130,7 @@ end
 --
 --- 设置代理
 ---@param host string @ 代理地址
----@param optional port number @ 代理端口，默认：80
+---@param port number @ -可选- 代理端口，默认：80
 function HttpDownload:SetProxy(host, port)
     self._proxyHost = host
     self._proxyPort = port or 80
@@ -150,11 +146,33 @@ end
 
 
 --
+--- 获取已下载字节数
+---@return number
+function HttpDownload:GetBytesLoaded()
+    if self._download ~= nil then
+        return self._download.BytesLoaded
+    end
+    return 0
+end
+
+
+--
+--- 获取文件总字节数
+---@return number
+function HttpDownload:GetBytesTotal()
+    if self._download ~= nil then
+        return self._download.BytesTotal
+    end
+    return 0
+end
+
+
+--
 --- 获取下载进度，0～1
 ---@return number
 function HttpDownload:GetProgress()
     if self._download ~= nil then
-        return self._download.progress
+        return self._download.Progress
     end
     return self.successful and 1 or 0
 end
@@ -165,7 +183,7 @@ end
 ---@return number
 function HttpDownload:GetSpeed()
     if self._download ~= nil then
-        return self._download.speed
+        return self._download.Speed
     end
     if self._speed ~= nil then
         return self._speed
@@ -177,3 +195,4 @@ end
 
 --
 return HttpDownload
+

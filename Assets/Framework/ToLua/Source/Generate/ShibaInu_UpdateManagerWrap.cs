@@ -15,7 +15,7 @@ public class ShibaInu_UpdateManagerWrap
 		L.RegFunction("Repair", Repair);
 		L.RegVar("STATE_EXTRACT_NONE", get_STATE_EXTRACT_NONE, null);
 		L.RegVar("STATE_EXTRACTING", get_STATE_EXTRACTING, null);
-		L.RegVar("STATE_EXTRACT_COMPLETEED", get_STATE_EXTRACT_COMPLETEED, null);
+		L.RegVar("STATE_EXTRACT_COMPLETED", get_STATE_EXTRACT_COMPLETED, null);
 		L.RegVar("STATE_EXTRACT_ABORT", get_STATE_EXTRACT_ABORT, null);
 		L.RegVar("STATE_EXTRACT_ERROR", get_STATE_EXTRACT_ERROR, null);
 		L.RegVar("State", get_State, null);
@@ -150,11 +150,11 @@ public class ShibaInu_UpdateManagerWrap
 	}
 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static int get_STATE_EXTRACT_COMPLETEED(IntPtr L)
+	static int get_STATE_EXTRACT_COMPLETED(IntPtr L)
 	{
 		try
 		{
-			LuaDLL.lua_pushinteger(L, ShibaInu.UpdateManager.STATE_EXTRACT_COMPLETEED);
+			LuaDLL.lua_pushinteger(L, ShibaInu.UpdateManager.STATE_EXTRACT_COMPLETED);
 			return 1;
 		}
 		catch (Exception e)
