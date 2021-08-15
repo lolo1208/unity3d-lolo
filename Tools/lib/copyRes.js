@@ -25,6 +25,7 @@ let resManifest = [];// resManifestFile 文件内容
 let resList = copyRes.resList = [];// 包含的资源列表
 let resMap = {};// 资源路径 -> 资源文件名 映射表
 let newResList = [];// 新增资源（路径）列表
+let md5List = {};// 文件（内容）MD5 列表
 let callback;// 拷贝完成时的回调
 
 
@@ -42,6 +43,19 @@ copyRes.start = function (cb) {
     logger.append('- 开始拷贝资源');
     copyLua();
 };
+
+
+/**
+ * 拷贝一个资源完成
+ */
+let resItemComplete = function (next, src, dest, isNew, isAB) {
+    resMap[src] = dest;
+    if (isNew) newResList.push(src);
+    if (!isAB) resManifest.push(src, dest);// ab 最后单独写入 manifest
+    resList.push(dest);
+    progress.copyRes(++resIndex);
+    next();
+}
 
 
 /**
@@ -79,12 +93,7 @@ let copyLua = function () {
             .replace('Assets/Lua/', '')
             .replace('.lua', '');
         dest = dest.replace(common.resDir, '');
-        resMap[src] = dest;
-        if (isNew) newResList.push(src);
-        resManifest.push(src, dest);
-        resList.push(dest);
-        progress.copyRes(++resIndex);
-        next();
+        resItemComplete(next, src, dest, isNew);
     };
     next();
 };
@@ -123,12 +132,7 @@ let copyBytes = function () {
             .replace('Assets/StreamingAssets/', '')
             .replace('Assets/Res/', '');
         dest = dest.replace(common.resDir, '');
-        resMap[src] = dest;
-        if (isNew) newResList.push(src);
-        resManifest.push(src, dest);
-        resList.push(dest);
-        progress.copyRes(++resIndex);
-        next();
+        resItemComplete(next, src, dest, isNew);
     };
     next();
 };
@@ -169,12 +173,7 @@ let copyScene = function () {
     let copyComplete = () => {
         src = path.basename(src, '.unity');
         dest = dest.replace(common.resDir, '');
-        resMap[src] = dest;
-        if (isNew) newResList.push(src);
-        resManifest.push(src, dest);
-        resList.push(dest);
-        progress.copyRes(++resIndex);
-        next();
+        resItemComplete(next, src, dest, isNew);
     };
     next();
 };
@@ -215,11 +214,7 @@ let copyAssetBundle = function () {
     let copyComplete = () => {
         src = src.replace(common.abCacheDir, '').replace(/\\/g, '/');
         dest = dest.replace(common.resDir, '');
-        resMap[src] = dest;
-        if (isNew) newResList.push(src);
-        resList.push(dest);
-        progress.copyRes(++resIndex);
-        next();
+        resItemComplete(next, src, dest, isNew, true);
     };
     next();
 };

@@ -28,6 +28,7 @@ args
     .option('-c, --platformProject <value>', '目标平台项目路径。如果传入了该参数，-g 参数将为 true')
     .option('-d, --destDir <value>', '将生成的资源拷贝至该目录')
     .option('-z, --packZip <value>', '传入值为 true，表示生成 zip 文件，并放在缓存目录中。也可以传入完整 zip 路径，将按该路径生成')
+    .option('-a, --zipForAST <value>', '生成 AST zip 文件，传入的值为渠道列表，使用 "," 分割。例："appstore,android,taptap"')
     .option('-y, --abModeFlag', '是否需要创建进入 AssetBundle 模式的标志文件')
     .option('-x, --development', '是否生成开发版本的目标平台项目')
     .parse(process.argv);
@@ -44,6 +45,7 @@ common.svnOrGitConfigName = args.svnOrGitConfigName;            // -s
 common.platformProject = args.platformProject;                  // -c
 common.destDir = args.destDir;                                  // -d
 common.packZip = args.packZip;                                  // -z
+common.zipForAST = args.zipForAST;                              // -a
 common.abModeFlag = args.abModeFlag;                            // -y
 common.development = args.development;                          // -x
 
@@ -67,6 +69,8 @@ if (common.destDir !== undefined) {
 
 // 程序是否运行在 windows 平台
 common.isWindows = process.platform === 'win32';
+// version.cfg 文件名称
+common.versionConfigFileName = 'version.cfg';
 
 
 // 工具箱根目录
@@ -91,7 +95,7 @@ common.sourceDir = `${common.projectBuildDir}source/`;
 common.sourceProjectDir = `${common.sourceDir}project/`;
 // 缓存目录
 common.cacheDir = `${common.projectBuildDir}cache/`;
-// lua （Encode 完成后的）缓存目录
+// lua（Encode 完成后的）缓存目录
 common.luaCacheDir = `${common.cacheDir}lua/`;
 // 场景（打包完成后的）缓存目录
 common.sceneCacheDir = `${common.cacheDir}scene/${common.targetPlatform}/`;

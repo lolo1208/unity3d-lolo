@@ -11,13 +11,27 @@ const common = require('./common');
 const logger = require('./logger');
 const progress = require('./progress');
 const copyRes = require('./copyRes');
+const genAstZip = require('./genAstZip');
 
 
 const destAndZip = module.exports = {};
 
-const versionFile = 'version.cfg';
-
 let count = 0;
+
+
+//
+
+
+const resList = {};
+/**
+ * 资源文件是否已存在 resList 中
+ * @param name
+ */
+const resExists = function (name) {
+    if (resList[name]) return true;
+    resList[name] = true;
+    return false;
+}
 
 
 /**
@@ -66,15 +80,20 @@ destAndZip.zip = function (callback) {
     });
     archive.pipe(output);
 
-    // 版本信息文件
-    archive.append(common.fullVersionNumber, {name: versionFile});
-    // 资源清单文件
-    archive.append(fs.createReadStream(common.resManifestFile), {name: path.basename(common.resManifestFile)});
-    // 资源文件列表
-    let list = copyRes.resList;
-    for (let i = 0; i < list.length; i++) {
-        let fileName = list[i];
-        archive.append(fs.createReadStream(common.resDir + fileName), {name: fileName});
+    if (common.zipForAST === undefined) {
+        // 版本信息文件
+        archive.append(common.fullVersionNumber, {name: common.versionConfigFileName});
+        // 资源清单文件
+        archive.append(fs.createReadStream(common.resManifestFile), {name: path.basename(common.resManifestFile)});
+        // 资源文件列表
+        let list = copyRes.resList;
+        for (let i = 0; i < list.length; i++) {
+            let fileName = list[i];
+            if (!resExists(fileName))
+                archive.append(fs.createReadStream(common.resDir + fileName), {name: fileName});
+        }
+    } else {
+        genAstZip.zip(archive);
     }
     archive.finalize();
 };
@@ -102,7 +121,7 @@ destAndZip.destRes = function (destDir, callback) {
     common.removeDir(destDir);
 
     // 写入版本信息文件
-    common.writeFileSync(destDir + versionFile, common.fullVersionNumber);
+    common.writeFileSync(destDir + common.versionConfigFileName, common.fullVersionNumber);
     // 拷贝资源清单文件
     fs.copyFileSync(common.resManifestFile, destDir + path.basename(common.resManifestFile));
 

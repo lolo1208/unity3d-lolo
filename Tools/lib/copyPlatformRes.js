@@ -32,7 +32,7 @@ const isZip = path.extname(src) === '.zip';
 const tmpDir = path.normalize(`../tmp/${Date.now()}/`);
 const tmpUnzipDir = `${tmpDir}unzip/`;
 const tmpBinDir = `${tmpDir}bin/`;
-const srcDir = isZip ? tmpUnzipDir : path.normalize(src + '/');
+let srcDir = isZip ? tmpUnzipDir : path.normalize(src + '/');
 const resDir = isAndroid ? `${destDir}src/main/assets/` : `${destDir}Data/Raw/`;
 const resBinDir = `${resDir}bin/`;
 
@@ -90,6 +90,18 @@ function main() {
         console.log('unzip complete!');
     }
 
+    // 如果有子目录，version.cfg 所在子目录才是 srcDir
+    let srcFiles = fs.readdirSync(srcDir)
+    for (let i = 0; i < srcFiles.length; i++) {
+        let srcFile = path.join(srcDir, srcFiles[i]);
+        if (fs.statSync(srcFile).isDirectory()) {
+            if (fs.existsSync(path.join(srcFile, 'version.cfg'))) {
+                srcDir = srcFile;
+                break;
+            }
+        }
+    }
+
     // android 先备份 bin 目录
     if (isAndroid) {
         console.log('backup res bin...');
@@ -103,6 +115,11 @@ function main() {
     removeDir(resDir);
     copyDir(srcDir, resDir);
     console.log(`copy ${platform} res complete!`);
+
+    // 删除 res.lua 文件
+    let resLuaFile = path.join(resDir, 'res.lua');
+    if (fs.existsSync(resLuaFile))
+        fs.unlinkSync(resLuaFile);
 
     // 清理，还原
     restore();
