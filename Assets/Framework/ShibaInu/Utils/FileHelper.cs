@@ -26,14 +26,10 @@ namespace ShibaInu
         public static bool Exists(string path)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            if(path.StartsWith(Constants.PackageDir))
+            if(path.StartsWith(Constants.PackageDir, StringComparison.Ordinal))
                 return m_androidStreamingAssets.CallStatic<bool> ("exists", path.Replace (Constants.PackageDir, ""));
-            else
-                return File.Exists (path);
-
-#else
-            return File.Exists(path);
 #endif
+            return File.Exists(path);
         }
 
 
@@ -46,17 +42,13 @@ namespace ShibaInu
         public static byte[] GetBytes(string path)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            if (path.StartsWith(Constants.PackageDir))
+            if (path.StartsWith(Constants.PackageDir, StringComparison.Ordinal))
             {
                 sbyte[] sbytes = m_androidStreamingAssets.CallStatic<sbyte[]>("getBytes", path.Replace(Constants.PackageDir, ""));
                 return (byte[])(Array)sbytes;
             }
-            else
-                return File.ReadAllBytes (path);
-
-#else
-            return File.ReadAllBytes(path);
 #endif
+            return File.ReadAllBytes(path);
         }
 
 
@@ -69,14 +61,10 @@ namespace ShibaInu
         public static string GetText(string path)
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            if (path.StartsWith (Constants.PackageDir))
+            if (path.StartsWith (Constants.PackageDir, StringComparison.Ordinal))
                 return m_androidStreamingAssets.CallStatic<string> ("getText", path.Replace (Constants.PackageDir, ""));
-            else
-                return File.ReadAllText (path);
-
-#else
-            return File.ReadAllText(path);
 #endif
+            return File.ReadAllText(path);
         }
 
 
