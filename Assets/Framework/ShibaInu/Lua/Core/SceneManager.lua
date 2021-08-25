@@ -7,6 +7,7 @@
 
 local SceneMgr = ShibaInu.SceneManager
 
+local LoadScene = SceneMgr.LoadScene
 local UnloadScene = SceneMgr.UnloadScene
 local UnloadAllScenes = SceneMgr.UnloadAllScenes
 local SetActiveScene = SceneMgr.SetActiveScene
@@ -28,12 +29,11 @@ local _currentSceneName
 
 
 --
---- 加载场景，并返回 sceneName 对应的 Scene 实例
---- 如果 sceneName 对应的场景资源已加载过，将返回之前加载时创建的 Scene 实例
----@param sceneName string @ 场景（资源）名称
----@param SceneClass Scene @ -可选- 继承至 Scene，用于创建场景实例的 Lua 类。默认：Scene
+--- 创建或获取场景对象
+---@param sceneName string
+---@param SceneClass Scene
 ---@return Scene
-function SceneManager.LoadScene(sceneName, SceneClass)
+local function CreateOrGetScene(sceneName, SceneClass)
     local scene = _scenes:GetValueByKey(sceneName)
 
     -- 已被销毁了
@@ -46,23 +46,33 @@ function SceneManager.LoadScene(sceneName, SceneClass)
         SceneClass = SceneClass or Scene
         scene = SceneClass.New(sceneName)
         _scenes:Add(scene, sceneName)
-    else
-        scene:Show()
     end
 
     return scene
 end
 
+--
+--- 加载场景，并返回 sceneName 对应的 Scene 实例
+--- 如果 sceneName 对应的场景资源已加载过，将返回之前加载时创建的 Scene 实例
+---@param sceneName string @ 场景（资源）名称
+---@param SceneClass Scene @ -可选- 继承至 Scene，用于创建场景实例的 Lua 类。默认：Scene
+---@return Scene
+function SceneManager.LoadScene(sceneName, SceneClass)
+    local scene = CreateOrGetScene(sceneName, SceneClass)
+    LoadScene(sceneName, false)
+    return scene
+end
 
 --
 --- 预加载场景
 ---@see SceneManager#LoadScene
 ---@return Scene
 function SceneManager.PreloadScene(sceneName, SceneClass)
-    local scene = SceneManager.LoadScene(sceneName, SceneClass)
+    local scene = CreateOrGetScene(sceneName, SceneClass)
     if not scene.initialized then
         scene.initShow = false
     end
+    LoadScene(sceneName, true)
     return scene
 end
 
@@ -129,6 +139,8 @@ function SceneManager.EnterScene(sceneName, SceneClass)
     scene = SceneManager.LoadScene(sceneName, SceneClass)
     if not scene.initialized then
         scene.initShow = true
+    else
+        scene:Show()
     end
     SceneManager.SetCurrentSceneName(sceneName)
     return scene

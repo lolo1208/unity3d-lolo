@@ -6,13 +6,10 @@
 -- Author LOLO
 --
 
-local SceneMgr = ShibaInu.SceneManager
-
-local LoadScene = SceneMgr.LoadScene
-
 
 --
 ---@class Scene : Module
+---@field New fun(sceneName:string):Scene
 ---@field isScene boolean @ 给 View 拿来做判断，不添加 OnDestroy 事件侦听
 ---
 ---@field sceneName string @ 场景（资源）名称
@@ -37,7 +34,6 @@ function Scene:Ctor(sceneName)
     self.moduleName = sceneName
     self.sceneName = sceneName
     AddEventListener(SceneManager, SceneEvent.LOAD_COMPLETE, self.LoadSceneComplete, self)
-    LoadScene(sceneName)
 end
 
 --- 异步加载场景资源完成
