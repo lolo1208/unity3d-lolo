@@ -56,16 +56,24 @@ end
 --- 如果 sceneName 对应的场景资源已加载过，将返回之前加载时创建的 Scene 实例
 ---@param sceneName string @ 场景（资源）名称
 ---@param SceneClass Scene @ -可选- 继承至 Scene，用于创建场景实例的 Lua 类。默认：Scene
+---@param initShow boolean @ -可选- 如果还未加载，在加载完成后，是否显示该场景。默认：false
 ---@return Scene
-function SceneManager.LoadScene(sceneName, SceneClass)
+function SceneManager.LoadScene(sceneName, SceneClass, initShow)
     local scene = CreateOrGetScene(sceneName, SceneClass)
+    if not scene.initialized then
+        scene.initShow = initShow == true
+    end
     LoadScene(sceneName, false)
     return scene
 end
 
 --
---- 预加载场景
----@see SceneManager#LoadScene
+--- 预加载场景，并返回 sceneName 对应的 Scene 实例
+--- 如果 sceneName 对应的场景资源已加载过，将返回之前加载时创建的 Scene 实例
+--- 场景加载完成后不会显示
+--- 与 LoadScene() 的区别：该场景的加载进度不会被统计到总加载进度中
+---@param sceneName string @ 场景（资源）名称
+---@param SceneClass Scene @ -可选- 继承至 Scene，用于创建场景实例的 Lua 类。默认：Scene
 ---@return Scene
 function SceneManager.PreloadScene(sceneName, SceneClass)
     local scene = CreateOrGetScene(sceneName, SceneClass)
