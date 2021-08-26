@@ -15,7 +15,7 @@ local floor = math.floor
 ---@field aniName string @ 当前动画名称（状态机名称）
 ---@field speed number @ 当前动画播放速度。默认：1
 ---@field isDispatchEvent boolean @ 是否抛出动画播放事件。默认：false
----@field protected completeTimer Timer
+---@field protected handlerRef HandlerRef
 ---
 local Animation = class("Animation", EventDispatcher)
 
@@ -26,10 +26,7 @@ function Animation:Ctor(animator, defaultAniName)
 
     self.speed = 1
     self.isDispatchEvent = false
-
     self.animator = animator
-    self.completeTimer = Timer.New(1, NewHandler(self.CompleteHandler, self))
-
     if defaultAniName ~= nil then
         self:Play(defaultAniName)
     end
@@ -67,8 +64,7 @@ function Animation:Play(aniName, restart)
     if length == 0 then
         return -- 可能 self.animator.gameObject.activeSelf = false
     end
-    self.completeTimer:SetDelay(length / self.speed)
-    self.completeTimer:Start()
+    self:SetAniEndDelayedCall(length / self.speed)
 
     if self.isDispatchEvent then
         DispatchAnimationEvent(self, AnimationEvent.ANI_START)
@@ -89,8 +85,7 @@ function Animation:TransitionTo(aniName, duration)
     if length == 0 then
         return -- 可能 self.animator.gameObject.activeSelf = false
     end
-    self.completeTimer:SetDelay(length / self.speed)
-    self.completeTimer:Start()
+    self:SetAniEndDelayedCall(length / self.speed)
 
     if self.isDispatchEvent then
         DispatchAnimationEvent(self, AnimationEvent.ANI_START)
@@ -100,8 +95,8 @@ end
 
 --
 --- 当前动画播放完成
-function Animation:CompleteHandler()
-    self.completeTimer:Stop()
+function Animation:AniCompleteHandler()
+    CancelDelayedCall(self.handlerRef)
 
     if isnull(self.animator) then
         return
@@ -116,6 +111,15 @@ function Animation:CompleteHandler()
     if self.isDispatchEvent then
         DispatchAnimationEvent(self, AnimationEvent.ANI_COMPLETE)
     end
+end
+
+
+--
+--- 设置在指定时长（动画播放完成时），触发回调
+---@param delay number
+function Animation:SetAniEndDelayedCall(delay)
+    CancelDelayedCall(self.handlerRef)
+    self.handlerRef = DelayedCall(delay, self.AniCompleteHandler, self)
 end
 
 
@@ -146,7 +150,7 @@ function Animation:SetSpeed(value)
         self.speed = value
         self.animator.speed = value
         if self.isDispatchEvent then
-            self.completeTimer:SetDelay(self:GetRemainTime() / value)
+            self:SetAniEndDelayedCall(self:GetRemainTime() / value)
         end
     end
 end
