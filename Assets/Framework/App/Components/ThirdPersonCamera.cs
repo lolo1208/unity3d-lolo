@@ -2,12 +2,14 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
+using ShibaInu;
 
 
-namespace ShibaInu
+namespace App
 {
     /// <summary>
     /// 第三人称镜头
+    /// Author: LOLO
     /// </summary>
     [AddComponentMenu("ShibaInu/Third Person Camera", 302)]
     [DisallowMultipleComponent]

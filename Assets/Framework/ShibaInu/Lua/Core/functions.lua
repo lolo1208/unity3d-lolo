@@ -298,13 +298,6 @@ function GetComponent.PointerEventPasser(go)
     return go:GetComponent(_typeof_class(ShibaInu.PointerEventPasser))
 end
 
---- 获取 gameObject 下的 ShibaInu.ThirdPersonCamera 组件
----@param go UnityEngine.GameObject | UnityEngine.Transform
----@return ShibaInu.ThirdPersonCamera
-function GetComponent.ThirdPersonCamera(go)
-    return go:GetComponent(_typeof_class(ShibaInu.ThirdPersonCamera))
-end
-
 --
 
 

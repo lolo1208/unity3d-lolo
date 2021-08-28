@@ -127,6 +127,16 @@ function GetComponent.ScrollRect(go)
     return go:GetComponent(_typeof_class(UnityEngine.UI.ScrollRect))
 end
 
+
+-- App.*
+
+--- 获取 gameObject 下的 App.ThirdPersonCamera 组件
+---@param go UnityEngine.GameObject | UnityEngine.Transform
+---@return App.ThirdPersonCamera
+function GetComponent.ThirdPersonCamera(go)
+    return go:GetComponent(_typeof_class(App.ThirdPersonCamera))
+end
+
 --
 
 

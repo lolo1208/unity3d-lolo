@@ -2,11 +2,11 @@
 using System;
 using LuaInterface;
 
-public class ShibaInu_ThirdPersonCameraWrap
+public class App_ThirdPersonCameraWrap
 {
 	public static void Register(LuaState L)
 	{
-		L.BeginClass(typeof(ShibaInu.ThirdPersonCamera), typeof(UnityEngine.MonoBehaviour));
+		L.BeginClass(typeof(App.ThirdPersonCamera), typeof(UnityEngine.MonoBehaviour));
 		L.RegFunction("AdjustPosition", AdjustPosition);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
@@ -30,20 +30,20 @@ public class ShibaInu_ThirdPersonCameraWrap
 
 			if (count == 1)
 			{
-				ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)ToLua.CheckObject<ShibaInu.ThirdPersonCamera>(L, 1);
+				App.ThirdPersonCamera obj = (App.ThirdPersonCamera)ToLua.CheckObject<App.ThirdPersonCamera>(L, 1);
 				obj.AdjustPosition();
 				return 0;
 			}
 			else if (count == 2)
 			{
-				ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)ToLua.CheckObject<ShibaInu.ThirdPersonCamera>(L, 1);
+				App.ThirdPersonCamera obj = (App.ThirdPersonCamera)ToLua.CheckObject<App.ThirdPersonCamera>(L, 1);
 				int arg0 = (int)LuaDLL.luaL_checknumber(L, 2);
 				obj.AdjustPosition(arg0);
 				return 0;
 			}
 			else
 			{
-				return LuaDLL.luaL_throw(L, "invalid arguments to method: ShibaInu.ThirdPersonCamera.AdjustPosition");
+				return LuaDLL.luaL_throw(L, "invalid arguments to method: App.ThirdPersonCamera.AdjustPosition");
 			}
 		}
 		catch (Exception e)
@@ -78,7 +78,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			UnityEngine.Vector3 ret = obj.targetOffset;
 			ToLua.Push(L, ret);
 			return 1;
@@ -97,7 +97,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			float ret = obj.dragSensitivity;
 			LuaDLL.lua_pushnumber(L, ret);
 			return 1;
@@ -116,7 +116,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			float ret = obj.dragUpLimit;
 			LuaDLL.lua_pushnumber(L, ret);
 			return 1;
@@ -135,7 +135,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			float ret = obj.dragDownLimit;
 			LuaDLL.lua_pushnumber(L, ret);
 			return 1;
@@ -154,7 +154,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			UnityEngine.Transform ret = obj.target;
 			ToLua.Push(L, ret);
 			return 1;
@@ -173,7 +173,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			float ret = obj.back;
 			LuaDLL.lua_pushnumber(L, ret);
 			return 1;
@@ -192,7 +192,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			float ret = obj.up;
 			LuaDLL.lua_pushnumber(L, ret);
 			return 1;
@@ -211,7 +211,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			UnityEngine.GameObject ret = obj.dragTarget;
 			ToLua.PushSealed(L, ret);
 			return 1;
@@ -230,7 +230,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			UnityEngine.Vector3 arg0 = ToLua.ToVector3(L, 2);
 			obj.targetOffset = arg0;
 			return 0;
@@ -249,7 +249,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			obj.dragSensitivity = arg0;
 			return 0;
@@ -268,7 +268,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			obj.dragUpLimit = arg0;
 			return 0;
@@ -287,7 +287,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			obj.dragDownLimit = arg0;
 			return 0;
@@ -306,7 +306,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			UnityEngine.Transform arg0 = (UnityEngine.Transform)ToLua.CheckObject<UnityEngine.Transform>(L, 2);
 			obj.target = arg0;
 			return 0;
@@ -325,7 +325,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			obj.back = arg0;
 			return 0;
@@ -344,7 +344,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			float arg0 = (float)LuaDLL.luaL_checknumber(L, 2);
 			obj.up = arg0;
 			return 0;
@@ -363,7 +363,7 @@ public class ShibaInu_ThirdPersonCameraWrap
 		try
 		{
 			o = ToLua.ToObject(L, 1);
-			ShibaInu.ThirdPersonCamera obj = (ShibaInu.ThirdPersonCamera)o;
+			App.ThirdPersonCamera obj = (App.ThirdPersonCamera)o;
 			UnityEngine.GameObject arg0 = (UnityEngine.GameObject)ToLua.CheckObject(L, 2, typeof(UnityEngine.GameObject));
 			obj.dragTarget = arg0;
 			return 0;

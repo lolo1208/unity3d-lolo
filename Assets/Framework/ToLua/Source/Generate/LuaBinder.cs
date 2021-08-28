@@ -221,11 +221,14 @@ public static class LuaBinder
 		ShibaInu_PointerScalerWrap.Register(L);
 		ShibaInu_PointerEventPasserWrap.Register(L);
 		ShibaInu_FrameAnimationControllerWrap.Register(L);
-		ShibaInu_ThirdPersonCameraWrap.Register(L);
 		ShibaInu_MD5UtilWrap.Register(L);
 		ShibaInu_LuaProfilerWrap.Register(L);
 		ShibaInu_LoggerWrap.Register(L);
 		ShibaInu_LuaHelperWrap.Register(L);
+		L.EndModule();
+		L.BeginModule("App");
+		App_LuaHelperWrap.Register(L);
+		App_ThirdPersonCameraWrap.Register(L);
 		L.EndModule();
 		L.BeginModule("System");
 		System_DateTimeWrap.Register(L);
@@ -243,9 +246,6 @@ public static class LuaBinder
 		L.RegFunction("Func_bool", System_Func_bool);
 		L.RegFunction("Action_UnityEngine_AsyncOperation", System_Action_UnityEngine_AsyncOperation);
 		L.RegFunction("Action_UnityEngine_Font", System_Action_UnityEngine_Font);
-		L.EndModule();
-		L.BeginModule("App");
-		App_LuaHelperWrap.Register(L);
 		L.EndModule();
 		L.EndModule();
 		L.BeginPreLoad();

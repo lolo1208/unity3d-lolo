@@ -53,9 +53,11 @@ public static class CustomSettings
     //在这里添加你要导出注册到lua的类型列表
     public static BindType[] customTypeList =
     {
+        #region ToLua
         _GT(typeof(LuaInjectionStation)),
         _GT(typeof(InjectType)),
         _GT(typeof(LuaInterface.Debugger)).SetNameSpace(null),
+        #endregion
 
 
         #region DoTween
@@ -146,19 +148,14 @@ public static class CustomSettings
         _GT(typeof(PointerScaler)),
         _GT(typeof(PointerEventPasser)),
         _GT(typeof(FrameAnimationController)),
-        _GT(typeof(ThirdPersonCamera)),
 
         _GT(typeof(MD5Util)),
         _GT(typeof(ShibaInu.LuaProfiler)),
         _GT(typeof(ShibaInu.Logger)),
         #endregion
+
         
-
-        // .Net
-        _GT(typeof(DateTime)),
-
-
-        // UnityEngine
+        #region UnityEngine
         _GT(typeof(SystemInfo)),
         _GT(typeof(Behaviour)),
         _GT(typeof(MonoBehaviour)),
@@ -230,11 +227,19 @@ public static class CustomSettings
         _GT(typeof(Toggle)),
         _GT(typeof(Shadow)),
         _GT(typeof(RawImage)),
+        #endregion
 
 
-        // Project
+        #region Project
         _GT(typeof(App.LuaHelper)),
+        _GT(typeof(App.ThirdPersonCamera)),
         //_GT(typeof(App.AstMsgProtocol)),
+        #endregion
+
+
+        #region .Net
+        _GT(typeof(DateTime)),
+        #endregion
     };
 
 
