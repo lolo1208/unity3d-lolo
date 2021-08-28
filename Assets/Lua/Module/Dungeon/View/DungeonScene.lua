@@ -16,7 +16,7 @@ local Avatar = require("Module.Dungeon.View.Avatar.Avatar")
 ---@field avatarContainer UnityEngine.Transform @ avatar 容器
 ---
 ---@field avatar Dungeon.Avatar.Avatar
----@field tpc ShibaInu.ThirdPersonCamera
+---@field tpc App.ThirdPersonCamera
 ---
 local DungeonScene = class("Dungeon.DungeonScene", Scene)
 DungeonScene.SCENE_NAME = "Dungeon"
