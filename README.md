@@ -62,7 +62,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
     *按钮在右上角放大镜图标左侧*
 
 ###### 最终配置结果如图：
-![](https://blog.lolo.link/img/unity/unity-framework/project-structure.jpg)
+![](https://static.lolo.link/img/unity/unity-framework/project-structure.jpg)
 
 #### * C# -> Lua
 首先，将需要导出给 Lua 访问的 类，属性，方法 等添加到 `Assets/Framework/ToLua/Editor/CustomSettings.cs` 中。
@@ -90,7 +90,7 @@ Windows 为 `File`->`Settings`->`Plugins`
 然后选择 `Assets/LuaAPI` 目录。
 
 ###### 如图：
-![](https://blog.lolo.link/img/unity/unity-framework/libraries-luaapi.jpg)
+![](https://static.lolo.link/img/unity/unity-framework/libraries-luaapi.jpg)
 
 自此，Lua 开发环境已全部配置完成。
 
@@ -98,7 +98,7 @@ Windows 为 `File`->`Settings`->`Plugins`
 打开 `Preferences`->`Editor`->`File Types` 窗口，在 `Ignore files and folders` 输入框中添加 **`*.meta;`** 即可忽略所有 meta 文件。
 
 ###### 如图：
-![](https://blog.lolo.link/img/unity/unity-framework/preferences-ignore-meta.jpg)
+![](https://static.lolo.link/img/unity/unity-framework/preferences-ignore-meta.jpg)
 
 
 # Build
@@ -147,7 +147,7 @@ Unity Android 项目需要添加的配置和常见问题，可参考：Templates
 ***注意：打包前，请在 Unity Editor 中关闭当前项目。***
 
 ###### 打包进度与日志页面：
-![](https://blog.lolo.link/img/unity/unity-framework/build-web-page.jpg)
+![](https://static.lolo.link/img/unity/unity-framework/build-web-page.jpg)
 
 #### * Unity Editor - `AssetBundle`
 
@@ -166,4 +166,3 @@ Encode 所有 Lua 文件，
 你也可以点击菜单 `ShibaInu`->`退出 AssetBundle 模式` 或  `ShibaInu`->`进入 AssetBundle 模式` 切换加载模式。
 
 *提示：可以在 Web 程序中查看打包进度与详细日志*
-

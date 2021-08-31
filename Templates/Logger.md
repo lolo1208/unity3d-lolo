@@ -1,6 +1,6 @@
 # Logger
 
-![](https://blog.lolo.link/img/unity/logger/logger.png)
+![](https://static.lolo.link/img/unity/logger/logger.png)
 
 本篇将会介绍 [Unity框架项目](https://github.com/lolo1208/unity3d-lolo) 的日志系统以及相关功能。
 

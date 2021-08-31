@@ -2,25 +2,25 @@
 
 ### 添加和设置框架代码
 * 右键点击项目，选择 `Add Files to "项目"...`，在弹出的窗口中选择 `Sources` 目录，Added Folders 选择 `Create Groups`
- ![](https://blog.lolo.link/img/unity/xcode/add-sources.png)
+ ![](https://static.lolo.link/img/unity/xcode/add-sources.png)
 
 * 选中文件 `Libraries/Plugins/iOS/ShibaInu/AppControllerProtocol.h`，设置为 `Public`
- ![](https://blog.lolo.link/img/unity/xcode/set-app-controller-protocol.h.png)
+ ![](https://static.lolo.link/img/unity/xcode/set-app-controller-protocol.h.png)
 
 * <font color=red>Undefined symbol: \_OBJC\_CLASS\_$\_UnityFramework</font>
 
  `TARGET` -> `Build Phases` -> `Link Binary With Libraries` 添加 `UnityFramework`
- ![](https://blog.lolo.link/img/unity/xcode/link-unity-framework.png)
+ ![](https://static.lolo.link/img/unity/xcode/link-unity-framework.png)
 
 ---
 
 ### 禁用 Bitcode
 报错如图：
-![](https://blog.lolo.link/img/unity/xcode/bitcode-1.png)
+![](https://static.lolo.link/img/unity/xcode/bitcode-1.png)
 
 `TARGET` -> `Build Settings` -> `搜索 Enable Bitcode`
 设置成：`NO`
-![](https://blog.lolo.link/img/unity/xcode/bitcode-2.png)
+![](https://static.lolo.link/img/unity/xcode/bitcode-2.png)
 
 ---
 
@@ -30,7 +30,7 @@
 ---
 
 ### Could not produce class with ID [Number]
-![](https://blog.lolo.link/img/unity/xcode/find-class-id.png)
+![](https://static.lolo.link/img/unity/xcode/find-class-id.png)
 ##### Find Class with ID: 
 <https://docs.unity3d.com/2020.3/Documentation/Manual/ClassIDReference.html>
 

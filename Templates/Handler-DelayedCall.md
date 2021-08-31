@@ -90,5 +90,3 @@ end
  - `DelayedFrameCall()` 在指定游戏帧数后执行回调。
  - `DelayedCallWithTarget()` 在指定 游戏时间（默认） 或 真实时间 后执行回调。届时，如果指定的 target 值为 null，将会取消（不执行）回调。
  - `CancelDelayedCall()` 取消延迟回调，清除引用，并将对应的 Handler 回收到池中。
-
-

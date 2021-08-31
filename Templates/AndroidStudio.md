@@ -55,7 +55,7 @@ android.injected.testOnly=false
 
 ### Could not produce class with ID xxx
 ##### Find Class with ID: 
-<https://docs.unity3d.com/2018.1/Documentation/Manual/ClassIDReference.html>
+<https://docs.unity3d.com/2020.3/Documentation/Manual/ClassIDReference.html>
 
 ##### Append Class
 
