@@ -35,6 +35,7 @@ public class ShibaInu_LuaHelperWrap
 		L.RegFunction("Relaunch", Relaunch);
 		L.RegFunction("New", _CreateShibaInu_LuaHelper);
 		L.RegFunction("__tostring", ToLua.op_ToString);
+		L.RegVar("ClipboardText", get_ClipboardText, set_ClipboardText);
 		L.EndClass();
 	}
 
@@ -530,6 +531,35 @@ public class ShibaInu_LuaHelperWrap
 		{
 			ToLua.CheckArgsCount(L, 0);
 			ShibaInu.LuaHelper.Relaunch();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int get_ClipboardText(IntPtr L)
+	{
+		try
+		{
+			LuaDLL.lua_pushstring(L, ShibaInu.LuaHelper.ClipboardText);
+			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int set_ClipboardText(IntPtr L)
+	{
+		try
+		{
+			string arg0 = ToLua.CheckString(L, 2);
+			ShibaInu.LuaHelper.ClipboardText = arg0;
 			return 0;
 		}
 		catch (Exception e)

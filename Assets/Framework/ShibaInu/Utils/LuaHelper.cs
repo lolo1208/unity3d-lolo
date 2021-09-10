@@ -84,6 +84,16 @@ namespace ShibaInu
 
 
         /// <summary>
+        /// 获取 / 设置 系统剪切板文本内容
+        /// </summary>
+        public static string ClipboardText
+        {
+            set { GUIUtility.systemCopyBuffer = value; }
+            get { return GUIUtility.systemCopyBuffer; }
+        }
+
+
+        /// <summary>
         /// 是否有相机权限
         /// </summary>
         /// <returns></returns>
