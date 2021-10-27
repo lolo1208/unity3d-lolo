@@ -35,6 +35,8 @@ namespace ShibaInu
         public const string EmptySceneName = "Empty";
         /// 版本信息文件名称
         public const string VerCfgFileName = "version.cfg";
+        /// 版本信息记录在 PlayerPrefs 中使用的 key
+        public const string VerInfoPPK = "INSTALLED_VERSION";
         /// Shaders 变体信息文件路径
         public const string SvcFilePath = "Shaders/Shaders.shadervariants";
         /// 资源文件夹路径
