@@ -81,36 +81,28 @@ namespace ShibaInu
         {
             if (Common.IsDebug) return;
 
-            string verCfgFilePath = Constants.UpdateDir + Constants.VerCfgFileName;// 版本信息文件路径
-            bool hasUpdate = FileHelper.Exists(verCfgFilePath);// 是否有更新过
+            string updateVerCfgPath = Constants.UpdateDir + Constants.VerCfgFileName;// 更新目录的版本信息文件路径
+            bool hasUpdate = FileHelper.Exists(updateVerCfgPath);// 是否有更新过
 
-            // 有更新过
-            if (hasUpdate)
+            string insVer = FileHelper.GetText(Constants.PackageDir + Constants.VerCfgFileName);// 底包版本信息
+            string verStr = Common.VersionInfo.CoreVersion + "|" + insVer;// 当前版本信息
+            string recVer = PlayerPrefs.GetString(Constants.VerInfoPPK, "");// 已记录的版本信息
+
+            // 当前版本信息 与 记录的版本信息 不一致
+            if (verStr != recVer)
             {
-                string insVer = FileHelper.GetText(Constants.PackageDir + Constants.VerCfgFileName);// 底包版本信息
-                string verStr = Common.VersionInfo.CoreVersion + "|" + insVer;// 当前版本信息
-                string recVer = PlayerPrefs.GetString(Constants.VerInfoPPK, "");// 已记录的版本信息
-
-                // 没记录过
-                if (recVer == "")
-                    PlayerPrefs.SetString(Constants.VerInfoPPK, verStr);
-
-                // 当前版本信息 与 记录的版本信息 不一致，可能是覆盖安装导致
-                else if (verStr != recVer)
+                PlayerPrefs.SetString(Constants.VerInfoPPK, verStr);
+                if (hasUpdate)
                 {
                     hasUpdate = false;
                     UpdateManager.Repair();
-                    PlayerPrefs.SetString(Constants.VerInfoPPK, verStr);
                 }
             }
 
-            if (!hasUpdate)// 从未更新过
-                verCfgFilePath = Constants.PackageDir + Constants.VerCfgFileName;
-
 
             // 获取并解析版本号
-            string fullVersion = FileHelper.GetText(verCfgFilePath);
-            Debug.Log("[ResManager] Version: " + fullVersion);
+            string fullVersion = hasUpdate ? FileHelper.GetText(updateVerCfgPath) : insVer;
+            Debug.Log("[ResManager] Full Version: " + fullVersion);
             Common.VersionInfo.FullVersion = fullVersion;
 
             string[] verStrArr = fullVersion.Split('.');
