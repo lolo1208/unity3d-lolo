@@ -3,7 +3,9 @@ using System.Threading;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Collections;
 using ICSharpCode.SharpZipLib.Zip;
+using UnityEngine;
 
 
 namespace ShibaInu
@@ -15,7 +17,7 @@ namespace ShibaInu
     public static class UpdateManager
     {
 
-        #region 解压更新包 ZIP 文件（后台线程）
+        #region 解压更新包 ZIP 文件（协程）
 
         /// 状态 - 无状态（还未开始解压缩）
         public static readonly int STATE_EXTRACT_NONE = 0;
@@ -33,10 +35,7 @@ namespace ShibaInu
         public static int State { get; private set; } = STATE_EXTRACT_NONE;
 
         /// 解压缩进度（0~1）
-        public static float Progress
-        {
-            get { return (float)s_extractNum / s_totalNum; }
-        }
+        public static float Progress { get { return s_progress; } }
 
         /// 解压缩出错（或被取消）时，对应的错误信息
         public static string ErrorMessage { get; private set; } = string.Empty;
@@ -48,6 +47,12 @@ namespace ShibaInu
         private static int s_totalNum = 1;
         /// 已完成解压缩的文件数
         private static int s_extractNum;
+        /// 当前已解压进度
+        private static float s_progress;
+        /// 上次记录的解压进度
+        private static float s_progressRec;
+        /// 卸载资源的协程对象
+        private static Coroutine s_coExtract;
 
 
         /// <summary>
@@ -61,14 +66,17 @@ namespace ShibaInu
 
             if (!File.Exists(patchPackagePath))
             {
-                ExtractException(new Exception(string.Format(Constants.E1003, patchPackagePath)));
+                ExtractException(new Exception(string.Format(Constants.E1004, patchPackagePath)));
                 return;
             }
 
             try
             {
                 State = STATE_EXTRACTING;
-                ThreadPool.QueueUserWorkItem(DoExtract);
+                s_progressRec = 0;
+                if (s_coExtract != null)
+                    Common.looper.StopCoroutine(s_coExtract);
+                s_coExtract = Common.looper.StartCoroutine(DoExtract());
             }
             catch (Exception e)
             {
@@ -78,75 +86,115 @@ namespace ShibaInu
 
 
         /// <summary>
-        /// 执行解压缩任务（线程函数）
+        /// 执行解压缩任务（协程）
         /// </summary>
-        /// <param name="stateInfo"></param>
-        private static void DoExtract(object stateInfo)
+        private static IEnumerator DoExtract()
         {
             // 被取消了
-            if (State != STATE_EXTRACTING) return;
+            if (State != STATE_EXTRACTING) yield break;
 
+            // 创建更新文件目录
+            DirectoryInfo updateDir = new DirectoryInfo(Constants.UpdateDir);
+            if (!updateDir.Exists)
+                updateDir.Create();
+
+            string version = "";
+            ZipInputStream zip;
             try
             {
-                // 创建更新文件目录
-                DirectoryInfo updateDir = new DirectoryInfo(Constants.UpdateDir);
-                if (!updateDir.Exists)
-                    updateDir.Create();
-
                 // 获取总文件数
                 using (ZipFile zipFile = new ZipFile(s_zipPath))
                     s_totalNum = Convert.ToInt32(zipFile.Count);
-
-                string version = "";
-                using (ZipInputStream zip = new ZipInputStream(File.Open(s_zipPath, FileMode.Open)))
-                {
-                    ZipEntry entry;
-                    while ((entry = zip.GetNextEntry()) != null && State == STATE_EXTRACTING)
-                    {
-                        s_extractNum++;
-                        if (entry.Name == "./") continue;
-
-                        if (entry.Name == Constants.VerCfgFileName)
-                        {
-                            // 版本号文件（version.cfg）的内容先记录下来，解压全部完成后，再写入文件中
-                            byte[] bytes = new byte[entry.Size];
-                            zip.Read(bytes, 0, bytes.Length);
-                            version = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
-                        }
-                        else
-                        {
-                            // 解压（写入）文件
-                            using (FileStream fs = new FileStream(Constants.UpdateDir + entry.Name, FileMode.Create))
-                            {
-                                byte[] buffer = new byte[1024 * 2];
-                                int len;
-                                while ((len = zip.Read(buffer, 0, buffer.Length)) > 0)
-                                    fs.Write(buffer, 0, len);
-                            }
-                        }
-                    }
-                }
-                // 被取消或出错了
-                if (State != STATE_EXTRACTING) return;
-
-                // 写入 version.cfg
-                using (StreamWriter sw = new StreamWriter(VersionConfigFilePath, false))
-                    sw.Write(version);
-
-                // complete
-                State = STATE_EXTRACT_COMPLETED;
-                ClearCache();
-                File.Delete(s_zipPath);// 删除更新包文件
+                zip = new ZipInputStream(File.Open(s_zipPath, FileMode.Open));
             }
             catch (Exception e)
             {
                 ExtractException(e);
+                yield break;
             }
+
+            while (State == STATE_EXTRACTING)
+            {
+                ZipEntry entry;
+                try
+                {
+                    entry = zip.GetNextEntry();
+                }
+                catch (Exception e)
+                {
+                    ExtractException(e);
+                    break;
+                }
+                if (entry == null) break;// 解压完毕
+
+                s_extractNum++;
+                s_progress = (float)s_extractNum / s_totalNum;
+                // 进度每超过 1% 时停留一会，留给界面更新时间
+                if (s_progress - s_progressRec > 0.01 || s_progress == 1)
+                {
+                    s_progressRec = s_progress;
+                    yield return new WaitForEndOfFrame();
+                }
+
+                try
+                {
+                    if (entry.Name == "./") continue;
+                    if (entry.Name == Constants.VerCfgFileName)
+                    {
+                        // 版本号文件（version.cfg）的内容先记录下来，解压全部完成后，再写入文件中
+                        byte[] bytes = new byte[entry.Size];
+                        zip.Read(bytes, 0, bytes.Length);
+                        version = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+                    }
+                    else
+                    {
+                        // 解压（写入）文件
+                        using (FileStream fs = new FileStream(Constants.UpdateDir + entry.Name, FileMode.Create))
+                        {
+                            byte[] buffer = new byte[1024 * 2];
+                            int len;
+                            while ((len = zip.Read(buffer, 0, buffer.Length)) > 0)
+                                fs.Write(buffer, 0, len);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    ExtractException(e);
+                    break;
+                }
+            }
+
+            zip?.Dispose();
+            if (State != STATE_EXTRACTING) yield break;// 被取消或出错了
+
+            // 写入 version.cfg
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(VersionConfigFilePath, false))
+                    sw.Write(version);
+            }
+            catch (Exception e)
+            {
+                ExtractException(e);
+                yield break;
+            }
+
+            // complete
+            State = STATE_EXTRACT_COMPLETED;
+            s_coExtract = null;
+            ClearCache();
+            File.Delete(s_zipPath);// 删除更新包文件
         }
 
 
         private static void ExtractException(Exception e)
         {
+            if (s_coExtract != null)
+            {
+                Common.looper.StopCoroutine(s_coExtract);
+                s_coExtract = null;
+            }
             State = STATE_EXTRACT_ERROR;
             ErrorMessage = e.Message;
             LogException(e);
@@ -188,14 +236,12 @@ namespace ShibaInu
         /// <returns></returns>
         public static bool VerifyPatchPackage(string pkgPath, string md5)
         {
-            if (!File.Exists(pkgPath))
-                return false;
-
-            if (MD5Util.GetFileMD5(pkgPath) == md5)
-                return true;
-
             try
             {
+                if (!File.Exists(pkgPath)) return false;
+
+                if (MD5Util.GetFileMD5(pkgPath) == md5) return true;
+
                 File.Delete(pkgPath);
             }
             catch (Exception e)

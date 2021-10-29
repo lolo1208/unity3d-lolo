@@ -219,11 +219,9 @@ namespace ShibaInu
                             }
                         }
                     }
-
-                    // 下载完成
-                    InvokeCallback(STATUS_CODE_COMPLETE);
                 }
-
+                // 下载完成
+                InvokeCallback(STATUS_CODE_COMPLETE);
             }
             catch (Exception e)
             {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -40,14 +39,13 @@ namespace ShibaInu
         /// <param name="isShort">If set to <c>true</c> is short.</param>
         public static string GetFileMD5(string filePath, bool isShort = false)
         {
-            using (IDisposable fs = new FileStream(filePath, FileMode.Open), md5 = MD5.Create())
+            using (MD5 md5 = MD5.Create())
+            using (FileStream fs = new FileStream(filePath, FileMode.Open))
             {
-                byte[] data = ((MD5)md5).ComputeHash((FileStream)fs);
+                byte[] data = md5.ComputeHash(fs);
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < data.Length; i++)
-                {
                     sb.Append(data[i].ToString("x2"));
-                }
                 string dest = sb.ToString();
                 return isShort ? dest.Substring(8, 16) : dest;
             }
