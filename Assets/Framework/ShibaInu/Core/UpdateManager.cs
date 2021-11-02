@@ -208,6 +208,12 @@ namespace ShibaInu
         {
             if (State == STATE_EXTRACTING)
                 State = STATE_EXTRACT_ABORT;
+
+            if (s_coExtract != null)
+            {
+                Common.looper.StopCoroutine(s_coExtract);
+                s_coExtract = null;
+            }
         }
 
 
