@@ -202,7 +202,7 @@ function MapList:Add(value, ...)
         self._keys[keys[i]] = index
     end
 
-    self:DispatchDataEvent()
+    self:DispatchDataEvent(index, nil, value)
     return index
 end
 
@@ -260,7 +260,7 @@ function MapList:RemoveByIndex(index)
         end
     end
 
-    self:DispatchDataEvent()
+    self:DispatchDataEvent(index, value)
     return value
 end
 
