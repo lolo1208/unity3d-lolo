@@ -2,12 +2,20 @@
   "name": "lolo-unity-tools",
   "version": "1.0.0",
   "description": "lolo unity project tools",
-  "main": "index.js",
+  "main": "build.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "LOLO",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lolo1208/unity3d-lolo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lolo1208/unity3d-lolo/issues"
+  },
+  "homepage": "https://github.com/lolo1208/unity3d-lolo",
   "dependencies": {
     "archiver": "^3.0.0",
     "commander": "^2.19.0",
