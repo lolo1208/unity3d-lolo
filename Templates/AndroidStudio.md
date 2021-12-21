@@ -57,11 +57,10 @@ android.injected.testOnly=false
 ##### Find Class with ID: 
 <https://docs.unity3d.com/2020.3/Documentation/Manual/ClassIDReference.html>
 
-##### Append Class
+##### Find Assemblies: 
+<https://docs.unity3d.com/2020.3/Documentation/ScriptReference/UnityEngine.AIModule.html>
 
-&nbsp;&nbsp;&nbsp; to \[ Assets/Link.xml ]
-
-&nbsp;&nbsp;&nbsp; or \[ Assets/Resources/Link.xxx ] \( Editor Class, Save File or Prefab )
+然后将对应的 Assembly 和 Class 添加到 `Assets/link.xml` 文件中
 
 ---
 

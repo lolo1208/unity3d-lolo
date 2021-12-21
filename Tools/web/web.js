@@ -16,8 +16,10 @@ var LOG_TYPE = {
 
 // 在 Unity log 中需要标红的报错关键字
 var failedKeys = [
-    "Error", "Exception", "Script asset",
-    "not supported", "Unrecognized assets",
+    "Error", "Exception", "Failed", "Script asset",
+    "not supported",
+    "Unrecognized assets",
+    "Cannot mark assets",
     "Usage Description is empty"
 ];
 
