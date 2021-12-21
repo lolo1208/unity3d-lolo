@@ -8,4 +8,9 @@
         <type fullname="UnityEngine.FlareLayer" preserve="all"/>
         <type fullname="UnityEngine.AudioListener" preserve="all"/>
     </assembly>
+
+
+    <assembly fullname="UnityEngine.AnimationModule">
+        <type fullname="UnityEngine.RuntimeAnimatorController" preserve="all"/>
+    </assembly>
 </linker>
