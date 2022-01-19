@@ -28,6 +28,24 @@ let sceneIndex;
 buildUnity.start = function (cb) {
     callback = cb;
 
+    // 从 BuildRules 文件中获取需要每次都重新打包都场景列表
+    let buildRulesFile = `${common.projectDir}Assets/Res/BuildRules.txt`;
+    let sceneRules = null;
+    buildRulesFile = fs.readFileSync(buildRulesFile, 'utf8');
+    let buildRules = buildRulesFile.split('\n');
+    for (let i = 0; i < buildRules.length; i++) {
+        let line = buildRules[i].trim();
+        if (line === '') continue;
+        if (line.startsWith('//')) continue;
+        if (line.startsWith('-scene')) {// 只解析 -scene 规则
+            sceneRules = {};
+            continue;
+        }
+        if (sceneRules === null) continue;// 还未解析到 -scene 规则
+        if (line.startsWith('-')) break;// 已解析至下一条规则
+        sceneRules[line] = true;// 将该场景标记为需要打包
+    }
+
     // 获取缓存的场景 MD5 信息
     if (fs.existsSync(common.sceneMD5File))
         sceneCache = JSON.parse(fs.readFileSync(common.sceneMD5File));
@@ -47,8 +65,8 @@ buildUnity.start = function (cb) {
         let sceneName = path.basename(scenePath, '.unity');
         let cache = sceneCache[common.targetPlatform];
         common.getFileMD5(scenePath, (md5) => {
-            // 场景与缓存不一致
-            if (md5 !== cache[sceneName]) {
+            // 场景与缓存不一致 或 始终需要打包
+            if ((md5 !== cache[sceneName]) || (sceneRules && sceneRules[sceneName])) {
                 cache[sceneName] = md5;
                 buildScenes.push(index);
             }
@@ -159,7 +177,7 @@ let delayReadUnityOut = function () {
  */
 buildUnity.useLibraryCache = function () {
     common.createDir(common.libraryCaheRootDir + 'o.o');
-    // 处理已存在的 [Priject]/Library 目录
+    // 处理已存在的 [Project]/Library 目录
     if (fs.existsSync(common.libraryDir)) {
         if (!fs.existsSync(common.libraryNativeDir))
             fs.renameSync(common.libraryDir, common.libraryNativeDir);

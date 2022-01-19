@@ -422,6 +422,11 @@ namespace ShibaInu
                         extNames = s_assetsExtNames;
                         continue;
                     }
+                    if (line.StartsWith("-scene", StringComparison.Ordinal))
+                    {
+                        rules = extNames = new HashSet<string>();// 该规则由 NodeJS 解析和使用
+                        continue;
+                    }
 
                     line = line.Replace("\\", "/");
                     if (line.StartsWith("*.", StringComparison.Ordinal))

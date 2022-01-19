@@ -25,7 +25,6 @@ let resManifest = [];// resManifestFile 文件内容
 let resList = copyRes.resList = [];// 包含的资源列表
 let resMap = {};// 资源路径 -> 资源文件名 映射表
 let newResList = [];// 新增资源（路径）列表
-let md5List = {};// 文件（内容）MD5 列表
 let callback;// 拷贝完成时的回调
 
 

@@ -115,6 +115,12 @@ function showLog(element) {
             autoScrollDiv.style.visibility = "visible";
             delayRefreshLog();
 
+            // 转义 Unity 日志中的尖括号
+            if (type == LOG_TYPE.UNITY) {
+                data = data.replace(/</gi, '&lt;');
+                data = data.replace(/>/gi, '&gt;');
+            }
+
             // 打包结束，并失败，将 Unity 日志中的报错信息标红
             if (!packaging && !successful && type == LOG_TYPE.UNITY) {
                 data = data.replace(/error/gi, 'Error');// error 关键字大小写需要统一
@@ -128,7 +134,8 @@ function showLog(element) {
                         endIdx = data.indexOf('<br/>', idx);
                         var errStr = data.substring(startIdx, endIdx);
                         if (errStr.indexOf('Socket: connect failed') == -1
-                            && errStr.indexOf('[LicensingClient]') == -1
+                            && errStr.indexOf('external process') == -1
+                            && errStr.indexOf('LicensingClient') == -1
                             && errStr.indexOf('[usbmuxd] Error') == -1
                             && errStr.indexOf('Debug:LogError') == -1
                             && errStr.indexOf('LuaException.cs') == -1
@@ -396,7 +403,7 @@ function formatTime(millisec) {
         minutes = minutes - (hours * 60);
     }
 
-    seconds = (seconds % 60).toFixed(1);
+    seconds = (seconds % 60).toFixed(2);
     if (minutes == 0)
         return seconds + 's';
 
