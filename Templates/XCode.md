@@ -87,3 +87,15 @@ xCode 7 uses tdb libraries instead of dylib libraries. So you should remove the 
 `TARGET` -> `Build Setting` -> `Linking` -> `Other Linker Flags`
 
 添加内容：`-ObjC -all_load`
+
+---
+
+### 启动时报错
+```
+dyld: Library not loaded: @rpath/UnityFramework.framework/UnityFramework...
+
+dyld: launch, loading dependent libraries
+DYLD_INSERT_LIBRARIES=/Developer/usr/lib/libMainThreadChecker.dylib:/Developer/Library/PrivateFrameworks/DTDDISupport.framework/libViewDebuggerSupport.dylib
+```
+这个错误出现于：XCode 为最新版本 (xcode 13.2.1)，设备 iOS 版本很低 (ios 13)。
+解决方法：只需升级设备的 iOS 版本即可 (ios 15)。
