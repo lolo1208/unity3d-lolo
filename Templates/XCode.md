@@ -96,12 +96,12 @@ So you should remove the `libiconv.2.dylib` dependency and add `libiconv.2.tdb`.
 ---
 
 ### dyld: Library not loaded
+```
+dyld: Library not loaded: @rpath/UnityFramework.framework/UnityFramework...
 
-> dyld: Library not loaded: @rpath/UnityFramework.framework/UnityFramework...
->
-> dyld: launch, loading dependent libraries
+dyld: launch, loading dependent libraries
 DYLD_INSERT_LIBRARIES=/Developer/usr/lib/libMainThreadChecker.dylib:/Developer/Library/PrivateFrameworks/DTDDISupport.framework/libViewDebuggerSupport.dylib
-
+```
 这个错误出现于：XCode 为最新版本 (xcode 13.2.1)，设备 iOS 版本过低 (ios 13)。
 解决方法：升级设备的 iOS 至最新版本 (ios 15)。
 
