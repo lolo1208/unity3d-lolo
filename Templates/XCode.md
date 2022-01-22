@@ -1,31 +1,35 @@
 # Unity XCode 项目相关笔记
 
-### 添加和设置框架代码
+## 添加和设置框架代码
 * 右键点击项目，选择 `Add Files to "项目"...`，在弹出的窗口中选择 `Sources` 目录，Added Folders 选择 `Create Groups`
+
  ![](https://static.lolo.link/img/unity/xcode/add-sources.png)
 
-* 选中文件 `Libraries/Plugins/iOS/ShibaInu/AppControllerProtocol.h`，设置为 `Public`
+* 选中文件 `Libraries/Plugins/iOS/ShibaInu/AppControllerProtocol.h`
+设置为 `Public`
+
  ![](https://static.lolo.link/img/unity/xcode/set-app-controller-protocol.h.png)
 
 * <font color=red>Undefined symbol: \_OBJC\_CLASS\_$\_UnityFramework</font>
 
- `TARGET` -> `Build Phases` -> `Link Binary With Libraries` 添加 `UnityFramework`
+ `TARGET` -> `Build Phases` -> `Link Binary With Libraries`
+ 添加 `UnityFramework`
+ 
  ![](https://static.lolo.link/img/unity/xcode/link-unity-framework.png)
 
----
+<br>
+<br>
+<br>
+
+## 遇到过的问题
 
 ### 禁用 Bitcode
 报错如图：
 ![](https://static.lolo.link/img/unity/xcode/bitcode-1.png)
 
-`TARGET` -> `Build Settings` -> `搜索 Enable Bitcode`
+`TARGET` -> `Build Settings` -> `Enable Bitcode`
 设置成：`NO`
 ![](https://static.lolo.link/img/unity/xcode/bitcode-2.png)
-
----
-
-### 运行时崩溃
- * 查看控制台是否有Could not produce class with ID [Number] 错误。
 
 ---
 
@@ -42,7 +46,7 @@
 ---
 
 ### Could not launch “[App Name]”
- * iPhone7-36 has denied the launch request.<br>
+* iPhone7-36 has denied the launch request.<br>
    原因可能是证书类型与运行目标类型不匹配。打开Edit Scheme，
    确认 Build Configuration 值：Debug 或 Release;
    以及 Signing Certificate 值：Developer 或 Distribution 是否匹配。
@@ -57,7 +61,8 @@
 ---
 
 ### libiconv.2.dylib is in RED
-xCode 7 uses tdb libraries instead of dylib libraries. So you should remove the `libiconv.2.dylib` dependency and add `libiconv.2.tdb`.
+XCode 7 uses tdb libraries instead of dylib libraries.
+So you should remove the `libiconv.2.dylib` dependency and add `libiconv.2.tdb`.
 
 ---
 
@@ -90,12 +95,21 @@ xCode 7 uses tdb libraries instead of dylib libraries. So you should remove the 
 
 ---
 
-### 启动时报错
-```
-dyld: Library not loaded: @rpath/UnityFramework.framework/UnityFramework...
+### dyld: Library not loaded
 
-dyld: launch, loading dependent libraries
+> dyld: Library not loaded: @rpath/UnityFramework.framework/UnityFramework...
+>
+> dyld: launch, loading dependent libraries
 DYLD_INSERT_LIBRARIES=/Developer/usr/lib/libMainThreadChecker.dylib:/Developer/Library/PrivateFrameworks/DTDDISupport.framework/libViewDebuggerSupport.dylib
-```
-这个错误出现于：XCode 为最新版本 (xcode 13.2.1)，设备 iOS 版本很低 (ios 13)。
-解决方法：只需升级设备的 iOS 版本即可 (ios 15)。
+
+这个错误出现于：XCode 为最新版本 (xcode 13.2.1)，设备 iOS 版本过低 (ios 13)。
+解决方法：升级设备的 iOS 至最新版本 (ios 15)。
+
+---
+
+### Multiple commands produce
+这个错误是由于存在 Info.plist 导致的。
+解决办法：
+
+Solution -> `TARGET` -> `Build Phases` > `Copy Bundle Resources`
+and remove `Info.plist` from there.
