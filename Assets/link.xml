@@ -13,4 +13,7 @@
     <assembly fullname="UnityEngine.AnimationModule">
         <type fullname="UnityEngine.RuntimeAnimatorController" preserve="all"/>
     </assembly>
+
+
+    <assembly fullname="Unity.Timeline" preserve="all"/>
 </linker>
