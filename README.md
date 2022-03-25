@@ -8,8 +8,8 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
 
 #### * 默认环境和版本
   - [Unity Editor 2020.3.12f1](https://unity3d.com/cn/unity/whats-new/2020.3.12) 可升级至任意版本
-  - [IntelliJ IDEA CE 2021.3](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
-  - [EmmyLua 1.3.6.215](https://plugins.jetbrains.com/plugin/9768-emmylua/versions/stable) 该插件可用于 [lua 代码提示](https://emmylua.github.io)。安装包放在 Templates/IntelliJ-EmmyLua-1.3.6.215-IDEA211.zip
+  - [IntelliJ IDEA CE 2021.3.3](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
+  - [EmmyLua 1.3.6.224](https://plugins.jetbrains.com/plugin/9768-emmylua/versions/stable) 该插件可用于 [lua 代码提示](https://emmylua.github.io)。安装包放在 Templates/IntelliJ-EmmyLua-1.3.6.224-IDEA213.zip
   - `EmmyLua AttachDebugger 1.0.9` 该插件可用于断点调试 lua 代码。安装包放在 Templates/EmmyLua-AttachDebugger-1.0.9.zip
   - [Visual Studio Community](https://visualstudio.microsoft.com/zh-hans/free-developer-offers) 2019 / 8.10.17 for Mac
   - [tolua 1.0.7](https://github.com/topameng/tolua), lua 5.1, [release encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
@@ -31,7 +31,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   - `Templates/EmptyProject_Assets/` 如果你想打出一个不包含任何资源文件的 XCode 或 AndroidStudio 项目，可以将 Assets/Lua 和 Assets/Res 目录删除，然后将该目录下的内容拷贝到 Assets 目录下，再进行打包操作。
   - `Tools/` 工具目录，目前主要包含了打包相关工具。你可以在 Build 段落看到详解。
   - `Tools/templates` 框架包含的 Java / OC 代码，打包 Andorid / XCode 项目时，会自动拷贝到 Android / XCode 项目中。
-  - `Logs/Running.log` 运行时产生的日志。详细介绍可查看 Templates/Logger.docx
+  - `Logs/Running.log` 运行时产生的日志。详细介绍可查看 [Templates/Logger.md](https://github.com/lolo1208/unity3d-lolo/blob/master/Templates/Logger.md)
   - `LuaAPI/` 该目录内生成了提供给 Lua 访问的 C# 类，属性，方法等，
   配合 EmmyLua 插件可在 IDEA 中实现 代码提示，快速访问，查看数据，参数类型，注释等。
   可在菜单栏中点击 `ShibaInu`->`Generate Lua API` 自动生成。
