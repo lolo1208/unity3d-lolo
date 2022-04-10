@@ -105,7 +105,7 @@ namespace ShibaInu
 
         // ----
 
-        [MenuItem("ShibaInu/Clear & Gen Lua Wraps", false, 301)]
+        [MenuItem("ShibaInu/General Lua Wraps", false, 301)]
         private static void ClearLuaWraps()
         {
             ToLuaMenu.ClearLuaWraps();
