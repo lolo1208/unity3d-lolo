@@ -2,9 +2,11 @@
 .idea
 .vs
 .vsconfig
+.vscode
 
 *.csproj
 *.sln
+*.sln.DotSettings.user
 *.userprefs
 
 obj
@@ -14,6 +16,8 @@ UnityPackageManager
 Temp
 LuaAPI
 Logs
+
+UserSettings
 Packages/packages-lock.json
 
 Assets/StreamingAssets
@@ -30,5 +34,3 @@ Tools/tmp
 Tools/build
 Tools/node_modules
 Tools/package-lock.json
-
-UserSettings
