@@ -224,7 +224,9 @@ let copyAssetBundle = function () {
  */
 let writeAssetBundleInfo = function () {
     // 读取 AssetBundle 依赖信息临时文件
-    let depMap = JSON.parse(fs.readFileSync(common.abDependenciesFile));
+    let depData = fs.readFileSync(common.abDependenciesFile, 'utf8');
+    let depMap = JSON.parse(depData);
+    fs.writeFileSync(common.depLogFile, depData);
 
     // resManifest 写入 AssetBundle 信息
     let list = manifest.data.ab;

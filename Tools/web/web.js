@@ -11,6 +11,7 @@ var LOG_TYPE = {
     MANIFEST: 'manifest',
     UNITY: 'unity',
     RES: 'res',
+    DEP: 'dependencies',
     PROGRESS: 'progress'
 };
 
@@ -76,38 +77,57 @@ function showLog(element) {
         E('logTitle').innerHTML = element.innerHTML;
 
 
-        var resTable, startIdx, endIdx;
-        if (type == LOG_TYPE.BUILD) {
-            // 取版本号
-            if (versionNum == null) {
-                startIdx = data.indexOf('version = ');
-                if (startIdx != -1) {
-                    endIdx = data.indexOf('\n', startIdx);
-                    versionNum = data.substring(startIdx + 10, endIdx);
-                    showPackIDAndVersion();
-                }
-            }
+        var resTable, depContent, startIdx, endIdx;
+        switch (type) {
 
-            // 取 zip 地址，显示下载按钮
-            if (!packaging && zipPath == null) {
-                startIdx = data.indexOf(' zip: ');
-                if (startIdx != -1) {
-                    endIdx = data.indexOf('\n', startIdx);
-                    zipPath = data.substring(startIdx + 6, endIdx);
-                    E('downloadBtn').style.visibility = 'visible';
+            case LOG_TYPE.BUILD:
+                // 取版本号
+                if (versionNum == null) {
+                    startIdx = data.indexOf('version = ');
+                    if (startIdx != -1) {
+                        endIdx = data.indexOf('\n', startIdx);
+                        versionNum = data.substring(startIdx + 10, endIdx);
+                        showPackIDAndVersion();
+                    }
                 }
-            }
-        } else if (type == LOG_TYPE.RES) {
-            resTable = '<table class="res-tb">';
-            data = JSON.parse(data);
-            var i = 0;
-            for (var key in data) {
-                resTable += (++i % 2 == 0) ? '<tr class="res-tb-tr-odd">' : '<tr>';
-                resTable += '<td class="res-tb-td-left">' + data[key] + '</td>';
-                resTable += '<td class="res-tb-td-right" title="' + key + '">' + key + '</td>';
-                resTable += '</tr>';
-            }
-            resTable += '</table>';
+
+                // 取 zip 地址，显示下载按钮
+                if (!packaging && zipPath == null) {
+                    startIdx = data.indexOf(' zip: ');
+                    if (startIdx != -1) {
+                        endIdx = data.indexOf('\n', startIdx);
+                        zipPath = data.substring(startIdx + 6, endIdx);
+                        E('downloadBtn').style.visibility = 'visible';
+                    }
+                }
+                break;
+
+            case LOG_TYPE.RES:
+                resTable = '<table class="res-tb">';
+                data = JSON.parse(data);
+                var i = 0;
+                for (var key in data) {
+                    resTable += (++i % 2 == 0) ? '<tr class="res-tb-tr-odd">' : '<tr>';
+                    resTable += '<td class="res-tb-td-left">' + data[key] + '</td>';
+                    resTable += '<td class="res-tb-td-right" title="' + key + '">' + key + '</td>';
+                    resTable += '</tr>';
+                }
+                resTable += '</table>';
+                break;
+
+            case LOG_TYPE.DEP:
+                depContent = '';
+                var obj = JSON.parse(data);
+                for (var abPath in obj) {
+                    depContent += '<div class="dep-item">';
+                    depContent += '<p>' + abPath + '</p>';
+                    var list = obj[abPath];
+                    for (var j = 0; j < list.length; j++) {
+                        depContent += '<p>- ' + list[j] + '</p>';
+                    }
+                    depContent += '</div>';
+                }
+                break;
         }
 
         var autoScrollDiv = E("autoScrollDiv");
@@ -178,7 +198,16 @@ function showLog(element) {
         if (packaging || type != LOG_TYPE.UNITY)
             E('nextErrorBtn').style.visibility = 'hidden';
 
-        logContent.innerHTML = type == LOG_TYPE.RES ? resTable : data.replace(/\n/g, '<br/>');
+        switch (type) {
+            case LOG_TYPE.RES:
+                logContent.innerHTML = resTable;
+                break;
+            case LOG_TYPE.DEP:
+                logContent.innerHTML = depContent;
+                break;
+            default:
+                logContent.innerHTML = data.replace(/\n/g, '<br/>');
+        }
         scrollToBottom();
     });
 }

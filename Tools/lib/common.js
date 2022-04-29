@@ -160,6 +160,8 @@ common.unityLogFile = `${common.logDir}unity.log`;
 common.unityOutFile = `${common.logDir}unity.out`;
 // 资源映射日志文件路径
 common.resLogFile = `${common.logDir}res.log`;
+// AssetBundle 依赖信息日志文件路径
+common.depLogFile = `${common.logDir}dependencies.log`;
 
 
 // Unity 程序路径

@@ -172,6 +172,22 @@ html, body {
     text-overflow: ellipsis;
 }
 
+.dep-item {
+    padding: 5px;
+}
+
+.dep-item:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.dep-item p:first-child {
+    font-weight: bold;
+}
+
+.dep-item p:nth-child(n+2) {
+    padding-left: 15px;
+}
+
 .succ-color {
     color: rgb(28, 184, 65);
 }
