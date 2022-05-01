@@ -11,7 +11,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   - [IntelliJ IDEA CE 2021.3.3](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
   - [EmmyLua 1.3.6.224](https://plugins.jetbrains.com/plugin/9768-emmylua/versions/stable) 该插件可用于 [lua 代码提示](https://emmylua.github.io)。安装包放在 Templates/IntelliJ-EmmyLua-1.3.6.224-IDEA213.zip
   - `EmmyLua AttachDebugger 1.0.9` 该插件可用于断点调试 lua 代码。安装包放在 Templates/EmmyLua-AttachDebugger-1.0.9.zip
-  - [Visual Studio Community](https://visualstudio.microsoft.com/zh-hans/free-developer-offers) 2019 / 8.10.17 for Mac
+  - [VS Code](https://code.visualstudio.com/) latest / [Visual Studio Community](https://visualstudio.microsoft.com/zh-hans/free-developer-offers) 2019 / 8.10.17 for Mac
   - [tolua 1.0.7](https://github.com/topameng/tolua), lua 5.1, [release encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
   - 其他：[ndk-r19](https://dl.google.com/android/repository/android-ndk-r19-darwin-x86_64.zip), [Universal Render Pipeline](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@10.5/manual/index.html)
 
@@ -26,7 +26,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
     会被打入底包的场景有 Launcher.unity（启动场景）和 Empty.unity（空场景）。
   - `Assets/Res/BuildRules.txt` 打包规则配置文件，包含 忽略，合并，拆分以及直接拷贝 几种规则。
   - `Assets/Res/Shaders/Shaders.shadervariants` 需要被预热的 Shader 变体。
-    默认会在游戏启动时（launcher.lua 中）调用 [Lua]Res.PreloadShaders() 加载所有 Shader 和预热该文件中包含的变体。
+    默认会在游戏启动时（launcher.lua 中）调用 [Lua]Res.WarmUpShaders() 加载所有 Shader 和预热该文件中包含的变体。
   - `Templates/` 项目用到的模版和说明文档，以及其他杂项。
   - `Templates/EmptyProject_Assets/` 如果你想打出一个不包含任何资源文件的 XCode 或 AndroidStudio 项目，可以将 Assets/Lua 和 Assets/Res 目录删除，然后将该目录下的内容拷贝到 Assets 目录下，再进行打包操作。
   - `Tools/` 工具目录，目前主要包含了打包相关工具。你可以在 Build 段落看到详解。
@@ -48,37 +48,30 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
 
 # 开发环境
 
-启动 IDEA，并点击打开项目，项目目录为 `Assets/`
+启动 IDEA，并点击打开项目，项目目录为 `Assets/Lua/`
 
-然后再标记目录类别，需要将下面三个目录标记为 `Sources Root`，其他目录可标记为 `Excluded`
+打开 `Project Structure` 窗口，点击 `Add Content Root` 按钮，添加目录：
 
-  - Assets/Lua/
   - Assets/Framework/ShibaInu/Lua/
   - Assets/Framework/ToLua/Lua/
 
-标记目录类别有两种操作方式：
-
-  - 在左侧 `Project 文件列表`中右键点击目录，在菜单中选择 `Mark Directory as`->`Excluded` 或 `Sources Root`
-  - 点击 `Project Structure` 按钮，在窗口中选择 `Project Settings`->`Modules` 进行配置。
-    *按钮在右上角放大镜图标左侧*
-
 ###### 最终配置结果如图：
-![](https://static.lolo.link/img/unity/unity-framework/project-structure.jpg)
+![](https://static.lolo.link/img/unity/unity-framework/project-structure.png)
 
 #### * C# -> Lua
 首先，将需要导出给 Lua 访问的 类，属性，方法 等添加到 `Assets/Framework/ToLua/Editor/CustomSettings.cs` 中。
 
-然后，在 Unity Editor 中点击菜单 `ShibaInu`->`Clear & Gen Lua Wraps`。
+然后，在 Unity Editor 中点击菜单 `ShibaInu`->`Generate Lua Wraps`。
 清理完成后，会弹出询问是否 “自动生成” 的对话框，点击`确定`按钮，重新生成所有 C#Wrap 文件。
 
 完成后，再点击 `ShibaInu`->`Generate Lua API` 重新生成 LuaAPI 目录内可供 EmmyLua 插件快速访问和代码提示的 Lua 文件。
 
 不需要导出给 Lua 访问的属性或方法，可添加 `[NoToLua]` 特性标签进行排除，
-或在 `Assets/Framework/ToLua/Editor/ToLuaExport.cs` **memberFilter** 列表中添加排除。
+或在 `Assets/Framework/App/Core/ToLuaExtend.cs` **MEMBER_FILTER** 列表中添加排除。
 
 #### * 安装 EmmyLua 插件
 
-点击 `IntelliJ IDEA`->`Preferences`->`Plugins` 打开插件窗口。
+点击 `Preferences`->`Plugins` 打开插件窗口。
 Windows 为 `File`->`Settings`->`Plugins`
 
 可以在线安装，也可以从硬盘安装，插件放在 `Templates/EmmyLua-1.2.6-IDEA172-181.zip`
