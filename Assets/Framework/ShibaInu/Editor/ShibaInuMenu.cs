@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -164,6 +165,17 @@ namespace ShibaInu
             return File.Exists(Constants.ABModeFilePath);
         }
 
+
+
+        // ----
+
+        [MenuItem("ShibaInu/Clear Console", false, 901)]
+        public static void ClearConsole()
+        {
+            Assembly assembly = Assembly.GetAssembly(typeof(Editor));
+            MethodInfo methodInfo = assembly.GetType("UnityEditor.LogEntries").GetMethod("Clear");
+            methodInfo.Invoke(new object(), null);
+        }
 
 
 
