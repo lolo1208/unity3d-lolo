@@ -9,6 +9,18 @@ local error = error
 local pairs = pairs
 local floor = math.floor
 local remove = table.remove
+local getOnlyID = GetOnlyID
+
+
+--
+--- 可移除标记的最大次数
+local MAX_REMOVE_MARK = 5
+---@type table @ 定时器列表（以delay为key， _list[delay] = { list:已启动的定时器列表, removeMark:被标记了可以移除的次数 }）
+local _list = {}
+---@type Timer[] @ 需要被添加到运行列表的定时器列表
+local _startingList = {}
+---@type Timer[] @ 需要从运行列表中移除的定时器列表
+local _stoppingList = {}
 
 
 --
@@ -36,8 +48,7 @@ local Timer = class("Timer")
 ---@param repeatCount number @ 定时器的总运行次数，默认值0，表示无限运行
 ---@param timerCompleteHandler HandlerRef @ 定时器达到总运行次数时的回调
 function Timer:Ctor(delay, timerHandler, repeatCount, timerCompleteHandler)
-    Timer._onlyKey = Timer._onlyKey + 1
-    self._key = Timer._onlyKey
+    self._key = getOnlyID()
 
     self.running = false
     self.currentCount = 0
@@ -58,9 +69,9 @@ local function UpdateTimer(event)
     local delayChangedList = {} ---@type table<number, number> @ 在回调中，delay 有改变的定时器列表 delayChangedList[index] = key
     local delay, key, timerRunning, ignorable
 
-    local list = Timer._list
-    local startingList = Timer._startingList
-    local stoppingList = Timer._stoppingList
+    local list = _list
+    local startingList = _startingList
+    local stoppingList = _stoppingList
 
     -- 添加应该启动的定时器，以及移除该停止的定时器。上一帧将这些操作延迟到现在来处理的目的，是为了防止循环和回调时造成的问题
     for i = #startingList, 1, -1 do
@@ -142,7 +153,7 @@ local function UpdateTimer(event)
 
         -- 当前 delay，已经没有定时器在运行状态了
         if not timerRunning then
-            if info.removeMark > Timer.MAX_REMOVE_MARK then
+            if info.removeMark > MAX_REMOVE_MARK then
                 removedList[#removedList + 1] = delay
             else
                 info.removeMark = info.removeMark + 1
@@ -154,7 +165,7 @@ local function UpdateTimer(event)
 
     for i = #removedList, 1, -1 do
         delay = remove(removedList, i)
-        if list[delay].removeMark > Timer.MAX_REMOVE_MARK then
+        if list[delay].removeMark > MAX_REMOVE_MARK then
             list[delay] = nil
         end
     end
@@ -172,11 +183,11 @@ end
 local function ChangeTimerState(timer)
     local addList, removeList
     if timer.running then
-        addList = Timer._startingList
-        removeList = Timer._stoppingList
+        addList = _startingList
+        removeList = _stoppingList
     else
-        addList = Timer._stoppingList
-        removeList = Timer._startingList
+        addList = _stoppingList
+        removeList = _startingList
     end
 
     -- 从 remove 列表中移除
@@ -267,24 +278,5 @@ function Timer:GetKey()
 end
 
 
-
---=------------------------------[ static ]------------------------------=--
-
---- 可移除标记的最大次数
-Timer.MAX_REMOVE_MARK = 5
-
----@type table @ 定时器列表（以delay为key， _list[delay] = { list:已启动的定时器列表, removeMark:被标记了可以移除的次数 }）
-Timer._list = {}
----@type number @ 不重复的key
-Timer._onlyKey = 0
-
----@type table<number, Timer> @ 需要被添加到运行列表的定时器列表
-Timer._startingList = {}
----@type table<number, Timer> @ 需要从运行列表中移除的定时器列表
-Timer._stoppingList = {}
-
---=----------------------------------------------------------------------=--
-
-
-
+--
 return Timer

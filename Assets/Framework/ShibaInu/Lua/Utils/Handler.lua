@@ -6,16 +6,7 @@
 
 local unpack = unpack
 local remove = table.remove
-
-
---
-local _refID = 0
---- 获取一个不重复的，对 Handler 的引用 ID
----@return HandlerRef
-local function GetNewHandlerRefID()
-    _refID = _refID + 1
-    return _refID
-end
+local getOnlyID = GetOnlyID
 
 
 --
@@ -112,7 +103,7 @@ function Handler.Get(callback, caller, once, ...)
     handler.caller = caller
     handler.once = once ~= false
     handler.args = { ... }
-    handler.refID = GetNewHandlerRefID()
+    handler.refID = getOnlyID()
     return handler
 end
 

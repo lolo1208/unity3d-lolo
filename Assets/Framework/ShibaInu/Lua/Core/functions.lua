@@ -645,18 +645,11 @@ function CancelDelayedCall(refID)
     end
 end
 
-
-
 --
---- 使用当前时间来设置随机种子，并返回该种子值
----@return number
-function SetRandomseedWithNowTime()
-    local now = System.DateTime.Now
-    local val = (now.Minute * 60 + now.Second) * 1000 + now.Millisecond
-    math.randomseed(val)
-    return val
-end
 
+
+
+--[ Misc ]--
 
 --
 --- 预加载资源
@@ -694,3 +687,25 @@ end
 function SendMessageToNative(action, msg)
     LuaHelper.SendMessageToNative(action, msg or "")
 end
+
+
+--
+--- 使用当前时间来设置随机种子，并返回该种子值
+---@return number
+function SetRandomseedWithNowTime()
+    local now = System.DateTime.Now
+    local val = (now.Minute * 60 + now.Second) * 1000 + now.Millisecond
+    math.randomseed(val)
+    return val
+end
+
+
+--
+local _onlyID = 0
+--- 获取一个不重复的 ID
+---@return number
+function GetOnlyID()
+    _onlyID = _onlyID + 1
+    return _onlyID
+end
+
