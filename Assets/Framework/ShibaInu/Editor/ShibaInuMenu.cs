@@ -76,13 +76,6 @@ namespace ShibaInu
         }
 
 
-        [MenuItem("ShibaInu/Log Window", false, 202)]
-        private static void OpenLogWindow()
-        {
-            LogWindow.Open();
-        }
-
-
         [MenuItem("ShibaInu/Gpu Animation Window", false, 202)]
         private static void OpenGpuAnimationWindow()
         {
@@ -90,16 +83,10 @@ namespace ShibaInu
         }
 
 
-        [MenuItem("ShibaInu/Lua Profiler", false, 203)]
-        private static void ShowLuaProfilerConsole()
+        [MenuItem("ShibaInu/Log Window", false, 203)]
+        private static void OpenLogWindow()
         {
-            LuaProfiler.Console(true);
-        }
-
-        [MenuItem("ShibaInu/Lua Profiler", true)]
-        private static bool ShowLuaProfilerConsoleValidation()
-        {
-            return Application.isPlaying;
+            LogWindow.Open();
         }
 
 
@@ -113,7 +100,7 @@ namespace ShibaInu
         }
 
 
-        [MenuItem("ShibaInu/Generate Lua API", false, 301)]
+        [MenuItem("ShibaInu/Generate Lua API", false, 302)]
         private static void GenerateLuaAPI()
         {
             Emmy.ToLuaEmmyAPIGenerator.DoIt();
@@ -136,6 +123,28 @@ namespace ShibaInu
         }
 
 
+        [MenuItem("ShibaInu/Clear Console", false, 402)]
+        public static void ClearConsole()
+        {
+            Assembly assembly = Assembly.GetAssembly(typeof(Editor));
+            MethodInfo methodInfo = assembly.GetType("UnityEditor.LogEntries").GetMethod("Clear");
+            methodInfo.Invoke(new object(), null);
+        }
+
+
+        [MenuItem("ShibaInu/Lua Profiler", false, 403)]
+        private static void ShowLuaProfilerConsole()
+        {
+            LuaProfiler.Console(true);
+        }
+
+        [MenuItem("ShibaInu/Lua Profiler", true)]
+        private static bool ShowLuaProfilerConsoleValidation()
+        {
+            return Application.isPlaying;
+        }
+
+
 
         // ----
 
@@ -150,6 +159,7 @@ namespace ShibaInu
         {
             return !File.Exists(Constants.ABModeFilePath);
         }
+        
 
         [MenuItem("ShibaInu/Out AssetBundle Mode", false, 502)]
         private static void ExitABMode()
@@ -163,18 +173,6 @@ namespace ShibaInu
         private static bool ExitABModeValidation()
         {
             return File.Exists(Constants.ABModeFilePath);
-        }
-
-
-
-        // ----
-
-        [MenuItem("ShibaInu/Clear Console", false, 901)]
-        public static void ClearConsole()
-        {
-            Assembly assembly = Assembly.GetAssembly(typeof(Editor));
-            MethodInfo methodInfo = assembly.GetType("UnityEditor.LogEntries").GetMethod("Clear");
-            methodInfo.Invoke(new object(), null);
         }
 
 
