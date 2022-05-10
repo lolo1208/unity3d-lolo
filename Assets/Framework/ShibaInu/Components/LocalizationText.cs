@@ -22,12 +22,18 @@ namespace ShibaInu
     [RequireComponent(typeof(Text))]
     public class LocalizationText : MonoBehaviour
     {
-        /// 当前语种地区代码
-        public static string langeuage;
-
-        private static readonly Dictionary<string, string> s_data = new Dictionary<string, string>();
+        private static LuaFunction s_setCurrentLanguage;
         private static LuaFunction s_getCurrentLanguage;
-        private static LuaFunction s_getLanguageByKey;
+        private static LuaFunction s_getLanguageValueByKey;
+        private static readonly Dictionary<string, string> s_data = new Dictionary<string, string>();
+
+
+        /// 当前语种地区代码
+        [NoToLua]
+        public static string CurrentLanguage { get { return s_currentLanguage; } }
+        private static string s_currentLanguage;
+
+
 
         private Text m_text;
 
@@ -66,6 +72,7 @@ namespace ShibaInu
         /// <summary>
         /// 显示当前 key 对应的内容
         /// </summary>
+        [NoToLua]
         public void DisplayContent()
         {
             m_languageKey = m_languageKey.Trim();
@@ -75,7 +82,7 @@ namespace ShibaInu
             if (Application.isPlaying && m_text == null)
                 return;
 
-            if (langeuage == null)
+            if (s_currentLanguage == null)
                 RefreshLanguage();
             string value = null;
 
@@ -91,7 +98,7 @@ namespace ShibaInu
                 }
                 else
                 {
-                    Debug.LogError("语言包：" + langeuage + " 中不包含 key=" + m_languageKey + " 的数据");
+                    Debug.LogError("语言包：" + s_currentLanguage + " 中不包含 key=" + m_languageKey + " 的数据");
                 }
                 return;
             }
@@ -105,11 +112,11 @@ namespace ShibaInu
             }
             else
             {
-                s_getLanguageByKey.BeginPCall();
-                s_getLanguageByKey.Push(m_languageKey);
-                s_getLanguageByKey.PCall();
-                value = s_getLanguageByKey.CheckString();
-                s_getLanguageByKey.EndPCall();
+                s_getLanguageValueByKey.BeginPCall();
+                s_getLanguageValueByKey.Push(m_languageKey);
+                s_getLanguageValueByKey.PCall();
+                value = s_getLanguageValueByKey.CheckString();
+                s_getLanguageValueByKey.EndPCall();
                 if (value != null)
                 {
                     s_data.Add(m_languageKey, value);
@@ -121,7 +128,7 @@ namespace ShibaInu
             }
             else
             {
-                Debug.LogError("语言包：" + langeuage + " 中不包含 key=" + m_languageKey + " 的数据");
+                Debug.LogError("语言包：" + s_currentLanguage + " 中不包含 key=" + m_languageKey + " 的数据");
             }
         }
 
@@ -138,38 +145,20 @@ namespace ShibaInu
 
 
 
-
         /// <summary>
         /// 更新语言包数据
         /// </summary>
+        [NoToLua]
         public static void RefreshLanguage()
         {
-            // 非运行状态
 #if UNITY_EDITOR
+            // 非运行状态
             if (!Application.isPlaying)
             {
 
                 // 获取当前使用的语种地区代码
-                langeuage = null;
-                string path = "Assets/Lua/Data/Config.lua";
-                if (File.Exists(path))
-                {
-                    using (StreamReader file = new StreamReader(path))
-                    {
-                        string line;
-                        while ((line = file.ReadLine()) != null)
-                        {
-                            line = line.Trim();
-                            if (line.StartsWith("Config.language", StringComparison.Ordinal))
-                            {
-                                int start = line.IndexOf('"');
-                                int end = line.LastIndexOf('"');
-                                langeuage = line.Substring(start + 1, end - start - 1);
-                            }
-                        }
-                    }
-                }
-                if (langeuage == null)
+                s_currentLanguage = GetCurrentLanguageFromLuaFile();
+                if (s_currentLanguage == null)
                 {
                     Debug.LogError("无法获取当前使用的语种地区代码！");
                     return;
@@ -177,7 +166,7 @@ namespace ShibaInu
 
                 // 解析当前语言包
                 s_data.Clear();
-                path = "Assets/Lua/Data/Languages/" + langeuage + ".lua";
+                string path = "Assets/Lua/Data/Languages/" + s_currentLanguage + ".lua";
                 using (StreamReader file = new StreamReader(path))
                 {
                     string line;
@@ -203,37 +192,99 @@ namespace ShibaInu
                     }
                 }
 
-                // 更新场景中所有的 LocalizationText
-                List<LocalizationText> list = new List<LocalizationText>();
-                for (int n = 0; n < USceneMgr.sceneCount; ++n)
-                {
-                    Scene scene = USceneMgr.GetSceneAt(n);
-                    GameObject[] gameObjects = scene.GetRootGameObjects();
-                    foreach (GameObject go in gameObjects)
-                        list.AddRange(go.GetComponentsInChildren<LocalizationText>(true));
-                }
-
-                foreach (LocalizationText text in list)
-                    text.DisplayContent();
-
+                RefreshAllLocalizationText();
                 return;
             }
 #endif
 
-
             // 运行状态
             if (s_getCurrentLanguage == null)
             {
-                s_getCurrentLanguage = Common.luaMgr.state.GetFunction("Config._GetCurrentLanguage");
-                s_getLanguageByKey = Common.luaMgr.state.GetFunction("Config._GetLanguageByKey");
+                s_setCurrentLanguage = Common.luaMgr.state.GetFunction("Config.SetCurrentLanguage");
+                s_getCurrentLanguage = Common.luaMgr.state.GetFunction("Config.GetCurrentLanguage");
+                s_getLanguageValueByKey = Common.luaMgr.state.GetFunction("Config.GetLanguageValueByKey");
             }
             s_getCurrentLanguage.BeginPCall();
             s_getCurrentLanguage.PCall();
-            langeuage = s_getCurrentLanguage.CheckString();
+            s_currentLanguage = s_getCurrentLanguage.CheckString();
+            s_getCurrentLanguage.EndPCall();
+            s_data.Clear();
+        }
+
+
+        /// <summary>
+        /// 切换当前使用的语言包
+        /// </summary>
+        /// <param name="language">Tratget Language.</param>
+        [NoToLua]
+        public static void SwitchLanguage(string language)
+        {
+            if (language == s_currentLanguage) return;
+            s_currentLanguage = language;
+
+            s_setCurrentLanguage.BeginPCall();
+            s_setCurrentLanguage.Push(language);
+            s_setCurrentLanguage.PCall();
             s_getCurrentLanguage.EndPCall();
 
             s_data.Clear();
+            RefreshAllLocalizationText();
         }
+
+
+        /// <summary>
+        /// 刷新所有场景内，以及 UICanvas 下的全部 LocalizationText 组件
+        /// </summary>
+        private static void RefreshAllLocalizationText()
+        {
+            List<LocalizationText> list = new List<LocalizationText>();
+            for (int n = 0; n < USceneMgr.sceneCount; ++n)
+            {
+                Scene scene = USceneMgr.GetSceneAt(n);
+                GameObject[] gameObjects = scene.GetRootGameObjects();
+                foreach (GameObject go in gameObjects)
+                    list.AddRange(go.GetComponentsInChildren<LocalizationText>(true));
+            }
+
+            if (Stage.uiCanvasTra != null)
+                list.AddRange(Stage.uiCanvasTra.gameObject.GetComponentsInChildren<LocalizationText>(true));
+
+            foreach (LocalizationText text in list)
+                text.DisplayContent();
+        }
+
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// 从 Config.lua 文件中获取当前语种地区代码
+        /// </summary>
+        /// <returns></returns>
+        [NoToLua]
+        public static string GetCurrentLanguageFromLuaFile()
+        {
+            string path = "Assets/Lua/Data/Config.lua";
+            string language = null;
+            if (File.Exists(path))
+            {
+                using (StreamReader file = new StreamReader(path))
+                {
+                    string line;
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        line = line.Trim();
+                        if (line.StartsWith("Config.language", StringComparison.Ordinal))
+                        {
+                            int start = line.IndexOf('"');
+                            int end = line.LastIndexOf('"');
+                            language = line.Substring(start + 1, end - start - 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            return language;
+        }
+#endif
 
 
 
@@ -242,9 +293,10 @@ namespace ShibaInu
         [NoToLua]
         public static void ClearReference()
         {
-            langeuage = null;
+            s_currentLanguage = null;
+            s_setCurrentLanguage = null;
             s_getCurrentLanguage = null;
-            s_getLanguageByKey = null;
+            s_getLanguageValueByKey = null;
         }
 
         #endregion

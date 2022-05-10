@@ -82,28 +82,10 @@ namespace ShibaInu
             m_initialized = GUILayout.Width(0);
 
             // 获取当前使用的语种地区代码
-            string path = "Assets/Lua/Data/Config.lua";
-            if (!File.Exists(path))
-                return;
-            using (StreamReader file = new StreamReader(path))
-            {
-                string line;
-                while ((line = file.ReadLine()) != null)
-                {
-                    line = line.Trim();
-                    if (line.StartsWith("Config.language", StringComparison.Ordinal))
-                    {
-                        int start = line.IndexOf('"');
-                        int end = line.LastIndexOf('"');
-                        m_language = line.Substring(start + 1, end - start - 1);
-                        break;
-                    }
-                }
-            }
-
+            m_language = LocalizationText.GetCurrentLanguageFromLuaFile();
 
             // 获取语言包列表
-            path = "Assets/Lua/Data/Languages/";
+            string path = "Assets/Lua/Data/Languages/";
             if (!Directory.Exists(path))
                 return;
             List<string> list = new List<string>();
@@ -636,16 +618,18 @@ namespace ShibaInu
         {
             string path = "Assets/Lua/Data/Config.lua";
             StringBuilder sb = new StringBuilder();
+            bool needWriteLanguage = true;
             using (StreamReader file = new StreamReader(path))
             {
                 string line;
                 while ((line = file.ReadLine()) != null)
                 {
-                    if (line.Trim().StartsWith("Config.language", StringComparison.Ordinal))
+                    if (needWriteLanguage && line.Trim().StartsWith("Config.language", StringComparison.Ordinal))
                     {
                         sb.Append("Config.language = \"");
                         sb.Append(m_language);
                         sb.Append("\"");
+                        needWriteLanguage = false;
                     }
                     else
                     {

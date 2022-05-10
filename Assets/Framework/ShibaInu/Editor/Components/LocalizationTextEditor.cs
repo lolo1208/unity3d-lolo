@@ -25,7 +25,7 @@ namespace ShibaInu
             m_target = (LocalizationText)target;
             m_languageKey = serializedObject.FindProperty("m_languageKey");
 
-            if (LocalizationText.langeuage == null)
+            if (LocalizationText.CurrentLanguage == null)
                 LocalizationText.RefreshLanguage();
         }
 
@@ -39,7 +39,6 @@ namespace ShibaInu
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PropertyField(m_languageKey, m_c_languageKey);
             serializedObject.ApplyModifiedProperties();
-            //			m_target.languageKey = m_target.languageKey.Trim ();
 
             if (GUILayout.Button(m_c_apply, EditorStyles.miniButton, m_w50))
             {
@@ -49,7 +48,7 @@ namespace ShibaInu
 
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(new GUIContent("langeuage: " + LocalizationText.langeuage, "当前使用的语言包"), m_labelWidth);
+            EditorGUILayout.LabelField(new GUIContent("langeuage: " + LocalizationText.CurrentLanguage, "当前使用的语言包"), m_labelWidth);
 
             if (GUILayout.Button(m_c_open, EditorStyles.miniButton))
             {
@@ -60,6 +59,8 @@ namespace ShibaInu
             {
                 LocalizationText.RefreshLanguage();
                 m_target.DisplayContent();
+                // serializedObject.ApplyModifiedProperties();
+                MarkSceneDirty();
             }
             EditorGUILayout.EndHorizontal();
 

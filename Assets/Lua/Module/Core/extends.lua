@@ -157,7 +157,6 @@ MoveWindow = require("Effects.View.MoveWindow")
 --[ core ]--
 
 Config = require("Data.Config")
-Language = require("Data.Languages." .. Config.language)
 
 --
 

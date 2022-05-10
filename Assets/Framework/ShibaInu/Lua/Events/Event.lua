@@ -54,8 +54,15 @@ Event.ACTIVATED = "Event_Activated"
 --- 当前程序切入后台运行。该事件只会在 Stage 上抛出
 Event.DEACTIVATED = "Event_Deactivated"
 
+--
+
+--- 语言包切换时，event.data = "en-US"。该事件只会在 Stage 上抛出
+Event.LANGUAGE_CHANGED = "Event_LanguageChanged"
+
 --- 音频播放完毕，event.data = "audio path"。该事件只会在 Audio 上抛出
 Event.AUDIO_COMPLETE = "Event_AudioComplete"
+
+
 
 
 --

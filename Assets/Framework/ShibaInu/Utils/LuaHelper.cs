@@ -54,6 +54,16 @@ namespace ShibaInu
 
 
         /// <summary>
+        /// 切换当前使用的语言包
+        /// </summary>
+        /// <param name="language">Tratget Language.</param>
+        public static void SwitchLanguage(string language)
+        {
+            LocalizationText.SwitchLanguage(language);
+        }
+
+
+        /// <summary>
         /// 向 Native 发送消息
         /// </summary>
         /// <param name="action"></param>
