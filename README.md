@@ -55,6 +55,8 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   - Assets/Framework/ShibaInu/Lua/
   - Assets/Framework/ToLua/Lua/
 
+并将这3个目录都标记为 `Sources` 目录。
+
 ###### 最终配置结果如图：
 ![](https://static.lolo.link/img/unity/unity-framework/project-structure.png)
 
