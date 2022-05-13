@@ -150,6 +150,7 @@ Animation = require("Components.Animation")
 GpuAnimation = require("Components.GpuAnimation")
 FrameAnimation = require("Components.FrameAnimation")
 TabNavigator = require("Components.TabNavigator")
+ToggleSwitch = require("Components.ToggleSwitch")
 NumberText = require("Components.NumberText")
 
 Stats = require("UI.Stats")
