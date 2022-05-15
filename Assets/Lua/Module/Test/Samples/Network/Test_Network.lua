@@ -93,7 +93,7 @@ function Test_Network:OnInitialize()
     self.download:AddEventListener(HttpEvent.ENDED, self.HttpDownloadEventHandler, self)
     AddEventListener(self.dlStartBtn.gameObject, PointerEvent.CLICK, self.Click_dlStartBtn, self)
     self.dlProgress.fan = 1
-    self.dlUrl.text = "http://10.8.40.35:12377"
+    self.dlUrl.text = "http://10.8.40.35:12377/test-dl.zip"
     self.dlLog.text = ""
 
 
