@@ -132,7 +132,7 @@ namespace App
             foreach (string platform in Platforms)
             {
                 TextureImporterPlatformSettings platformSettings = importer.GetPlatformTextureSettings(platform);
-                TextureImporterPlatformSettings settings = new TextureImporterPlatformSettings
+                importer.SetPlatformTextureSettings(new TextureImporterPlatformSettings
                 {
                     allowsAlphaSplitting = platformSettings.allowsAlphaSplitting,
                     crunchedCompression = platformSettings.crunchedCompression,
@@ -143,8 +143,7 @@ namespace App
                     maxTextureSize = maxTextureSize > 0 ? maxTextureSize : platformSettings.maxTextureSize,
                     format = textureFormat,
                     overridden = overridden
-                };
-                importer.SetPlatformTextureSettings(settings);
+                });
             }
             MarkImported();
         }
