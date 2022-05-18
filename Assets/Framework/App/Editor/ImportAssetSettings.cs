@@ -141,9 +141,9 @@ namespace App
                     textureCompression = TextureImporterCompression.Compressed,
                     compressionQuality = (int)compressionQuality,
                     maxTextureSize = maxTextureSize > 0 ? maxTextureSize : platformSettings.maxTextureSize,
+                    format = textureFormat,
                     overridden = overridden
                 };
-                settings.format = textureFormat;
                 importer.SetPlatformTextureSettings(settings);
             }
             MarkImported();
