@@ -21,9 +21,13 @@ local format = string.format
 ---@field visible boolean @ 当前是否可见
 ---@field initialized boolean @ 是否已经初始化完成了
 ---@field destroyed boolean @ 是否已经被销毁
+---@field dispatchVisibility boolean @ 在显示或隐藏时，是否需要抛出 VisibilityEvent.SHOWED 和 VisibilityEvent.HIDDEN 事件。默认：false
+---@field isFullScreen boolean @ 是否已为全屏界面。值为 true 时，将会在界面显示时关闭场景主相机。请使用 SetIsFullScreen 设置该值。默认值：false
 ---
 local View = class("View", EventDispatcher)
 View.initShow = true
+View.dispatchVisibility = false
+View.isFullScreen = false
 
 
 --
@@ -151,11 +155,31 @@ end
 
 --- 显示时
 function View:OnShow()
+    if self.dispatchVisibility or self.isFullScreen then
+        self:DispatchEvent(Event.Get(VisibilityEvent, VisibilityEvent.SHOWED))
+    end
 end
 
 --- 隐藏时
 function View:OnHide()
+    if self.dispatchVisibility or self.isFullScreen then
+        self:DispatchEvent(Event.Get(VisibilityEvent, VisibilityEvent.HIDDEN))
+    end
 end
+
+
+--
+--- 设置是否为全屏界面
+--- 值为 true 时，将会在界面显示时关闭场景主相机
+function View:SetIsFullScreen(value)
+    self.isFullScreen = value
+    if value then
+        FullScreenViewManager.RegisterFullScreenView(self)
+    else
+        FullScreenViewManager.UnregisterFullScreenView(self)
+    end
+end
+
 
 
 --

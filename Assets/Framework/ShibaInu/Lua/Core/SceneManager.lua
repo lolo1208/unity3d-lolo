@@ -23,7 +23,7 @@ SceneManager.SetDontUnloadAssetBundle = SceneMgr.SetDontUnloadAssetBundle
 
 -- 已创建（加载）的场景列表
 local _scenes = MapList.New()
--- 设置的，当前场景的名称
+-- 设置的，当前进入（激活）场景的名称
 local _currentSceneName
 
 
@@ -191,7 +191,7 @@ local function SceneLoadComplete(event)
 end
 
 --
---- 设置当前场景的名称
+--- 设置当前进入（激活）场景的名称
 --- 将默认 AssetGroup 设置为 sceneName
 --- 在场景加载完成时，抛出 SceneEvent.CHANGED 事件
 --- 将该场景设置成激活场景
@@ -210,10 +210,15 @@ function SceneManager.SetCurrentSceneName(sceneName)
     end
 end
 
---- 获取当前场景名称
+--- 获取当前进入（激活）场景名称
 ---@return string
 function SceneManager.GetCurrentSceneName()
     return _currentSceneName
+end
+
+--- 获取当前进入（激活）的场景
+function SceneManager.GetCurrentScene()
+    return SceneManager.GetScene(_currentSceneName)
 end
 
 

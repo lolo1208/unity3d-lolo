@@ -61,7 +61,10 @@ end
 --- 获取根结点下名称为 "Main Camera" 的相机对象
 ---@return UnityEngine.Camera
 function Scene:GetMainCamera()
-    return GetComponent.Camera(self.transform:Find("Main Camera"))
+    if self.transform ~= nil then
+        return GetComponent.Camera(self.transform:Find("Main Camera"))
+    end
+    return nil
 end
 
 
