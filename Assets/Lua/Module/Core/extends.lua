@@ -150,6 +150,9 @@ ScaleWindow = require("Effects.View.ScaleWindow")
 MoveView = require("Effects.View.MoveView")
 MoveWindow = require("Effects.View.MoveWindow")
 
+Stats = require("UI.Stats")
+Profiler = require("Utils.Optimize.Profiler")
+
 --
 
 

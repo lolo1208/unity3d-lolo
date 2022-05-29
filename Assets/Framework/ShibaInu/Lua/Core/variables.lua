@@ -96,6 +96,7 @@ ResEvent = require("Events.ResEvent")
 SceneEvent = require("Events.SceneEvent")
 DestroyEvent = require("Events.DestroyEvent")
 AvailabilityEvent = require("Events.AvailabilityEvent")
+VisibilityEvent = require("Events.VisibilityEvent")
 PointerEvent = require("Events.PointerEvent")
 DragDropEvent = require("Events.DragDropEvent")
 TriggerEvent = require("Events.TriggerEvent")
@@ -135,6 +136,7 @@ UdpSocket = require("Net.UdpSocket")
 
 Stage = require("Core.Stage")
 SceneManager = require("Core.SceneManager")
+FullScreenViewManager = require("Core.FullScreenViewManager")
 View = require("Views.View")
 Module = require("Views.Module")
 Scene = require("Views.Scene")
@@ -152,9 +154,6 @@ FrameAnimation = require("Components.FrameAnimation")
 TabNavigator = require("Components.TabNavigator")
 ToggleSwitch = require("Components.ToggleSwitch")
 NumberText = require("Components.NumberText")
-
-Stats = require("UI.Stats")
-Profiler = require("Utils.Optimize.Profiler")
 
 
 
