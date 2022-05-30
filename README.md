@@ -13,7 +13,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   - `EmmyLua AttachDebugger 1.0.9` 该插件可用于断点调试 lua 代码。安装包放在 Templates/EmmyLua-AttachDebugger-1.0.9.zip
   - [VS Code](https://code.visualstudio.com/) latest / [Visual Studio Community](https://visualstudio.microsoft.com/zh-hans/free-developer-offers) 2019 / 8.10.17 for Mac
   - [tolua 1.0.7](https://github.com/topameng/tolua), lua 5.1, [release encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
-  - 其他：[ndk-r19](https://dl.google.com/android/repository/android-ndk-r19-darwin-x86_64.zip), [Universal Render Pipeline](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@10.5/manual/index.html)
+  - 其他：[ndk-r19-darwin-x86_64](https://dl.google.com/android/repository/android-ndk-r19-darwin-x86_64.zip), [Universal Render Pipeline](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@10.5/manual/index.html)
 
 #### * 特殊目录和文件
   - `Assets/Framework/ShibaInu/` 核心框架代码目录，包含 C# 和 Lua 代码。
