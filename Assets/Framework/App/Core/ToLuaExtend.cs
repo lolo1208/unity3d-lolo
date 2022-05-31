@@ -83,6 +83,14 @@ namespace App
             "MeshRenderer.scaleInLightmap",
             "MeshRenderer.stitchLightmapSeams",
             "MeshRenderer.receiveGI",
+            "AudioSource.PlayOnGamepad", // 2020.3.29
+            "AudioSource.DisableGamepadOutput",
+            "AudioSource.GamepadSpeakerSupportsOutputType",
+            "AudioSource.SetGamepadSpeakerMixLevel",
+            "AudioSource.SetGamepadSpeakerMixLevelDefault",
+            "AudioSource.SetGamepadSpeakerRestrictedAudio",
+            "AudioSource.gamepadSpeakerOutputType",
+            
         };
 
 #endif
