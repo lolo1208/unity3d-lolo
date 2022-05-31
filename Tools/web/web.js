@@ -158,9 +158,11 @@ function showLog(element) {
                             && errStr.indexOf('LicensingClient') == -1
                             && errStr.indexOf('[usbmuxd] Error') == -1
                             && errStr.indexOf('Debug:LogError') == -1
-                            && errStr.indexOf('LuaException.cs') == -1
+                            && errStr.indexOf('LogAssemblyErrors') == -1
                             && errStr.indexOf('fmod_Errors.cs') == -1
+                            && errStr.indexOf('Exception.cs') == -1
                             && errStr.indexOf('was thrown') == -1
+                            && errStr.indexOf('DetectErrorsAndWarnings') == -1
                             && errStr.indexOf('/MaterialError') == -1
                             && errStr.indexOf('/FallbackError') == -1
                         ) {
