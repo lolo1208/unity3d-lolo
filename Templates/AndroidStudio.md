@@ -83,7 +83,7 @@ android:usesCleartextTraffic="true"
 ---
 
 ### 编译时，下载 fastutil.jar 等卡住
-解决办法：使用阿里云。
+解决方案：使用阿里云。
 
 在 build.gradle 的 buildscript.repositories 以及 allprojects.repositories 中移除 mavenCentral(), google() 等，改为
 
@@ -95,4 +95,13 @@ repositories {
 	maven { url 'http://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
 }
 ```
+
+---
+
+### 改包名后启动报错： Error while executing: am start -n
+解决方案：
+
+File -> Invalidate Caches -> 勾选 Clear file system cache and Local History -> 点击 Invalidate and Restart
+
+重启完 Android Studio 即可。
 
