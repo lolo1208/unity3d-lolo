@@ -99,6 +99,13 @@ repositories {
 ---
 
 ### 改包名后启动报错： Error while executing: am start -n
+类似报错信息
+```
+Error while executing: am start -n "com.example.test/com.example.modules.log
+Error type 3
+Error:......does not exist.
+```
+
 解决方案：
 
 File -> Invalidate Caches -> 勾选 Clear file system cache and Local History -> 点击 Invalidate and Restart
