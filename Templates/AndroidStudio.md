@@ -79,3 +79,20 @@ dependencies {
 在AndroidManifest.xml配置文件的<application>标签中直接插入
 
 android:usesCleartextTraffic="true"
+
+---
+
+### 编译时，下载 fastutil.jar 等卡住
+解决办法：使用阿里云。
+
+在 build.gradle 的 buildscript.repositories 以及 allprojects.repositories 中移除 mavenCentral(), google() 等，改为
+
+```gradle
+repositories {
+	maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+	maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+	maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
+	maven { url 'http://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
+}
+```
+
