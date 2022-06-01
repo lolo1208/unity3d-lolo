@@ -108,7 +108,7 @@ Error:......does not exist.
 
 解决方案：
 
-File -> Invalidate Caches -> 勾选 Clear file system cache and Local History -> 点击 Invalidate and Restart
+`File` -> `Invalidate Caches` -> 勾选 `Clear file system cache and Local History` -> 点击 `Invalidate and Restart`
 
 重启完 Android Studio 即可。
 
