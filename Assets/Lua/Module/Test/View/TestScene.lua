@@ -73,7 +73,15 @@ end
 
 --
 function TestScene:OnClick_dungeonBtn(event)
-    SceneController.EnterDungeon()
+    --SceneController.EnterDungeon()
+
+    RequestPermissions("萨达阿瑟费说awwd!！end.", handler(function(isGranted)
+        print("Request Permissions Result: ", isGranted)
+    end),
+            Constants.ANDROID_PERMISSION.READ_EXTERNAL_STORAGE,
+            Constants.ANDROID_PERMISSION.WRITE_EXTERNAL_STORAGE
+    )
+
 end
 
 

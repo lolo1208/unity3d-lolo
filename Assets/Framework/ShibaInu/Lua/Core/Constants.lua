@@ -28,6 +28,19 @@ local Constants = {
     PRIORITY_HIGH = 99,
 
 
+    -- 获取本机权限（Android）时，向 Native 发消息所用的 action
+    UN_ACT_REQUEST_PERMISSIONS = "requestPermissions",
+    -- Android 需申请的权限
+    ANDROID_PERMISSION = {
+        READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE", -- 读取外部储存
+        WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE", -- 写入外部储存
+        ACCESS_COARSE_LOCATION = "android.permission.ACCESS_COARSE_LOCATION", -- 获取大概位置
+        ACCESS_FINE_LOCATION = "android.permission.ACCESS_FINE_LOCATION", -- 获取精确位置
+        CAMERA = "android.permission.CAMERA", -- 相机
+        RECORD_AUDIO = "android.permission.RECORD_AUDIO", -- 录音（麦克风）
+    },
+
+
     -- HTTP 相关常量
     HTTP_EXCEPTION_CREATE_THREAD = -1, -- HTTP 异常状态码：创建线程时发生异常
     HTTP_EXCEPTION_SEND_REQUEST = -2, -- HTTP 异常状态码：发送请求时发生异常

@@ -6,8 +6,11 @@
 
 local type = type
 local pairs = pairs
+local next = next
 local setmetatable = setmetatable
+local tonumber = tonumber
 local remove = table.remove
+local concat = table.concat
 local unpack = unpack
 local getpeer = tolua.getpeer
 local setpeer = tolua.setpeer
@@ -389,6 +392,9 @@ local _handlers = {}
 
 ---@return Handler
 local function GetHandlerByRefID(refID)
+    if refID == nil then
+        return nil
+    end
     local handler = _handlers[refID]
     if handler == nil or handler.refID ~= refID then
         _handlers[refID] = nil
@@ -686,6 +692,46 @@ end
 ---@param msg string @ -可选- 指令附带的消息。默认：空字符串 ""
 function SendMessageToNative(action, msg)
     LuaHelper.SendMessageToNative(action, msg or "")
+end
+
+
+
+--[ Request Permissions ]--
+
+local _rp_handlers = {} ---@type HandlerRef[]
+local RequestPermissionsResult
+--- 获取本机权限（Android）的结果
+---@param event NativeEvent
+RequestPermissionsResult = function(event)
+    if event.action == Constants.UN_ACT_REQUEST_PERMISSIONS then
+        local results = StringUtil.Split(event.message, "|")
+        local requestCode = tonumber(results[1])
+        local isGranted = results[2] == "granted"
+        local handlerRef = _rp_handlers[requestCode]
+        _rp_handlers[requestCode] = nil
+        if next(_rp_handlers) == nil then
+            RemoveEventListener(Stage, NativeEvent.RECEIVE_MESSAGE, RequestPermissionsResult)
+        end
+        CallHandler(handlerRef, isGranted)
+    end
+end
+
+--- 获取本机权限（Android）
+---@param rationale string @ 当用户拒绝，第二次发起权限申请时显示的 申请权限的原因
+---@param handlerRef HandlerRef @ 申请权限结果回调 callback(isGranted:boolean)。该参数可为 nil
+---@vararg string[] @ 权限列表
+function RequestPermissions(rationale, handlerRef, ...)
+    -- 在非 Android 环境，申请的结果始终为成功 callback(true)
+    if not isAndroid then
+        CallHandler(handlerRef, true)
+        return
+    end
+
+    local requestCode = GetOnlyID()
+    local msg = { requestCode, rationale, concat({ ... }, ",") }
+    _rp_handlers[requestCode] = handlerRef
+    AddEventListener(Stage, NativeEvent.RECEIVE_MESSAGE, RequestPermissionsResult)
+    SendMessageToNative(Constants.UN_ACT_REQUEST_PERMISSIONS, concat(msg, "|"))
 end
 
 

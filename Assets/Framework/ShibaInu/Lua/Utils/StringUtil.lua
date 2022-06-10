@@ -37,6 +37,22 @@ end
 
 
 --
+--- 使用参数 sep 作为分隔符字符串，将参数 str 字符串分割成字符串数组，并返回该数组
+---@param str string @ 要分割的字符串
+---@param sep string @ 使用的分隔符字符串
+---@return string[]
+function StringUtil.Split(str, sep)
+    sep = sep or " "
+    local fields = {}
+    local pattern = format("([^%s]+)", sep)
+    gsub(str, pattern, function(c)
+        fields[#fields + 1] = c
+    end)
+    return fields
+end
+
+
+--
 --- 当 number 取整转为字符串后，长度少于 length，将会在前面拼接 "0" 凑够长度
 --- 默认返回值：string.format("%02d", nunber)
 ---@param number number @ 数字
