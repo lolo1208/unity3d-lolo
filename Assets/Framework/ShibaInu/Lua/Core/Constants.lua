@@ -30,14 +30,16 @@ local Constants = {
 
     -- 获取本机权限（Android）时，向 Native 发消息所用的 action
     UN_ACT_REQUEST_PERMISSIONS = "requestPermissions",
-    -- Android 需申请的权限
+    -- Android 需申请的权限组
     ANDROID_PERMISSION = {
-        READ_EXTERNAL_STORAGE = "android.permission.READ_EXTERNAL_STORAGE", -- 读取外部储存
-        WRITE_EXTERNAL_STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE", -- 写入外部储存
-        ACCESS_COARSE_LOCATION = "android.permission.ACCESS_COARSE_LOCATION", -- 获取大概位置
-        ACCESS_FINE_LOCATION = "android.permission.ACCESS_FINE_LOCATION", -- 获取精确位置
-        CAMERA = "android.permission.CAMERA", -- 相机
-        RECORD_AUDIO = "android.permission.RECORD_AUDIO", -- 录音（麦克风）
+        -- 存储
+        STORAGE = { "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE" },
+        -- 定位
+        LOCATION = { "android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION" },
+        -- 麦克风
+        MICROPHONE = { "android.permission.RECORD_AUDIO" },
+        -- 摄像头
+        CAMERA = { "android.permission.CAMERA" },
     },
 
 

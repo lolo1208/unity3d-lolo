@@ -718,17 +718,19 @@ end
 
 --- 获取本机权限（Android）
 ---@param rationale string @ 当用户拒绝，第二次发起权限申请时显示的 申请权限的原因
----@param handlerRef HandlerRef @ 申请权限结果回调 callback(isGranted:boolean)。该参数可为 nil
----@vararg string[] @ 权限列表
-function RequestPermissions(rationale, handlerRef, ...)
+---@param permissions string[] @ 要申请的权限列表
+---@param handlerRef HandlerRef @ 申请权限结果回调 callback(isGranted:boolean)。默认值：nil
+---@param dialogItems string @ 当存在永久拒绝权限时，将会弹出该参数内容生成的对话框，引导用户去设置界面开启权限。默认值：Language["android.permission.dialog"]
+function RequestPermissions(rationale, permissions, handlerRef, dialogItems)
     -- 在非 Android 环境，申请的结果始终为成功 callback(true)
     if not isAndroid then
         CallHandler(handlerRef, true)
         return
     end
 
+    dialogItems = dialogItems or Language["android.permission.dialog"]
     local requestCode = GetOnlyID()
-    local msg = { requestCode, rationale, concat({ ... }, ",") }
+    local msg = { requestCode, rationale, concat(permissions, ","), dialogItems }
     _rp_handlers[requestCode] = handlerRef
     AddEventListener(Stage, NativeEvent.RECEIVE_MESSAGE, RequestPermissionsResult)
     SendMessageToNative(Constants.UN_ACT_REQUEST_PERMISSIONS, concat(msg, "|"))
