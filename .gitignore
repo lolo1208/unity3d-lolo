@@ -19,6 +19,7 @@ Logs
 
 UserSettings
 Packages/packages-lock.json
+Packages/offline-install/packages
 
 Assets/StreamingAssets
 Assets/StreamingAssets.meta
