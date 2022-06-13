@@ -16,7 +16,7 @@ import com.unity3d.player.UnityPlayer;
  */
 public final class NativeHelper {
 
-    private static HashMap<Integer, UnityMsgCallback> callbacks = new HashMap<>();
+    private static final HashMap<Integer, UnityMsgCallback> callbacks = new HashMap<>();
     private static int callbackHandleID = 0;
 
     public interface UnityMsgCallback extends Callback {

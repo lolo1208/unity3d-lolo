@@ -18,7 +18,7 @@ public final class MetaDataUtil {
 
 
     // 缓存内容
-    private static HashMap<String, Object> cache = new HashMap<>();
+    private static final HashMap<String, Object> cache = new HashMap<>();
 
 
     /**

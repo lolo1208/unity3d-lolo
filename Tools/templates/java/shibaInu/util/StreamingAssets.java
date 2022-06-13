@@ -68,7 +68,7 @@ public final class StreamingAssets {
         try {
             InputStream input = sAssetMgr.open(filePath);
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            byte buf[] = new byte[4096];
+            byte[] buf = new byte[4096];
             int len;
             while ((len = input.read(buf)) != -1)
                 output.write(buf, 0, len);
