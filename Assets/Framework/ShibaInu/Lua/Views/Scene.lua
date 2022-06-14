@@ -62,7 +62,10 @@ end
 ---@return UnityEngine.Camera
 function Scene:GetMainCamera()
     if self.transform ~= nil then
-        return GetComponent.Camera(self.transform:Find("Main Camera"))
+        local camTra = self.transform:Find("Main Camera")
+        if camTra ~= nil then
+            return GetComponent.Camera(camTra)
+        end
     end
     return nil
 end
