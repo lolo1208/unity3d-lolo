@@ -18,7 +18,6 @@ import shibaInu.util.NativeHelper;
  * 实现 EasyPermissions 库的 Activity
  * dependencies:
  * implementation 'pub.devrel:easypermissions:2.0.1'
- * implementation 'com.android.support:appcompat-v7:28.0.0'
  * see also:
  * https://github.com/googlesamples/easypermissions
  * Created by LOLO on 2022/06/09.
