@@ -139,9 +139,8 @@ end
 function BaseList:DataChanged(event)
     if event.index ~= -1 then
         self:SetItemData(self:GetItemByIndex(event.index), event.newValue, event.oldValue)
-    else
-        self:Update()
     end
+    self:Update()
 end
 
 
