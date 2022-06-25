@@ -15,6 +15,8 @@ local TimeUtil = TimeUtil
 local stage = ShibaInu.Stage
 
 local cleanUI = stage.CleanUI
+local showModal = stage.ShowModal
+local showCameraBlurModal = stage.ShowCameraBlurModal
 
 
 --
@@ -41,10 +43,12 @@ local _layers = {
 }
 
 Stage._ed = _ed
-Stage.AddDontDestroy = stage.AddDontDestroy
-Stage.RemoveDontDestroy = stage.RemoveDontDestroy
 Stage.uiCanvas = stage.uiCanvas
 Stage.uiCanvasTra = stage.uiCanvasTra
+Stage.AddDontDestroy = stage.AddDontDestroy
+Stage.RemoveDontDestroy = stage.RemoveDontDestroy
+Stage.HideModal = stage.HideModal
+Stage.HideCameraBlurModal = stage.HideCameraBlurModal
 
 
 
@@ -155,17 +159,8 @@ function Stage.GetLayer(layerName)
 end
 
 
---=[ 全屏模态 ]=--
 
-local _modalGO = CreateGameObject("[Modal]", Stage.uiCanvasTra)
-local _modalTra = _modalGO.transform
-local _modalImg = AddOrGetComponent(_modalGO, UnityEngine.UI.Image)
-_modalTra.anchorMin = Vector2.zero
-_modalTra.anchorMax = Vector2.one
-_modalTra.sizeDelta = Vector2.zero
-_modalGO:SetActive(false)
-Stage.AddDontDestroy(_modalGO)
-
+--
 --- 显示全屏模态
 --- 模态对象为单例，就算调用该方法多次，也只会有一个模态实例存在
 ---@param layerName string @ -可选- 图层名称。默认：Constants.LAYER_TOP
@@ -173,26 +168,22 @@ Stage.AddDontDestroy(_modalGO)
 function Stage.ShowModal(layerName, color)
     layerName = layerName or Constants.LAYER_TOP
     color = color or Color.clear
-
-    _modalImg.color = color
-    SetParent(_modalTra, _layers[layerName])
-    _modalTra:SetAsFirstSibling()
-    if not _modalGO.activeSelf then
-        _modalGO:SetActive(true)
-    end
+    showModal(_layers[layerName], color)
 end
 
---- 隐藏已显示的全屏模态
-function Stage.HideModal()
-    if _modalGO.activeSelf then
-        _modalGO:SetActive(false)
-    end
-end
 
---- 获取全屏模态对象
----@return UnityEngine.RectTransform
-function Stage.GetModal()
-    return _modalTra
+--
+--- 显示 全屏的经过简单均值模糊的相机图像（模态背景）
+--- 该图像为单例，每次调用该方法，都会更新图像内容
+---@param layerName string @ -可选- 图层名称。默认：Constants.LAYER_SCENE
+---@param camera UnityEngine.Camera @ -可选- 相机对象。默认为当前场景的 "Main Camera"
+function Stage.ShowCameraBlurModal(layerName, camera)
+    camera = camera or SceneManager.GetCurrentScene():GetMainCamera()
+    if camera == nil then
+        return
+    end
+    layerName = layerName or Constants.LAYER_SCENE
+    showCameraBlurModal(_layers[layerName], camera)
 end
 
 

@@ -217,6 +217,7 @@ function SceneManager.GetCurrentSceneName()
 end
 
 --- 获取当前进入（激活）的场景
+---@return Scene
 function SceneManager.GetCurrentScene()
     return SceneManager.GetScene(_currentSceneName)
 end

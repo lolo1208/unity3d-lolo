@@ -38,8 +38,10 @@ local function SceneOrViewChanged(event)
     end
 
     local hasShowed = false
+    ---@type View
+    local view
     for i = #_viewList, 1, -1 do
-        local view = _viewList[i]
+        view = _viewList[i]
         if view.isFullScreen and not view.destroyed then
             if view.showed then
                 hasShowed = true
@@ -51,6 +53,9 @@ local function SceneOrViewChanged(event)
     end
 
     if hasShowed then
+        if view.isCameraBlur then
+            Stage.ShowCameraBlurModal()
+        end
         if camera.enabled then
             camera.enabled = false
         end
@@ -58,6 +63,7 @@ local function SceneOrViewChanged(event)
         if not camera.enabled then
             camera.enabled = true
         end
+        Stage.HideCameraBlurModal()
     end
 end
 
@@ -89,6 +95,7 @@ function FullScreenViewManager.RegisterFullScreenView(view)
     view:AddEventListener(VisibilityEvent.SHOWED, SceneOrViewChanged)
     view:AddEventListener(VisibilityEvent.HIDDEN, SceneOrViewChanged)
     AddEventListener(view.gameObject, DestroyEvent.DESTROY, FullScreenViewDestroyed, view)
+    SceneOrViewChanged()
 end
 
 
@@ -102,6 +109,7 @@ function FullScreenViewManager.UnregisterFullScreenView(view)
             view:RemoveEventListener(VisibilityEvent.SHOWED, SceneOrViewChanged)
             view:RemoveEventListener(VisibilityEvent.HIDDEN, SceneOrViewChanged)
             RemoveEventListener(view.gameObject, DestroyEvent.DESTROY, FullScreenViewDestroyed, view)
+            SceneOrViewChanged()
             return
         end
     end

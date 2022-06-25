@@ -22,12 +22,14 @@ local format = string.format
 ---@field initialized boolean @ 是否已经初始化完成了
 ---@field destroyed boolean @ 是否已经被销毁
 ---@field dispatchVisibility boolean @ 在显示或隐藏时，是否需要抛出 VisibilityEvent.SHOWED 和 VisibilityEvent.HIDDEN 事件。默认：false
----@field isFullScreen boolean @ 是否已为全屏界面。值为 true 时，将会在界面显示时关闭场景主相机。请使用 SetIsFullScreen 设置该值。默认值：false
+---@field isFullScreen boolean @ 是否已为全屏界面。值为 true 时，将会在界面显示时关闭场景主相机。请使用 SetIsFullScreen() 设置该值。默认值：false
+---@field isCameraBlur boolean @ 是否使用相机模糊模态背景，请使用 SetIsFullScreen() 设置该值。默认值：false
 ---
 local View = class("View", EventDispatcher)
 View.initShow = true
 View.dispatchVisibility = false
 View.isFullScreen = false
+View.isCameraBlur = false
 
 
 --
@@ -170,10 +172,12 @@ end
 
 --
 --- 设置是否为全屏界面
---- 值为 true 时，将会在界面显示时关闭场景主相机
-function View:SetIsFullScreen(value)
-    self.isFullScreen = value
-    if value then
+---@param isFullScreen boolean @ 否已为全屏界面。值为 true 时，将会在界面显示时关闭场景主相机
+---@param isCameraBlur boolean @ -可选- 是否使用相机模糊模态背景
+function View:SetIsFullScreen(isFullScreen, isCameraBlur)
+    self.isFullScreen = isFullScreen
+    self.isCameraBlur = isCameraBlur == true
+    if isFullScreen then
         FullScreenViewManager.RegisterFullScreenView(self)
     else
         FullScreenViewManager.UnregisterFullScreenView(self)
