@@ -63,7 +63,7 @@ function MapList:Init(values, ...)
         if self._values == nil then
             self._values = {}
             self._keys = {}
-            self:DispatchDataEvent()
+            self:DispatchDataEvent(1)
             return
         else
             values = self._values
@@ -77,7 +77,7 @@ function MapList:Init(values, ...)
     -- 没传 keys
     if keyLen == 0 then
         self._keys = {}
-        self:DispatchDataEvent()
+        self:DispatchDataEvent(1)
         return
     end
 
@@ -101,7 +101,7 @@ function MapList:Init(values, ...)
         end
     end
 
-    self:DispatchDataEvent()
+    self:DispatchDataEvent(1)
 end
 
 
@@ -170,7 +170,7 @@ end
 function MapList:SetValueByIndex(index, value)
     local oldValue = self._values[index]
     self._values[index] = value
-    self:DispatchDataEvent(index, oldValue, value)
+    self:DispatchDataEvent(4, index, oldValue, value)
 end
 
 --- 通过键设置值
@@ -202,7 +202,7 @@ function MapList:Add(value, ...)
         self._keys[keys[i]] = index
     end
 
-    self:DispatchDataEvent()
+    self:DispatchDataEvent(5, index, nil, value)
     return index
 end
 
@@ -260,7 +260,7 @@ function MapList:RemoveByIndex(index)
         end
     end
 
-    self:DispatchDataEvent()
+    self:DispatchDataEvent(6, index, value)
     return value
 end
 
@@ -282,7 +282,7 @@ end
 ---@param value table<number, any>
 function MapList:SetValues(value)
     self._values = value
-    self:DispatchDataEvent()
+    self:DispatchDataEvent(3)
 end
 
 --- 获取值列表
@@ -314,12 +314,14 @@ end
 --=------------------------------[ other ]------------------------------=--
 
 --- 抛出数据改变事件
+---@param reason number
 ---@param index number
 ---@param oldValue any
 ---@param newValue any
-function MapList:DispatchDataEvent(index, oldValue, newValue)
+function MapList:DispatchDataEvent(reason, index, oldValue, newValue)
     if self.dispatchChanged then
         local event = Event.Get(DataEvent, DataEvent.DATA_CHANGED)
+        event.reason = reason
         event.index = index or -1
         event.oldValue = oldValue
         event.newValue = newValue
@@ -337,7 +339,7 @@ end
 function MapList:Clean()
     self._values = {}
     self._keys = {}
-    self:DispatchDataEvent()
+    self:DispatchDataEvent(2)
 end
 
 return MapList

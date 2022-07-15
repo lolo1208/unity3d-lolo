@@ -137,7 +137,7 @@ end
 --- 数据有改变
 ---@param event DataEvent
 function BaseList:DataChanged(event)
-    if event.index ~= -1 then
+    if event.reason == 4 then
         self:SetItemData(self:GetItemByIndex(event.index), event.newValue, event.oldValue)
     else
         self:Update()

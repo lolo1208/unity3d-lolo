@@ -73,7 +73,7 @@ end
 --- 数据有改变
 ---@param event DataEvent
 function Picker:DataChanged(event)
-    if event.index ~= -1 then
+    if event.reason == 4 then
         self:SetItemData(self:GetItemByIndex(event.index), event.newValue, event.oldValue)
     else
         self:ResetAllItem()

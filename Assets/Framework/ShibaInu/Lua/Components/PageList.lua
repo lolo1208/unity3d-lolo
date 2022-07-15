@@ -238,7 +238,7 @@ end
 ---@param event DataEvent
 function PageList:DataChanged(event)
     PageList.super.DataChanged(self, event)
-    if event.index == -1 then
+    if event.reason ~= 4 then
         self:CalcTotalPageNum()
     end
 end
