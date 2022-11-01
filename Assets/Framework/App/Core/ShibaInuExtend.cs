@@ -17,8 +17,6 @@ namespace App
         {
             Common.VersionInfo.CoreVersion = "0.0.0.1";
 
-            Common.FixedValue = 640;
-            Common.IsFixedWidth = true;
             DeviceHelper.SetScreenOrientation(false);
             Common.IsOptimizeResolution = true;
             Common.FrameRate = 60;

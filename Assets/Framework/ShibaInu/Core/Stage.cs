@@ -14,6 +14,7 @@ namespace ShibaInu
 
         /// UI Canvas
         public static Canvas uiCanvas;
+        public static CanvasScaler uiCanvasScaler;
         public static RectTransform uiCanvasTra;
         // Layers
         public static RectTransform sceneLayer;
@@ -55,6 +56,7 @@ namespace ShibaInu
             uiCanvasTra = (RectTransform)go.transform;
 
             uiCanvas = go.GetComponent<Canvas>();
+            uiCanvasScaler = go.GetComponent<CanvasScaler>();
             sceneLayer = (RectTransform)uiCanvasTra.Find("scene");
             uiLayer = (RectTransform)uiCanvasTra.Find("ui");
             windowLayer = (RectTransform)uiCanvasTra.Find("window");
@@ -62,6 +64,8 @@ namespace ShibaInu
             alertLayer = (RectTransform)uiCanvasTra.Find("alert");
             guideLayer = (RectTransform)uiCanvasTra.Find("guide");
             topLayer = (RectTransform)uiCanvasTra.Find("top");
+
+            if (Common.IsOptimizeResolution) Common.OptimizeResolution();
         }
 
 

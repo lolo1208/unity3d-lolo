@@ -16,10 +16,6 @@ namespace ShibaInu
         };
 
 
-        /// 固定宽或高值
-        public static int FixedValue;
-        /// 当前固定比例方式 [ true:固定宽度，false:固定高度 ]
-        public static bool IsFixedWidth;
         /// 是否在编辑器中运行，并且在开发模式下
         public static bool IsDebug = true;
 
@@ -110,19 +106,22 @@ namespace ShibaInu
         /// <param name="ignored">Ignored.</param>
         public static void OptimizeResolution(object ignored = null)
         {
+            if (Stage.uiCanvasScaler == null) return;
+
             int screenWidth = Screen.width;
             int screenHeight = Screen.height;
             float scale = GetFixedScreenScale();
+            Vector2 resolution = Stage.uiCanvasScaler.referenceResolution;
             int width, height;
-            if (IsFixedWidth)
+            if (resolution.x / screenWidth > resolution.y / screenHeight)
             {
-                width = FixedValue;
+                width = Mathf.CeilToInt(resolution.x);
                 height = Mathf.CeilToInt(screenHeight * scale);
             }
             else
             {
                 width = Mathf.CeilToInt(screenWidth * scale);
-                height = FixedValue;
+                height = Mathf.CeilToInt(resolution.y);
             }
             Screen.SetResolution(width, height, true);
             Debug.LogFormat("[Device] screen: {0}x{1},  scale: {2},  set resolution: {3}x{4}", screenWidth, screenHeight, scale, width, height);
@@ -136,7 +135,10 @@ namespace ShibaInu
         /// <returns>The scale.</returns>
         public static float GetFixedScreenScale()
         {
-            return (float)FixedValue / (float)(IsFixedWidth ? Screen.width : Screen.height);
+            Vector2 resolution = Stage.uiCanvasScaler.referenceResolution;
+            float rw = resolution.x / Screen.width;
+            float rh = resolution.y / Screen.height;
+            return rw > rh ? rw : rh;
         }
 
 
