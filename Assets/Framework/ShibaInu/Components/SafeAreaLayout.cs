@@ -61,12 +61,15 @@ namespace ShibaInu
                 s_safeArea = (RectTransform)safeArea.transform;
                 s_safeArea.anchorMin = Vector2.zero;
                 s_safeArea.anchorMax = Vector2.one;
+
                 UpdateSafeArea();
+                Common.looper.ResizeHandler.Add(UpdateSafeArea);
                 if (canTurnScreen)
                     Common.looper.ScreenOrientationHandler.Add(UpdateSafeArea);
             }
 
             UpdateLayout();
+            Common.looper.ResizeHandler.Add(LayoutInSafeArea);
             if (canTurnScreen)
                 Common.looper.ScreenOrientationHandler.Add(LayoutInSafeArea);
         }
@@ -117,11 +120,8 @@ namespace ShibaInu
 
         void OnDestroy()
         {
-            // 异形屏，横屏，可旋转
-            if (DeviceHelper.isNotchScreen && DeviceHelper.isLandscape && DeviceHelper.isAutoRotation)
-            {
-                Common.looper.ScreenOrientationHandler.Remove(LayoutInSafeArea);
-            }
+            Common.looper.ResizeHandler.Remove(LayoutInSafeArea);
+            Common.looper.ScreenOrientationHandler.Remove(LayoutInSafeArea);
         }
 
 
@@ -131,6 +131,8 @@ namespace ShibaInu
         [NoToLua]
         public static void ClearReference()
         {
+            Common.looper.ResizeHandler.Remove(UpdateSafeArea);
+            Common.looper.ScreenOrientationHandler.Remove(UpdateSafeArea);
             s_safeArea = null;
         }
 

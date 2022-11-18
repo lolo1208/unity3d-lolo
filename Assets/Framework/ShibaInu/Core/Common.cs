@@ -123,8 +123,8 @@ namespace ShibaInu
                 width = Mathf.CeilToInt(screenWidth * scale);
                 height = Mathf.CeilToInt(resolution.y);
             }
-            Screen.SetResolution(width, height, true);
-            Debug.LogFormat("[Device] screen: {0}x{1},  scale: {2},  set resolution: {3}x{4}", screenWidth, screenHeight, scale, width, height);
+            Screen.SetResolution(width, height, true); // 更改分辨率时，Looper 会调用 DeviceHelper.UpdateSafeInsets()
+            Debug.LogFormat("[Common] screen: {0}x{1},  scale: {2},  set resolution: {3}x{4}", screenWidth, screenHeight, scale, width, height);
         }
 
 

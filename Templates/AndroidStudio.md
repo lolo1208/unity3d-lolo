@@ -22,13 +22,9 @@
 ---
 
 ### 绘制刘海区
-##### 使用 API 28 (Android P)
-Project Structure -> Compile Sdk Version : API 28
+在 Unity Editor 中勾选
 
-##### 添加代码
-Activity.java -> onCreate()
-
-shibaInu.util.DeviceHelper.displayNotch();
+`Project Settings` > `Android Settings` > `Render outside reader safe`
 
 ---
 

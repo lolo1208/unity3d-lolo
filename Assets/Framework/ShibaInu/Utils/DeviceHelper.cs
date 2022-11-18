@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices; // [DllImport]
 using UnityEngine;
 
 
@@ -20,7 +20,7 @@ namespace ShibaInu
 
         /// 设备是否为异形屏
         public static bool isNotchScreen = false;
-        /// 设备设备的安全边界偏移值 [ top, bottom, left, right ]
+        /// 设备安全边界偏移值 [ top, bottom, left, right ]
         public static float[] safeInsets = { 0, 0, 0, 0 };
 
 
@@ -57,17 +57,9 @@ namespace ShibaInu
                 Screen.orientation = ScreenOrientation.Portrait;
             }
 
-            isNotchScreen = IsNotchScreen();
-            if (isNotchScreen)
-                GetSafeInsets();
-
-            Debug.Log(
-                "[Device] landscape: " + isLandscape.ToString() +
-                ",  autoRotation: " + isAutoRotation.ToString() +
-                ",  notchScreen: " + isNotchScreen.ToString() +
-                ",  safeInsets: " + safeInsets[0] + "/" + safeInsets[1] + "/" + safeInsets[2] + "/" + safeInsets[3]
-            );
+            Debug.LogFormat("[DeviceHelper] landscape: {0},  autoRotation: {1}", isLandscape, isAutoRotation);
         }
+
 
 
         /// <summary>
@@ -91,68 +83,29 @@ namespace ShibaInu
                 isLandscapeLeft = true;
             }
 
-            Debug.Log("[Device] deviceOrientation: " + Input.deviceOrientation);
+            Debug.LogFormat("[DeviceHelper] deviceOrientation: {0}", Input.deviceOrientation);
             return true;
         }
 
 
 
         /// <summary>
-        /// 当前设备是否为异形屏
+        /// 更新设备安全边界偏移值
         /// </summary>
-        /// <returns><c>true</c>, if notch screen was ised, <c>false</c> otherwise.</returns>
-        private static bool IsNotchScreen()
+        public static void UpdateSafeInsets()
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
-
-            return m_androidDeviceHelper.CallStatic<bool>("isNotchScreen");
-
-#elif UNITY_IOS && !UNITY_EDITOR
-
-            return IsNotchScreenImpl();
-
-#endif
-
-            return false;
-        }
-
-
-        /// <summary>
-        /// 获取当前设备的安全区域边距
-        /// </summary>
-        private static void GetSafeInsets()
-        {
-#if UNITY_ANDROID && !UNITY_EDITOR
-
-			string androidInsets = m_androidDeviceHelper.CallStatic<string> ("getSafeInsets");
-			string[] insets = androidInsets.Split (',');
-			if (insets.Length == 4) {
-				safeInsets = new float[] {
-					ToInsetValue (insets [0]),
-					ToInsetValue (insets [1]),
-					ToInsetValue (insets [2]),
-					ToInsetValue (insets [3])
-				};
-			} else {
-				float notchHeight = ToInsetValue ((insets.Length == 2) ? insets [1] : insets [0]);
-				if (isLandscape) {
-					if (isLandscapeLeft)
-						safeInsets = new float[] { 0, 0, notchHeight, 0 };
-					else
-						safeInsets = new float[] { 0, 0, 0, notchHeight };
-				} else {
-					safeInsets = new float[] { notchHeight, 0, 0, 0 };
-				}
-			}
-
-#elif UNITY_IOS && !UNITY_EDITOR
-
-			float top, bottom, left, right;
-			GetSafeInsetsImpl (out top, out bottom, out left, out right);
-			float s = Common.GetFixedScreenScale ();
-			safeInsets = new float[] { top * s, bottom * s, left * s, right * s };
-
-#endif
+            Rect sa = Screen.safeArea; // 原点(0,0)在左下角
+            int screenWidth = Screen.width;
+            int screenHeight = Screen.height;
+            isNotchScreen = sa.x != 0 || sa.y != 0 || sa.width != screenWidth || sa.height != screenHeight;
+            if (isNotchScreen)
+            {
+                safeInsets[0] = screenHeight - sa.height - sa.y;
+                safeInsets[1] = sa.y;
+                safeInsets[2] = sa.x;
+                safeInsets[3] = screenWidth - sa.width - sa.x;
+            }
+            Debug.LogFormat("[DeviceHelper] notchScreen: {0},  safeInsets: {1}", isNotchScreen, string.Join(" / ", safeInsets));
         }
 
 
@@ -176,33 +129,15 @@ namespace ShibaInu
 
 
 
-
 #if UNITY_ANDROID && !UNITY_EDITOR
 
         private static readonly AndroidJavaClass m_androidDeviceHelper = new AndroidJavaClass("shibaInu.util.DeviceHelper");
-
-
-        private static float ToInsetValue(float value)
-        {
-            return value * Common.GetFixedScreenScale();
-        }
-
-        private static float ToInsetValue(string value)
-        {
-            return ToInsetValue(float.Parse(value));
-        }
 
 #endif
 
 
 #if UNITY_IOS && !UNITY_EDITOR
 		
-		[DllImport ("__Internal")]
-		private static extern bool IsNotchScreenImpl ();
-
-		[DllImport ("__Internal")]
-		private static extern void GetSafeInsetsImpl (out float top, out float bottom, out float left, out float right);
-        
         [DllImport ("__Internal")]
         private static extern void VibrateImpl (int style);
 

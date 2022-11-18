@@ -74,6 +74,7 @@ namespace ShibaInu
         {
             m_screenSize.Set(Screen.width, Screen.height);
             m_dispatchEvent = Common.luaMgr.state.GetFunction("Stage._loopHandler");
+            DeviceHelper.UpdateSafeInsets();
 
 #if UNITY_EDITOR
             if (Common.IsOptimizeResolution)
@@ -153,9 +154,12 @@ namespace ShibaInu
             }
 
             // 屏幕尺寸有改变
-            if (Screen.width != m_screenSize.x || Screen.height != m_screenSize.y)
+            int screenWidth = Screen.width;
+            int screenHeight = Screen.height;
+            if (screenWidth != m_screenSize.x || screenHeight != m_screenSize.y)
             {
-                m_screenSize.Set(Screen.width, Screen.height);
+                DeviceHelper.UpdateSafeInsets();
+                m_screenSize.Set(screenWidth, screenHeight);
                 ResizeHandler.Call();
                 DispatchLuaEvent(EVENT_RESIZE);
             }
