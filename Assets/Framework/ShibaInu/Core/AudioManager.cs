@@ -453,7 +453,7 @@ namespace ShibaInu
                     unloadList.Add(info.path);
                     ResManager.Unload(info.path);
                     Object.Destroy(info.src);
-                    //Debug.Log("[Unload Audio] " + info.path);
+                    // Debug.LogFormat("[ShibaInu.AudioManager] Unload Audio: {0}", info.path);
                 }
             }
 

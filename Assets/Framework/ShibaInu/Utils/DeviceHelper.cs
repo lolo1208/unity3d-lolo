@@ -57,7 +57,7 @@ namespace ShibaInu
                 Screen.orientation = ScreenOrientation.Portrait;
             }
 
-            Debug.LogFormat("[DeviceHelper] landscape: {0},  autoRotation: {1}", isLandscape, isAutoRotation);
+            Debug.LogFormat("[ShibaInu.DeviceHelper] landscape: {0}, autoRotation: {1}", isLandscape, isAutoRotation);
         }
 
 
@@ -83,7 +83,7 @@ namespace ShibaInu
                 isLandscapeLeft = true;
             }
 
-            Debug.LogFormat("[DeviceHelper] deviceOrientation: {0}", Input.deviceOrientation);
+            Debug.LogFormat("[ShibaInu.DeviceHelper] deviceOrientation: {0}", Input.deviceOrientation);
             return true;
         }
 
@@ -105,7 +105,7 @@ namespace ShibaInu
                 safeInsets[2] = sa.x;
                 safeInsets[3] = screenWidth - sa.width - sa.x;
             }
-            Debug.LogFormat("[DeviceHelper] notchScreen: {0},  safeInsets: {1}", isNotchScreen, string.Join(" / ", safeInsets));
+            Debug.LogFormat("[ShibaInu.DeviceHelper] notchScreen: {0}, safeInsets: {1}", isNotchScreen, string.Join(" / ", safeInsets));
         }
 
 

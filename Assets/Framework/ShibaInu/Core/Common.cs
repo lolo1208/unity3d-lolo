@@ -124,7 +124,7 @@ namespace ShibaInu
                 height = Mathf.CeilToInt(resolution.y);
             }
             Screen.SetResolution(width, height, true); // 更改分辨率时，Looper 会调用 DeviceHelper.UpdateSafeInsets()
-            Debug.LogFormat("[Common] screen: {0}x{1},  scale: {2},  set resolution: {3}x{4}", screenWidth, screenHeight, scale, width, height);
+            Debug.LogFormat("[ShibaInu.Common] screen: {0}x{1},  scale: {2},  set resolution: {3}x{4}", screenWidth, screenHeight, scale, width, height);
         }
 
 

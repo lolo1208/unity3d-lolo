@@ -212,7 +212,7 @@ namespace ShibaInu
                 }
                 catch (Exception e)
                 {
-                    Debug.Log("UdpSocket.OnSend() Exception:" + e.Message);
+                    Debug.LogFormat("[ShibaInu.UdpSocket] OnSend() Exception: {0}", e.Message);
                 }
 
             }

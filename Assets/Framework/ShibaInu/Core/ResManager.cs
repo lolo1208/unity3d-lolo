@@ -102,7 +102,7 @@ namespace ShibaInu
 
             // 获取并解析版本号
             string fullVersion = hasUpdate ? FileHelper.GetText(updateVerCfgPath) : insVer;
-            Debug.Log("[ResManager] Full Version: " + fullVersion);
+            Debug.LogFormat("[ShibaInu.ResManager] Full Version: {0}", fullVersion);
             Common.VersionInfo.FullVersion = fullVersion;
 
             string[] verStrArr = fullVersion.Split('.');
@@ -224,7 +224,7 @@ namespace ShibaInu
             info.ab.LoadAllAssets();
             ShaderVariantCollection svc = info.ab.LoadAsset<ShaderVariantCollection>(Constants.ResDirPath + Constants.SvcFilePath);
             svc.WarmUp();
-            Debug.Log("[ResManager] Shaders Preload and WarmUp: " + (DateTime.Now - dateTime).Milliseconds / 1000f);
+            Debug.LogFormat("[ShibaInu.ResManager] Shaders Preload and WarmUp: {0}", (DateTime.Now - dateTime).Milliseconds / 1000f);
         }
 
         #endregion

@@ -61,7 +61,7 @@ namespace App
                     .Replace("/" + Path.GetFileName(assetPath), "")
                     .Replace("/", "_");
                 importer.spritePackingTag = tag;
-                Debug.Log(assetPath + " [spritePackingTag]: " + tag);
+                Debug.LogFormat("{0} [spritePackingTag]: {1}", assetPath, tag);
             }
             else
             {
@@ -255,7 +255,7 @@ namespace App
             if (!assetPath.StartsWith(Constants.ResDirPath, StringComparison.Ordinal)) return true;
             if (assetImporter.userData == UD_IMPORTED)
             {
-                Debug.Log(assetPath + " 已被导入过，本次导入过程将会被忽略！若要恢复默认设置，请右键点击该文件或目录，然后点击菜单项 [Reimport With Default Setting]");
+                Debug.LogFormat("{0} 已被导入过，本次导入过程将会被忽略！若要恢复默认设置，请右键点击该文件或目录，然后点击菜单项 [Reimport With Default Setting]", assetPath);
                 return true;
             }
             return false;

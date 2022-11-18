@@ -257,7 +257,7 @@ namespace ShibaInu
                 {
                     info.ab.Unload(true);
                     info.ab = null;
-                    Debug.Log("[SceneManager] Unload Scene AssetBundle: " + sceneName);
+                    Debug.LogFormat("[ShibaInu.SceneManager] Unload Scene AssetBundle: {0}", sceneName);
                 }
 
             }

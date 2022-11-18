@@ -688,7 +688,7 @@ namespace ShibaInu
             BuildReport report = BuildPipeline.BuildPlayer(CoreScenes, outputDir, buildTarget, options);
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
-                Debug.Log("Build Succeeded: " + (Mathf.Round(summary.totalSize / 1024 * 100) / 100) + " MB");
+                Debug.LogFormat("Build Succeeded: {0} MB", Mathf.Round(summary.totalSize / 1024 * 100) / 100);
             else if (summary.result == BuildResult.Failed)
                 throw new Exception("[ShibaInu] 生成 " + targetPlatform + " 项目出错！");
         }

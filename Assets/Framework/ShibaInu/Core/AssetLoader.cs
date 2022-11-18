@@ -337,7 +337,7 @@ namespace ShibaInu
                     {
                         info.ab.Unload(true);
                         info.ab = null;
-                        //Debug.Log("[Unload] ab name: " + info.name);
+                        // Debug.LogFormat("[ShibaInu.AssetLoader] Unload AssetBundle: {0}", info.name);
                     }
                 }
             }
