@@ -46,6 +46,7 @@ function Stats.Show()
     _text = AddOrGetComponent(_go, UnityEngine.UI.Text)
     _text.raycastTarget = false
     AddOrGetComponent(_go, UnityEngine.UI.Shadow)
+    AddOrGetComponent(_go, ShibaInu.SafeAreaLayout)
 
     _text.font = UnityEngine.Font.CreateDynamicFontFromOSFont("Arial", 16)
     _text.fontSize = 16
