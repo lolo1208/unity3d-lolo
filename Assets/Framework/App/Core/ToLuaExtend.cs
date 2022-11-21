@@ -90,7 +90,20 @@ namespace App
             "AudioSource.SetGamepadSpeakerMixLevelDefault",
             "AudioSource.SetGamepadSpeakerRestrictedAudio",
             "AudioSource.gamepadSpeakerOutputType",
-            
+            "DateTime.Parse", // 2021.3.6
+            "DateTime.ParseExact",
+            "DateTime.TryParse",
+            "DateTime.TryFormat",
+            "DateTime.TryParseExact",
+            "Screen.MoveMainWindowTo",
+            "Material.EnableKeyword",
+            "Material.DisableKeyword",
+            "Material.IsKeywordEnabled",
+            "Material.SetKeyword",
+            "Shader.EnableKeyword",
+            "Shader.DisableKeyword",
+            "Shader.IsKeywordEnabled",
+            "Shader.SetKeyword",
         };
 
 #endif

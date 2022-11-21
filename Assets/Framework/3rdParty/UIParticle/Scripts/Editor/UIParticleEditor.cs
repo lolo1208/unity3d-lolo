@@ -213,7 +213,7 @@ namespace Coffee.UIExtensions
             DestroyImmediate(cr);
 
 #if UNITY_2018_3_OR_NEWER
-            var stage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+            var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
             if (stage != null && stage.scene.isLoaded)
             {
                 //PrefabUtility.SaveAsPrefabAsset(stage.prefabContentsRoot, stage.prefabAssetPath);

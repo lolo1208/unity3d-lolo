@@ -54,7 +54,7 @@ namespace ShibaInu
             if (!Application.isPlaying && isDirty)
             {
 #if UNITY_2018_3_OR_NEWER
-                var prefabStage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+                var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
                 if (prefabStage != null)
                 {
                     EditorSceneManager.MarkSceneDirty(prefabStage.scene);

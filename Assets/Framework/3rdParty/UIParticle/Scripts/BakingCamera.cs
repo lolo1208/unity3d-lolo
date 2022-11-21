@@ -17,7 +17,7 @@ namespace Coffee.UIParticleExtensions
             get
             {
                 // If current scene is prefab mode, create OverlayCamera for editor.
-                var prefabStage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+                var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
                 if (prefabStage == null || !prefabStage.scene.isLoaded) return null;
                 if (s_InstanceForPrefab) return s_InstanceForPrefab;
 
