@@ -437,6 +437,10 @@ public static class ToLuaExport
                     {
                         sbArgs.Append("out arg");
                     }
+                    else if(param.Attributes == ParameterAttributes.In)
+                    {
+                        sbArgs.Append("arg");
+                    }
                     else
                     {
                         sbArgs.Append("ref arg");
