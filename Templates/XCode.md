@@ -113,3 +113,30 @@ DYLD_INSERT_LIBRARIES=/Developer/usr/lib/libMainThreadChecker.dylib:/Developer/L
 
 Solution -> `TARGET` -> `Build Phases` > `Copy Bundle Resources`
 and remove `Info.plist` from there.
+
+<br>
+<br>
+<br>
+
+## 其他
+
+### 编译 tolua_runtime
+[tolua_runtime 项目](https://github.com/topameng/tolua_runtime)
+
+#####  ToLua(Unity Editor) 添加 Apple Silicon 支持
+XCode 打开项目 `tolua_runtime/macnojit`
+
+开始设置 `TARGETS` -> `tolua` -> `Build Settings`
+
+`Architectures` 值改为 `Standard Architectures (Apple Silicon, Intel) - $(ARCHS_STANDARD)`
+
+`VALID_ARCHS` 值改为 `arm64 x86_64`（添加 `arm64`，并去掉对 `i386` 的支持）
+
+##### C 编译报错: implicit declaration of function xxx is invalid in C99
+原因：隐式声明在 C99 中无效。
+
+解决办法：在头文件或文件开头声明 xxx 函数即可。
+
+##### macOS 10.15 以上，自己编译的 xxx.bundle 提示损坏，移动到废纸篓
+解决办法：手动执行 `sudo xattr -r -d com.apple.quarantine xxx.bundle`
+
