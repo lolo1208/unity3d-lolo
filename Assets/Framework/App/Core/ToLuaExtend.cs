@@ -78,6 +78,16 @@ namespace App
             "LineRenderer.GetPositions", // 2020.3.12
             "TrailRenderer.GetPositions",
             "TrailRenderer.AddPositions",
+             "MeshRenderer.scaleInLightmap",
+            "MeshRenderer.stitchLightmapSeams",
+            "MeshRenderer.receiveGI",
+            "AudioSource.PlayOnGamepad", // 2020.3.29
+            "AudioSource.DisableGamepadOutput",
+            "AudioSource.GamepadSpeakerSupportsOutputType",
+            "AudioSource.SetGamepadSpeakerMixLevel",
+            "AudioSource.SetGamepadSpeakerMixLevelDefault",
+            "AudioSource.SetGamepadSpeakerRestrictedAudio",
+            "AudioSource.gamepadSpeakerOutputType",
             "DateTime.Parse", // 2021.3.6
             "DateTime.ParseExact",
             "DateTime.TryParse",
