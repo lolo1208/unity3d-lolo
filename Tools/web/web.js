@@ -21,7 +21,8 @@ var failedKeys = [
     "not supported",
     "Unrecognized assets",
     "Cannot mark assets",
-    "Usage Description is empty"
+    "Usage Description is empty",
+    "Plugins colliding with each other"
 ];
 
 
@@ -165,6 +166,10 @@ function showLog(element) {
                             && errStr.indexOf('DetectErrorsAndWarnings') == -1
                             && errStr.indexOf('/MaterialError') == -1
                             && errStr.indexOf('/FallbackError') == -1
+                            && errStr.indexOf('/ErrorPulse.') == -1
+                            && errStr.indexOf('/ExceptionUtils.cs') == -1
+                            && errStr.indexOf('/ErrorNotifier.cs') == -1
+                            && errStr.indexOf('UnityWebRequest.isNetworkError') == -1
                         ) {
                             data = insert(data, startIdx + 5,
                                 '<span id="errorAnchor' + startIdx + '" class="fail-color">'
