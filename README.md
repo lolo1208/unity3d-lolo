@@ -13,7 +13,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
   - `EmmyLua AttachDebugger 1.0.9` 该插件可用于断点调试 lua 代码。安装包放在 Templates/EmmyLua-AttachDebugger-1.0.9.zip
   - [VS Code](https://code.visualstudio.com/) latest / [Visual Studio Community](https://visualstudio.microsoft.com/zh-hans/free-developer-offers) 2019 / 8.10.17 for Mac
   - [tolua 1.0.7](https://github.com/topameng/tolua), lua 5.1, [release encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
-  - 其他：[ndk-r19-darwin-x86_64](https://dl.google.com/android/repository/android-ndk-r19-darwin-x86_64.zip), [Universal Render Pipeline](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@10.5/manual/index.html)
+  - 其他：[ndk-r21-darwin-x86_64](https://dl.google.com/android/repository/android-ndk-r21-darwin-x86_64.zip), [Universal Render Pipeline](https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@10.5/manual/index.html)
 
 #### * 特殊目录和文件
   - `Assets/Framework/ShibaInu/` 核心框架代码目录，包含 C# 和 Lua 代码。
@@ -182,3 +182,9 @@ Encode 所有 Lua 文件，
 你也可以点击菜单 `ShibaInu`->`退出 AssetBundle 模式` 或  `ShibaInu`->`进入 AssetBundle 模式` 切换加载模式。
 
 *提示：可以在 Web 程序中查看打包进度与详细日志*
+
+
+# 可能会遇到的问题
+##### macOS 10.15 以上，报错：“tolua.bundle” 已损坏，无法打开。您应该将它移到废纸篓。
+解决办法：执行命令 `sudo xattr -r -d com.apple.quarantine Assets/Plugins/tolua.bundle`
+
