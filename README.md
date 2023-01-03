@@ -185,6 +185,11 @@ Encode 所有 Lua 文件，
 
 
 # 可能会遇到的问题
-##### macOS 10.15 以上，报错：“tolua.bundle” 已损坏，无法打开。您应该将它移到废纸篓。
-解决办法：执行命令 `sudo xattr -r -d com.apple.quarantine Assets/Plugins/tolua.bundle`
+#### * macOS 10.15 以上，报错：“tolua.bundle” 已损坏，无法打开。您应该将它移到废纸篓。
+解决办法：
+
+```bash
+cd Assets/Plugins
+sudo xattr -r -d com.apple.quarantine tolua.bundle
+```
 
