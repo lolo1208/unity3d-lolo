@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+// 2018 - 2020 的 PrefabStageUtility 类在该命名空间内
 using UnityEditor.Experimental.SceneManagement;
 
 
