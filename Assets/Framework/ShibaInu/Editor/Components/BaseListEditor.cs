@@ -59,9 +59,11 @@ namespace ShibaInu
             EditorGUI.EndDisabledGroup();
 
             //EditorGUI.BeginDisabledGroup(EditorApplication.isPlaying);
+            EditorGUI.BeginDisabledGroup(!AutoItemCountEnabled);
             bool isAutoItemCount = GUILayout.Toggle(m_baseList.isAutoItemCount, m_c_autoCount);
             MarkSceneDirty(isAutoItemCount != m_baseList.isAutoItemCount);
             m_baseList.isAutoItemCount = isAutoItemCount;
+            EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
             //EditorGUI.EndDisabledGroup();
 
@@ -83,9 +85,11 @@ namespace ShibaInu
             EditorGUI.EndDisabledGroup();
 
             //EditorGUI.BeginDisabledGroup(EditorApplication.isPlaying);
+            EditorGUI.BeginDisabledGroup(!AutoItemGapEnabled);
             bool isAutoItemGap = GUILayout.Toggle(m_baseList.isAutoItemGap, m_c_autoGap);
             MarkSceneDirty(isAutoItemGap != m_baseList.isAutoItemGap);
             m_baseList.isAutoItemGap = isAutoItemGap;
+            EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
             //EditorGUI.EndDisabledGroup();
 
@@ -93,10 +97,12 @@ namespace ShibaInu
             // auto size
             //EditorGUI.BeginDisabledGroup(EditorApplication.isPlaying);
             EditorGUILayout.BeginHorizontal();
+            EditorGUI.BeginDisabledGroup(!AutoSizeEnabled);
             GUILayout.Space(EditorGUIUtility.labelWidth);
             bool isAutoSize = GUILayout.Toggle(m_baseList.isAutoSize, m_c_isAutoSize);
             MarkSceneDirty(isAutoSize != m_baseList.isAutoSize);
             m_baseList.isAutoSize = isAutoSize;
+            EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndHorizontal();
             //EditorGUI.EndDisabledGroup();
 
@@ -117,7 +123,6 @@ namespace ShibaInu
         }
 
 
-
         public virtual bool HGapEnabled
         {
             get { return !m_baseList.isAutoItemGap; }
@@ -128,6 +133,20 @@ namespace ShibaInu
             get { return !m_baseList.isAutoItemGap; }
         }
 
+        public virtual bool AutoItemCountEnabled
+        {
+            get { return true; }
+        }
+
+        public virtual bool AutoItemGapEnabled
+        {
+            get { return true; }
+        }
+
+        public virtual bool AutoSizeEnabled
+        {
+            get { return true; }
+        }
 
         //
     }

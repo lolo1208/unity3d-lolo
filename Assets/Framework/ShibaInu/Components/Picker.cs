@@ -13,7 +13,7 @@ namespace ShibaInu
     /// <summary>
     /// 选择器列表，需配合 Picker.lua 使用
     /// </summary>
-    [AddComponentMenu("ShibaInu/Picker", 101)]
+    [AddComponentMenu("ShibaInu/Picker", 106)]
     [DisallowMultipleComponent]
     public class Picker : MonoBehaviour
     {

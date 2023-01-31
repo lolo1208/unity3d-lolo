@@ -95,11 +95,21 @@ end
 function ItemRenderer:OnInitialize()
     ItemRenderer.super.OnInitialize(self)
 
-    local rect = self.transform.rect
+    self:CalcSizeAndOffset()
+end
+
+
+--
+--- 计算宽高与偏移
+---@param transform UnityEngine.RectTransform @ 用于计算宽高与偏移的 trasform，默认：self.transform
+function ItemRenderer:CalcSizeAndOffset(transform)
+    transform = transform or self.transform
+
+    local rect = transform.rect
     self.itemWidth = rect.width
     self.itemHeight = rect.height
 
-    local pivot = self.transform.pivot
+    local pivot = transform.pivot
     self.itemOffsetX = pivot.x * self.itemWidth
     self.itemOffsetY = -(pivot.y * self.itemHeight)
 end

@@ -7,7 +7,7 @@ namespace ShibaInu
     /// 设置 UI 使用的 Camera 的（正交）尺寸
     /// 需将该脚本挂在对应的 Camera 上
     /// </summary>
-    [AddComponentMenu("ShibaInu/UI Camera", 301)]
+    [AddComponentMenu("ShibaInu/UI Camera", 401)]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Camera))]
     public class UICamera : MonoBehaviour

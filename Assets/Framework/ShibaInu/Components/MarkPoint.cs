@@ -7,7 +7,7 @@ namespace ShibaInu
     /// <summary>
     /// 标记点
     /// </summary>
-    [AddComponentMenu("ShibaInu/Mark Point", 402)]
+    [AddComponentMenu("ShibaInu/Mark Point", 502)]
     [DisallowMultipleComponent]
     public class MarkPoint : MonoBehaviour
     {

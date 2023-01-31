@@ -15,7 +15,7 @@ namespace ShibaInu
     /// 	基于 MaskableGraphic 实现，不会影响到图集 Drawcall。
     /// 	精确点击，基于 Ray-Crossing 算法。
     /// </summary>
-    [AddComponentMenu("ShibaInu/Circle Image", 106)]
+    [AddComponentMenu("ShibaInu/Circle Image", 202)]
     [DisallowMultipleComponent]
     public class CircleImage : MaskableGraphic, ICanvasRaycastFilter
     {

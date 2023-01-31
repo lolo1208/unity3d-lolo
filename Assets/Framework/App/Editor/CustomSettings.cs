@@ -138,6 +138,7 @@ public static class CustomSettings
         _GT(typeof(Picker)),
         _GT(typeof(BaseList)),
         _GT(typeof(ScrollList)),
+        _GT(typeof(Waterfall)),
         _GT(typeof(PageList)),
         _GT(typeof(ViewPager)),
         _GT(typeof(PageTransformerType)),

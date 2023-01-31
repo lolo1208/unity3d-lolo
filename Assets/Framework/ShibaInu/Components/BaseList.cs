@@ -10,7 +10,7 @@ namespace ShibaInu
     /// <summary>
     /// 基础列表，需配合 BaseList.lua 使用
     /// </summary>
-    [AddComponentMenu("ShibaInu/Base List", 102)]
+    [AddComponentMenu("ShibaInu/Base List", 101)]
     [DisallowMultipleComponent]
     public class BaseList : MonoBehaviour
     {

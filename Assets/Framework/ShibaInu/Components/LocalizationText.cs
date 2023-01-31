@@ -17,7 +17,7 @@ namespace ShibaInu
     /// <summary>
     /// 本地化文本
     /// </summary>
-    [AddComponentMenu("ShibaInu/Localization Text", 107)]
+    [AddComponentMenu("ShibaInu/Localization Text", 201)]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Text))]
     public class LocalizationText : MonoBehaviour

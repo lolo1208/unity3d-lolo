@@ -77,8 +77,6 @@ function ScrollList:UpdateScroll()
     local curPos = self._isVertical and contentPos.y or contentPos.x
     if abs(curPos - self._lastUpdatePos) > itemSize then
         self:Update()
-        self._isUpdateDirty = true
-        AddEventListener(Stage, Event.LATE_UPDATE, self.UpdateNow, self)
     end
 end
 
@@ -116,7 +114,7 @@ function ScrollList:UpdateNow()
     local item ---@type ItemRenderer
     local isVertical = self._isVertical
 
-    -- 重新计算影响布局的各参数参数
+    -- 重新计算影响布局的各参数
     if self._isUpdateCalc then
         self._isUpdateCalc = false
         local list = self._list
@@ -282,7 +280,6 @@ function ScrollList:SelectItemByIndex(index)
 end
 
 
-
 --
 --- 通过索引获取子项
 ---@param index number
@@ -322,6 +319,8 @@ end
 
 
 
+--=------------------------------[ scroll ]------------------------------=--
+
 --
 --- 滚动到指定位置
 ---@param position number @ 位置，值范围：0~1
@@ -330,6 +329,22 @@ end
 function ScrollList:ScrollToPosition(position, duration, ease)
     self:UpdateCheck()
     self.scrollList:ScrollToPosition(position, duration or 0.4, ease or DOTween_Enum.Ease.OutCubic)
+end
+
+--
+--- 滚动到顶部
+---@param duration number @ -可选- 滚动耗时（秒），值 <= 0 时表示不使用缓动。默认：0.4
+---@param ease DG.Tweening.Ease @ -可选- 缓动方式。默认：OutCubic
+function ScrollList:ScrollToTop(duration, ease)
+    self:ScrollToPosition(self._isVertical and 1 or 0, duration, ease)
+end
+
+--
+--- 滚动到底部
+---@param duration number @ -可选- 滚动耗时（秒），值 <= 0 时表示不使用缓动。默认：0.4
+---@param ease DG.Tweening.Ease @ -可选- 缓动方式。默认：OutCubic
+function ScrollList:ScrollToBottom(duration, ease)
+    self:ScrollToPosition(self._isVertical and 0 or 1, duration, ease)
 end
 
 --
@@ -467,11 +482,13 @@ end
 
 
 
-
 --=------------------------------[ recycle & clean ]------------------------------=--
 
+--
+--- 清空列表，清空缓存池，销毁所有 item
 function ScrollList:Clean()
     ScrollList.super.Clean(self)
+
     self._isUpdateDirty = false
     self._lastUpdatePos = 0
 end

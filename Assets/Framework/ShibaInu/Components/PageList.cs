@@ -9,7 +9,7 @@ namespace ShibaInu
     /// <summary>
     /// 翻页列表，需配合 PageList.lua 使用
     /// </summary>
-    [AddComponentMenu("ShibaInu/Page List", 104)]
+    [AddComponentMenu("ShibaInu/Page List", 103)]
     [DisallowMultipleComponent]
     public class PageList : ViewPager
     {

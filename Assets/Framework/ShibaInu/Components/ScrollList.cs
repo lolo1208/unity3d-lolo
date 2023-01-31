@@ -11,7 +11,7 @@ namespace ShibaInu
     /// <summary>
     /// 滚动列表，需配合 ScrollList.lua 使用
     /// </summary>
-    [AddComponentMenu("ShibaInu/Scroll List", 103)]
+    [AddComponentMenu("ShibaInu/Scroll List", 102)]
     [DisallowMultipleComponent]
     public class ScrollList : BaseList, IInitializePotentialDragHandler
     {

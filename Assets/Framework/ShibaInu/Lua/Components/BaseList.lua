@@ -197,7 +197,7 @@ function BaseList:UpdateNow()
 
     local item ---@type ItemRenderer
 
-    -- 重新计算影响布局的各参数参数
+    -- 重新计算影响布局的各参数
     if self._isUpdateCalc then
         self._isUpdateCalc = false
         local list = self._list

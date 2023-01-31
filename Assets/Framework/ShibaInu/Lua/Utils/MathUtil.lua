@@ -57,6 +57,19 @@ function MathUtil.Random(a, b)
 end
 
 
+--
+--- 返回一个随机整数（正数）
+---   RandomInt() 返回：0 ~ M（不包含 M）
+---   RandomInt(10) 返回：0 ~ 9
+---   RandomInt(10, 20) 返回：10 ~ 19
+---@param a number
+---@param b number
+---@return number
+function MathUtil.RandomInt(a, b)
+    return rand:Next(a, b)
+end
+
+
 
 --
 --- 获取两点之间距离

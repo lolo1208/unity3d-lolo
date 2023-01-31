@@ -11,7 +11,7 @@ namespace App
     /// 第三人称镜头
     /// Author: LOLO
     /// </summary>
-    [AddComponentMenu("ShibaInu/Third Person Camera", 302)]
+    [AddComponentMenu("ShibaInu/Third Person Camera", 402)]
     [DisallowMultipleComponent]
     public class ThirdPersonCamera : MonoBehaviour
     {

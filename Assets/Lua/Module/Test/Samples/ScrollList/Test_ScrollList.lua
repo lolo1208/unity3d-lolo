@@ -29,6 +29,8 @@ function Test_ScrollList:OnInitialize()
             require("Module.Test.Samples.ScrollList.Test_ScrollListItem")
     )
     vList:SetData(data)
+    vList:ScrollToBottom()
+    --vList:ScrollToTop()
 
 
     -- 水平滚动列表
@@ -37,10 +39,7 @@ function Test_ScrollList:OnInitialize()
             require("Module.Test.Samples.ScrollList.Test_ScrollListItem")
     )
     hList:SetData(data:Clone())
-
-    vList:ScrollToItemIndex(40)
     hList:ScrollToItemIndex(40)
-
 end
 
 return Test_ScrollList
