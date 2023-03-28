@@ -115,6 +115,10 @@ function Picker:AddItem(index, go)
     else
         item = self._itemClass.New()
         item._list = self
+        AddEventListener(go, PointerEvent.DOWN, self.OnItemPointerEventHandler, self, 0, item, ListEvent.ITEM_POINTER_DOWN)
+        AddEventListener(go, PointerEvent.UP, self.OnItemPointerEventHandler, self, 0, item, ListEvent.ITEM_POINTER_UP)
+        AddEventListener(go, PointerEvent.EXIT, self.OnItemPointerEventHandler, self, 0, item, ListEvent.ITEM_POINTER_EXIT)
+        AddEventListener(go, PointerEvent.CLICK, self.OnItemPointerEventHandler, self, 0, item, ListEvent.ITEM_POINTER_CLICK)
         item.gameObject = go
         item:OnInitialize()
     end
@@ -143,6 +147,17 @@ end
 function Picker:SelectItem(index)
     index = index + 1
     self:SetSelectedItem(self._itemList[index])
+end
+
+
+--
+--- 子项 鼠标指针（touch）相关事件处理
+---@param event PointerEvent
+---@param item ItemRenderer
+function Picker:OnItemPointerEventHandler(event, item, eventType)
+    if item:GetEnabled() then
+        self:DispatchListEvent(eventType, item)
+    end
 end
 
 
