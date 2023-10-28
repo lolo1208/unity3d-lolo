@@ -78,7 +78,7 @@ namespace App
             "LineRenderer.GetPositions", // 2020.3.12
             "TrailRenderer.GetPositions",
             "TrailRenderer.AddPositions",
-             "MeshRenderer.scaleInLightmap",
+            "MeshRenderer.scaleInLightmap",
             "MeshRenderer.stitchLightmapSeams",
             "MeshRenderer.receiveGI",
             "AudioSource.PlayOnGamepad", // 2020.3.29
@@ -93,6 +93,8 @@ namespace App
             "DateTime.TryParse",
             "DateTime.TryFormat",
             "DateTime.TryParseExact",
+            "TrailRenderer.GetVisiblePositions",// 2021.3.31
+            "QualitySettings.GetAllRenderPipelineAssetsForPlatform",
         };
 
 #endif
