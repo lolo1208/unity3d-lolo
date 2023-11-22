@@ -8,8 +8,8 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
 
 #### * 默认环境和版本
   - [Unity Editor 2021.3.31f1](https://unity3d.com/cn/unity/whats-new/2021.3.31) 可升级至任意版本
-  - [IntelliJ IDEA CE 2023.2.4](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
-  - [EmmyLua 1.4.7](https://plugins.jetbrains.com/plugin/9768-emmylua/versions/stable) 该插件可用于 [lua 代码提示](https://emmylua.github.io)。安装包放在 Templates/IntelliJ-EmmyLua-1.4.7-IDEA231.zip
+  - [IntelliJ IDEA CE 2022.3.3](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
+  - [EmmyLua 1.3.8](https://plugins.jetbrains.com/plugin/9768-emmylua/versions/stable) 该插件可用于 [lua 代码提示](https://emmylua.github.io)。安装包放在 Templates/IntelliJ-EmmyLua-1.3.8-IDEA223.zip
   - `EmmyLua AttachDebugger 1.0.9` 该插件可用于断点调试 lua 代码。安装包放在 Templates/EmmyLua-AttachDebugger-1.0.9.zip
   - [VS Code](https://code.visualstudio.com/) latest / [Visual Studio Community](https://visualstudio.microsoft.com/zh-hans/free-developer-offers) 2019 / 8.10.17 for Mac
   - [tolua 1.0.7](https://github.com/topameng/tolua), lua 5.1, [release encoder](https://github.com/lolo1208/unity3d-lolo/blob/master/Tools/tools/luaEncoder/readme.txt)
