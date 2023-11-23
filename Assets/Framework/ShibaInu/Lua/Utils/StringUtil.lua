@@ -10,6 +10,7 @@ local sub = string.sub
 local gsub = string.gsub
 local byte = string.byte
 local format = string.format
+local tonumber = tonumber
 
 
 --
@@ -207,6 +208,25 @@ function StringUtil.EncodeURI(str)
     str = gsub(str, " ", "+")
 
     return str
+end
+
+
+
+--
+--- 返回一个新的，根据 hexString 创建的 Color 对象
+--- 例如：StringUtil.HexColor("FF0099") 或 StringUtil.HexColor("FF0099FF")
+---@param hexString string @ rpg 或 rgba （大小写不敏感）
+---@return Color
+function StringUtil.HexColor(hexString)
+    local r = sub(hexString, 1, 2)
+    local g = sub(hexString, 3, 4)
+    local b = sub(hexString, 5, 6)
+    local color = Color.New(tonumber(r, 16) / 255, tonumber(g, 16) / 255, tonumber(b, 16) / 255)
+    if #hexString == 8 then
+        local a = sub(hexString, 7, 8)
+        color.a = tonumber(a, 16) / 255
+    end
+    return color
 end
 
 
