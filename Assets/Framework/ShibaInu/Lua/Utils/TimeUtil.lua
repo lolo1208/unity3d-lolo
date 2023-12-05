@@ -4,6 +4,9 @@
 -- Author LOLO
 --
 
+local os = os
+local format = string.format
+
 
 --
 ---@class TimeUtil
@@ -26,6 +29,8 @@ TimeUtil.TYPE_H = "h"
 TimeUtil.time = 0
 --- 当前程序已运行时间（毫秒）
 TimeUtil.timeMsec = 0
+--- 启动时间，UTC 时间戳（秒）
+TimeUtil.startupTime = os.time()
 
 --
 --- 当前程序已运行帧数（ value = UnityEngine.Time.frameCount ）
@@ -69,6 +74,40 @@ function TimeUtil.Convert(typeFrom, typeTo, time)
     end
 
     return time
+end
+
+
+--
+local RelObj = {
+    { 60, Constants.LKEY_TR_MINUTE, Constants.LKEY_TR_MINUTES },
+    { 60, Constants.LKEY_TR_HOUR, Constants.LKEY_TR_HOURS },
+    { 24, Constants.LKEY_TR_DAY, Constants.LKEY_TR_DAYS },
+    { 30.5, Constants.LKEY_TR_MONTH, Constants.LKEY_TR_MONTHS },
+    { 12, Constants.LKEY_TR_YEAR, Constants.LKEY_TR_YEARS }
+}
+
+--- 获取距离现在的相对时间
+---@param timestamp number @ 目标时间，UTC 时间戳（秒）
+---@return string @ "现在"，"1分钟前"，"1个月前"，等相对时间的描述
+function TimeUtil.RelativeTime(timestamp)
+    local lk = Constants.LKEY_TR_NOW
+    local value = TimeUtil.startupTime + TimeUtil.time - timestamp
+
+    for i = 1, #RelObj do
+        local rel = RelObj[i]
+        local nextVal = value / rel[1]
+        if nextVal < 1 then
+            break
+        end
+        if nextVal < 2 then
+            lk = rel[2]
+            break
+        end
+        lk = rel[3]
+        value = nextVal
+    end
+
+    return format(Language[lk], value)
 end
 
 

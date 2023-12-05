@@ -74,6 +74,17 @@ local Constants = {
     LKEY_SFU_KG = "string.format.unit.kb",
     LKEY_SFU_MB = "string.format.unit.mb",
     LKEY_SFU_GB = "string.format.unit.gb",
+    LKEY_TR_NOW = "time.relative.justNow",
+    LKEY_TR_MINUTE = "time.relative.minute",
+    LKEY_TR_MINUTES = "time.relative.minutes",
+    LKEY_TR_HOUR = "time.relative.hour",
+    LKEY_TR_HOURS = "time.relative.hours",
+    LKEY_TR_DAY = "time.relative.day",
+    LKEY_TR_DAYS = "time.relative.days",
+    LKEY_TR_MONTH = "time.relative.month",
+    LKEY_TR_MONTHS = "time.relative.months",
+    LKEY_TR_YEAR = "time.relative.year",
+    LKEY_TR_YEARS = "time.relative.years",
 
 
     -- 错误信息
