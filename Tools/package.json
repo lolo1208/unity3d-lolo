@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/lolo1208/unity3d-lolo",
   "dependencies": {
-    "archiver": "^3.0.0",
+    "archiver": "^6.0.1",
     "commander": "^2.19.0",
-    "zip-local": "^0.3.4"
+    "fs-extra": "^11.2.0",
+    "n-readlines": "^1.0.1",
+    "zip-local": "^0.3.5"
   }
 }

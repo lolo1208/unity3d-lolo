@@ -1,0 +1,19 @@
+{
+    "list": [
+        {
+            "scenes": ["Agriculture","AnimalHusbandry", "Mining"],
+            "dlcName": "Industries",
+            "exportName": "industries"
+        },
+        {
+            "scenes": [],
+            "dlcName": "ParkLife",
+            "exportName": "parklife"
+        },
+        {
+            "scenes": ["Campus"],
+            "dlcName": "Campus",
+            "exportName": "campus"
+        }
+    ]
+}
