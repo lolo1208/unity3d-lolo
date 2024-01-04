@@ -143,6 +143,7 @@ public static class CustomSettings
         _GT(typeof(ViewPager)),
         _GT(typeof(PageTransformerType)),
         _GT(typeof(CircleImage)),
+        _GT(typeof(RoundedImage)),
         _GT(typeof(LocalizationText)),
 
         _GT(typeof(SafeAreaLayout)),

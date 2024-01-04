@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using UnityEngine.Sprites;
-using DG.Tweening;
 
 
 namespace ShibaInu
@@ -17,12 +16,11 @@ namespace ShibaInu
     /// </summary>
     [AddComponentMenu("ShibaInu/Circle Image", 202)]
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(CanvasRenderer))]
     public class CircleImage : MaskableGraphic, ICanvasRaycastFilter
     {
-
         #region Inspector 可编辑属性
 
-        //
         public Sprite sourceImage
         {
             set
@@ -39,10 +37,8 @@ namespace ShibaInu
         [Tooltip("源图像")]
         [FormerlySerializedAs("sourceImage"), SerializeField]
         protected Sprite m_sourceImage;
-        //
 
 
-        //
         public float fan
         {
             set
@@ -60,10 +56,8 @@ namespace ShibaInu
         [Range(0, 1)]
         [FormerlySerializedAs("fan"), SerializeField]
         protected float m_fan = 0f;
-        //
 
 
-        //
         public float ring
         {
             set
@@ -81,10 +75,8 @@ namespace ShibaInu
         [Range(0, 1)]
         [FormerlySerializedAs("ring"), SerializeField]
         protected float m_ring = 0f;
-        //
 
 
-        //
         public int sides
         {
             set
@@ -102,68 +94,13 @@ namespace ShibaInu
         [Range(3, 100)]
         [FormerlySerializedAs("sides"), SerializeField]
         protected int m_sides = 30;
-        //
 
         #endregion
 
 
 
-        public Sprite sprite
-        {
-            set { sourceImage = value; }
-            get { return m_sourceImage; }
-        }
-
-
         /// <summary>
-        /// Sets the size to match the content.
-        /// </summary>
-        public override void SetNativeSize()
-        {
-            if (this.m_sourceImage != null)
-            {
-                float pixelsPerUnit = this.pixelsPerUnit;
-                tmpVec2.x = m_sourceImage.rect.width / pixelsPerUnit;
-                tmpVec2.y = m_sourceImage.rect.height / pixelsPerUnit;
-                base.rectTransform.sizeDelta = tmpVec2;
-                base.rectTransform.anchorMax = base.rectTransform.anchorMin;
-                this.SetAllDirty();
-            }
-        }
-
-        protected Vector2 tmpVec2 = new Vector2();
-
-
-        public float pixelsPerUnit
-        {
-            get
-            {
-                float num = 100f;
-                if (this.m_sourceImage)
-                {
-                    num = this.m_sourceImage.pixelsPerUnit;
-                }
-                float num2 = 100f;
-                if (base.canvas)
-                {
-                    num2 = base.canvas.referencePixelsPerUnit;
-                }
-                return num / num2;
-            }
-        }
-
-
-
-        #region 实现圆形图像
-
-        /// 内环
-        private List<Vector3> m_innerVertices = new List<Vector3>();
-        /// 外环
-        private List<Vector3> m_outterVertices = new List<Vector3>();
-
-
-        /// <summary>
-        /// Gets the main texture. override!!!
+        /// Gets the main texture. override!
         /// </summary>
         /// <value>The main texture.</value>
         public override Texture mainTexture
@@ -173,6 +110,56 @@ namespace ShibaInu
                 return sourceImage == null ? s_WhiteTexture : sourceImage.texture;
             }
         }
+
+        public Sprite sprite
+        {
+            set { sourceImage = value; }
+            get { return m_sourceImage; }
+        }
+
+        public float pixelsPerUnit
+        {
+            get
+            {
+                float num = 100f;
+                if (m_sourceImage)
+                {
+                    num = m_sourceImage.pixelsPerUnit;
+                }
+                float num2 = 100f;
+                if (canvas)
+                {
+                    num2 = canvas.referencePixelsPerUnit;
+                }
+                return num / num2;
+            }
+        }
+
+        /// <summary>
+        /// Sets the size to match the content.
+        /// </summary>
+        public override void SetNativeSize()
+        {
+            if (m_sourceImage != null)
+            {
+                float pixelsPerUnit = this.pixelsPerUnit;
+                rectTransform.sizeDelta = new Vector2(
+                    m_sourceImage.rect.width / pixelsPerUnit,
+                    m_sourceImage.rect.height / pixelsPerUnit
+                );
+                rectTransform.anchorMax = rectTransform.anchorMin;
+                SetAllDirty();
+            }
+        }
+
+
+
+        #region 实现圆形图像
+
+        // 内环
+        private List<Vector3> m_innerVertices = new List<Vector3>();
+        // 外环
+        private List<Vector3> m_outterVertices = new List<Vector3>();
 
 
         protected override void OnPopulateMesh(VertexHelper vh)
@@ -204,13 +191,16 @@ namespace ShibaInu
             Vector2 curVertice;
 
             if (ring == 1)
-            { //圆形
+            {
+                //圆形
                 curVertice = Vector2.zero;
                 verticeCount = curSegements + 1;
-                uiVertex = new UIVertex();
-                uiVertex.color = color;
-                uiVertex.position = curVertice;
-                uiVertex.uv0 = new Vector2(curVertice.x * uvScaleX + uvCenterX, curVertice.y * uvScaleY + uvCenterY);
+                uiVertex = new UIVertex
+                {
+                    color = color,
+                    position = curVertice,
+                    uv0 = new Vector2(curVertice.x * uvScaleX + uvCenterX, curVertice.y * uvScaleY + uvCenterY)
+                };
                 vh.AddVert(uiVertex);
 
                 for (int i = 1; i < verticeCount; i++)
@@ -220,10 +210,12 @@ namespace ShibaInu
                     curVertice = new Vector2(cosA * outerRadius, sinA * outerRadius);
                     curDegree += degreeDelta;
 
-                    uiVertex = new UIVertex();
-                    uiVertex.color = color;
-                    uiVertex.position = curVertice;
-                    uiVertex.uv0 = new Vector2(curVertice.x * uvScaleX + uvCenterX, curVertice.y * uvScaleY + uvCenterY);
+                    uiVertex = new UIVertex
+                    {
+                        color = color,
+                        position = curVertice,
+                        uv0 = new Vector2(curVertice.x * uvScaleX + uvCenterX, curVertice.y * uvScaleY + uvCenterY)
+                    };
                     vh.AddVert(uiVertex);
 
                     m_outterVertices.Add(curVertice);
@@ -241,7 +233,8 @@ namespace ShibaInu
                 }
             }
             else
-            {//圆环
+            {
+                //圆环
                 verticeCount = curSegements * 2;
                 for (int i = 0; i < verticeCount; i += 2)
                 {
@@ -250,18 +243,22 @@ namespace ShibaInu
                     curDegree += degreeDelta;
 
                     curVertice = new Vector3(cosA * innerRadius, sinA * innerRadius);
-                    uiVertex = new UIVertex();
-                    uiVertex.color = color;
-                    uiVertex.position = curVertice;
-                    uiVertex.uv0 = new Vector2(curVertice.x * uvScaleX + uvCenterX, curVertice.y * uvScaleY + uvCenterY);
+                    uiVertex = new UIVertex
+                    {
+                        color = color,
+                        position = curVertice,
+                        uv0 = new Vector2(curVertice.x * uvScaleX + uvCenterX, curVertice.y * uvScaleY + uvCenterY)
+                    };
                     vh.AddVert(uiVertex);
                     m_innerVertices.Add(curVertice);
 
                     curVertice = new Vector3(cosA * outerRadius, sinA * outerRadius);
-                    uiVertex = new UIVertex();
-                    uiVertex.color = color;
-                    uiVertex.position = curVertice;
-                    uiVertex.uv0 = new Vector2(curVertice.x * uvScaleX + uvCenterX, curVertice.y * uvScaleY + uvCenterY);
+                    uiVertex = new UIVertex
+                    {
+                        color = color,
+                        position = curVertice,
+                        uv0 = new Vector2(curVertice.x * uvScaleX + uvCenterX, curVertice.y * uvScaleY + uvCenterY)
+                    };
                     vh.AddVert(uiVertex);
                     m_outterVertices.Add(curVertice);
                 }
@@ -298,7 +295,7 @@ namespace ShibaInu
 
 
         /// <summary>
-        /// 使用RayCrossing算法判断点击点是否在封闭多边形里
+        /// 判断点击是否在多边形内部
         /// </summary>
         /// <param name="p"></param>
         /// <param name="vertices"></param>
@@ -310,11 +307,11 @@ namespace ShibaInu
                 var v1 = vertices[i];
                 var v2 = vertices[(i + 1) % count];
 
-                //点击点水平线必须与两顶点线段相交
+                // 点击点水平线必须与两顶点线段相交
                 if (((v1.y <= p.y) && (v2.y > p.y))
                     || ((v1.y > p.y) && (v2.y <= p.y)))
                 {
-                    //只考虑点击点右侧方向，点击点水平线与线段相交，且交点x > 点击点x，则crossNumber+1
+                    // 只考虑点击点右侧方向，点击点水平线与线段相交，且交点 x > 点击点 x，则 crossNumber+1
                     if (p.x < v1.x + (p.y - v1.y) / (v2.y - v1.y) * (v2.x - v1.x))
                     {
                         crossNumber += 1;
