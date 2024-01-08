@@ -7,7 +7,7 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
 也可在场景中的任意 GameObject 上 `Add Component`->`Main`，然后点击 `Play` 按钮运行项目。
 
 #### * 默认环境和版本
-  - [Unity Editor 2021.3.31f1](https://unity3d.com/cn/unity/whats-new/2021.3.31) 可升级至任意版本
+  - [Unity Editor 2021.3.33f1](https://unity3d.com/cn/unity/whats-new/2021.3.33) 可升级至任意版本
   - [IntelliJ IDEA CE 2022.3.3](https://www.jetbrains.com/idea/download/other.html) 使用 Community 版本即可。如果要升级版本，需配合 EmmyLua 插件一同升级
   - [EmmyLua 1.3.8](https://plugins.jetbrains.com/plugin/9768-emmylua/versions/stable) 该插件可用于 [lua 代码提示](https://emmylua.github.io)。安装包放在 Templates/IntelliJ-EmmyLua-1.3.8-IDEA223.zip
   - `EmmyLua AttachDebugger 1.0.9` 该插件可用于断点调试 lua 代码。安装包放在 Templates/EmmyLua-AttachDebugger-1.0.9.zip
