@@ -4,8 +4,7 @@
 -- Author LOLO
 --
 
-local unpack = unpack
-local table = table
+local unpack = unpack or table.unpack
 local remove = table.remove
 local insert = table.insert
 local error = error

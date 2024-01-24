@@ -7,7 +7,7 @@
 
 local xpcall = xpcall
 local traceback = debug.traceback
-local unpack = unpack
+local unpack = unpack or table.unpack
 
 local log = ShibaInu.Logger.Log
 local logWarning = ShibaInu.Logger.LogWarning

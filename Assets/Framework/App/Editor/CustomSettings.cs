@@ -235,7 +235,6 @@ public static class CustomSettings
         #region Project
         _GT(typeof(App.LuaHelper)),
         _GT(typeof(App.ThirdPersonCamera)),
-        //_GT(typeof(App.AstMsgProtocol)),
         #endregion
 
 

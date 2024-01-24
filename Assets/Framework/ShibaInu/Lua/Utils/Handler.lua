@@ -4,7 +4,7 @@
 -- Author LOLO
 --
 
-local unpack = unpack
+local unpack = unpack or table.unpack
 local remove = table.remove
 local getOnlyID = GetOnlyID
 
