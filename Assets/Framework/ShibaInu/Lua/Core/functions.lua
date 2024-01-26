@@ -51,7 +51,7 @@ function class(className, superClass)
     return cls
 end
 
---- instance 是否为 class 的实例
+--- instance 是否为 class 的实例（或 class 子类的实例）
 ---@param instance any @ 实例
 ---@param cls any @ 类
 function instanceof(instance, cls)
@@ -68,6 +68,19 @@ function instanceof(instance, cls)
             instanceClass = instanceClass.super
         end
         return false
+    end
+end
+
+--- instance 是否为 class 的实例（不包括 class 子类的实例）
+---@param instance any @ 实例
+---@param cls any @ 类
+function instanceis(instance, cls)
+    if type(instance) == "userdata" then
+        local typeInstance = _typeof(instance)
+        local typeClass = _typeof_class(cls)
+        return typeInstance == typeClass and typeInstance ~= nil and typeClass ~= nil
+    else
+        return instance.__classname == cls.__classname
     end
 end
 
