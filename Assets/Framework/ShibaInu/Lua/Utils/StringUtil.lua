@@ -11,6 +11,7 @@ local gsub = string.gsub
 local byte = string.byte
 local format = string.format
 local tonumber = tonumber
+local tostring = tostring
 
 
 --
@@ -63,6 +64,41 @@ function StringUtil.LeadingZeros(number, length)
     return format("%0" .. length .. "d", number)
 end
 
+
+--
+local CURRENCY_AMOUNT_PAT = "^(%d+)(%.%d+)$"
+local CURRENCY_AMOUNT_INT_PAT = "(%d%d%d)"
+local CURRENCY_AMOUNT_SEP = ","
+local CURRENCY_AMOUNT_SEP_PAT = "^,"
+
+--- 千分位格式化货币值
+---@param amount number @ 要格式化的值
+---@param decimal number @ 是否保留2位小数。默认：false，不保留小数，并四舍五入取整
+---@param separator number @ 格式化符号。默认：","
+---@return string
+function StringUtil.FormatCurrency(amount, decimal, separator)
+    local separatorPattern
+    if separator == nil then
+        separator = CURRENCY_AMOUNT_SEP
+        separatorPattern = CURRENCY_AMOUNT_SEP_PAT
+    else
+        separator = separator or ","
+        separatorPattern = "^" .. separator
+    end
+
+    if decimal then
+        local formattedAmount = format("%.2f", amount)
+        local integerPart, decimalPart = formattedAmount:match(CURRENCY_AMOUNT_PAT)
+        integerPart = integerPart:reverse():gsub(CURRENCY_AMOUNT_INT_PAT, "%1" .. separator):reverse()
+        integerPart = integerPart:gsub(separatorPattern, "") -- 删除开头的逗号
+        return integerPart .. decimalPart
+    else
+        amount = tostring(floor(amount + 0.5))
+        local retVal = amount:reverse():gsub(CURRENCY_AMOUNT_INT_PAT, "%1" .. separator):reverse()
+        retVal = retVal:gsub(separatorPattern, "")
+        return retVal
+    end
+end
 
 
 --
