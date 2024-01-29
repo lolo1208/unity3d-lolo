@@ -45,6 +45,14 @@ TimeUtil.timeSinceLevelLoad = 0
 
 
 --
+--- 获取当前 UTC 时间（秒.毫秒）
+---@return number
+function TimeUtil.NowUTC()
+    return TimeUtil.startupTime + TimeUtil.time
+end
+
+
+--
 --- 转换时间类型
 ---@param typeFrom string
 ---@param typeTo string
