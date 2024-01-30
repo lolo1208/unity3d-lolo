@@ -207,6 +207,7 @@ end
 function Stage._loopHandler(type, time)
     TimeUtil.time = time
     TimeUtil.timeMsec = floor(time * 1000 + 0.5)
+    TimeUtil.nowUTC = TimeUtil.startupTime + TimeUtil.time
 
     if type == Event.UPDATE then
         TimeUtil.frameCount = Time.frameCount

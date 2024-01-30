@@ -31,6 +31,8 @@ TimeUtil.time = 0
 TimeUtil.timeMsec = 0
 --- 启动时间，UTC 时间戳（秒）
 TimeUtil.startupTime = os.time()
+--- 当前 UTC 时间（秒.毫秒）
+TimeUtil.nowUTC = 0
 
 --
 --- 当前程序已运行帧数（ value = UnityEngine.Time.frameCount ）
@@ -42,14 +44,6 @@ TimeUtil.totalDeltaTime = 0
 --- 自场景加载以来的时间（秒.毫秒）= Shader _Time.y
 TimeUtil.timeSinceLevelLoad = 0
 
-
-
---
---- 获取当前 UTC 时间（秒.毫秒）
----@return number
-function TimeUtil.NowUTC()
-    return TimeUtil.startupTime + TimeUtil.time
-end
 
 
 --
@@ -99,7 +93,7 @@ local RelObj = {
 ---@return string @ "现在"，"1分钟前"，"1个月前"，等相对时间的描述
 function TimeUtil.RelativeTime(timestamp)
     local lk = Constants.LKEY_TR_NOW
-    local value = TimeUtil.startupTime + TimeUtil.time - timestamp
+    local value = TimeUtil.nowUTC - timestamp
 
     for i = 1, #RelObj do
         local rel = RelObj[i]
