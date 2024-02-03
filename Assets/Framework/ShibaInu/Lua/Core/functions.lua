@@ -300,6 +300,13 @@ function GetComponent.CircleImage(go)
     return go:GetComponent(_typeof_class(ShibaInu.CircleImage))
 end
 
+--- 获取 gameObject 下的 ShibaInu.RoundedImage 组件
+---@param go UnityEngine.GameObject | UnityEngine.Transform
+---@return ShibaInu.RoundedImage
+function GetComponent.RoundedImage(go)
+    return go:GetComponent(_typeof_class(ShibaInu.RoundedImage))
+end
+
 --- 获取 gameObject 下的 ShibaInu.PointerScaler 组件
 ---@param go UnityEngine.GameObject | UnityEngine.Transform
 ---@return ShibaInu.PointerScaler
