@@ -920,6 +920,7 @@ namespace ShibaInu
                 m_contentTweener = m_content.DOLocalMove(tmpVec3, duration / 2000).OnComplete(() =>
                 {
                     m_contentTweener = null;
+                    m_renderDirty = true;
                     if (!inside)
                         ScrollToSelectedItem();
                 });
