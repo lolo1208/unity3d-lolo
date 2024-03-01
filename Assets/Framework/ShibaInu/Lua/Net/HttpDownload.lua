@@ -5,6 +5,7 @@
 --
 
 local error = error
+local STATUS_CODE_COMPLETE = ShibaInu.HttpDownload.STATUS_CODE_COMPLETE
 
 
 --
@@ -104,7 +105,7 @@ function HttpDownload:EndedHandler(statusCode, errMsg)
 
     self.statusCode = statusCode
     self.errMsg = errMsg
-    self.successful = statusCode > 199 and statusCode < 300
+    self.successful = statusCode == STATUS_CODE_COMPLETE
 
     -- 抛出 HttpEvent.ENDED 事件
     self:DispatchEvent(Event.Get(HttpEvent, HttpEvent.ENDED))

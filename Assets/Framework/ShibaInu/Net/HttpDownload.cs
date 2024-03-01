@@ -14,7 +14,7 @@ namespace ShibaInu
     public class HttpDownload
     {
         /// 下载完成的状态码
-        private static readonly int STATUS_CODE_COMPLETE = (int)HttpStatusCode.OK;
+        public static readonly int STATUS_CODE_COMPLETE = (int)HttpStatusCode.OK;
 
 
         /// 文件网络地址
