@@ -33,6 +33,7 @@ namespace ShibaInu
 
 
         private Material m_currentMaterial;
+        private Texture m_texture;
 
 
 
@@ -132,10 +133,34 @@ namespace ShibaInu
         {
             get
             {
-                return sourceImage == null ? s_WhiteTexture : sourceImage.texture;
+                if (m_texture == null)
+                {
+                    return sourceImage == null ? s_WhiteTexture : sourceImage.texture;
+                }
+                return m_texture;
             }
         }
 
+        /// <summary>
+        /// The RoundedImage's texture to be used.
+        /// </summary>
+        public Texture texture
+        {
+            set
+            {
+                if (value != m_texture)
+                {
+                    m_texture = value;
+                    SetVerticesDirty();
+                    SetMaterialDirty();
+                }
+            }
+            get { return m_texture; }
+        }
+
+        /// <summary>
+        /// The sprite that is used to render this image.
+        /// </summary>
         public Sprite sprite
         {
             set { sourceImage = value; }
