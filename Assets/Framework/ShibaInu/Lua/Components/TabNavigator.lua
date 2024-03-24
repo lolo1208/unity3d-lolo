@@ -51,7 +51,9 @@ local function SetSelect(tabNav, viewName, selected)
         if info.view ~= nil then
             info.view:Show()
         else
-            info.view = info.viewClass.New()
+            if info.viewClass ~= nil then
+                info.view = info.viewClass.New()
+            end
         end
     else
         if info.view ~= nil then
@@ -100,7 +102,7 @@ end
 --- 选中（切换）界面
 ---@param viewName string @ 界面的名称
 function TabNavigator:SelectView(viewName)
-    if self._currentViewName ~= viewName then
+    if self._currentViewName == viewName then
         return
     end
 
@@ -152,7 +154,7 @@ end
 --
 --- 获取当前选中界面的名称
 ---@return string
-function TabNavigator:GetCurrentView()
+function TabNavigator:GetCurrentViewName()
     return self._currentViewName
 end
 
