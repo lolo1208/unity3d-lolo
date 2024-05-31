@@ -24,13 +24,13 @@ public final class DeviceHelper {
         if (vibrator != null && vibrator.hasVibrator()) {
             switch (style) {
                 case 1:
-                    vibrator.vibrate(12);
+                    vibrator.vibrate(20);
                     break;
                 case 2:
-                    vibrator.vibrate(25);
+                    vibrator.vibrate(50);
                     break;
                 case 3:
-                    vibrator.vibrate(80);
+                    vibrator.vibrate(100);
                     break;
             }
         }
