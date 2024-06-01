@@ -30,7 +30,7 @@ TimeUtil.time = 0
 --- 当前程序已运行时间（毫秒）
 TimeUtil.timeMsec = 0
 --- 启动时间，UTC 时间戳（秒）
-TimeUtil.startupTime = os.time()
+TimeUtil.startupTime = os.time(os.date("!*t"))
 --- 当前 UTC 时间（秒.毫秒）
 TimeUtil.nowUTC = 0
 
