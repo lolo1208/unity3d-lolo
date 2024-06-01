@@ -135,6 +135,18 @@ end
 
 
 --
+--- 取消滚动，立即显示目标值
+function NumberText:SetValueImmediately(value)
+    if self.dc ~= nil then
+        CancelDelayedCall(self.dc)
+    end
+    self.value = value
+    self.curValue = value
+    self.text.text = self.formatText(self.curValue)
+end
+
+
+--
 --- 设置颜色（正常颜色）
 function NumberText:SetColor(color)
     self.normalColor = color
