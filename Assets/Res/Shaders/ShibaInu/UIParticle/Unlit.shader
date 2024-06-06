@@ -14,9 +14,16 @@ Shader "UIParticle/Unlit"
 
     SubShader
     {
-        Tags { "RenderType" = "Opaque" }
-        
-        
+        Tags { 
+            "RenderType" = "Opaque"
+            "IgnoreProjector" = "True"
+        }
+        LOD 100
+    
+        ZWrite Off
+        // Blend Off
+
+
         Pass
         {
             CGPROGRAM
@@ -32,10 +39,17 @@ Shader "UIParticle/Unlit"
     #include "UnityCG.cginc"
 
 
+    struct appdata_t {
+        float4 vertex : POSITION;
+        float2 texcoord : TEXCOORD0;
+        UNITY_VERTEX_INPUT_INSTANCE_ID
+    };
+
     struct v2f
     {
         float2 uv  : TEXCOORD0;
         float4 pos : SV_POSITION;
+        UNITY_VERTEX_OUTPUT_STEREO
     };
 
 
@@ -43,20 +57,23 @@ Shader "UIParticle/Unlit"
     sampler2D _MainTex;
     float4 _MainTex_ST;
 
-    
-    v2f vert (appdata_base v)
+
+    v2f vert (appdata_t v)
     {
         v2f o;
+        UNITY_SETUP_INSTANCE_ID(v);
+        UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
         o.pos = UnityObjectToClipPos(v.vertex);
-        o.uv = TRANSFORM_TEX (v.texcoord, _MainTex);
+        o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
         return o;
     }
 
     fixed4 frag (v2f i) : SV_Target
     {
-        fixed4 texcol = tex2D (_MainTex, i.uv);
+        fixed4 texcol = tex2D(_MainTex, i.uv);
         return texcol * _Color;
     }
+
 
     ENDCG
     //
