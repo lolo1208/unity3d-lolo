@@ -21,6 +21,21 @@ local rand = Random.New()
 local MathUtil = {}
 
 
+--
+--- 翻转数组（翻转原数组）
+---@param arr any[]
+---@return any[] 返回原数组（参数 arr）
+function MathUtil.ReverseArray(arr)
+    local n = #arr
+    local mid = floor(n / 2)
+    for i = 1, mid do
+        local temp = arr[i]
+        arr[i] = arr[n - i + 1]
+        arr[n - i + 1] = temp
+    end
+    return arr
+end
+
 
 --
 --- 四舍五入取整
