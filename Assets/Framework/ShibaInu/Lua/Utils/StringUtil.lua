@@ -102,6 +102,38 @@ end
 
 
 --
+--- 简写数值
+--- 大于十亿返回 n+B，大于百万返回 n+M，大于一千返回 n+K，小于一千直接返回
+---@param num number @ 要简写的数值
+---@param decimalPlaces number @ 保留小数位数，默认：2
+---@return string
+function StringUtil.AbbreviateNumber(num, decimalPlaces)
+    decimalPlaces = decimalPlaces or 2
+
+    local result = num
+    local suffix = ""
+    if num >= 1000000000 then
+        result = num / 1000000000
+        suffix = "B"
+    elseif num >= 1000000 then
+        result = num / 1000000
+        suffix = "M"
+    elseif num >= 1000 then
+        result = num / 1000
+        suffix = "K"
+    else
+        result = num
+    end
+    result = format("%." .. decimalPlaces .. "f", result)
+    -- 去除小数部分末尾的无效0
+    result = result:gsub("%.?0+$", "")
+
+    return result .. suffix
+end
+
+
+
+--
 --- 删除头尾的空白字符，并返回删除后的新字符串
 ---@param str string
 ---@return string
