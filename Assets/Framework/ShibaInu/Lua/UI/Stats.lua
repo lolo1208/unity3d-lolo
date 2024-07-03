@@ -52,10 +52,10 @@ function Stats.Show()
     _text.fontSize = 16
 
     local rt = GetComponent.RectTransform(_go)
-    rt.anchorMin = Vector2.zero
+    rt.anchorMin = Vector2.up
     rt.anchorMax = Vector2.one
-    rt.sizeDelta = Vector2.zero
-    rt.localPosition = Vector3.New(10, -10, 0)
+    rt.sizeDelta = Vector2.New(-20, 20)
+    rt.anchoredPosition = Vector2.New(0, -20)
 
     _timer:Start()
     FpsSampler.Start()
