@@ -53,6 +53,7 @@ local function SetSelect(tabNav, viewName, selected)
         else
             if info.viewClass ~= nil then
                 info.view = info.viewClass.New()
+                info.view:Show()
             end
         end
     else
@@ -69,10 +70,11 @@ end
 ---@param tabBtn UnityEngine.Transform @ 选项卡按钮
 ---@param viewClass View @ 对应的界面 Class
 ---@param viewName string @ 界面名称
-function TabNavigator:Add(tabBtn, viewClass, viewName)
+---@param view View @ 界面实例
+function TabNavigator:Add(tabBtn, viewClass, viewName, view)
     local info = {
         viewClass = viewClass,
-        view = nil,
+        view = view,
         tabBtn = tabBtn,
         normalBtn = tabBtn:Find(STATE_NORMAL).gameObject,
         selectedBtn = tabBtn:Find(STATE_SELECTED).gameObject
