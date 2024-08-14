@@ -675,6 +675,50 @@ end
 
 
 
+--[ Request Permissions ]--
+
+local _rp_handlers = {} ---@type HandlerRef[]
+local RequestPermissionsResult
+--- 获取本机权限（Android）的结果
+---@param event NativeEvent
+RequestPermissionsResult = function(event)
+    if event.action == Constants.UN_ACT_REQUEST_PERMISSIONS then
+        local results = StringUtil.Split(event.message, "|")
+        local requestCode = tonumber(results[1])
+        local isGranted = results[2] == "granted"
+        local handlerRef = _rp_handlers[requestCode]
+        _rp_handlers[requestCode] = nil
+        if next(_rp_handlers) == nil then
+            RemoveEventListener(Stage, NativeEvent.RECEIVE_MESSAGE, RequestPermissionsResult)
+        end
+        CallHandler(handlerRef, isGranted)
+    end
+end
+
+--- 获取本机权限（Android）
+---@param rationale string @ 当用户拒绝，第二次发起权限申请时显示的 申请权限的原因
+---@param permissions string[] @ 要申请的权限列表
+---@param handlerRef HandlerRef @ 申请权限结果回调 callback(isGranted:boolean)。默认值：nil
+---@param dialogItems string @ 当存在永久拒绝权限时，将会弹出该参数内容生成的对话框，引导用户去设置界面开启权限。默认值：Language["android.permission.dialog"]
+function RequestPermissions(rationale, permissions, handlerRef, dialogItems)
+    -- 在非 Android 环境，申请的结果始终为成功 callback(true)
+    if not isAndroid then
+        CallHandler(handlerRef, true)
+        return
+    end
+
+    dialogItems = dialogItems or Language["android.permission.dialog"]
+    local requestCode = GetOnlyID()
+    local msg = { requestCode, rationale, concat(permissions, ","), dialogItems }
+    _rp_handlers[requestCode] = handlerRef
+    AddEventListener(Stage, NativeEvent.RECEIVE_MESSAGE, RequestPermissionsResult)
+    SendMessageToNative(Constants.UN_ACT_REQUEST_PERMISSIONS, concat(msg, "|"))
+end
+
+--
+
+
+
 --[ Misc ]--
 
 --
@@ -715,45 +759,16 @@ function SendMessageToNative(action, msg)
 end
 
 
-
---[ Request Permissions ]--
-
-local _rp_handlers = {} ---@type HandlerRef[]
-local RequestPermissionsResult
---- 获取本机权限（Android）的结果
----@param event NativeEvent
-RequestPermissionsResult = function(event)
-    if event.action == Constants.UN_ACT_REQUEST_PERMISSIONS then
-        local results = StringUtil.Split(event.message, "|")
-        local requestCode = tonumber(results[1])
-        local isGranted = results[2] == "granted"
-        local handlerRef = _rp_handlers[requestCode]
-        _rp_handlers[requestCode] = nil
-        if next(_rp_handlers) == nil then
-            RemoveEventListener(Stage, NativeEvent.RECEIVE_MESSAGE, RequestPermissionsResult)
-        end
-        CallHandler(handlerRef, isGranted)
-    end
+--
+--- 获取系统剪切板文本内容
+---@return string
+function GetClipboardText()
+    return LuaHelper.ClipboardText
 end
-
---- 获取本机权限（Android）
----@param rationale string @ 当用户拒绝，第二次发起权限申请时显示的 申请权限的原因
----@param permissions string[] @ 要申请的权限列表
----@param handlerRef HandlerRef @ 申请权限结果回调 callback(isGranted:boolean)。默认值：nil
----@param dialogItems string @ 当存在永久拒绝权限时，将会弹出该参数内容生成的对话框，引导用户去设置界面开启权限。默认值：Language["android.permission.dialog"]
-function RequestPermissions(rationale, permissions, handlerRef, dialogItems)
-    -- 在非 Android 环境，申请的结果始终为成功 callback(true)
-    if not isAndroid then
-        CallHandler(handlerRef, true)
-        return
-    end
-
-    dialogItems = dialogItems or Language["android.permission.dialog"]
-    local requestCode = GetOnlyID()
-    local msg = { requestCode, rationale, concat(permissions, ","), dialogItems }
-    _rp_handlers[requestCode] = handlerRef
-    AddEventListener(Stage, NativeEvent.RECEIVE_MESSAGE, RequestPermissionsResult)
-    SendMessageToNative(Constants.UN_ACT_REQUEST_PERMISSIONS, concat(msg, "|"))
+--- 设置系统剪切板文本内容
+---@param text string
+function SetClipboardText(text)
+    LuaHelper.ClipboardText = text
 end
 
 
