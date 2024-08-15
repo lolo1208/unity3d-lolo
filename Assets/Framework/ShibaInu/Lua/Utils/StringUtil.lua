@@ -300,4 +300,14 @@ end
 
 
 --
+--- 返回格式化好的语言包值
+---@param lk string @ language key，语言包 key
+---@return string
+function StringUtil.FormatLanguage(lk, ...)
+    return format(Language[lk], ...)
+end
+
+
+
+--
 return StringUtil
