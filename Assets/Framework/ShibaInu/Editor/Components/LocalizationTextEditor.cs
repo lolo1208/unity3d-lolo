@@ -40,7 +40,7 @@ namespace ShibaInu
             EditorGUILayout.PropertyField(m_languageKey, m_c_languageKey);
             serializedObject.ApplyModifiedProperties();
 
-            if (GUILayout.Button(m_c_apply, EditorStyles.miniButton, m_w50))
+            if (GUILayout.Button(m_c_apply, m_w50))
             {
                 m_target.DisplayContent();
             }
