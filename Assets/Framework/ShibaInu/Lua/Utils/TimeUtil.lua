@@ -6,6 +6,7 @@
 
 local os = os
 local format = string.format
+local abs = math.abs
 
 
 --
@@ -90,10 +91,14 @@ local RelObj = {
 
 --- 获取距离现在的相对时间
 ---@param timestamp number @ 目标时间，UTC 时间戳（秒）
----@return string @ "现在"，"1分钟前"，"1个月前"，等相对时间的描述
+---@return string @ "现在"，"1分钟前"，"1个月后"，等相对时间的描述
 function TimeUtil.RelativeTime(timestamp)
-    local lk = Constants.LKEY_TR_NOW
+    local lk
     local value = TimeUtil.nowUTC - timestamp
+    local isAfter = value < 0
+    if isAfter then
+        value = abs(value)
+    end
 
     for i = 1, #RelObj do
         local rel = RelObj[i]
@@ -109,7 +114,13 @@ function TimeUtil.RelativeTime(timestamp)
         value = nextVal
     end
 
-    return format(Language[lk], value)
+    if lk == nil then
+        lk = isAfter and Constants.LKEY_TR_SOON or Constants.LKEY_TR_NOW
+        return format(Language[lk], value)
+    end
+
+    local fsBA = isAfter and Constants.LKEY_TR_AFTER or Constants.LKEY_TR_BEFORE
+    return format(Language[fsBA], format(Language[lk], value))
 end
 
 
