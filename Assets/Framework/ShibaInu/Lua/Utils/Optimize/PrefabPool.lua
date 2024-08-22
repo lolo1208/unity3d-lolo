@@ -21,7 +21,7 @@ local _container
 local _clearTimer
 
 ---@type number 缓存的有效时间（秒）
-PrefabPool.cacheExpirationTime = 60 * 10
+PrefabPool.cacheExpireTime = 60 * 10
 
 
 --
@@ -100,7 +100,7 @@ function PrefabPool.ClearUnused()
     local time = TimeUtil.totalDeltaTime
     local removeList
     for path, pool in pairs(_pool) do
-        if time - pool[1] > PrefabPool.cacheExpirationTime then
+        if time - pool[1] > PrefabPool.cacheExpireTime then
             local count = ceil((#pool - 1) / 3) -- 每次清理 1/3
             if count == 0 then
                 if removeList == nil then
