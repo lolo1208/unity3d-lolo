@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using USceneMgr = UnityEngine.SceneManagement.SceneManager;
@@ -50,6 +51,16 @@ namespace ShibaInu
                 Common.VersionInfo.BuildNumber,
                 Common.VersionInfo.PackID
             );
+        }
+
+        
+        /// <summary>
+        /// 获取 语言-地区 信息
+        /// </summary>
+        /// <returns>The scale.</returns>
+        public static string GetRegion()
+        {
+            return CultureInfo.CurrentCulture.Name;
         }
 
 
