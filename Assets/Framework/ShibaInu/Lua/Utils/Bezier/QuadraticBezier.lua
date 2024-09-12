@@ -168,7 +168,9 @@ function QuadraticBezier:GetAnchor(index)
         local radians = atan2(dy, dx)
         local degrees = radians * 180 / pi
 
-        return { x = x, y = y, d = degrees }
+        local vector3 = Vector3.New(x, y)
+        vector3.d = degrees
+        return vector3
     else
         return nil
     end
