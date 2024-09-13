@@ -12,7 +12,10 @@ local cjson = require("cjson")
 
 
 ---@class JSON
-local JSON = {}
+local JSON = {
+    -- JSON 中的 null 值
+    NULL = cjson.null
+}
 
 
 
