@@ -1,9 +1,9 @@
 --
 -- 切换开关组件
--- 组件拥有两个状态：开启或关闭（checked）
--- 可以设置是否启用响应交互（enabled）
--- 在状态切换时，会派发一个事件：ToggleSwitch.EVENT_CHANGED
--- 应继承该类，重写 PlayToggleEffect() 和 SetEnabled() 方法，来实现界面效果
+--   组件拥有两个状态：开启或关闭（checked）
+--   可以设置是否启用响应交互（enabled）
+--   在状态切换时，会派发事件：ToggleSwitch.EVENT_CHANGED
+--   应继承该类，重写 PlayToggleEffect() 和 SetEnabled() 方法，来实现界面效果
 -- 2022/05/12
 -- Author LOLO
 --
@@ -53,7 +53,7 @@ end
 function ToggleSwitch:Toggle()
     self._checked = not self._checked
     self:PlayToggleEffect()
-    self:DispatchEvent(Event.Get(Event, ToggleSwitch.EVENT_CHANGED))
+    self:DispatchEvent(Event.Get(Event, ToggleSwitch.EVENT_CHANGED, self._checked))
 end
 
 --
