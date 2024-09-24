@@ -91,8 +91,9 @@ local RelObj = {
 
 --- 获取距离现在的相对时间
 ---@param timestamp number @ 目标时间，UTC 时间戳（秒）
+---@param isAffix boolean @ 可选，是否需要添加 "前" 或 "后" 词缀，默认：true
 ---@return string @ "现在"，"1分钟前"，"1个月后"，等相对时间的描述
-function TimeUtil.RelativeTime(timestamp)
+function TimeUtil.RelativeTime(timestamp, isAffix)
     local lk
     local value = TimeUtil.nowUTC - timestamp
     local isAfter = value < 0
@@ -119,8 +120,13 @@ function TimeUtil.RelativeTime(timestamp)
         return format(Language[lk], value)
     end
 
+    local timeStr = format(Language[lk], value)
+    if isAffix == false then
+        return timeStr
+    end
+
     local fsBA = isAfter and Constants.LKEY_TR_AFTER or Constants.LKEY_TR_BEFORE
-    return format(Language[fsBA], format(Language[lk], value))
+    return format(Language[fsBA], timeStr)
 end
 
 
