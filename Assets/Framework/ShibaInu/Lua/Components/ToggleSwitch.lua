@@ -49,6 +49,17 @@ function ToggleSwitch:Off()
 end
 
 --
+--- 切换到 开启（true）或 关闭状态（false）
+---@param isOn boolean
+function ToggleSwitch:ToggleTo(isOn)
+    if isOn then
+        self:On()
+    else
+        self:Off()
+    end
+end
+
+--
 --- 在开启和关闭状态间切换
 function ToggleSwitch:Toggle()
     self._checked = not self._checked
