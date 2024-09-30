@@ -21,3 +21,9 @@
 *.csproj                text eol=crlf
 *.cs                    text eol=crlf
 *.shader                text eol=crlf
+*.lua                   text eol=crlf
+
+# Other
+*.fontsettings          text eol=crlf
+*.txt                   text eol=crlf
+*.md                    text eol=crlf
