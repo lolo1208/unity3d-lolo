@@ -53,7 +53,7 @@ namespace ShibaInu
             );
         }
 
-        
+
         /// <summary>
         /// 获取 语言-地区 信息
         /// </summary>
@@ -111,6 +111,27 @@ namespace ShibaInu
         {
             set { GUIUtility.systemCopyBuffer = value; }
             get { return GUIUtility.systemCopyBuffer; }
+        }
+
+
+        /// <summary>
+        /// 设备是否为异形屏
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsNotchScreen()
+        {
+            return DeviceHelper.isNotchScreen;
+        }
+
+
+        /// <summary>
+        /// 设备安全边界偏移值 [ top, bottom, left, right ]
+        /// </summary>
+        /// <returns></returns>
+        public static Vector4 GetSafeInsets()
+        {
+            float[] val = DeviceHelper.safeInsets;
+            return new Vector4(val[0], val[1], val[2], val[3]);
         }
 
 
