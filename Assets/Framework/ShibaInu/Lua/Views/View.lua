@@ -113,6 +113,16 @@ end
 
 --- 设置是否可见
 ---@param value boolean
+function View:SetVisible(value)
+    if value then
+        self:Show()
+    else
+        self:Hide()
+    end
+end
+
+--- 可见性有改变
+---@param value boolean
 function View:VisibilityChanged(value)
     self.showed = value
     self.visible = value
