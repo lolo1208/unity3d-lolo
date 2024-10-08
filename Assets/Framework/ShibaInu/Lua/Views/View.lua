@@ -113,7 +113,7 @@ end
 
 --- 设置是否可见
 ---@param value boolean
-function View:SetVisible(value)
+function View:VisibilityChanged(value)
     self.showed = value
     self.visible = value
     local go = self.gameObject
@@ -135,14 +135,14 @@ end
 --- 显示 gameObject
 function View:Show()
     if not self.visible then
-        self:SetVisible(true)
+        self:VisibilityChanged(true)
     end
 end
 
 --- 隐藏 gameObject
 function View:Hide()
     if self.visible then
-        self:SetVisible(false)
+        self:VisibilityChanged(false)
     end
 end
 

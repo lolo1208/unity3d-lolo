@@ -41,7 +41,7 @@ end
 ---@see View#Hide
 function Window:Hide()
     if self.visible then
-        self:SetVisible(false)
+        self:VisibilityChanged(false)
         Stage.CloseWindow(self)
     end
 end
