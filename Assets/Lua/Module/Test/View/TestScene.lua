@@ -29,7 +29,7 @@ function TestScene:OnInitialize()
 
     --
     local sampleNames = {
-        "Picker", "BaseList", "ScrollList", "PageList", "AutoList", "Waterfall",
+        "Picker", "BaseList", "ScrollList", "StickyList", "PageList", "AutoList", "Waterfall",
         "ViewPager", "CircleImage", "SafeArea", "Bezier", "Misc",
         "Network", "UIEffects", "ViewEffects", "ToggleSwitch"
     }

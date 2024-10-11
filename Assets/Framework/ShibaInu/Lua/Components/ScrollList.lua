@@ -16,6 +16,7 @@ local abs = math.abs
 ---@field scrollList ShibaInu.ScrollList
 ---
 ---@field protected _list ShibaInu.ScrollList
+---@field protected _scrollRect UnityEngine.UI.ScrollRect
 ---@field protected _isVertical boolean
 ---@field protected _viewport UnityEngine.RectTransform
 ---@field protected _viewportWidth number
@@ -49,6 +50,7 @@ function ScrollList:Ctor(go, itemClass)
     self._isUpdateDirty = false
 
     self.scrollList = self._list
+    self._scrollRect = self._list.scrollRect
     self._isVertical = self._list.isVertical
     self._viewport = self._list.viewport
 

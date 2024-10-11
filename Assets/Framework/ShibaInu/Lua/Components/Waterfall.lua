@@ -26,7 +26,6 @@ local max = math.max
 ---
 ---@field waterfall ShibaInu.Waterfall
 ---@field protected _list ShibaInu.Waterfall
----@field protected _scrollRect UnityEngine.UI.ScrollRect
 ---
 ---@field itemSkeletonSize any @ item 的占位尺寸，默认：50x50
 ---@field renderOffsetSize any @ 渲染缓冲区域尺寸，默认一个显示区域
@@ -48,7 +47,6 @@ function Waterfall:Ctor(go, itemClass)
     Waterfall.super.Ctor(self, go, itemClass)
 
     self.waterfall = self._list
-    self._scrollRect = self._list.scrollRect
 
     self.itemSkeletonSize = { width = 50, height = 50 }
     self.renderOffsetSize = { width = -1, height = -1 }

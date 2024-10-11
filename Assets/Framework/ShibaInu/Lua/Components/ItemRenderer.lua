@@ -16,8 +16,9 @@
 ---@field protected _list BaseList
 ---@field protected _index number
 ---@field protected _data any
----@field protected _selected boolean
----@field protected _enabled boolean
+---@field protected _selected boolean @ 是否被选中。默认：false
+---@field protected _enabled boolean @ 是否启用。默认：true
+---@field protected _stickyEnabled boolean @ 是否启用粘性停靠（由 StickyList 修改）。默认：false
 ---
 local ItemRenderer = class("ItemRenderer", View)
 
@@ -29,6 +30,7 @@ function ItemRenderer:Ctor()
     self.deselect = false
     self._selected = false
     self._enabled = true
+    self._stickyEnabled = false
 end
 
 
@@ -62,7 +64,19 @@ function ItemRenderer:SetEnabled(value)
 end
 
 function ItemRenderer:GetEnabled()
-    return self._enabled
+    return self._enabled and not self._stickyEnabled
+end
+
+
+--
+--- 是否启用粘性停靠（由 StickyList 修改）
+---@param value boolean
+function ItemRenderer:SetStickyEnabled(value)
+    self._stickyEnabled = value
+end
+
+function ItemRenderer:GetStickyEnabled()
+    return self._stickyEnabled
 end
 
 

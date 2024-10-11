@@ -58,6 +58,9 @@ git clone 完毕后，可在 Unity Editor 菜单栏中点击 `ShibaInu`->`Run th
 ###### Scroll List
 ![](https://static.lolo.link/img/unity/unity-framework/screenshot-scroll-list.jpg)
 
+###### Sticky List
+![](https://static.lolo.link/img/unity/unity-framework/screenshot-sticky-list.png)
+
 ###### View Pager / Page List
 ![](https://static.lolo.link/img/unity/unity-framework/screenshot-view-pager.jpg)
 

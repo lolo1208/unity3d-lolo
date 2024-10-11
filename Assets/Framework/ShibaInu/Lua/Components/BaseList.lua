@@ -355,9 +355,7 @@ function BaseList:GetItem()
     local item ---@type ItemRenderer
     if #itemPool > 0 then
         item = remove(itemPool)
-        if not item.gameObject.activeSelf then
-            item.gameObject:SetActive(true)
-        end
+        item:Show()
     else
         item = self._itemClass.New()
         item._list = self
@@ -790,9 +788,7 @@ function BaseList:HideItemPool()
     local itemPool = self._itemPool
     for i = 1, #itemPool do
         local item = itemPool[i]
-        if item.gameObject.activeSelf then
-            item.gameObject:SetActive(false)
-        end
+        item:Hide()
     end
 end
 
