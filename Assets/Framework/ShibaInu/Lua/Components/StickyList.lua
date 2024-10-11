@@ -69,30 +69,33 @@ function StickyList:UpdateStickyItemPosition()
         itemGap = self._horizontalGap
         itemCount = self._rowCount
     end
-    local realViewportSize = contentSize - viewportSize
 
-    local posMax = 1 + (viewportSize + itemGap) / realViewportSize -- 总宽或高（值大于 1）
-    local posRatio = posMax / ceil(self._data:GetCount() / itemCount) -- 每行或列所占宽高比
-    local posTop = posRatio * ceil(index / itemCount - 1) -- index 对应位置（0~posMax）
-    local posBottom = posTop - viewportSize / realViewportSize
+    local isTop, isBottom
+    -- 内容超出显示区域，可以滚动时，才需计算
+    if contentSize > viewportSize then
+        local realViewportSize = contentSize - viewportSize
+        local posMax = 1 + (viewportSize + itemGap) / realViewportSize -- 总宽或高（值大于 1）
+        local posRatio = posMax / ceil(self._data:GetCount() / itemCount) -- 每行或列所占宽高比
+        local posTop = posRatio * ceil(index / itemCount - 1) -- index 对应位置（0~posMax）
+        local posBottom = posTop - viewportSize / realViewportSize
+        local posCur
+        pos.x = item.itemOffsetX
+        pos.y = item.itemOffsetY
 
-    local posCur, isTop, isBottom
-    pos.x = item.itemOffsetX
-    pos.y = item.itemOffsetY
-
-    if isVertical then
-        posTop = 1 - posTop
-        posBottom = 1 - posBottom - item.itemHeight / realViewportSize
-        posCur = self._scrollRect.verticalNormalizedPosition
-        isTop = posCur < posTop
-        isBottom = posCur > posBottom
-        pos.x = pos.x + (index - 1) % self._columnCount * (item.itemWidth + self._horizontalGap)
-    else
-        posBottom = posBottom + item.itemWidth / realViewportSize
-        posCur = self._scrollRect.horizontalNormalizedPosition
-        isTop = posCur > posTop
-        isBottom = posCur < posBottom
-        pos.y = pos.y - (index - 1) % self._rowCount * (item.itemHeight + self._verticalGap)
+        if isVertical then
+            posTop = 1 - posTop
+            posBottom = 1 - posBottom - item.itemHeight / realViewportSize
+            posCur = self._scrollRect.verticalNormalizedPosition
+            isTop = posCur < posTop
+            isBottom = posCur > posBottom
+            pos.x = pos.x + (index - 1) % self._columnCount * (item.itemWidth + self._horizontalGap)
+        else
+            posBottom = posBottom + item.itemWidth / realViewportSize
+            posCur = self._scrollRect.horizontalNormalizedPosition
+            isTop = posCur > posTop
+            isBottom = posCur < posBottom
+            pos.y = pos.y - (index - 1) % self._rowCount * (item.itemHeight + self._verticalGap)
+        end
     end
 
     if isTop then
@@ -190,11 +193,13 @@ end
 --
 --- 回收粘性 item
 function StickyList:RecycleStickyItem()
-    if self._stickyItem then
-        self._stickyItem:SetStickyEnabled(false)
-        self._stickyItem:Hide()
-        self._stickyItem:OnRecycle()
-        self._itemPool[#self._itemPool + 1] = self._stickyItem
+    local item = self._stickyItem
+    if item then
+        item:SetStickyEnabled(false)
+        item:Hide()
+        item:OnRecycle()
+        SetParent(item.transform, self._content)
+        self._itemPool[#self._itemPool + 1] = item
         self._stickyItem = nil
     end
 end
