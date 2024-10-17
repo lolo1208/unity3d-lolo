@@ -145,6 +145,7 @@ public static class CustomSettings
         _GT(typeof(CircleImage)),
         _GT(typeof(RoundedImage)),
         _GT(typeof(LocalizationText)),
+        _GT(typeof(BestFitText)),
 
         _GT(typeof(SafeAreaLayout)),
         _GT(typeof(PointerScaler)),
