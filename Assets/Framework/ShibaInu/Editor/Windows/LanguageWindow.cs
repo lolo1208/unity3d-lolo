@@ -729,6 +729,7 @@ namespace ShibaInu
             if (m_language == string.Empty || m_languages.Length == 0 || m_languageIdx == -1)
                 return;
 
+            SaveLanguage(); // 关闭窗口时，保存语言包（应用排序和格式）
             LocalizationText.RefreshLanguage();
         }
 
