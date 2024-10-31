@@ -55,6 +55,29 @@ MoveView.SuperOnDestroy = View.OnDestroy
 
 
 --
+--- 通过传入的 class(self) 和 gameObject 来创建一个 class(view) 的实例
+---@param go UnityEngine.GameObject @ gameObject
+---@param initShow boolean @ 可选，默认：true
+---@param hidePos Vector3 @ 可选
+---@param hideAlpha number @ 可选
+---@return View
+function MoveView:NewWithGameObject(go, initShow, hidePos, hideAlpha)
+    local view = self.New()
+    if initShow ~= nil then
+        view.initShow = initShow
+    end
+    if hidePos ~= nil then
+        self.hide_position = hidePos
+    end
+    if hideAlpha ~= nil then
+        self.hide_alpha = hideAlpha
+    end
+    view.gameObject = go
+    view:OnInitialize()
+    return view
+end
+
+--
 function MoveView:OnInitialize()
     self:SuperOnInitialize()
 

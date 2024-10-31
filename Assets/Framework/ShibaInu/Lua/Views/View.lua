@@ -12,7 +12,6 @@ local format = string.format
 --
 ---@class View : EventDispatcher
 ---@field New fun(prefab:UnityEngine.GameObject | string, parent:string | UnityEngine.Transform, groupName:string, isAsync:boolean):View
----@field NewWithGameObject fun(go:UnityEngine.GameObject, initShow:boolean)
 ---
 ---@field gameObject UnityEngine.GameObject
 ---@field transform UnityEngine.Transform | UnityEngine.RectTransform
@@ -41,12 +40,12 @@ end
 
 
 --
---- 通过传入的 class(self) 和 gameObject 来创建一个 class(view)的实例
+--- 通过传入的 class(self) 和 gameObject 来创建一个 class(view) 的实例
 ---@param go UnityEngine.GameObject @ gameObject
 ---@param initShow boolean @ 可选，默认：true
 ---@return View
-function View.NewWithGameObject(cla, go, initShow)
-    local view = cla.New()
+function View:NewWithGameObject(go, initShow)
+    local view = self.New()
     if initShow ~= nil then
         view.initShow = initShow
     end
