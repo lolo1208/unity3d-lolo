@@ -41,12 +41,12 @@ end
 
 
 --
---- 通过传入的 gameObject 来创建一个 View
+--- 通过传入的 class(self) 和 gameObject 来创建一个 class(view)的实例
 ---@param go UnityEngine.GameObject @ gameObject
 ---@param initShow boolean @ 可选，默认：true
 ---@return View
-function View.NewWithGameObject(go, initShow)
-    local view = View.New()
+function View.NewWithGameObject(cla, go, initShow)
+    local view = cla.New()
     if initShow ~= nil then
         view.initShow = initShow
     end
