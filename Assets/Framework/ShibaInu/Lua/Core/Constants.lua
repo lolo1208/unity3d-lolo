@@ -74,6 +74,7 @@ local Constants = {
     LKEY_SFU_KG = "string.format.unit.kb",
     LKEY_SFU_MB = "string.format.unit.mb",
     LKEY_SFU_GB = "string.format.unit.gb",
+    LKEY_TR_SECONDS = "time.relative.seconds",
     LKEY_TR_MINUTE = "time.relative.minute",
     LKEY_TR_MINUTES = "time.relative.minutes",
     LKEY_TR_HOUR = "time.relative.hour",
