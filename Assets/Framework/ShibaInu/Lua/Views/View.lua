@@ -12,6 +12,7 @@ local format = string.format
 --
 ---@class View : EventDispatcher
 ---@field New fun(prefab:UnityEngine.GameObject | string, parent:string | UnityEngine.Transform, groupName:string, isAsync:boolean):View
+---@field NewWithGameObject fun(go:UnityEngine.GameObject, initShow:boolean)
 ---
 ---@field gameObject UnityEngine.GameObject
 ---@field transform UnityEngine.Transform | UnityEngine.RectTransform
@@ -31,12 +32,27 @@ View.dispatchVisibility = false
 View.isFullScreen = false
 View.isCameraBlur = false
 
-
 --
 --- 异步资源加载完成时，初始化
 local function InitializeAsync(view, go)
     view.gameObject = go
     view:OnInitialize()
+end
+
+
+--
+--- 通过传入的 gameObject 来创建一个 View
+---@param go UnityEngine.GameObject @ gameObject
+---@param initShow boolean @ 可选，默认：true
+---@return View
+function View.NewWithGameObject(go, initShow)
+    local view = View.New()
+    if initShow ~= nil then
+        view.initShow = initShow
+    end
+    view.gameObject = go
+    view:OnInitialize()
+    return view
 end
 
 
