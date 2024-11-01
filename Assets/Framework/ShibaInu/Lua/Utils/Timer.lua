@@ -55,7 +55,7 @@ function Timer:Ctor(delay, timerHandler, repeatCount, timerCompleteHandler)
     self.repeatCount = repeatCount or 0
     self.timerHandler = timerHandler
     self.timerCompleteHandler = timerCompleteHandler
-    self.ignoreCount = 999
+    self.ignoreCount = 1 -- 在移动设备切出 app 再切回时，大部分情况无需多次调用
 
     self._delay = 0
     self:SetDelay(delay or 1)
