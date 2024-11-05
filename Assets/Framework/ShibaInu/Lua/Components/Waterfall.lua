@@ -161,7 +161,11 @@ function Waterfall:UpdateNow()
             self._scrollRect.enabled = true
 
             -- 2. 往回再测量出指定数量（scrollBackItemCount）的 item 尺寸
-            startItemIndex = startItemIndex - 1
+            if startItemIndex ~= nil then
+                startItemIndex = startItemIndex - 1
+            else
+                startItemIndex = 1
+            end
             for i = max(startItemIndex - self.scrollBackItemCount, 1), startItemIndex do
                 if self._itemSizes[i] == nil then
                     -- 这里无需 GetItem()，直接用最后使用的 item 测量尺寸，因为马上就会 UpdateNow()
