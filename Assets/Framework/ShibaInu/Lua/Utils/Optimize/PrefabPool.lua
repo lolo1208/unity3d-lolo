@@ -14,14 +14,16 @@ local TimeUtil = TimeUtil
 ---@class PrefabPool
 local PrefabPool = {}
 
+---@type number 缓存的有效时间（秒）
+PrefabPool.cacheExpireTime = 60 * 10
+
 local _pool = {}
 ---@type UnityEngine.Transform
 local _container
 ---@type Timer
 local _clearTimer
 
----@type number 缓存的有效时间（秒）
-PrefabPool.cacheExpireTime = 60 * 10
+local Vec3One = Vector3.one
 
 
 --
@@ -70,7 +72,10 @@ function PrefabPool.Recycle(go, prefabPath)
         _pool[prefabPath] = pool
     end
 
-    go.transform:SetParent(_container, false)
+    local tra = go.transform
+    SetParent(tra, _container, false)
+    tra.localScale = Vec3One -- scale 调整为 1
+
     pool[#pool + 1] = go
 end
 
