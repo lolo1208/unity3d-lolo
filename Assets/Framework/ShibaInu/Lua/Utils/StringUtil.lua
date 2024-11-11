@@ -18,6 +18,16 @@ local tostring = tostring
 ---@class StringUtil
 local StringUtil = {}
 
+local UNITS = {
+    Byte = "string.format.unit.byte",
+    GB = "string.format.unit.gb",
+    KB = "string.format.unit.kb",
+    MB = "string.format.unit.mb",
+
+    Kilo = "string.format.unit.kilo",
+    Million = "string.format.unit.million",
+    Billion = "string.format.unit.billion",
+}
 
 
 --
@@ -66,11 +76,6 @@ end
 
 
 --
-local CURRENCY_AMOUNT_PAT = "^(%d+)(%.%d+)$"
-local CURRENCY_AMOUNT_INT_PAT = "(%d%d%d)"
-local CURRENCY_AMOUNT_SEP = ","
-local CURRENCY_AMOUNT_SEP_PAT = "^,"
-
 --- 千分位格式化货币值
 ---@param amount number @ 要格式化的值
 ---@param decimal number @ 是否保留2位小数。默认：false，不保留小数，并四舍五入取整
@@ -79,22 +84,21 @@ local CURRENCY_AMOUNT_SEP_PAT = "^,"
 function StringUtil.FormatCurrency(amount, decimal, separator)
     local separatorPattern
     if separator == nil then
-        separator = CURRENCY_AMOUNT_SEP
-        separatorPattern = CURRENCY_AMOUNT_SEP_PAT
+        separator = ","
+        separatorPattern = "^,"
     else
-        separator = separator or ","
         separatorPattern = "^" .. separator
     end
 
     if decimal then
         local formattedAmount = format("%.2f", amount)
-        local integerPart, decimalPart = formattedAmount:match(CURRENCY_AMOUNT_PAT)
-        integerPart = integerPart:reverse():gsub(CURRENCY_AMOUNT_INT_PAT, "%1" .. separator):reverse()
+        local integerPart, decimalPart = formattedAmount:match("^(%d+)(%.%d+)$")
+        integerPart = integerPart:reverse():gsub("(%d%d%d)", "%1" .. separator):reverse()
         integerPart = integerPart:gsub(separatorPattern, "") -- 删除开头的逗号
         return integerPart .. decimalPart
     else
         amount = tostring(floor(amount + 0.5))
-        local retVal = amount:reverse():gsub(CURRENCY_AMOUNT_INT_PAT, "%1" .. separator):reverse()
+        local retVal = amount:reverse():gsub("(%d%d%d)", "%1" .. separator):reverse()
         retVal = retVal:gsub(separatorPattern, "")
         return retVal
     end
@@ -110,20 +114,21 @@ end
 function StringUtil.AbbreviateNumber(num, decimalPlaces)
     decimalPlaces = decimalPlaces or 2
 
-    local result = num
-    local suffix = ""
-    if num >= 1000000000 then
-        result = num / 1000000000
-        suffix = "B"
-    elseif num >= 1000000 then
-        result = num / 1000000
-        suffix = "M"
-    elseif num >= 1000 then
-        result = num / 1000
-        suffix = "K"
-    else
+    local result, suffix
+    if num < 1000 then
         result = num
+        suffix = ""
+    elseif num < 1000000 then
+        result = num / 1000
+        suffix = Language[UNITS.Kilo]
+    elseif num < 1000000000 then
+        result = num / 1000000000
+        suffix = Language[UNITS.Million]
+    else
+        result = num / 1000000000
+        suffix = Language[UNITS.Billion]
     end
+
     result = format("%." .. decimalPlaces .. "f", result)
     -- 去除小数部分末尾的无效0
     result = result:gsub("%.?0+$", "")
@@ -244,13 +249,22 @@ end
 ---@return string
 function StringUtil.FormatBytes(size, formatstring)
     formatstring = formatstring or "%.2f %s"
-    local idx = 1
-    while size > 1024 do
+
+    local unit
+    if size < 1024 then
+        unit = UNITS.Byte
+    elseif size < 1048576 then
         size = size / 1024
-        idx = idx + 1
+        unit = UNITS.KB
+    elseif size < 1073741824 then
+        size = size / 1048576
+        unit = UNITS.MB
+    else
+        size = size / 1073741824
+        unit = UNITS.GB
     end
-    local units = { "byte", "kb", "mb", "gb" }
-    return format(formatstring, size, Language["string.format.unit." .. units[idx]])
+
+    return format(formatstring, size, Language[unit])
 end
 
 
