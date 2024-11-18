@@ -666,6 +666,7 @@ namespace ShibaInu
                 {
                     if (m_currentViewIndex >= views.Count)
                         m_currentViewIndex = views.Count - 1;
+                    m_lastViewIndex = m_currentViewIndex;
                     m_currentView = GetView(m_currentViewIndex);
                     SetViewVisible(m_currentViewIndex, true);
                     SetViewSelected(m_currentViewIndex, true);
@@ -766,6 +767,17 @@ namespace ShibaInu
                     return SetViewAt(index, newView);
             }
             return null;
+        }
+
+
+        /// <summary>
+        /// 是否已包含指定的 view
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        public bool HasView(GameObject view)
+        {
+            return views.Contains(view);
         }
 
 
