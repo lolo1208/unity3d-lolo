@@ -17,6 +17,7 @@ local stage = ShibaInu.Stage
 local cleanUI = stage.CleanUI
 local showModal = stage.ShowModal
 local showCameraBlurModal = stage.ShowCameraBlurModal
+local referenceResolution = stage.uiCanvasScaler.referenceResolution
 
 
 --
@@ -184,6 +185,21 @@ function Stage.ShowCameraBlurModal(layerName, camera)
     end
     layerName = layerName or Constants.LAYER_SCENE
     showCameraBlurModal(_layers[layerName], camera)
+end
+
+
+
+--
+--- 获取设计分辨率的宽度
+---@return number
+function Stage.GetReferenceWidth()
+    return referenceResolution.x
+end
+
+--- 获取设计分辨率的高度
+---@return number
+function Stage.GetReferenceHeight()
+    return referenceResolution.y
 end
 
 

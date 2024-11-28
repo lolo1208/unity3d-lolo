@@ -214,6 +214,7 @@ public static class CustomSettings
 
         _GT(typeof(PlayerPrefs)),
         _GT(typeof(Canvas)),
+        _GT(typeof(CanvasScaler)),
         _GT(typeof(Sprite)),
         _GT(typeof(Font)),
         _GT(typeof(Rect)),
