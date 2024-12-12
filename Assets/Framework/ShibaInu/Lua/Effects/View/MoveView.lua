@@ -67,10 +67,10 @@ function MoveView:NewWithGameObject(go, initShow, hidePos, hideAlpha)
         view.initShow = initShow
     end
     if hidePos ~= nil then
-        self.hide_position = hidePos
+        view.hide_position = hidePos
     end
     if hideAlpha ~= nil then
-        self.hide_alpha = hideAlpha
+        view.hide_alpha = hideAlpha
     end
     view.gameObject = go
     view:OnInitialize()
