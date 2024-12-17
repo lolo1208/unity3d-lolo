@@ -8,6 +8,7 @@
 *.sln
 *.sln.DotSettings.user
 *.userprefs
+~$*.xlsx
 
 obj
 Backup
