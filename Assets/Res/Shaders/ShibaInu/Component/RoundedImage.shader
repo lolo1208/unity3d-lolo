@@ -30,8 +30,15 @@ Shader "ShibaInu/Component/RoundedImage"
             "RenderType" = "Transparent"
             "Queue" = "Transparent"
         }
+		Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha
+		
+		Cull Off
+        Lighting Off
+        ZWrite Off
+        ZTest [unity_GUIZTestMode]
+        ColorMask [_ColorMask]
 
-        // 支持遮罩
+		// 支持遮罩
         Stencil {
             Ref [_Stencil]
             Comp [_StencilComp]
@@ -39,17 +46,6 @@ Shader "ShibaInu/Component/RoundedImage"
             ReadMask [_StencilReadMask]
             WriteMask [_StencilWriteMask]
         }
-
-        Cull Off
-        Lighting Off
-        ZTest [unity_GUIZTestMode]
-        ColorMask [_ColorMask]
-
-
-
-        Blend SrcAlpha OneMinusSrcAlpha, One OneMinusSrcAlpha
-        ZWrite Off
-
 
         Pass
         {
