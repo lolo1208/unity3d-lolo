@@ -122,7 +122,7 @@ function StringUtil.AbbreviateNumber(num, decimalPlaces)
         result = num / 1000
         suffix = Language[UNITS.Kilo]
     elseif num < 1000000000 then
-        result = num / 1000000000
+        result = num / 1000000
         suffix = Language[UNITS.Million]
     else
         result = num / 1000000000
