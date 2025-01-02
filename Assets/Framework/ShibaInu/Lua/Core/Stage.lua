@@ -18,6 +18,7 @@ local cleanUI = stage.CleanUI
 local showModal = stage.ShowModal
 local showCameraBlurModal = stage.ShowCameraBlurModal
 local referenceResolution = stage.uiCanvasScaler.referenceResolution
+local resolution = stage.uiCanvas.transform.sizeDelta
 local screenSize = { width = Screen.width, height = Screen.height }
 
 
@@ -203,6 +204,18 @@ function Stage.GetReferenceHeight()
     return referenceResolution.y
 end
 
+--
+--- 获取实际分辨率的宽度
+---@return number
+function Stage.GetResolutionWidth()
+    return resolution.x
+end
+
+--- 获取实际分辨率的高度
+---@return number
+function Stage.GetResolutionHeight()
+    return resolution.y
+end
 
 --
 --- 获取屏幕宽度
