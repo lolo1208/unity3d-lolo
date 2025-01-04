@@ -74,7 +74,7 @@ Shader "ShibaInu/Effect/UI Flow Light"
 
 	fixed4 frag (v2f_img i) : SV_Target
 	{
-        fixed p = (_Time.y - _StartTime) / _AniLen;
+        fixed p = (frac(_Time.y) - _StartTime) / _AniLen;
         p = p * 2 - 1;
 		fixed2 uv = fixed2(_SpeedX * p, _SpeedY * p);
 		uv = i.uv + uv;
