@@ -57,8 +57,8 @@ function Animation:Play(aniName, restart)
     end
 
     self.aniName = aniName
-    self.animator:Play(aniName)
-    self.animator:Update(0) -- 手动调用一次才能拿到 Current State Info
+    self.animator:Play(aniName, 0, 0)
+    --self.animator:Update(0) -- 手动调用一次才能拿到 Current State Info
 
     local length = self.animator:GetCurrentAnimatorStateInfo(0).length
     if length == 0 then
