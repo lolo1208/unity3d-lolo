@@ -19,7 +19,7 @@ local floor = math.floor
 ---@field autoSelectItem boolean @ 在 Update()、PointerDown、PointerClick 发生时，是否自动切换子项的选中状态。默认值：true
 ---
 ---@field protected _list ShibaInu.BaseList
----@field protected _content UnityEngine.RectTransform @ item 容器
+---@field protected _content UnityEngine.RectTransform @ 获取 item 的容器
 ---@field protected _itemPrefab UnityEngine.GameObject @ Item 对应的 Prefab 对象
 ---
 ---@field protected _isUpdateCalc boolean @ 是否需要重新计算 行数，列数，item 间隔，整体偏移 等布局相关参数
@@ -641,6 +641,22 @@ end
 
 --=------------------------------[ C# BaseList.cs ]------------------------------=--
 
+--
+--- 获取 item 的容器
+---@return UnityEngine.RectTransform
+function BaseList:GetContent()
+    return self._content
+end
+
+--
+--- 获取 C# 列表组件
+---@return ShibaInu.BaseList
+function BaseList:GetCSList()
+    return self._list
+end
+
+
+--
 --- Item 对应的 Prefab 对象
 ---@param value UnityEngine.GameObject
 function BaseList:SetItemPrefab(value)
