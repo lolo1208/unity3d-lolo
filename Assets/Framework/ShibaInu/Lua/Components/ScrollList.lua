@@ -453,12 +453,6 @@ function ScrollList:GetViewportHeight()
     return self._viewportHeight
 end
 
----@return ShibaInu.ScrollList
-function ScrollList:GetCSList()
-    return self._list
-end
-
-
 
 --
 --- 属性有改变时，将 lua 中的属性同步到 C# 中
