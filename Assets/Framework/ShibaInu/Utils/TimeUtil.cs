@@ -9,7 +9,9 @@ namespace ShibaInu
     /// </summary>
     public static class TimeUtil
     {
-        private static Stopwatch s_stopwatch;
+
+        /// 程序启动时间戳
+        private static DateTime s_startupTime;
 
         /// 当前程序已运行时间（秒.毫秒）
         public static float timeSec;
@@ -19,8 +21,7 @@ namespace ShibaInu
 
         public static void Initialize()
         {
-            s_stopwatch = new Stopwatch();
-            s_stopwatch.Start();
+            s_startupTime = DateTime.Now;
         }
 
 
@@ -30,9 +31,8 @@ namespace ShibaInu
         /// </summary>
         public static void Update()
         {
-            long value = s_stopwatch.ElapsedMilliseconds;
-            timeSec = (float)value / 1000;
-            timeMsec = Convert.ToUInt32(value);
+            timeSec = (float)(DateTime.Now - s_startupTime).TotalSeconds;
+            timeMsec = (uint)(timeSec * 1000);
         }
 
 
