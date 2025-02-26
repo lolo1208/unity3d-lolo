@@ -51,7 +51,6 @@ namespace ShibaInu
             if (!Common.Initialized)
             {
                 Common.Initialized = true;
-                TimeUtil.Initialize();
                 Logger.Initialize();
                 AudioManager.Initialize();
 
@@ -62,6 +61,7 @@ namespace ShibaInu
                 eventSystem.transform.SetParent(transform);
             }
 
+            TimeUtil.Initialize();
             ResManager.Initialize();
             Stage.Initialize();
 
