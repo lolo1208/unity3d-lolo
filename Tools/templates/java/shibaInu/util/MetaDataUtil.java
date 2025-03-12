@@ -1,4 +1,4 @@
-package shibaInu.app;
+package shibaInu.util;
 
 
 import android.app.Activity;

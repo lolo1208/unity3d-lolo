@@ -19,7 +19,7 @@ import shibaInu.util.NativeHelper;
  * dependencies:
  * implementation 'pub.devrel:easypermissions:2.0.1'
  * see also:
- * https://github.com/googlesamples/easypermissions
+ * <a href="https://github.com/googlesamples/easypermissions">...</a>
  * Created by LOLO on 2022/06/09.
  */
 public class PermissionActivity extends UnityPlayerActivity implements EasyPermissions.PermissionCallbacks {
