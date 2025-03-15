@@ -244,7 +244,7 @@ end
 --
 --- 返回格式化字节数
 --- 例如 StringUtil.FormatBytes(1234)，返回："1.21 KB"
----@param size string @ 字节大小
+---@param size number @ 字节大小
 ---@param formatstring string @ -可选- 格式化字符串，默认："%.2f %s"
 ---@return string
 function StringUtil.FormatBytes(size, formatstring)
