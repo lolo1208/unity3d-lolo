@@ -707,7 +707,8 @@ namespace ShibaInu
         private static bool IsIgnoreDir(string path)
         {
             return path.EndsWith(".svn", StringComparison.Ordinal)
-                || path.EndsWith(".git", StringComparison.Ordinal);
+                || path.EndsWith(".git", StringComparison.Ordinal)
+                || path.EndsWith("Framework/ShibaInu/Lua/Define", StringComparison.Ordinal);
         }
 
 
@@ -719,7 +720,8 @@ namespace ShibaInu
         private static bool IsIgnoreFile(string path)
         {
             return path.EndsWith(".meta", StringComparison.Ordinal)
-                || path.EndsWith(".DS_Store", StringComparison.Ordinal);
+                || path.EndsWith(".DS_Store", StringComparison.Ordinal)
+                || path.EndsWith("Thumbs.db", StringComparison.Ordinal);
         }
 
 
