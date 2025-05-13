@@ -10,6 +10,7 @@ const versionControl = require('./versionControl');
 const manifest = require('./manifest');
 const encodeLua = require('./encodeLua');
 const buildUnity = require('./buildUnity');
+const extraCommand = require('./extraCommand');
 const copyRes = require('./copyRes');
 const platform = require('./platform');
 const destAndZip = require('./destAndZip');
@@ -21,11 +22,10 @@ const destAndZip = require('./destAndZip');
 process.on('uncaughtException', function (err) {
     logger.append(
         '\n<p class="content-title-error">[ERROR]:</p>',
-        `<p class="content-text-error">${
-            err.stack.replace(/\n\n/g, '\n')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
+        `<p class="content-text-error">${err.stack.replace(/\n\n/g, '\n')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
         }</p>`
     );
     console.error(err.stack);
@@ -70,7 +70,12 @@ function main() {
 
     let [b1, b2] = [false, false];
     let buildComplete = () => {
-        if (b1 && b2) copy_res();
+        if (b1 && b2) extra_cmd();
+    };
+
+
+    let extra_cmd = () => {
+        extraCommand.start(copy_res);
     };
 
 

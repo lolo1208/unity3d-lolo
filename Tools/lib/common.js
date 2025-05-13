@@ -31,6 +31,7 @@ args
     .option('-a, --zipForAST <value>', '生成 AST zip 文件，传入的值为渠道列表，使用 "," 分割。例："appstore,android,taptap"')
     .option('-y, --abModeFlag', '是否需要创建进入 AssetBundle 模式的标志文件')
     .option('-x, --development', '是否生成开发版本的目标平台项目')
+    .option('-e, --extraCmd <value>', '在打包场景和 AssetBundle 完成后（拷贝资源前），需要额外执行的脚本路径')
     .parse(process.argv);
 
 common.id = args.id;                                            // -i
@@ -48,6 +49,7 @@ common.packZip = args.packZip;                                  // -z
 common.zipForAST = args.zipForAST;                              // -a
 common.abModeFlag = args.abModeFlag;                            // -y
 common.development = args.development;                          // -x
+common.extraCmd = args.extraCmd;                                // -e
 
 if (common.unityVersion === undefined)
     common.unityVersion = config.unityVersion;
