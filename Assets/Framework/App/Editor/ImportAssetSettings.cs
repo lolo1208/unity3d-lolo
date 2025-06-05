@@ -161,42 +161,41 @@ namespace App
             AudioImporter importer = assetImporter as AudioImporter;
 
             // 根据音频时长来设置压缩方式
-            AudioClip clip = AssetDatabase.LoadAssetAtPath<AudioClip>(importer.assetPath);
-            if (clip == null)
-            {
-                importer.SaveAndReimport();// 加载音频数据失败（添加新文件）时，重新再来
-                return;
-            }
+            string fullPath = Path.Combine(Path.GetDirectoryName(Application.dataPath), importer.assetPath);
+            TagLib.File fileInfo = TagLib.File.Create(fullPath);
+            double duration = fileInfo.Properties.Duration.TotalSeconds;
 
             AudioImporterSampleSettings setting = new AudioImporterSampleSettings
             {
                 sampleRateSetting = AudioSampleRateSetting.OptimizeSampleRate,
-                quality = 0.8f
+                quality = 0.7f
             };
 
-            float length = clip.length;
-            if (length < 5)
+            if (duration < 5)
             {
                 // 短音效
                 setting.loadType = AudioClipLoadType.DecompressOnLoad;
-                setting.compressionFormat = AudioCompressionFormat.PCM;
+                setting.compressionFormat = AudioCompressionFormat.ADPCM;
+                importer.forceToMono = true;
             }
-            else if (length < 15)
+            else if (duration < 15)
             {
                 // 中等长度音效
                 setting.loadType = AudioClipLoadType.CompressedInMemory;
                 setting.compressionFormat = AudioCompressionFormat.ADPCM;
+                importer.forceToMono = true;
             }
             else
             {
                 // BGM
                 setting.loadType = AudioClipLoadType.CompressedInMemory;
                 setting.compressionFormat = AudioCompressionFormat.Vorbis;
+                importer.forceToMono = false;
             }
 
-            importer.forceToMono = true;
             importer.preloadAudioData = true;
             importer.defaultSampleSettings = setting;
+
             MarkImported();
         }
 

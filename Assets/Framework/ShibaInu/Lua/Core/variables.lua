@@ -80,11 +80,26 @@ isJIT = jit ~= nil -- 是否在 Lua JIT 环境中
 isDebug = LuaHelper.IsDebug() -- 是否在编辑器中运行，并且在开发模式下（非 AB 模式）
 isPlaying = Application.isPlaying
 isEditor = Application.isEditor
-isWindowEditor = Application.platform == UnityEngine.RuntimePlatform.WindowsEditor
-isMacEditor = isEditor and not isWindowEditor
 isMobile = Application.isMobilePlatform
-isAndroid = Application.platform == UnityEngine.RuntimePlatform.Android
+
+local appPlatform = Application.platform
+isWindowEditor = appPlatform == UnityEngine.RuntimePlatform.WindowsEditor
+isMacEditor = isEditor and not isWindowEditor
+isAndroid = appPlatform == UnityEngine.RuntimePlatform.Android
 isIOS = isMobile and not isAndroid
+
+-- 与 Builder 对应的 runtimePlatform
+if appPlatform == UnityEngine.RuntimePlatform.Android then
+    runtimePlatform = "android"
+elseif appPlatform == UnityEngine.RuntimePlatform.IPhonePlayer then
+    runtimePlatform = "ios"
+elseif appPlatform == UnityEngine.RuntimePlatform.WindowsEditor or appPlatform == UnityEngine.RuntimePlatform.WindowsPlayer then
+    runtimePlatform = "windows"
+elseif appPlatform == UnityEngine.RuntimePlatform.OSXEditor or appPlatform == UnityEngine.RuntimePlatform.OSXPlayer then
+    runtimePlatform = "macos"
+else
+    runtimePlatform = tostring(appPlatform)
+end
 
 
 

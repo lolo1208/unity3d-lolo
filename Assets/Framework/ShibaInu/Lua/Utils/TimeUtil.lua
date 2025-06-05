@@ -92,7 +92,7 @@ local RelObj = {
 --- 获取距离现在的相对时间
 ---@param timestamp number @ 目标时间，UTC 时间戳（秒）
 ---@param isAffix boolean @ 可选。是否需要添加 "前" 或 "后" 词缀。默认：true
----@field isSeconds boolean @ 可选。少于1分钟，大于1秒时：[ true：返回秒，false:返回即将或刚刚 ]。默认：false
+---@param isSeconds boolean @ 可选。少于1分钟，大于1秒时：[ true：返回秒，false:返回即将或刚刚 ]。默认：false
 ---@return string @ "现在"，"1分钟前"，"1个月后"，等相对时间的描述
 function TimeUtil.RelativeTime(timestamp, isAffix, isSeconds)
     local lk
