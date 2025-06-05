@@ -3,7 +3,8 @@ package shibaInu.player;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.unity3d.player.UnityPlayerActivity;
 
@@ -126,7 +127,7 @@ public class PermissionActivity extends UnityPlayerActivity implements EasyPermi
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // 从设置界面返回时
