@@ -118,7 +118,6 @@ namespace ShibaInu
         {
             if (--count > 0)
             {
-                Debug.Log("重复播放");
                 Play();// 还需要重复播放
             }
             else
