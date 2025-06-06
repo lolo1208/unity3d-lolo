@@ -6,6 +6,17 @@ using UnityEngine;
 
 namespace ShibaInu
 {
+    /// <summary>
+    /// 音频类型
+    /// </summary>
+    public enum AudioType
+    {
+        BGM,   // 背景音乐
+        SFX,   // 音效
+        SFX3D, // 3D 音效
+    }
+
+
 
     /// <summary>
     /// 音频信息
@@ -20,8 +31,8 @@ namespace ShibaInu
         public AudioClip clip;
         /// 上次播放时间。用于判断继续缓存还是卸载
         public float lastTime;
-        /// 音频类型 [ 1:BGM, 2:音效, 3:3D音效 ]
-        public int type;
+        /// 音频类型
+        public AudioType type;
         /// 剩余播放次数
         public uint count;
         /// 正在播放的结束回调列表
@@ -37,11 +48,13 @@ namespace ShibaInu
             if (e.path != path) return;
             ResManager.LoadCompleteHandler.Remove(LoadClipComplete);
             src.clip = clip = (AudioClip)e.data;
-            lastTime = TimeUtil.timeSec;
             Play();
         }
 
 
+        /// <summary>
+        /// 播放音频
+        /// </summary>
         public void Play()
         {
             if (tweener != null)
@@ -51,28 +64,76 @@ namespace ShibaInu
                 StotAll();
             }
 
-            src.PlayOneShot(clip);
-            playingList.Add(Timer.Once((int)(clip.length * 1000), (timer) =>
+            lastTime = TimeUtil.timeSec;
+            int length = (int)(clip.length * 1000);
+
+            if (type == AudioType.BGM)
             {
-                // 播放列表中还有当前回调
-                if (playingList.Remove(timer))
+                // 背景音乐使用 Play() 播放，为了精确获得播放状态与剩余时间
+                src.Play();
+                playingList.Add(Timer.Once(length, BgmTimerHandler));
+            }
+            else
+            {
+                // 音效使用 PlayOneShot() 播放，为了多个叠加
+                src.PlayOneShot(clip);
+                playingList.Add(Timer.Once(length, (timer) =>
                 {
-                    lastTime = TimeUtil.timeSec;
+                    // 播放列表中已没有当前回调（已经被停止了）
+                    if (!playingList.Remove(timer)) return;
+                    DispatchCompleteEvent();
 
-                    if (dispatchCompleteEvent)
-                        AudioManager.DispatchEvent(path);
-
-                    // 只用考虑最后一次播放时传入的次数
-                    if (playingList.Count == 0)
-                    {
-                        if (--count > 0)
-                            Play();// 还有次数，继续播放
-                        else
-                            AudioManager.MarkStop(path);
-                    }
-                }
-            }));
+                    // 还有当前音效在播放
+                    if (playingList.Count > 0) return;
+                    ReplayOrStop();
+                }));
+            }
         }
+
+        /// <summary>
+        /// 背景音乐计时器回调处理函数
+        /// </summary>
+        /// <param name="timer"></param>
+        private void BgmTimerHandler(Timer timer)
+        {
+            // 播放列表中已没有当前回调（已经被停止了）
+            if (!playingList.Remove(timer)) return;
+
+            // 音频还在播放中。可能切入后台等原因，导致计时器不同步
+            if (src.isPlaying)
+            {
+                int remaining = (int)((clip.length - src.time) * 1000);
+                playingList.Add(Timer.Once(remaining, BgmTimerHandler));
+                return;
+            }
+
+            DispatchCompleteEvent();
+            ReplayOrStop();
+        }
+
+        /// <summary>
+        /// 继续重复播放，或标记为已停止
+        /// </summary>
+        private void ReplayOrStop()
+        {
+            if (--count > 0)
+            {
+                Debug.Log("重复播放");
+                Play();// 还需要重复播放
+            }
+            else
+                AudioManager.MarkStop(path);
+        }
+
+        /// <summary>
+        /// 抛出音频播放完成事件
+        /// </summary>
+        private void DispatchCompleteEvent()
+        {
+            if (dispatchCompleteEvent)
+                AudioManager.DispatchCompleteEvent(path);
+        }
+
 
 
         public void Stop(bool fadeOut)
@@ -121,7 +182,7 @@ namespace ShibaInu
         /// bgm 列表
         private static readonly HashSet<string> s_bgmList = new HashSet<string>();
         /// 音效列表，包括3D音效
-        private static readonly HashSet<string> s_effList = new HashSet<string>();
+        private static readonly HashSet<string> s_sfxList = new HashSet<string>();
 
         /// 淡出效果的持续时间（秒）
         public static float FadeOutDuration = 1.5f;
@@ -149,27 +210,27 @@ namespace ShibaInu
 
 
         /// 音效音量，包括3D音效
-        public static float EffectVolume
+        public static float SfxVolume
         {
             set
             {
-                s_effectVolume = value;
-                foreach (string path in s_effList)
+                s_sfxVolume = value;
+                foreach (string path in s_sfxList)
                 {
                     if (s_infoMap.TryGetValue(path, out AudioInfo info))
                         info.src.volume = value;
                 }
             }
 
-            get { return s_effectVolume; }
+            get { return s_sfxVolume; }
         }
-        private static float s_effectVolume = 1;
+        private static float s_sfxVolume = 1;
 
 
         /// 设置 bgm 和音效的音量，包括3D音效
         public static void SetVolume(float volume)
         {
-            BgmVolume = EffectVolume = volume;
+            BgmVolume = SfxVolume = volume;
         }
 
 
@@ -192,25 +253,25 @@ namespace ShibaInu
 
 
         /// 音效是否静音
-        public static bool EffectMute
+        public static bool SfxMute
         {
             set
             {
-                s_effectMute = value;
-                foreach (string path in s_effList)
+                s_sfxMute = value;
+                foreach (string path in s_sfxList)
                 {
                     if (s_infoMap.TryGetValue(path, out AudioInfo info))
                         info.src.mute = value;
                 }
             }
 
-            get { return s_effectMute; }
+            get { return s_sfxMute; }
         }
-        private static bool s_effectMute;
+        private static bool s_sfxMute;
 
 
         /// 设置是否静音
-        public static void SetMute(bool mute) => BgmMute = EffectMute = mute;
+        public static void SetMute(bool mute) => BgmMute = SfxMute = mute;
 
 
 
@@ -221,13 +282,13 @@ namespace ShibaInu
         /// <param name="path">音频路径</param>
         /// <param name="count">播放次数，0 表示无限循环</param>
         /// <param name="stopOtherBgm">是否停止其他 bgm</param>
-        /// <param name="stopAllEffect">是否停止所有音效</param>
-        public static void PlayBgm(string path, uint count = 0, bool stopOtherBgm = true, bool stopAllEffect = true)
+        /// <param name="stopAllSfx">是否停止所有音效</param>
+        public static void PlayBgm(string path, uint count = 0, bool stopOtherBgm = true, bool stopAllSfx = false)
         {
             if (stopOtherBgm) StopAllBgm();
-            if (stopAllEffect) StopAllEffect();
+            if (stopAllSfx) StopAllSfx();
             s_bgmList.Add(path);
-            Play(path, 1, count);
+            Play(path, AudioType.BGM, count);
         }
 
 
@@ -237,11 +298,11 @@ namespace ShibaInu
         /// <param name="path">音频路径</param>
         /// <param name="count">播放次数，0 表示无限循环</param>
         /// <param name="replay">如果正在播放该音频，true: 重新播放，false: 叠加播放</param>
-        public static void PlayEffect(string path, uint count = 1, bool replay = false)
+        public static void PlaySfx(string path, uint count = 1, bool replay = false)
         {
             if (replay) Stop(path);
-            s_effList.Add(path);
-            Play(path, 2, count);
+            s_sfxList.Add(path);
+            Play(path, AudioType.SFX, count);
         }
 
 
@@ -252,11 +313,11 @@ namespace ShibaInu
         /// <param name="go">对应的 gameObject</param>
         /// <param name="count">播放次数，0 表示无限循环</param>
         /// <param name="replay">如果正在播放该音频，true: 重新播放，false: 叠加播放</param>
-        public static void Play3D(string path, GameObject go, uint count = 1, bool replay = true)
+        public static void Play3DSfx(string path, GameObject go, uint count = 1, bool replay = true)
         {
             if (replay) Stop(path);
-            s_effList.Add(path);
-            Play(path, 3, count, go);
+            s_sfxList.Add(path);
+            Play(path, AudioType.SFX3D, count, go);
         }
 
 
@@ -267,7 +328,7 @@ namespace ShibaInu
         /// <param name="type">Type.</param>
         /// <param name="count">Count.</param>
         /// <param name="go">Go.</param>
-        private static void Play(string path, int type, uint count, GameObject go = null)
+        private static void Play(string path, AudioType type, uint count, GameObject go = null)
         {
             if (!s_infoMap.TryGetValue(path, out AudioInfo info))
             {
@@ -279,8 +340,11 @@ namespace ShibaInu
             // 音频数据还在加载中
             if (info.clip == null && info.count > 0) return;
 
+            bool isBgm = type == AudioType.BGM;
+            bool isSfx3d = type == AudioType.SFX3D;
+
             // 3D音效 与 2D音频，切换 gameObject
-            if (type == 3)
+            if (isSfx3d)
             {
                 if (info.src.gameObject != go) info.src = GetAudioSource(go, info.clip);
             }
@@ -292,9 +356,9 @@ namespace ShibaInu
             // 设置属性
             info.type = type;
             info.lastTime = TimeUtil.timeSec;
-            info.src.volume = type == 1 ? s_bgmVolume : s_effectVolume;
-            info.src.mute = type == 1 ? s_bgmMute : s_effectMute;
-            info.src.spatialBlend = type == 3 ? 1 : 0;
+            info.src.volume = isBgm ? s_bgmVolume : s_sfxVolume;
+            info.src.mute = isBgm ? s_bgmMute : s_sfxMute;
+            info.src.spatialBlend = isSfx3d ? 1 : 0;
             info.count = count > 0 ? count : uint.MaxValue;
 
             // 加载或播放
@@ -365,14 +429,14 @@ namespace ShibaInu
         /// 停止所有音效，包括3D音效
         /// </summary>
         /// <param name="fadeOut">是否淡出</param>
-        public static void StopAllEffect(bool fadeOut = false)
+        public static void StopAllSfx(bool fadeOut = false)
         {
-            foreach (string path in s_effList)
+            foreach (string path in s_sfxList)
             {
                 if (s_infoMap.TryGetValue(path, out AudioInfo info))
                     info.Stop(fadeOut);
             }
-            s_effList.Clear();
+            s_sfxList.Clear();
         }
 
 
@@ -384,7 +448,7 @@ namespace ShibaInu
         public static void MarkStop(string path)
         {
             s_bgmList.Remove(path);
-            s_effList.Remove(path);
+            s_sfxList.Remove(path);
         }
 
 
@@ -395,7 +459,7 @@ namespace ShibaInu
         /// <param name="path">Path.</param>
         public static bool IsPlaying(string path)
         {
-            if (s_effList.Contains(path)) return true;
+            if (s_sfxList.Contains(path)) return true;
             if (s_bgmList.Contains(path)) return true;
             return false;
         }
@@ -471,7 +535,7 @@ namespace ShibaInu
         private static LuaFunction s_dispatchEvent;
 
         [NoToLua]
-        public static void DispatchEvent(string path = null)
+        public static void DispatchCompleteEvent(string path = null)
         {
             // Events/Event.lua
             if (s_dispatchEvent == null)
@@ -496,7 +560,7 @@ namespace ShibaInu
             s_dispatchEvent = null;
             s_infoMap.Clear();
             s_bgmList.Clear();
-            s_effList.Clear();
+            s_sfxList.Clear();
 
             Object.Destroy(s_go);
             CreateAudioGameObject();
