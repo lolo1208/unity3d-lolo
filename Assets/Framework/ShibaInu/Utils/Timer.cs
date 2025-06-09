@@ -140,7 +140,10 @@ namespace ShibaInu
         /// <param name="data">Data.</param>
         public static Timer Create(int delay, int repeatCount, Action<Timer> callback, object data = null)
         {
-            Timer timer = new Timer
+            // 防止 delay 传入 0
+            if (delay == 0) delay = 1;
+
+            Timer timer = new()
             {
                 delay = delay,
                 repeatCount = repeatCount,
