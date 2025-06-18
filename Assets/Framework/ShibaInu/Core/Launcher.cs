@@ -85,6 +85,7 @@ namespace ShibaInu
             Destroy(Stage.uiCanvas.gameObject);
 
             // clear reference
+            Timer.ClearReference();
             SceneManager.ClearReference();
             AudioManager.ClearReference();
             SafeAreaLayout.ClearReference();
