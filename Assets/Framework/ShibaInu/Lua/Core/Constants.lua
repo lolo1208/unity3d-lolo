@@ -41,6 +41,8 @@ local Constants = {
         -- 摄像头
         CAMERA = { "android.permission.CAMERA" },
     },
+    -- message 内容中使用的分隔符
+    UN_MES_SEPARATOR = "‖",
 
 
     -- HTTP 相关常量

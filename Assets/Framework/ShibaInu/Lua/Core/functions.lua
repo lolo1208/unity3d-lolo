@@ -683,7 +683,7 @@ local RequestPermissionsResult
 ---@param event NativeEvent
 RequestPermissionsResult = function(event)
     if event.action == Constants.UN_ACT_REQUEST_PERMISSIONS then
-        local results = StringUtil.Split(event.message, "|")
+        local results = StringUtil.Split(event.message, Constants.UN_MES_SEPARATOR)
         local requestCode = tonumber(results[1])
         local isGranted = results[2] == "granted"
         local handlerRef = _rp_handlers[requestCode]
@@ -712,7 +712,7 @@ function RequestPermissions(rationale, permissions, handlerRef, dialogItems)
     local msg = { requestCode, rationale, concat(permissions, ","), dialogItems }
     _rp_handlers[requestCode] = handlerRef
     AddEventListener(Stage, NativeEvent.RECEIVE_MESSAGE, RequestPermissionsResult)
-    SendMessageToNative(Constants.UN_ACT_REQUEST_PERMISSIONS, concat(msg, "|"))
+    SendMessageToNative(Constants.UN_ACT_REQUEST_PERMISSIONS, concat(msg, Constants.UN_MES_SEPARATOR))
 end
 
 --
