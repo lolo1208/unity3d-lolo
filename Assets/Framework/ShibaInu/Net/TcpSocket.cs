@@ -21,7 +21,7 @@ namespace ShibaInu
 
 
         /// 连接超时时长
-        public int connentTimeout = 2000;
+        public int connentTimeout = 3000;
         /// 发送数据超时时长
         public int sendTimeout = 1000;
         /// 读取数据超时时长
@@ -95,13 +95,12 @@ namespace ShibaInu
                 ReceiveTimeout = receiveTimeout,
                 NoDelay = true
             };
-            connecting = true;
 
             try
             {
+                connecting = true;
                 m_client.BeginConnect(host, port, new AsyncCallback(OnConnected), m_client);
                 Timer.Once(connentTimeout, OnConnectTimeout, m_client);
-
             }
             catch (Exception e)
             {
@@ -121,10 +120,13 @@ namespace ShibaInu
 
             lock (LOCK_OBJECT)
             {
-
                 try
                 {
-                    client.EndConnect(ar);
+                    try
+                    {
+                        client.EndConnect(ar); // 超时时，调用 EndConnect() 会异常
+                    }
+                    catch (Exception) { }
 
                     // 不是当前 TcpClient。可能是连接过程中切换了 host 或 连接超时
                     if (client != m_client)
@@ -157,14 +159,17 @@ namespace ShibaInu
         {
             lock (LOCK_OBJECT)
             {
-
                 TcpClient client = (TcpClient)timer.data;
                 if (client != m_client)
-                    return;// 不是当前 TcpClient
+                    return; // 不是当前 TcpClient
 
-                if (connecting)
-                    Close();
-
+                if (connecting && !connected)
+                {
+                    connecting = false;
+                    m_client = null;
+                    client.Close();
+                    DispatchEvent(SocketEvent.CONNECT_FAIL, "Timeout");
+                }
             }
         }
 
@@ -315,7 +320,7 @@ namespace ShibaInu
             }
 
             bool connected = this.connected;
-            connecting = this.connected = false;
+            this.connected = connecting = false;
 
             if (connected)
             {
