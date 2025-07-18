@@ -16,6 +16,13 @@ import com.unity3d.player.UnityPlayer;
  */
 public final class NativeHelper {
 
+    private static final String UNITY_CALLBACK_OBJECT = "[ShibaInu]";
+    private static final String UNITY_CALLBACK_METHOD = "OnReceiveNativeMessage";
+    private static final String UNITY_CALLBACK_SEPARATOR = "#";
+
+    // message 内容中使用的分隔符
+    public static final String UN_MSG_SEPARATOR = "‖";
+
     private static final HashMap<Integer, UnityMsgCallback> callbacks = new HashMap<>();
     private static int callbackHandleID = 0;
 
@@ -76,7 +83,11 @@ public final class NativeHelper {
      * @param msg    message
      */
     public static void sendMessageToUnity(String action, String msg) {
-        UnityPlayer.UnitySendMessage("[ShibaInu]", "OnReceiveNativeMessage", action + "#" + msg);
+        UnityPlayer.currentActivity.runOnUiThread(() -> UnityPlayer.UnitySendMessage(
+                UNITY_CALLBACK_OBJECT, UNITY_CALLBACK_METHOD,
+                action + UNITY_CALLBACK_SEPARATOR + msg
+        ));
+//        UnityPlayer.UnitySendMessage("[ShibaInu]", "OnReceiveNativeMessage", action + "#" + msg);
     }
 
     public static void sendMessageToUnity(String action) {

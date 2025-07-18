@@ -14,6 +14,7 @@ NSString * const APP_CTR_PROT_NOTIF_NAME = @"OnReceiveAppControllerProtocol";
 NSString * const UNITY_MSG_NOTIF_NAME = @"OnReceiveUnityMessage";
 NSString * const UNITY_MSG_KEY_ACT = @"action";
 NSString * const UNITY_MSG_KEY_MSG = @"msg";
+NSString * const UNITY_MSG_SEPARATOR = @"‖";
 
 
 

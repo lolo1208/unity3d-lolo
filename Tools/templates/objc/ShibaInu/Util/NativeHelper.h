@@ -51,6 +51,9 @@ extern NSString * const UNITY_MSG_KEY_ACT;
 // Unity 消息 message 字段使用的 key
 extern NSString * const UNITY_MSG_KEY_MSG;
 
+// Unity 消息 message 内容中使用的分隔符
+extern NSString * const UNITY_MSG_SEPARATOR;
+
 
 
 // 向 Unity 发送消息：
