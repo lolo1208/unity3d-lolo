@@ -6,9 +6,6 @@
 #pragma once
 
 
-
-#pragma mark -
-
 // 传递 AppControllerProtocol 实体时，派发通知所使用的名称
 extern NSString * const APP_CTR_PROT_NOTIF_NAME;
 // 收到 Unity 发来的消息时，会用该名称在 NSNotificationCenter 派发通知

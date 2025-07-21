@@ -7,6 +7,8 @@
 
 
 
+#pragma mark -
+
 extern "C" void VibrateImpl(int style)
 {
     if (@available(iOS 10.0, *)) {

@@ -3,11 +3,14 @@
 // Created by LOLO on 2020/08/08.
 //
 
-#import "NativeHelper.h"
+#import "NativeUtil.h"
 
 
 
 #pragma mark -
+
+// 这里与 NativeHelper 相比，像是重复定义。
+// NativeUtil 是给 UnityFramework 使用的，NativeHelper 供 Target 使用。
 
 NSString * const APP_CTR_PROT_NOTIF_NAME = @"OnReceiveAppControllerProtocol";
 NSString * const UNITY_MSG_NOTIF_NAME = @"OnReceiveUnityMessage";

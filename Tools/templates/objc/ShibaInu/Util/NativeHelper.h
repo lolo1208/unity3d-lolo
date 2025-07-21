@@ -8,7 +8,6 @@
 #import <Foundation/Foundation.h>
 
 
-
 // 接收 Unity 发来的消息
 /*
 #import "NativeHelper.h"
@@ -40,6 +39,7 @@ id __block token = [center addObserverForName:UNITY_MSG_NOTIF_NAME
 // lua 层向 Native 发送消息可调用全局函数：
 // SendMessageToNative("unitySay", "hello你好")
 //
+
 
 // 传递 AppControllerProtocol 实体时，派发通知所使用的名称
 extern NSString * const APP_CTR_PROT_NOTIF_NAME;

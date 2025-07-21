@@ -23,12 +23,13 @@ NSString * const UNITY_MSG_SEPARATOR = @"‖";
 void SendMessageToUnity(NSString *action, NSString *msg)
 {
     [[UnityFramework getInstance] sendMessageToGOWithName:"[ShibaInu]" functionName:"OnReceiveNativeMessage" message:[[NSString stringWithFormat:@"%@#%@", action, msg] UTF8String]];
-//    UnitySendMessage("[ShibaInu]", "OnReceiveNativeMessage", [[NSString stringWithFormat:@"%@#%@", action, msg] UTF8String]);
 }
+
 void SendMessageToUnity(NSString *action)
 {
     SendMessageToUnity(action, @"");
 }
+
 
 void SendMessageToUnity(const char* action, const char* msg)
 {
@@ -36,6 +37,7 @@ void SendMessageToUnity(const char* action, const char* msg)
                        [NSString stringWithUTF8String:msg]
                        );
 }
+
 void SendMessageToUnity(const char* action)
 {
     SendMessageToUnity([NSString stringWithUTF8String:action], @"");
