@@ -7,6 +7,7 @@
 local ceil = math.ceil
 local floor = math.floor
 local sub = string.sub
+local char = string.char
 local gsub = string.gsub
 local byte = string.byte
 local format = string.format
@@ -290,6 +291,25 @@ function StringUtil.EncodeURI(str)
     str = gsub(str, " ", "+")
 
     return str
+end
+
+
+--
+--- 解码 URL 编码字符串为原始字符串
+---@param str string URL 编码的字符串
+---@return string 解码后的原始字符串
+function StringUtil.DecodeURI(str)
+    -- 先将加号(+)替换为空格
+    local decoded = gsub(str, "+", " ")
+
+    -- 处理所有百分号编码(%XX)，支持大小写十六进制
+    decoded = gsub(decoded, "%%([0-9a-fA-F][0-9a-fA-F])",
+            function(hex)
+                return char(tonumber(hex, 16))
+            end
+    )
+
+    return decoded
 end
 
 
