@@ -1,6 +1,8 @@
 //
-// 设备相关工具类
-// Created by LOLO on 2019/03/07.
+//  DevieceUtil.mm
+//
+//  设备相关工具类
+//  Created by LOLO on 2019/03/07.
 //
 
 #import "AudioToolbox/AudioServices.h"

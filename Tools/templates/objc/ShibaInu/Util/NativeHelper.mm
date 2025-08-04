@@ -1,6 +1,8 @@
 //
-// Unity 与 Native 通信相关工具类
-// Created by LOLO on 2020/08/08.
+//  NativeHelper.mm
+//
+//  Unity 与 Native 通信相关工具类
+//  Created by LOLO on 2020/08/08.
 //
 
 #import "NativeHelper.h"
@@ -19,27 +21,30 @@ NSString * const UNITY_MSG_SEPARATOR = @"‖";
 
 
 #pragma mark -
+extern "C" {
 
 void SendMessageToUnity(NSString *action, NSString *msg)
 {
     [[UnityFramework getInstance] sendMessageToGOWithName:"[ShibaInu]" functionName:"OnReceiveNativeMessage" message:[[NSString stringWithFormat:@"%@#%@", action, msg] UTF8String]];
 }
 
-void SendMessageToUnity(NSString *action)
+void SendMessageToUnityAction(NSString *action)
 {
     SendMessageToUnity(action, @"");
 }
 
 
-void SendMessageToUnity(const char* action, const char* msg)
+void SendMessageToUnity_CString(const char* action, const char* msg)
 {
     SendMessageToUnity([NSString stringWithUTF8String:action],
                        [NSString stringWithUTF8String:msg]
                        );
 }
 
-void SendMessageToUnity(const char* action)
+void SendMessageToUnityAction_CString(const char* action)
 {
     SendMessageToUnity([NSString stringWithUTF8String:action], @"");
+}
+
 }
 

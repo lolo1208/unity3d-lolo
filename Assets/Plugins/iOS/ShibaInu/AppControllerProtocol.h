@@ -1,7 +1,9 @@
 //
-// 实现处理 iOS 系统的关键事件的协议，
-// DelegateAppController 会在对应的事件中调用他。
-// Created by LOLO on 2021/03/15.
+//  AppControllerProtocol.h
+//
+//  实现处理 iOS 系统的关键事件的协议，
+//  DelegateAppController 会在对应的事件中调用他。
+//  Created by LOLO on 2021/03/15.
 //
 
 #pragma once

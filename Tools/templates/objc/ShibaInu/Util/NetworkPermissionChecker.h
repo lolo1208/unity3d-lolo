@@ -1,11 +1,12 @@
 //
 //  NetworkPermissionChecker.h
+//
 //  用于网络权限检查，在网络权限未授予时，弹窗引导用户去设置。
 //  依赖 Network.framework
 //  Created by LOLO on 2025/07/25.
 //
 
-//#import <Foundation/Foundation.h>
+#import <Foundation/Foundation.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

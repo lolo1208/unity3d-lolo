@@ -1,6 +1,8 @@
 //
-// Unity 与 Native 通信相关工具类
-// Created by LOLO on 2020/08/08.
+//  NativeHelper.h
+//
+//  Unity 与 Native 通信相关工具类
+//  Created by LOLO on 2020/08/08.
 //
 
 #pragma once
@@ -60,14 +62,22 @@ extern NSString * const UNITY_MSG_SEPARATOR;
 // ---
 // #include "NativeHelper.h"
 // SendMessageToUnity(@"action", @"NSString 字符串");
-// SendMessageToUnity("action", "char* 字符串");
+// SendMessageToUnity_CString("action", "char* 字符串");
 // ---
 // 向 Unity 发送消息后，lua 层会派发 NativeEvent，可在 Stage 上侦听：
 // AddEventListener(Stage, NativeEvent.RECEIVE_MESSAGE, fun(event))
 
-void SendMessageToUnity(NSString *action);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void SendMessageToUnityAction(NSString *action);
 void SendMessageToUnity(NSString *action, NSString *msg);
 
-void SendMessageToUnity(const char* action);
-void SendMessageToUnity(const char* action, const char* msg);
+void SendMessageToUnityAction_CString(const char* action);
+void SendMessageToUnity_CString(const char* action, const char* msg);
+
+#ifdef __cplusplus
+}
+#endif
 

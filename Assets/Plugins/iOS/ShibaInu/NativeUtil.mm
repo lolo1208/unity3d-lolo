@@ -1,6 +1,8 @@
 //
-// Unity 与 Native 通信相关工具类
-// Created by LOLO on 2020/08/08.
+//  NativeUtil.mm
+//
+//  Unity 与 Native 通信相关工具类
+//  Created by LOLO on 2020/08/08.
 //
 
 #import "NativeUtil.h"

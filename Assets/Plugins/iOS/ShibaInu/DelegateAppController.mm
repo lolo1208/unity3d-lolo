@@ -1,7 +1,9 @@
 //
-// 实现处理 iOS 系统的关键事件的控制器，
-// 并持有一个实现 AppControllerProtocol 协议的对象，在对应的事件中会调用他。
-// Created by LOLO on 2021/03/15.
+//  DelegateAppController.mm
+//
+//  实现处理 iOS 系统的关键事件的控制器，
+//  并持有一个实现 AppControllerProtocol 协议的对象，在对应的事件中会调用他。
+//  Created by LOLO on 2021/03/15.
 //
 
 #import "NativeUtil.h"
@@ -11,6 +13,7 @@
 
 
 #pragma mark -
+
 // 日志前缀常量
 static NSString * const LOG_TAG = @"[DelegateAppController]";
 
