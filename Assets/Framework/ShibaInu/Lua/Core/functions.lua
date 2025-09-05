@@ -20,6 +20,24 @@ local _typeof_class = typeof
 
 
 
+--[ Lua 5.1/5.2 ]--
+
+if not math.sign then
+    math.sign = function(x)
+        if x > 0 then
+            return 1
+        end
+        if x < 0 then
+            return -1
+        end
+        return 0
+    end
+end
+
+--
+
+
+
 --[ Lua Class ]--
 
 --- 实现 lua class
